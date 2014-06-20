@@ -163,6 +163,7 @@ const BaseController = require('endpoints-controller');
 var PostController = BaseController.extend({
   create: BaseController.create('createWithToken'),
   findPostComments: BaseController.findRelated('PostComments'),
+  destory: BaseController.destroy,
   updateWithRelationships: function (req, res, next) {
     var params = req.body;
     var postComments = params.postComments;
@@ -185,6 +186,32 @@ var PostController = BaseController.extend({
 export PostController;
 ```
 
+#### all default controllers available to you
+The controller middlewares are responsible for calling methods on the models and updating the response to the client with the result.
+
+##### create( methodname )
+The create controller middleware is used to instantiate new `Model`s into `model`s and save them to the database. By default, `create()` calls the `create` method of the of the baseModel's class props, which forges a new record into the database. You can pass a different method name into `create`, and provide that method on the `Model` class props if you want to do some special creation behavior.
+
+##### destroy
+The `destroy` controller middleware is not invokable. It's calls the built in bookshelf destroy, updates the response according to the outcome and ticks `next()`.
+
+##### destroyCascade 
+The `destroyCascade` controller middleware is also not invokable, however it calls an endpoints method off of the baseModel instance props. This destroys the current model and all of it's dependant entities.
+
+##### findById( options )
+The `findById` controller middleware instantiates a `Model` into a `model` using a record from the database based with the id requested by the client (`req.params.id`). You can pass in an options object to get sub relations.
+
+##### findMany( options )
+The `findMany` controller middleware returns a bookshelf collection of models that the current user is allowed to see. You can pass in an options object to get sub relations.
+
+##### findRelated( relation, subRelations )
+The `findRelated` controller middleware returns a bookshelf collection of models that are related to the current `req.model`. Eg: find all comments for a given post with `findRelated('post')`. Passing an optional array of string subRelations (`['author', 'comments']`) will return related records as well.
+
+##### serialize( method )
+The `serialize` controller middleware turns the bookshelf models and bookshelf collections into JSON that we can send back to the user.
+
+##### update( method )
+The `update` controller middleware saves the current `req.model` with new params passed in.
 
 ### Model
 The model is responsible for specifying the shape of the data. The Base Model that endpoints provides sets up some commonly used methods for interacting with models and groups of models. You can override the model for a given endpoint resource and add your own methods for interacting with the data base and presenting information to controllers:
@@ -222,3 +249,21 @@ var PostModel = BaseModel.extend(
 
 module.exports = PostModel;
 ```
+
+#### Model Hooks
+Endpoints model allows you to define the following methods on your models:
+
+##### `classProps.allowedFor = function( 'account', 'id' ) {}`
+
+`allowedFor` automatically gets called by the endpoints controller for findById and findByMany if. `allowedFor` is a method of the class props. The first argument is an instance of the `account` model for the account making the current request. The second argument is the `id` of the record that the `account` is requesting. `id` only gets passed in to `allowedFor` during a `findById` lookup.
+
+In `allowedFor`, you take the `account` and return a promise that resolves to an array of IDs that the `account` is allowed to look at.
+
+
+##### `instanceProps.validate( params ) {}`
+
+The instance `validate` method is run on every `model.save()`. It receives as it's single argument, a params object consisting of properties that the request would like to update of forge a model with.
+
+Endpoints expects you to return a promise that resolves if the operation is valid, and rejects if it is not.
+
+We use [checkit](https://github.com/tgriesser/checkit) by convention to run our validations, but you can use what ever you'd like.
