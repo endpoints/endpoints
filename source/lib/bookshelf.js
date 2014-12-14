@@ -1,19 +1,19 @@
-function Model (model) {
+function Source (model) {
   this.model = model;
 }
 
-Model.prototype.filter = function (params, request, cb) {
+Source.prototype.filter = function (params, cb) {
   var model = this.model;
   // open query builder for this model
   var query = model.collection().query(function (qb) {
     // iterate over all params we explicitly support in the request
     // using the query builder to filter down the query
-    params.forEach(function (param) {
+    Object.keys(params).forEach(function (key) {
       // see if there is a finder on the model for this param
-      var finder = model.finders[param];
+      var finder = model.finders[key];
       // get the value for the param using req.param from express
       // http://expressjs.com/api.html#req.param
-      var value = request(param);
+      var value = params[key];
       if (finder && value) {
         // use the finder on the model to limit the query
         qb = finder(qb, value);
@@ -28,7 +28,7 @@ Model.prototype.filter = function (params, request, cb) {
   });
 };
 
-Model.prototype.fetch = function (query, opts, cb) {
+Source.prototype.fetch = function (query, opts, cb) {
   if (!opts) {
     opts = {};
   }
@@ -39,7 +39,7 @@ Model.prototype.fetch = function (query, opts, cb) {
   });
 };
 
-Model.prototype.fetchOne = function (query, opts, cb) {
+Source.prototype.fetchOne = function (query, opts, cb) {
   if (!opts) {
     opts = {};
   }
@@ -50,4 +50,4 @@ Model.prototype.fetchOne = function (query, opts, cb) {
   });
 };
 
-module.exports = Model;
+module.exports = Source;

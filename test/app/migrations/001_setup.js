@@ -1,7 +1,9 @@
 exports.up = function(knex, Promise) {
   return knex.schema.createTable('account', function(t) {
     t.increments('id');
-    t.text('name').notNullable();
+    t.text('first').notNullable();
+    t.text('last').notNullable();
+    t.text('website');
     t.text('email').notNullable();
     t.boolean('active').notNullable().defaultsTo(false);
   }).createTable('group', function(t) {

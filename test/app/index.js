@@ -3,31 +3,28 @@ const bodyParser = require('body-parser');
 const app = express();
 
 const BaseController = require('../../controller');
-const BaseModel = require('../../model');
+const BookshelfSource = require('../../source').Bookshelf;
 
 const AccountController = new BaseController({
-  model: new BaseModel(require('./models/account')),
+  source: new BookshelfSource(require('./models/account')),
+  params: ['id', 'first', 'last', 'active', 'email', 'website']
 });
 
 const GroupController = new BaseController({
-  model: new BaseModel(require('./models/account'))
+  source: new BookshelfSource(require('./models/account'))
 });
 
 app.use(bodyParser.urlencoded({extended: true}));
 app.use(bodyParser.json());
 
 app.get('/accounts', [
-  AccountController.find({
-    params: ['id', 'active', 'email']
-  }),
+  AccountController.find(),
   AccountController.fetch(),
   AccountController.serialize()
 ]);
 
 app.get('/accounts/:id', [
-  AccountController.find({
-    params: ['id', 'active']
-  }),
+  AccountController.find(),
   AccountController.fetchOne({
     withRelated: ['groups']
   }),

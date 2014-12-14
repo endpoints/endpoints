@@ -6,14 +6,18 @@ Knex.migrate.latest(config).then(function () {
   return Knex('account').insert([
     {
       id: 1,
-      name: 'tyler',
+      first: 'tyler',
+      last: 'kellen',
       email: 'tyler@sleekcode.net',
+      website: 'goingslowly.com',
       active: true
     },
     {
       id: 2,
-      name: 'tara',
+      first: 'tara',
+      last: 'alan',
       email: 'taraalan@gmail.com',
+      website: 'goingslowly.com',
       active: false
     }
   ]).then(function () {

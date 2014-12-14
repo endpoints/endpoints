@@ -3,20 +3,40 @@ const parseOptions = require('./lib/parse_options');
 
 function Controller(opts) {
   opts = parseOptions(opts);
-  this.model = opts.model;
+  this.source = opts.source;
   this.params = opts.params;
+};
+
+Controller.prototype.parseParam = function (value) {
+  if (value === 'true') {
+    value = true;
+  } else if (value === 'false') {
+    value = false;
+  } else if (value.indexOf(',') !== -1) {
+    value = value.split(',');
+  }
+  return value;
 };
 
 Controller.prototype.find = function (opts) {
   if (!opts) {
     opts = {};
   }
-  var params = opts.params;
-  var model = this.model;
-
+  var source = this.source;
+  var parseParam = this.parseParam;
+  var allowedParams = opts.params || this.params;
+  
   return function (request, response, next) {
     var set = store.setter.bind(request);
-    model.filter(params, request.param.bind(request), function (err, query) {
+    var checkParams = Object.keys(request.params).concat(allowedParams);
+    var params = checkParams.reduce(function (result, key) {
+      var param = request.param(key);
+      if (param) {
+        result[key] = parseParam(param);
+      }
+      return result;
+    }, {});
+    source.filter(params, function (err, query) {
       if (err) {
         throw err;
       } else {
@@ -24,20 +44,20 @@ Controller.prototype.find = function (opts) {
         next();
       }
     });
-  }
+  }.bind(this)
 };
 
 Controller.prototype.fetch = function (opts) {
   if (!opts) {
     opts = {};
   }
-  var model = this.model;
+  var source = this.source;
   var method = !opts.collection ? 'fetch' : 'fetchOne';
 
   return function (request, response, next) {
     var get = store.getter.bind(request);
     var set = store.setter.bind(request);
-    model[method](get('query'), opts, function (err, result) {
+    source[method](get('query'), opts, function (err, result) {
       if (err) {
         throw err;
       } else {
