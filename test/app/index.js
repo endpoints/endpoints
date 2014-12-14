@@ -6,7 +6,7 @@ const BaseController = require('../../controller');
 const BaseModel = require('../../model');
 
 const AccountController = new BaseController({
-  model: new BaseModel(require('./models/account'))
+  model: new BaseModel(require('./models/account')),
 });
 
 const GroupController = new BaseController({

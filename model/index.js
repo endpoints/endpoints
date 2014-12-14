@@ -20,7 +20,34 @@ Model.prototype.filter = function (params, request, cb) {
       }
     });
   });
-  cb(null, query);
-}
+  // knex's query builder is sync, but we want to support
+  // async query building without releasing zalgo, thus
+  // the synthetic deferral.
+  process.nextTick(function () {
+    cb(null, query);  
+  });
+};
+
+Model.prototype.fetch = function (query, opts, cb) {
+  if (!opts) {
+    opts = {};
+  }
+  query.fetch(opts).then(function (results) {
+    cb(null, results.models);
+  }).catch(function (err) {
+    cb(err);
+  });
+};
+
+Model.prototype.fetchOne = function (query, opts, cb) {
+  if (!opts) {
+    opts = {};
+  }
+  query.fetchOne(opts).then(function (results) {
+    cb(null, results);
+  }).catch(function (err) {
+    cb(err);
+  });
+};
 
 module.exports = Model;
