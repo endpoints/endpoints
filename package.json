@@ -22,5 +22,14 @@
   ],
   "keywords": [
     "rest api"
-  ]
+  ],
+  "devDependencies": {
+    "body-parser": "^1.10.0",
+    "bookshelf": "^0.7.9",
+    "chai": "^1.10.0",
+    "express": "^4.10.6",
+    "knex": "^0.7.3",
+    "mocha": "^2.0.1",
+    "sqlite3": "^3.0.4"
+  }
 }
