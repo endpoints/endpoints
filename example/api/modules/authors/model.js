@@ -1,0 +1,45 @@
+const Bookshelf = require('../../classes/database');
+
+const instanceProps = {
+  tableName: 'authors',
+  books: function () {
+    return this.hasMany(require('../books/model'));
+  }
+};
+
+const classProps = {
+  columns: [
+    'id',
+    'name',
+    'date_of_birth',
+    'date_of_death'
+  ],
+  find: function () {
+    return this.collection().query();
+  },
+  filters: {
+    id: function (qb, value) {
+      return qb.whereIn('id', value);
+    },
+    name: function (qb, value) {
+      return qb.whereIn('name', value)
+    },
+    date_of_birth: function (qb, value) {
+      return qb.whereIn('date_of_birth', value);
+    },
+    date_of_death: function (qb, value) {
+      return qb.whereIn('date_of_death', value);
+    },
+    born_before: function (qb, value) {
+      return qb.where('date_of_birth', '<', value);
+    },
+    born_after: function (qb, value) {
+      return qb.where('date_of_birth', '>', value);
+    }
+  },
+  relations: {
+    books: 'books'
+  }
+};
+
+module.exports = Bookshelf.Model.extend(instanceProps, classProps);

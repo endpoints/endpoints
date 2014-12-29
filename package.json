@@ -2,34 +2,42 @@
   "name": "endpoints",
   "description": "endpoints framework.",
   "version": "0.0.1",
-  "homepage": "https://github.com/tkellen/node-endpoints",
+  "homepage": "https://github.com/endpoints/endpoints",
   "author": {
     "name": "Tyler Kellen",
     "url": "http://goingslowly.com/"
   },
   "repository": {
     "type": "git",
-    "url": "git://github.com/tkellen/node-endpoints.git"
+    "url": "git://github.com/endpoints/endpoints.git"
   },
   "bugs": {
-    "url": "https://github.com/tkellen/node-endpoints/issues"
+    "url": "https://github.com/endpoints/endpoints/issues"
   },
   "licenses": [
     {
       "type": "MIT",
-      "url": "https://github.com/tkellen/node-endpoints/blob/master/LICENSE"
+      "url": "https://github.com/endpoints/endpoints/blob/master/LICENSE"
     }
   ],
   "keywords": [
     "rest api"
   ],
+  "scripts": {
+    "start": "node example",
+    "test": "mocha -R spec"
+  },
   "devDependencies": {
+    "chai": "^1.10.0",
+    "mocha": "^2.1.0"
+  },
+  "dependencies": {
     "body-parser": "^1.10.0",
     "bookshelf": "^0.7.9",
-    "chai": "^1.10.0",
     "express": "^4.10.6",
+    "express-routebuilder": "^1.0.0",
+    "extend": "^2.0.0",
     "knex": "^0.7.3",
-    "mocha": "^2.0.1",
     "sqlite3": "^3.0.4"
   }
 }
