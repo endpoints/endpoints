@@ -31,7 +31,7 @@ You specify which params and relations the user is allowed to request, this libr
 A thin abstraction over any type of data store. Provides the following methods:
 
 #### filters()
-returns an object on the underlying model where the filtering methods are specified ([see example](https://github.coms/endpoints/endpoints/blob/master/example/api/modules/books/model.js#L30-L46)).
+returns an object on the underlying model where the filtering methods are specified ([see example](https://github.com/endpoints/endpoints/blob/master/example/api/modules/books/model.js#L30-L46)).
 
 #### relations
 returns an object on the underlying model where the relations are specified ([see example](https://github.com/endpoints/endpoints/blob/master/example/api/modules/books/model.js#L47-L59))
