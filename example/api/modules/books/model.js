@@ -11,7 +11,7 @@ const instanceProps = {
   chapters: function () {
     return this.hasMany(require('../chapters/model'));
   },
-  firstChapters: function () {
+  firstChapter: function () {
     return this.hasMany(require('../chapters/model')).query(function (qb) {
       qb.where('ordering', 1);
     });
@@ -40,13 +40,19 @@ const classProps = {
     date_published: function (qb, value) {
       return qb.whereIn('date_published', value);
     },
+    published_before: function (qb, value) {
+      return qb.where('date_published', '<', value);
+    },
+    published_after: function (qb, value) {
+      return qb.where('date_published', '>', value);
+    },
     title: function (qb, value) {
       return qb.whereIn('title', value);
     }
   },
   relations: {
     chapters: 'chapters',
-    firstChapters: 'firstChapters',
+    first_chapter: 'firstChapter',
     /* unsupported
     specificChapter: function (params) {
       return this.hasMany('../chapters/model').query(function (qb) {
