@@ -13,8 +13,20 @@ Endpoints currently uses a Knex/Bookshelf/Express stack, but it is built with mo
 1. Clone repo
 2. `npm install`
 3. `npm start`
-4. Open browser to [http://localhost:8080](http://localhost:8080)
-
+4. Open browser to (for example):
+  - [http://localhost:8080](http://localhost:8080)
+  - [http://localhost:8080/v1/authors](http://localhost:8080/v1/authors)
+  - [http://localhost:8080/v1/authors/1](http://localhost:8080/v1/authors/1)
+  - [http://localhost:8080/v1/authors/1,2](http://localhost:8080/v1/authors/1,2)
+  - [http://localhost:8080/v1/authors?with_related=books](http://localhost:8080/v1/authors?with_related=books)
+  - [http://localhost:8080/v1/authors?alive=true](http://localhost:8080/v1/authors?alive=true)
+  - [http://localhost:8080/v1/authors?dead=true](http://localhost:8080/v1/authors?dead=true)
+  - [http://localhost:8080/v1/books?with_related=chapters,author](http://localhost:8080/v1/books?with_related=chapters,author)
+  - [http://localhost:8080/v1/books?with_related=first_chapter](http://localhost:8080/v1/books?with_related=first_chapter)
+  - [http://localhost:8080/v1/books?published_before=1990-01-01](http://localhost:8080/v1/books?published_before=1990-01-01)
+  - [http://localhost:8080/v1/books?published_after=1990-01-01](http://localhost:8080/v1/books?published_after=1990-01-01)
+  - [http://localhost:8080/v1/chapters?book_id=1](http://localhost:8080/v1/chapters?book_id=1)
+  - [http://localhost:8080/v1/chapters/1](http://localhost:8080/v1/chapters/1)
 
 ## Module Overviews
 Below, some high level explanations of the current module-set that comprises the next version of endpoints.
