@@ -8,6 +8,7 @@ const instanceProps = {
 };
 
 const classProps = {
+  resourceName: 'chapters',
   columns: [
     'id',
     'book_id',

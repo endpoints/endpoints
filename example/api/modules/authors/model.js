@@ -8,6 +8,7 @@ const instanceProps = {
 };
 
 const classProps = {
+  resourceName: 'authors',
   columns: [
     'id',
     'name',

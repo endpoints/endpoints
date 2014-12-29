@@ -11,6 +11,7 @@ const instanceProps = {
 };
 
 const classProps = {
+  resourceName: 'books',
   columns: [
     'id',
     'author_id',
