@@ -14,9 +14,6 @@ const classProps = {
     'date_of_birth',
     'date_of_death'
   ],
-  find: function () {
-    return this.collection().query();
-  },
   filters: {
     id: function (qb, value) {
       return qb.whereIn('id', value);
