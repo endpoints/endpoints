@@ -7,6 +7,14 @@ const instanceProps = {
   },
   series: function () {
     return this.belongsTo(require('../series/model'));
+  },
+  chapters: function () {
+    return this.hasMany(require('../chapters/model'));
+  },
+  firstChapters: function () {
+    return this.hasMany(require('../chapters/model')).query(function (qb) {
+      qb.where('ordering', 1);
+    });
   }
 };
 
@@ -37,8 +45,17 @@ const classProps = {
     }
   },
   relations: {
-    author: 'author',
-    series: 'series'
+    chapters: 'chapters',
+    firstChapters: 'firstChapters',
+    /* unsupported
+    specificChapter: function (params) {
+      return this.hasMany('../chapters/model').query(function (qb) {
+
+      });
+    }
+    */
+    series: 'series',
+    author: 'author'
   }
 };
 
