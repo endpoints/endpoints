@@ -1,8 +1,11 @@
 const controller = require('./controller');
 
 module.exports = {
+  post: {
+    '/': controller.create()
+  },
   get: {
-    '/': controller.find(),
-    '/:id': controller.find()
+    '/': controller.read(),
+    '/:id': controller.read()
   }
 };

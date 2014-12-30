@@ -1,4 +1,4 @@
-const Bookshelf = require('../../classes/database');
+const BaseModel = require('../../classes/base_model');
 
 const instanceProps = {
   tableName: 'chapters',
@@ -34,4 +34,4 @@ const classProps = {
   }
 };
 
-module.exports = Bookshelf.Model.extend(instanceProps, classProps);
+module.exports = BaseModel.extend(instanceProps, classProps);
