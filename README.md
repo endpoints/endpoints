@@ -39,8 +39,8 @@ You specify which params and relations the user is allowed to request, this libr
 
 ---
 
-## endpoints-source
-A thin abstraction over any type of data store. Provides the following methods:
+## endpoints-source-bookshelf
+A thin adapter for Bookshelf models.
 
 #### filters()
 returns an object on the underlying model where the filtering methods are specified ([see example](https://github.com/endpoints/endpoints/blob/master/example/api/modules/books/model.js#L30-L46)).
@@ -51,8 +51,20 @@ returns an object on the underlying model where the relations are specified ([se
 #### filter(params)
 returns a "query", as filtered by the provided params object.  keys in the params map to filters on the underlying model. the query is built incrementally, passing the value of each provided param into the filtering method under its key. if there is no filtering method for a provided key, it is ignored.
 
-#### fetch(query, settings, cb)
-takes a query produced by `filter`, along with a settings object to configure how it is fetched (in the current case, the only option is which relations to include) and calls back with the resulting data.
+#### create(method, params, cb)
+Create new record(s) using the underlying model. This is invoked by the request adapter, you should never need to call this.
+
+* `method`: the method name on the model constructor to call
+* `params`: the parameters to pass to the specified method
+* `cb`: a node-style callback with the resulting data
+
+#### read(query, relations, opts, cb)
+Read data from the underlying source. This is invoked by the request adapter, you should never need to call this.
+
+* `query`: a query produced by `filter`
+* `relations`: an array of relation names to include
+* `opts`: an options object augmenting how the data is fetched. if `{one:true}` is passed, the primary resource being requested will be returned in singular form ([see example usage](https://github.com/endpoints/endpoints/blob/master/example/api/modules/authors/routes.js#L9)).
+* `cb`: a node-style callback with the resulting data
 
 ---
 
