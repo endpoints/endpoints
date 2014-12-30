@@ -6,6 +6,6 @@ module.exports = {
   },
   get: {
     '/': controller.read(),
-    '/:id': controller.read()
+    '/:id': controller.read({one:true})
   }
 };

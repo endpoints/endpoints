@@ -56,5 +56,5 @@ takes a query produced by `filter`, along with a settings object to configure ho
 
 ---
 
-## endpoints-express
+## endpoints-request-express
 A thin abstraction over the receiver and the source, this creates an express middleware that determines which params are valid using the receiver. the params are passed to the source to create a query for the resource, and the data the source produces is serialized to the consumer.

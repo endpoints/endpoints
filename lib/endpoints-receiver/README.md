@@ -1,2 +1,2 @@
 # endpoints-receiver
-> An API request parser.
+> An API request parser for Endpoints.

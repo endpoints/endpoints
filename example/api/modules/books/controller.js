@@ -1,4 +1,4 @@
-const EndpointsExpress = require('../../../../lib/endpoints-express');
+const EndpointsRequest = require('../../../../lib/endpoints-request-express');
 const EndpointsReceiver = require('../../../../lib/endpoints-receiver');
 const EndpointsSource = require('../../../../lib/endpoints-source-bookshelf');
 
@@ -11,7 +11,7 @@ const Receiver = new EndpointsReceiver({
   allowedRelations: Object.keys(Source.relations())
 });
 
-module.exports = new EndpointsExpress({
+module.exports = new EndpointsRequest({
   source: Source,
   receiver: Receiver
 });
