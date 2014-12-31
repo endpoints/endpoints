@@ -15,6 +15,15 @@ const classProps = {
     'date_of_birth',
     'date_of_death'
   ],
+  createWithRandomBook: function (params) {
+    return this.create(params).then(function (model) {
+      return require('../books/model').create({
+        title: Math.random().toString(36).slice(-8),
+        date_published: new Date().toISOString().slice(0,10),
+        author_id: model.get('id')
+      }).return(model);
+    });
+  },
   filters: {
     id: function (qb, value) {
       return qb.whereIn('id', value);
