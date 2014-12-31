@@ -16,6 +16,7 @@ const classProps = {
     'date_of_death'
   ],
   createWithRandomBook: function (params) {
+    // this should be in a transaction
     return this.create(params).then(function (model) {
       return require('../books/model').create({
         title: Math.random().toString(36).slice(-8),

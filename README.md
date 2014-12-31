@@ -68,5 +68,7 @@ Read data from the underlying source. This is invoked by the request adapter, yo
 
 ---
 
-## endpoints-request-express
-A thin abstraction over the receiver and the source, this creates an express middleware that determines which params are valid using the receiver. the params are passed to the source to create a query for the resource, and the data the source produces is serialized to the consumer.
+## endpoints-request
+A thin abstraction over the receiver and the source, this creates an express middleware or hapi handler to process the request (receiver determines which params are valid, passes them to the source, the source returns the data, this library sends the result using the appropriate response mechanisms for the underlying server).
+
+This also needs to support validation.  Coming soon.

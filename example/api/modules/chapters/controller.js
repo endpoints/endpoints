@@ -1,4 +1,4 @@
-const EndpointsRequest = require('../../../../lib/endpoints-request-express');
+const EndpointsRequest = require('../../../../lib/endpoints-request');
 const EndpointsReceiver = require('../../../../lib/endpoints-receiver');
 const EndpointsSource = require('../../../../lib/endpoints-source-bookshelf');
 
