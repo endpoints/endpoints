@@ -1,7 +1,7 @@
 {
   "name": "endpoints",
-  "description": "endpoints framework.",
-  "version": "0.0.1",
+  "description": "a json-api compliant rest library.",
+  "version": "0.1.0",
   "homepage": "https://github.com/endpoints/endpoints",
   "author": {
     "name": "Tyler Kellen",
@@ -20,30 +20,20 @@
       "url": "https://github.com/endpoints/endpoints/blob/master/LICENSE"
     }
   ],
-  "keywords": [
-    "rest api"
-  ],
+  "main": "index.js",
+  "engines": {
+    "node": ">= 0.10"
+  },
   "scripts": {
-    "start": "node example",
     "test": "npm run lint && mocha -R spec",
-    "lint": "jshint lib"
+    "lint": "jshint index.js modules"
   },
   "devDependencies": {
     "chai": "^1.10.0",
-    "hapi": "^8.0.0",
-    "inquirer": "^0.8.0",
     "jshint": "^2.5.11",
-    "mocha": "^2.1.0",
-    "supertest": "^0.15.0"
+    "mocha": "^2.1.0"
   },
   "dependencies": {
-    "body-parser": "^1.10.0",
-    "bookshelf": "^0.7.9",
-    "express": "^4.10.6",
-    "express-routebuilder": "^2.0.0",
-    "extend": "^2.0.0",
-    "knex": "^0.7.3",
-    "lodash": "^2.4.1",
-    "sqlite3": "^3.0.4"
+    "extend": "^2.0.0"
   }
 }

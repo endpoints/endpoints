@@ -14,6 +14,16 @@ var parseOptions = function (opts) {
   if (!opts) {
     opts = {};
   }
+  var source = opts.source;
+  if (!source) {
+    throw new Error('No source specified.');
+  }
+  if (!opts.allowedFilters) {
+    opts.allowedFilters = Object.keys(source.filters());
+  }
+  if (!opts.allowedRelations) {
+    opts.allowedRelations = Object.keys(source.relations());
+  }
   if (opts.allowedFilters && !Array.isArray(opts.allowedFilters)) {
     throw new Error('Allowed filters must be an array.');
   }

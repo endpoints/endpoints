@@ -1,14 +1,19 @@
 global.expect = require('chai').expect;
 
-const EndpointsReceiver = require('../');
+const Endpoints = require('../');
 
-const Receiver = new EndpointsReceiver({
-  allowedFilters: ['title', 'pageCount'],
-  allowedRelations: ['series', 'book', 'chapter'],
-  user: function (request) {
-    return request.account;
+const mockSource = {
+  filters: function () {
+    return {
+      filter: 'value'
+    };
+  },
+  relations: function () {
+    return {
+      relation: 'value'
+    };
   }
-});
+};
 
 const mockRequest = {
   params: { id: 1 },
@@ -24,7 +29,13 @@ var filters = {
 };
 var relations = ['book', 'chapter'];
 
-describe('Receiver', function () {
+const Request = new Endpoints({
+  source: mockSource,
+  allowedFilters: ['title', 'pageCount'],
+  allowedRelations: ['series', 'book', 'chapter']
+});
+
+describe('Endpoints', function () {
 
   require('./lib/extract');
   require('./lib/mutating_traverse');
@@ -35,14 +46,30 @@ describe('Receiver', function () {
 
   describe('#filters', function () {
     it('should return an array of valid filters for a given request', function () {
-      expect(Receiver.filters(mockRequest)).to.deep.equal(filters);
+      expect(Request.filters(mockRequest)).to.deep.equal(filters);
     });
   });
 
   describe('#relations', function () {
     it('should return an array of valid relations for a given request', function () {
-      expect(Receiver.relations(mockRequest)).to.deep.equal(relations);
+      expect(Request.relations(mockRequest)).to.deep.equal(relations);
     });
+  });
+
+  describe('#create', function () {
+
+  });
+
+  describe('#read', function () {
+
+  });
+
+  describe('#update', function () {
+
+  });
+
+  describe('#destroy', function () {
+
   });
 
 });

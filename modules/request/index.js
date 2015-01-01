@@ -1,10 +1,45 @@
 const extend = require('extend');
 
 const parseOptions = require('./lib/parse_options');
+const extract = require('./lib/extract');
 
 function Request(opts) {
   extend(this, parseOptions(opts));
 }
+
+Request.prototype.filters = function (request) {
+  return extract({
+    context: request,
+    contextKeysToSearch: this.requestKeysToSearch,
+    // named params in the route are automatically included with the
+    // user-supplied list of valid params. given a route /resource/:id
+    // the param 'id' will be considered valid even if it isn't listed
+    // in the paramsForfilters property.
+    find: this.allowedFilters.concat(Object.keys(request.params)),
+    normalizer: this.paramNormalizer
+  });
+};
+
+Request.prototype.relations = function (request) {
+  var result = [];
+  var requestedRelations = extract({
+    context: request,
+    contextKeysToSearch: this.requestKeysToSearch,
+    find: this.relationKey,
+    normalizer: this.paramNormalizer
+  });
+  var allowedRelations = this.allowedRelations;
+  if (requestedRelations) {
+    if (!Array.isArray(requestedRelations)) {
+      requestedRelations = [requestedRelations];
+    }
+    result = requestedRelations.filter(function (relation) {
+      return allowedRelations.indexOf(relation) !== -1;
+    });
+  }
+  return result;
+};
+
 
 Request.prototype.responder = function (response, code, data) {
   // cheap heuristics to detect the server type
@@ -56,11 +91,13 @@ Request.prototype.read = function (opts) {
     opts = {};
   }
   var responder = this.responder;
-  var receiver = this.receiver;
+  var getFilters = this.filters.bind(this);
+  var getRelations = this.relations.bind(this);
   var source = this.source;
+  var withRelated = opts.withRelated||[];
   return function (request, response) {
-    var filters = receiver.filters(request);
-    var relations = receiver.relations(request);
+    var filters = getFilters(request);
+    var relations = getRelations(request).concat(withRelated);
     source.read(filters, relations, opts, function (err, data) {
       var code = 200;
       if (err) {
