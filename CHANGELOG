@@ -1,4 +1,8 @@
-v0.1.0:
+v0.3.0:
+  date: 2015-01-02
+  changes:
+    - Use `include` key on find, not `withRelated`
+v0.2.0:
   date: 2015-01-01
   changes:
     - Initial release.
