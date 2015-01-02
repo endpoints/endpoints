@@ -94,10 +94,10 @@ Request.prototype.read = function (opts) {
   var getFilters = this.filters.bind(this);
   var getRelations = this.relations.bind(this);
   var source = this.source;
-  var withRelated = opts.withRelated||[];
+  var include = opts.include||[];
   return function (request, response) {
     var filters = getFilters(request);
-    var relations = getRelations(request).concat(withRelated);
+    var relations = getRelations(request).concat(include);
     source.read(filters, relations, opts, function (err, data) {
       var code = 200;
       if (err) {
