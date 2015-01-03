@@ -4,4 +4,4 @@
 [![NPM](https://nodei.co/npm/endpoints.png)](https://nodei.co/npm/endpoints/)
 
 # What is it?
-This is a work in progress. See the [example](/endpoints/example) for more.
+This is a work in progress. See the [example](https://github.com/endpoints/example) for more.
