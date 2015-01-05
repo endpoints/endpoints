@@ -84,13 +84,13 @@ Request.prototype.read = function (opts) {
     opts = {};
   }
   var format = this.format.bind(this);
-  var pass = opts.pass;
-  var raw = opts.raw;
   var responder = this.responder;
   var getFilters = this.filters.bind(this);
   var getRelations = this.relations.bind(this);
   var source = this.source;
   var include = opts.include||[];
+  var pass = !!opts.pass;
+  var raw = !!opts.raw;
   return function (request, response, next) {
     var filters = getFilters(request);
     var relations = getRelations(request).concat(include);
@@ -109,8 +109,8 @@ Request.prototype.read = function (opts) {
         data = format(data);
       }
       if (pass) {
-        request.data = data;
-        request.code = code;
+        response.data = data;
+        response.code = code;
         next();
       } else {
         responder(response, code, data);
