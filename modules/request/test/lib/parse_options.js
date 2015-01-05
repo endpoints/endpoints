@@ -29,12 +29,6 @@ describe('parseOptions', function () {
     }).allowedFilters).to.deep.equal(Object.keys(mockSource.filters()));
   });
 
-  it('should infer allowedRelations from the source if none are explicitly provided', function () {
-    expect(parseOptions({
-      source: mockSource
-    }).allowedRelations).to.deep.equal(Object.keys(mockSource.relations()));
-  });
-
   it('should throw if allowedFilters is defined but not an array', function () {
     expect(function () {
       parseOptions({
@@ -44,22 +38,11 @@ describe('parseOptions', function () {
     }).to.throw('Allowed filters must be an array.');
   });
 
-  it('should throw if allowedRelations is defined but not an array', function () {
-    expect(function () {
-      parseOptions({
-        source: mockSource,
-        allowedRelations: {}
-      });
-    }).to.throw('Allowed relations must be an array.');
-  });
-
-
   it('should return the configuration, with supplied options merged over defaults', function () {
     var config = {
       source: true,
       relationKey: 'thing',
-      allowedFilters: ['foo'],
-      allowedRelations: ['bar']
+      allowedFilters: ['foo']
     };
     var defaults = extend({}, parseOptions.defaults, config);
     expect(parseOptions(config)).to.deep.equal(defaults);

@@ -31,8 +31,7 @@ var relations = ['book', 'chapter'];
 
 const Request = new Endpoints({
   source: mockSource,
-  allowedFilters: ['title', 'pageCount'],
-  allowedRelations: ['series', 'book', 'chapter']
+  allowedFilters: ['title', 'pageCount']
 });
 
 describe('Endpoints', function () {

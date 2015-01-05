@@ -1,5 +1,6 @@
 const extend = require('extend');
 
+const uniq = require('./lib/uniq');
 const parseOptions = require('./lib/parse_options');
 const extract = require('./lib/extract');
 
@@ -21,25 +22,17 @@ Request.prototype.filters = function (request) {
 };
 
 Request.prototype.relations = function (request) {
-  var result = [];
-  var requestedRelations = extract({
+  var result = extract({
     context: request,
     contextKeysToSearch: this.requestKeysToSearch,
     find: this.relationKey,
     normalizer: this.paramNormalizer
-  });
-  var allowedRelations = this.allowedRelations;
-  if (requestedRelations) {
-    if (!Array.isArray(requestedRelations)) {
-      requestedRelations = [requestedRelations];
-    }
-    result = requestedRelations.filter(function (relation) {
-      return allowedRelations.indexOf(relation) !== -1;
-    });
+  }) || [];
+  if (result && !Array.isArray(result)) {
+    result = [result];
   }
-  return result;
+  return uniq(result);
 };
-
 
 Request.prototype.responder = function (response, code, data) {
   // cheap heuristics to detect the server type
@@ -91,12 +84,14 @@ Request.prototype.read = function (opts) {
     opts = {};
   }
   var format = this.format.bind(this);
+  var pass = opts.pass;
+  var raw = opts.raw;
   var responder = this.responder;
   var getFilters = this.filters.bind(this);
   var getRelations = this.relations.bind(this);
   var source = this.source;
   var include = opts.include||[];
-  return function (request, response) {
+  return function (request, response, next) {
     var filters = getFilters(request);
     var relations = getRelations(request).concat(include);
     source.read(filters, relations, opts, function (err, data) {
@@ -110,7 +105,16 @@ Request.prototype.read = function (opts) {
           }
         };
       }
-      responder(response, code, format(data));
+      if (!raw) {
+        data = format(data);
+      }
+      if (pass) {
+        request.data = data;
+        request.code = code;
+        next();
+      } else {
+        responder(response, code, data);
+      }
     });
   };
 };
@@ -181,9 +185,11 @@ Request.prototype.destroy = function (opts) {
 Request.prototype.format = function (data) {
   var primaryResourceName = this.source.resourceName();
   var primaryResource = data[primaryResourceName];
-  var output = {
-    linked: data
-  };
+  var hasLinks = (Object.keys(data).length > 1);
+  var output = {};
+  if (hasLinks) {
+    output.linked = data;
+  }
   output[primaryResourceName] = primaryResource;
   delete data[primaryResourceName];
   return output;
