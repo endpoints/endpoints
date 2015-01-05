@@ -90,6 +90,7 @@ Request.prototype.read = function (opts) {
   if (!opts) {
     opts = {};
   }
+  var format = this.format.bind(this);
   var responder = this.responder;
   var getFilters = this.filters.bind(this);
   var getRelations = this.relations.bind(this);
@@ -109,7 +110,7 @@ Request.prototype.read = function (opts) {
           }
         };
       }
-      responder(response, code, data);
+      responder(response, code, format(data));
     });
   };
 };
@@ -175,6 +176,17 @@ Request.prototype.destroy = function (opts) {
       }
     });
   };
+};
+
+Request.prototype.format = function (data) {
+  var primaryResourceName = this.source.resourceName();
+  var primaryResource = data[primaryResourceName];
+  var output = {
+    linked: data
+  };
+  output[primaryResourceName] = primaryResource;
+  delete data[primaryResourceName];
+  return output;
 };
 
 
