@@ -89,8 +89,8 @@ Request.prototype.read = function (opts) {
   var getRelations = this.relations.bind(this);
   var source = this.source;
   var include = opts.include||[];
-  var pass = !!opts.pass;
-  var raw = !!opts.raw;
+  var passMode = !!opts.pass;
+  var rawMode = !!opts.raw;
   return function (request, response, next) {
     var filters = getFilters(request);
     var relations = getRelations(request).concat(include);
@@ -105,10 +105,10 @@ Request.prototype.read = function (opts) {
           }
         };
       }
-      if (!raw) {
-        data = format(data);
+      if (!rawMode) {
+        data = format(data, opts);
       }
-      if (pass) {
+      if (passMode) {
         response.data = data;
         response.code = code;
         next();
@@ -182,7 +182,11 @@ Request.prototype.destroy = function (opts) {
   };
 };
 
-Request.prototype.format = function (data) {
+Request.prototype.format = function (data, opts) {
+  if (!opts) {
+    opts = {};
+  }
+  var singleResource = !!opts.one;
   var primaryResourceName = this.source.resourceName();
   var primaryResource = data[primaryResourceName];
   var hasLinks = (Object.keys(data).length > 1);
@@ -190,7 +194,12 @@ Request.prototype.format = function (data) {
   if (hasLinks) {
     output.linked = data;
   }
-  output[primaryResourceName] = primaryResource;
+  if (singleResource) {
+    output[primaryResourceName] = primaryResource[0];
+  } else {
+    output[primaryResourceName] = primaryResource;
+  }
+
   delete data[primaryResourceName];
   return output;
 };
