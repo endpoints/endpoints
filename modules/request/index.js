@@ -1,5 +1,5 @@
 const extend = require('extend');
-
+const mode = require('./lib/mode');
 const uniq = require('./lib/uniq');
 const parseOptions = require('./lib/parse_options');
 const extract = require('./lib/extract');
@@ -34,23 +34,23 @@ Request.prototype.relations = function (request) {
   return uniq(result);
 };
 
-Request.prototype.responder = function (response, code, data) {
+Request.prototype.responder = function (response, code, data, prettyPrint) {
   // cheap heuristics to detect the server type
   var isExpress = !!response.send;
   var isHapi = !!response.request;
   if (!isExpress && !isHapi) {
     throw new Error('Unsupported server type!');
   }
-
-  var prettyPrint = JSON.stringify(data, null, 2);
   var contentType = 'application/json';
-
+  if (prettyPrint) {
+    data = JSON.stringify(data, null, 2);
+  }
   // both of these should never happen, right?
   if (isExpress) {
-    response.set('content-type', contentType).status(code).send(prettyPrint);
+    response.set('content-type', contentType).status(code).send(data);
   }
   if (isHapi) {
-    response(prettyPrint).type(contentType).code(code);
+    response(data).type(contentType).code(code);
   }
 };
 
@@ -89,28 +89,34 @@ Request.prototype.read = function (opts) {
   var source = this.source;
   var include = opts.include||[];
   var passMode = !!opts.pass;
+  var rawMode = opts.raw ? 'raw' : null;
   return function (request, response, next) {
-    var filters = getFilters(request);
-    var relations = getRelations(request).concat(include);
-    source.read(filters, relations, opts, function (err, data) {
-      var code = 200;
-      if (err) {
-        code = 400;
-        data = {
-          errors: {
-            title: 'Bad Request',
-            detail: err.message
-          }
-        };
+    var prettyPrint = request.accepts('html');
+    source.read(
+      getFilters(request),
+      getRelations(request).concat(include),
+      rawMode||mode(request.headers.accept.split(',')),
+      opts,
+      function (err, data) {
+        var code = 200;
+        if (err) {
+          code = 400;
+          data = {
+            errors: {
+              title: 'Bad Request',
+              detail: err.message
+            }
+          };
+        }
+        if (passMode) {
+          response.data = data;
+          response.code = code;
+          next();
+        } else {
+          responder(response, code, data, prettyPrint);
+        }
       }
-      if (passMode) {
-        response.data = data;
-        response.code = code;
-        next();
-      } else {
-        responder(response, code, data);
-      }
-    });
+    );
   };
 };
 
