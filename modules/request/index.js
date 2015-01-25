@@ -108,6 +108,17 @@ Request.prototype.read = function (opts) {
             }
           };
         }
+
+        if (!err && !data) {
+          code = 404;
+          data = {
+            errors: {
+              title: 'Not Found',
+              detail: 'Resource not found.'
+            }
+          };
+        }
+
         if (passMode) {
           response.data = data;
           response.code = code;
