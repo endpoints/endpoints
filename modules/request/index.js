@@ -63,19 +63,23 @@ Request.prototype.create = function (opts) {
   var source = this.source;
 
   return function (request, response) {
-    source.create(method, request.body, function (err, data) {
-      var code = 201;
-      if (err) {
-        code = 422;
-        data = {
-          errors: {
-            title: 'Unprocessable Entity',
-            detail: err.message
-          }
-        };
+    source.create(
+      method,
+      request.body[source.model.typeName],
+      function (err, data) {
+        var code = 201;
+        if (err) {
+          code = 422;
+          data = {
+            errors: {
+              title: 'Unprocessable Entity',
+              detail: err.message
+            }
+          };
+        }
+        responder(response, code, data);
       }
-      responder(response, code, data);
-    });
+    );
   };
 };
 
@@ -146,17 +150,21 @@ Request.prototype.update = function (opts) {
           detail: 'No resource by that id found.'
         });
       } else {
-        source.update(model, request.body, function (err, data) {
-          var code = 200;
-          if (err) {
-            code = 422;
-            data = {
-              title: 'Unprocessable Entity',
-              detail: err.message
-            };
+        source.update(
+          model,
+          request.body[source.model.typeName],
+          function (err, data) {
+            var code = 200;
+            if (err) {
+              code = 422;
+              data = {
+                title: 'Unprocessable Entity',
+                detail: err.message
+              };
+            }
+            responder(response, code, data);
           }
-          responder(response, code, data);
-        });
+        );
       }
     });
   };
