@@ -1,6 +1,6 @@
 global.expect = require('chai').expect;
 
-const Endpoints = require('../');
+const Controller = require('../');
 
 const mockSource = {
   filters: function () {
@@ -29,12 +29,12 @@ var filters = {
 };
 var relations = ['book', 'chapter'];
 
-const Request = new Endpoints({
+const TestController = new Controller({
   source: mockSource,
   allowedFilters: ['title', 'pageCount']
 });
 
-describe('Endpoints', function () {
+describe('Controller', function () {
 
   require('./lib/extract');
   require('./lib/mutating_traverse');
@@ -45,13 +45,13 @@ describe('Endpoints', function () {
 
   describe('#filters', function () {
     it('should return an array of valid filters for a given request', function () {
-      expect(Request.filters(mockRequest)).to.deep.equal(filters);
+      expect(TestController.filters(mockRequest)).to.deep.equal(filters);
     });
   });
 
   describe('#relations', function () {
     it('should return an array of valid relations for a given request', function () {
-      expect(Request.relations(mockRequest)).to.deep.equal(relations);
+      expect(TestController.relations(mockRequest)).to.deep.equal(relations);
     });
   });
 

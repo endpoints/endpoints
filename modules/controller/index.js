@@ -1,14 +1,13 @@
 const extend = require('extend');
-const mode = require('./lib/mode');
 const uniq = require('./lib/uniq');
 const parseOptions = require('./lib/parse_options');
 const extract = require('./lib/extract');
 
-function Request(opts) {
+function Controller(opts) {
   extend(this, parseOptions(opts));
 }
 
-Request.prototype.filters = function (request) {
+Controller.prototype.filters = function (request) {
   return extract({
     context: request,
     contextKeysToSearch: this.requestKeysToSearch,
@@ -21,7 +20,7 @@ Request.prototype.filters = function (request) {
   });
 };
 
-Request.prototype.relations = function (request) {
+Controller.prototype.relations = function (request) {
   var result = extract({
     context: request,
     contextKeysToSearch: this.requestKeysToSearch,
@@ -34,7 +33,7 @@ Request.prototype.relations = function (request) {
   return uniq(result);
 };
 
-Request.prototype.responder = function (response, code, data, prettyPrint) {
+Controller.prototype.responder = function (response, code, data, prettyPrint) {
   // cheap heuristics to detect the server type
   var isExpress = !!response.send;
   var isHapi = !!response.request;
@@ -54,7 +53,7 @@ Request.prototype.responder = function (response, code, data, prettyPrint) {
   }
 };
 
-Request.prototype.create = function (opts) {
+Controller.prototype.create = function (opts) {
   if (!opts) {
     opts = {};
   }
@@ -83,7 +82,7 @@ Request.prototype.create = function (opts) {
   };
 };
 
-Request.prototype.read = function (opts) {
+Controller.prototype.read = function (opts) {
   if (!opts) {
     opts = {};
   }
@@ -91,51 +90,48 @@ Request.prototype.read = function (opts) {
   var getFilters = this.filters.bind(this);
   var getRelations = this.relations.bind(this);
   var source = this.source;
-  var include = opts.include||[];
-  var passMode = !!opts.pass;
-  var rawMode = opts.raw ? 'raw' : null;
   return function (request, response, next) {
     var prettyPrint = request.accepts('html');
-    source.read(
-      getFilters(request),
-      getRelations(request).concat(include),
-      rawMode||mode(request.headers.accept.split(',')),
-      opts,
-      function (err, data) {
-        var code = 200;
-        if (err) {
-          code = 400;
-          data = {
-            errors: {
-              title: 'Bad Request',
-              detail: err.message
-            }
-          };
-        }
-
-        if (!err && !data) {
-          code = 404;
-          data = {
-            errors: {
-              title: 'Not Found',
-              detail: 'Resource not found.'
-            }
-          };
-        }
-
-        if (passMode) {
-          response.data = data;
-          response.code = code;
-          next();
-        } else {
-          responder(response, code, data, prettyPrint);
-        }
+    var settings = {
+      filters: getFilters(request),
+      relations: getRelations(request).concat(opts.include||[]),
+      one: opts.one,
+      mode: opts.raw ? 'raw' : 'jsonApi'
+    };
+    source.read(settings, function (err, data) {
+      var code = 200;
+      if (err) {
+        code = 400;
+        data = {
+          errors: {
+            title: 'Bad Controller',
+            detail: err.message
+          }
+        };
       }
-    );
+
+      if (!err && !data) {
+        code = 404;
+        data = {
+          errors: {
+            title: 'Not Found',
+            detail: 'Resource not found.'
+          }
+        };
+      }
+
+      if (!!opts.pass) {
+        response.data = data;
+        response.code = code;
+        next();
+      } else {
+        responder(response, code, data, prettyPrint);
+      }
+    });
   };
 };
 
-Request.prototype.update = function (opts) {
+Controller.prototype.update = function (opts) {
   if (!opts) {
     opts = {};
   }
@@ -170,7 +166,7 @@ Request.prototype.update = function (opts) {
   };
 };
 
-Request.prototype.destroy = function (opts) {
+Controller.prototype.destroy = function (opts) {
   if (!opts) {
     opts = {};
   }
@@ -201,4 +197,4 @@ Request.prototype.destroy = function (opts) {
   };
 };
 
-module.exports = Request;
+module.exports = Controller;
