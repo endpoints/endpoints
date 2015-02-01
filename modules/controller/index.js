@@ -139,7 +139,7 @@ Controller.prototype.update = function (opts) {
   var source = this.source;
 
   return function (request, response) {
-    source.byId(request.params('id'), function (err, model) {
+    source.byId(request.param('id'), function (err, model) {
       if (!model) {
         responder(response, 500, {
           title: 'Internal Server Error',
@@ -174,7 +174,7 @@ Controller.prototype.destroy = function (opts) {
   var source = this.source;
 
   return function (request, response) {
-    source.byId(request.params('id'), function (err, model) {
+    source.byId(request.param('id'), function (err, model) {
       if (!model) {
         responder(response, 500, {
           title: 'Internal Server Error',

@@ -1,7 +1,7 @@
 {
   "name": "endpoints",
   "description": "a json-api compliant rest library.",
-  "version": "0.3.0",
+  "version": "0.4.7",
   "homepage": "https://github.com/endpoints/endpoints",
   "author": {
     "name": "Tyler Kellen",
@@ -29,9 +29,14 @@
     "lint": "jshint index.js modules"
   },
   "devDependencies": {
+    "bluebird": "^2.9.4",
+    "bookshelf": "^0.7.9",
     "chai": "^1.10.0",
+    "fantasy-database": "^1.0.0",
     "jshint": "^2.5.11",
-    "mocha": "^2.1.0"
+    "knex": "^0.7.3",
+    "mocha": "^2.1.0",
+    "sqlite3": "^3.0.4"
   },
   "dependencies": {
     "extend": "^2.0.0"
