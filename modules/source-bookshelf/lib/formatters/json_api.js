@@ -87,14 +87,16 @@ function linkBelongsTo (model) {
   return model.constructor.relations.reduce(function (result, relationName) {
     var relatedData = model.related(relationName).relatedData;
     var resourceType = relatedData.target.typeName;
-    var id;
+    var id, link;
     if (relatedData.type === 'belongsTo') {
       id = model.get(relatedData.foreignKey);
-      result[relationName] = {
+      link = result[relationName] = {
         type: resourceType,
-        id: id,
-        href: '/'+resourceType+'/'+id
+        id: id
       };
+      if (id) {
+        link.href = '/'+resourceType+'/'+id;
+      }
     }
     return result;
   }, {});
