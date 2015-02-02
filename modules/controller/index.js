@@ -60,11 +60,13 @@ Controller.prototype.create = function (opts) {
   var method = opts.method || 'create';
   var responder = this.responder;
   var source = this.source;
+  var typeName = source.typeName();
 
   return function (request, response) {
+    var result = {};
     source.create(
       method,
-      request.body[source.model.typeName],
+      request.body[typeName],
       function (err, data) {
         var code = 201;
         if (err) {
@@ -76,7 +78,8 @@ Controller.prototype.create = function (opts) {
             }
           };
         }
-        responder(response, code, data);
+        result[typeName] = data;
+        responder(response, code, result);
       }
     );
   };
@@ -137,8 +140,10 @@ Controller.prototype.update = function (opts) {
   }
   var responder = this.responder;
   var source = this.source;
+  var typeName = source.typeName();
 
   return function (request, response) {
+    var result = {};
     source.byId(request.param('id'), function (err, model) {
       if (!model) {
         responder(response, 500, {
@@ -148,7 +153,7 @@ Controller.prototype.update = function (opts) {
       } else {
         source.update(
           model,
-          request.body[source.model.typeName],
+          request.body[typeName],
           function (err, data) {
             var code = 200;
             if (err) {
@@ -158,7 +163,8 @@ Controller.prototype.update = function (opts) {
                 detail: err.message
               };
             }
-            responder(response, code, data);
+            result[typeName] = data;
+            responder(response, code, result);
           }
         );
       }
@@ -174,7 +180,7 @@ Controller.prototype.destroy = function (opts) {
   var source = this.source;
 
   return function (request, response) {
-    source.byId(request.param('id'), function (err, model) {
+    source.byId(request.params('id'), function (err, model) {
       if (!model) {
         responder(response, 500, {
           title: 'Internal Server Error',
@@ -182,7 +188,7 @@ Controller.prototype.destroy = function (opts) {
         });
       } else {
         source.destroy(model, function (err, data) {
-          var code = 200;
+          var code = 204;
           if (err) {
             code = 422;
             data = {
@@ -190,7 +196,7 @@ Controller.prototype.destroy = function (opts) {
               detail: err.message
             };
           }
-          responder(response, code, data);
+          responder(response, code, null);
         });
       }
     });
