@@ -94,7 +94,7 @@ function linkBelongsTo (model) {
         type: resourceType,
         id: id,
         href: '/'+resourceType+'/'+id
-      }
+      };
     }
     return result;
   }, {});
@@ -116,7 +116,6 @@ module.exports = function (input, opts) {
   var typeName = input.model.typeName;
   // iterate through the input, adding links and populating linked data
   var result = input.reduce(function (output, model) {
-    var links;
     // get the or initialize the primary resource key
     var primaryResource = getKey(output, typeName);
     // get a json representation of the model, excluding any related data
