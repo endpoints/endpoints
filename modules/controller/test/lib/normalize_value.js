@@ -15,7 +15,7 @@ describe('normalizeValue', function () {
   });
 
   it('should split strings on a specified delimiter', function () {
-    expect(normalizeValue('1,2,3')).to.deep.equal(['1','2','3']);
+    expect(normalizeValue('1,2,3')).to.deep.equal(['1', '2', '3']);
   });
 
 });

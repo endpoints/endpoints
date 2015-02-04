@@ -60,12 +60,12 @@ describe('extract', function () {
   });
 
   it('should return an object w/ found keys and their values', function () {
-     expect(extract({
-       context: context,
-       contextKeysToSearch: contextKeysToSearch,
-       find: keys,
-       locations: contextKeysToSearch
-     })).to.deep.equal(filters);
+    expect(extract({
+      context: context,
+      contextKeysToSearch: contextKeysToSearch,
+      find: keys,
+      locations: contextKeysToSearch
+    })).to.deep.equal(filters);
   });
 
   it('should return an object w/ found keys and their values, normalized', function () {

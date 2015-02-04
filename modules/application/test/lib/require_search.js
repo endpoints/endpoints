@@ -15,7 +15,7 @@ describe('requireSearch', function () {
   it('should throw if the file cannot be located in any of the search paths', function () {
     expect(function () {
       requireSearch('bad-file', searchPaths);
-    }).to.throw('Unable to locate "bad-file" in search paths: '+searchPaths.join(', '));
+    }).to.throw('Unable to locate "bad-file" in search paths: ' + searchPaths.join(', '));
   });
 
 });

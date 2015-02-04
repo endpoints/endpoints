@@ -13,9 +13,9 @@ describe('responder', function () {
   it('should be able to use express-type response objects', function () {
     var code = 200;
     var data = {
-      "resource": {
-        "id": 1,
-        "name": "foo"
+      resource: {
+        id: 1,
+        name: 'foo'
       }
     };
     var response = {
@@ -39,9 +39,9 @@ describe('responder', function () {
   it('should be able to use hapi-type response objects', function () {
     var code = 200;
     var data = {
-      "resource": {
-        "id": 1,
-        "name": "foo"
+      resource: {
+        id: 1,
+        name: 'foo'
       }
     };
     var response = function (body) {

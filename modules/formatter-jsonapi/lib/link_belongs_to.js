@@ -7,7 +7,7 @@ module.exports = function linkBelongsTo (model) {
       return result;
     }
     if (!relation) {
-      throw new Error('Relation '+relationName+' is not defined on '+model.tableName);
+      throw new Error('Relation ' + relationName + ' is not defined on ' + model.tableName);
     }
     var relatedData = relation.relatedData;
     var resourceType = relatedData.target.typeName;
@@ -18,7 +18,7 @@ module.exports = function linkBelongsTo (model) {
         id: id
       };
       if (id) {
-        link.href = '/'+resourceType+'/'+id;
+        link.href = '/' + resourceType + '/' + id;
       }
     }
     return result;

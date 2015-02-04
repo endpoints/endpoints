@@ -4,5 +4,5 @@ module.exports = {
   connection: {
     filename: ':memory:'
   },
-  directory: __dirname+'/migrations',
+  directory: __dirname  + '/migrations',
 };

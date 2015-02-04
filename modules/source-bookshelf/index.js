@@ -29,11 +29,11 @@ function Source (opts) {
 }
 
 Source.prototype.filters = function () {
-  return this.model.filters||{};
+  return this.model.filters || {};
 };
 
 Source.prototype.relations = function () {
-  return this.model.relations||[];
+  return this.model.relations || [];
 };
 
 Source.prototype.typeName = function () {
@@ -50,7 +50,7 @@ Source.prototype.byId = function (id, cb) {
 
 Source.prototype.create = function (method, params, cb) {
   if (!this.model[method]) {
-    cb(new Error('No method "'+method+'" found on model.'));
+    cb(new Error('No method "' + method + '" found on model.'));
   } else {
     this.model[method](params).then(function (result) {
       cb(null, result);
@@ -65,7 +65,7 @@ Source.prototype.read = function (opts, cb) {
     opts = {};
   }
   var filters = opts.filters;
-  var relations = opts.relations||[];
+  var relations = opts.relations || [];
   var mode = opts.mode;
   var formatter = formatters[mode];
   var query = this.filter(filters);

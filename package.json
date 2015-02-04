@@ -25,8 +25,9 @@
     "node": ">= 0.10"
   },
   "scripts": {
-    "test": "npm run lint && mocha -R spec",
-    "lint": "jshint index.js modules"
+    "test": "npm run lint && npm run style && mocha -R spec",
+    "style": "jscs modules test",
+    "lint": "jshint index.js modules test"
   },
   "devDependencies": {
     "bluebird": "^2.9.4",
@@ -35,6 +36,7 @@
     "express": "^4.11.2",
     "express-routebuilder": "^2.1.0",
     "fantasy-database": "^1.1.0",
+    "jscs": "^1.10.0",
     "jshint": "^2.5.11",
     "knex": "^0.7.3",
     "mocha": "^2.1.0",

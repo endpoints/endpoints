@@ -73,7 +73,7 @@ describe('Application', function () {
       var resourceName = 'not-existing';
       expect(function () {
         TestApp.resource(resourceName);
-      }).to.throw('Resource '+resourceName+' has not been registered.');
+      }).to.throw('Resource ' + resourceName + ' has not been registered.');
     });
 
     it('should return a registered resource', function () {
@@ -93,7 +93,7 @@ describe('Application', function () {
       TestApp.routeBuilder = spy;
       TestApp.register('foo').endpoint('foo');
       fooResource = TestApp.resource('foo');
-      expect(spy.calledWith(fooResource.routes, '/'+fooResource.name)).to.be.true;
+      expect(spy.calledWith(fooResource.routes, '/' + fooResource.name)).to.be.true;
     });
 
     it('should accept a prefix for a generated router', function () {
@@ -102,7 +102,7 @@ describe('Application', function () {
       TestApp.routeBuilder = spy;
       TestApp.register('foo').endpoint('foo', 'prefix');
       fooResource = TestApp.resource('foo');
-      expect(spy.calledWith(fooResource.routes, '/prefix/'+fooResource.name)).to.be.true;
+      expect(spy.calledWith(fooResource.routes, '/prefix/' + fooResource.name)).to.be.true;
     });
 
     it('should add the resource to the endpoints listing', function () {
@@ -117,21 +117,21 @@ describe('Application', function () {
       TestApp.register('bar').endpoint('bar');
       expect(TestApp.manifest()).to.deep.equal([
         {
-          "name": "foo",
-          "filters": [
-            "qux"
+          name: 'foo',
+          filters: [
+            'qux'
           ],
-          "includes": [
-            "bar",
-            "baz"
+          includes: [
+            'bar',
+            'baz'
           ],
-          "url": "/prefix/foo"
+          url: '/prefix/foo'
         },
         {
-          "name": "bar",
-          "filters": [],
-          "includes": [],
-          "url": "/bar"
+          name: 'bar',
+          filters: [],
+          includes: [],
+          url: '/bar'
         }
       ]);
     });
@@ -142,8 +142,8 @@ describe('Application', function () {
       TestApp.register('foo').endpoint('foo');
       TestApp.register('bar').endpoint('bar');
       expect(TestApp.index()).to.deep.equal({
-        "foo": "/foo?include={bar,baz}&{qux}",
-        "bar": "/bar"
+        foo: '/foo?include={bar,baz}&{qux}',
+        bar: '/bar'
       });
     });
   });

@@ -37,7 +37,7 @@ module.exports = function link (model, relations, exporter) {
       exporter(related, type);
     } else {
       // for singular resources, store the id under `id`
-      link.id = related.get('id')||null;
+      link.id = related.get('id') || null;
       // pass out the related data so it can be added to the top level
       // `linked` key in the response.
       exporter([related], type);

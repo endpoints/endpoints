@@ -1,5 +1,5 @@
 # endpoints [![Build Status](https://secure.travis-ci.org/endpoints/endpoints.png)](http://travis-ci.org/endpoints/endpoints)
-> A json-api compliant framework for javascript.
+> A json-api compliant api framework for javascript.
 
 [![NPM](https://nodei.co/npm/endpoints.png)](https://nodei.co/npm/endpoints/)
 

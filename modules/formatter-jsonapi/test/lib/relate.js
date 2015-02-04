@@ -8,7 +8,6 @@ const Stores = require('../../../../test/fixtures/models/stores');
 const Authors = require('../../../../test/fixtures/models/stores');
 const Books = require('../../../../test/fixtures/models/books');
 
-
 function removePivot (input) {
   var serialized = input.toJSON({shallow:true});
   return Object.keys(serialized).reduce(function (result, key) {

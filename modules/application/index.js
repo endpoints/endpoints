@@ -13,7 +13,7 @@ function Application (opts) {
 Application.prototype.resource = function (name) {
   var resource = this._resources[name];
   if (!resource) {
-    throw new Error('Resource '+name+' has not been registered.');
+    throw new Error('Resource ' + name + ' has not been registered.');
   }
   return resource;
 };
@@ -27,7 +27,9 @@ Application.prototype.register = function (input) {
   var resource = parseResource(input, this.searchPaths);
   var resourceName = resource.name;
   if (this._resources[resourceName]) {
-    throw new Error('Resource "'+resourceName+'" has already been registered.');
+    throw new Error(
+      'Resource "' + resourceName + '" has already been registered.'
+    );
   }
   this._resources[resourceName] = resource;
   return this;
@@ -36,9 +38,9 @@ Application.prototype.register = function (input) {
 Application.prototype.endpoint = function (resourceName, prefix) {
   var resource = this.resource(resourceName);
   if (!resource) {
-    throw new Error('Unable to build endpoint for '+resourceName);
+    throw new Error('Unable to build endpoint for ' + resourceName);
   }
-  var url = slashWrap(prefix)+resourceName;
+  var url = slashWrap(prefix) + resourceName;
   var output = this.routeBuilder(resource.routes, url);
   this._endpoints.push({
     name: resourceName,
@@ -76,11 +78,11 @@ Application.prototype.index = function () {
     var includes = resource.includes;
     var filters = resource.filters;
     if (includes.length) {
-      definition += '?include={'+includes.join(',')+'}';
+      definition += '?include={' + includes.join(',') + '}';
     }
     if (filters.length) {
       definition += definition === resource.url ? '?' : '&';
-      definition += '{'+filters.join(',')+'}';
+      definition += '{' + filters.join(',') + '}';
     }
     result[resource.name] = definition;
     return result;

@@ -76,7 +76,7 @@ Controller.prototype.read = function (opts) {
     var prettyPrint = request.accepts('html');
     var settings = {
       filters: getFilters(request),
-      relations: getRelations(request).concat(opts.include||[]),
+      relations: getRelations(request).concat(opts.include || []),
       one: opts.one,
       mode: opts.raw ? 'raw' : 'jsonApi'
     };

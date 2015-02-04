@@ -11,7 +11,7 @@ Model.prototype.data = function () {
 
 Model.prototype.create = function (params, cb) {
   var data = this.data();
-  params.id = _.chain(data).max('id').value().id+1;
+  params.id = _.chain(data).max('id').value().id + 1;
   data.push(params);
   process.nextTick(function () {
     cb(null, params);
@@ -32,7 +32,7 @@ Model.prototype.filter = function (params) {
   return Object.keys(params).reduce(function (search, key) {
     var filterMethod = filters[key];
     if (!filterMethod) {
-      throw new Error('No filtering method "'+key+'" on underlying model.');
+      throw new Error('No filtering method "' + key + '" on underlying model.');
     }
     search = filterMethod.call(filters, search, arrayify(params[key]));
     return search;
