@@ -1,7 +1,7 @@
 const _ = require('lodash');
 
 const parseOptions = require('./lib/parse_options');
-const jsonApi = require('./lib/formatters/json_api');
+const jsonApi = require('../formatter-jsonapi');
 
 function Source (opts) {
   _.extend(this, parseOptions(opts));

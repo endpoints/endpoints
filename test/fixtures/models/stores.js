@@ -3,7 +3,7 @@ const BaseModel = require('../classes/database').Model;
 const instanceProps = {
   tableName: 'stores',
   books: function () {
-    return this.belongsToMany(require('../stores/model'));
+    return this.belongsToMany(require('./books'));
   }
 };
 
@@ -15,7 +15,8 @@ const classProps = {
   ],
   filters: {},
   relations: [
-    'books'
+    'books',
+    'books.author'
   ]
 };
 

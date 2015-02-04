@@ -1,7 +1,10 @@
 const baseMethods = require('./lib/base_methods');
 const formatters = {
-  jsonApi: require('./lib/formatters/json_api'),
-  raw: require('./lib/formatters/raw')
+  jsonApi: require('../formatter-jsonapi'),
+  raw: function (data, opts) {
+    var singleResult = opts.singleResult;
+    return singleResult ? data.first() : data.models;
+  }
 };
 
 function Source (opts) {

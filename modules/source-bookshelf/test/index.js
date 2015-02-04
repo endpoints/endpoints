@@ -1,58 +1,48 @@
-const config = require('./fixture/knexfile');
-const DB = require('./fixture/classes/database').knex;
-const fantasyDatabase = require('fantasy-database');
-const bPromise = require('bluebird');
 const expect = require('chai').expect;
 
-function resetDB () {
-  return DB.migrateTo(0).then(function () {
-    return DB.migrate.latest(config).then(function () {
-      var tables = Object.keys(fantasyDatabase);
-      return bPromise.each(tables, function (table) {
-        return bPromise.each(fantasyDatabase[table], function (record) {
-          return DB(table).insert(record);
-        });
-      });
-    });
-  });
-}
-
-const Source = require('../');
-const AuthorsModel = require('./fixture/models/authors');
-
-const Authors = new Source({
-  model: AuthorsModel
+const BookshelfSource = require('../');
+const BooksModel = require('../../../test/fixtures/models/books');
+const BooksSource = new BookshelfSource({
+  model: BooksModel
 });
+const DB = require('../../../test/fixtures/classes/database');
 
-describe('Source', function () {
+describe('BookshelfSource', function () {
   before(function () {
-    return resetDB();
+    return DB.reset();
   });
 
   describe('constructor', function () {
     it('should throw if a model isn\'t provided', function () {
       expect(function () {
-        new Source();
+        new BookshelfSource();
       }).throws('No bookshelf model specified.');
     });
   });
 
   describe('#filters', function () {
     it('should return filters for this source', function () {
-      expect(Authors.filters()).to.deep.equal(AuthorsModel.filters);
+      expect(BooksSource.filters()).to.deep.equal(BooksModel.filters);
     });
   });
 
   describe('#relations', function () {
     it('should return relations for this source', function () {
-      expect(Authors.relations()).to.deep.equal(AuthorsModel.relations);
+      expect(BooksSource.relations()).to.deep.equal(BooksModel.relations);
+    });
+  });
+
+  describe('#typeName', function () {
+    it('should return the typeName for this source', function () {
+      expect(BooksSource.typeName()).to.deep.equal(BooksModel.typeName);
     });
   });
 
   describe('#filter', function () {
-
+    it('should return a query object as filtered by the provided params', function () {
+      BooksSource.filter({
+        author_id: 1
+      });
+    });
   });
-
-  require('./lib/formatters/json_api');
-
 });
