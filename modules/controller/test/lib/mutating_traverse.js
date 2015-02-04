@@ -1,3 +1,5 @@
+const expect = require('chai').expect;
+
 const mutatingTraverse = require('../../lib/mutating_traverse');
 
 describe('mutatingTraverse', function () {

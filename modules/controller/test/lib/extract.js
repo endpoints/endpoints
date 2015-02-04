@@ -1,3 +1,5 @@
+const expect = require('chai').expect;
+
 const extract = require('../../lib/extract');
 
 describe('extract', function () {

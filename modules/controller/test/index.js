@@ -1,4 +1,4 @@
-global.expect = require('chai').expect;
+const expect = require('chai').expect;
 
 const Controller = require('../');
 
@@ -36,12 +36,15 @@ const TestController = new Controller({
 
 describe('Controller', function () {
 
-  require('./lib/extract');
-  require('./lib/mutating_traverse');
-  require('./lib/normalize_value');
-  require('./lib/parse_options');
-  require('./lib/search_keys');
-  require('./lib/uniq');
+  describe('lib', function () {
+    require('./lib/extract');
+    require('./lib/mutating_traverse');
+    require('./lib/normalize_value');
+    require('./lib/parse_options');
+    require('./lib/search_keys');
+    require('./lib/uniq');
+    require('./lib/responder');
+  });
 
   describe('#filters', function () {
     it('should return an array of valid filters for a given request', function () {

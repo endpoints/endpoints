@@ -1,3 +1,5 @@
+const expect = require('chai').expect;
+
 const uniq = require('../../lib/uniq');
 
 describe('uniq', function () {

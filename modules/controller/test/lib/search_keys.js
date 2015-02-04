@@ -1,3 +1,5 @@
+const expect = require('chai').expect;
+
 const searchKeys = require('../../lib/search_keys');
 
 describe('searchKeys', function () {

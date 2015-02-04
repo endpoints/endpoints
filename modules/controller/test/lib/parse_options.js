@@ -1,3 +1,5 @@
+const expect = require('chai').expect;
+
 const extend = require('extend');
 
 const parseOptions = require('../../lib/parse_options');

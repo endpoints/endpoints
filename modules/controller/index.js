@@ -2,6 +2,7 @@ const extend = require('extend');
 const uniq = require('./lib/uniq');
 const parseOptions = require('./lib/parse_options');
 const extract = require('./lib/extract');
+const responder = require('./lib/responder');
 
 function Controller(opts) {
   extend(this, parseOptions(opts));
@@ -33,32 +34,11 @@ Controller.prototype.relations = function (request) {
   return uniq(result);
 };
 
-Controller.prototype.responder = function (response, code, data, prettyPrint) {
-  // cheap heuristics to detect the server type
-  var isExpress = !!response.send;
-  var isHapi = !!response.request;
-  if (!isExpress && !isHapi) {
-    throw new Error('Unsupported server type!');
-  }
-  var contentType = 'application/json';
-  if (prettyPrint) {
-    data = JSON.stringify(data, null, 2);
-  }
-  // both of these should never happen, right?
-  if (isExpress) {
-    response.set('content-type', contentType).status(code).send(data);
-  }
-  if (isHapi) {
-    response(data).type(contentType).code(code);
-  }
-};
-
 Controller.prototype.create = function (opts) {
   if (!opts) {
     opts = {};
   }
   var method = opts.method || 'create';
-  var responder = this.responder;
   var source = this.source;
   var typeName = source.typeName();
 
@@ -89,7 +69,6 @@ Controller.prototype.read = function (opts) {
   if (!opts) {
     opts = {};
   }
-  var responder = this.responder;
   var getFilters = this.filters.bind(this);
   var getRelations = this.relations.bind(this);
   var source = this.source;
@@ -138,7 +117,6 @@ Controller.prototype.update = function (opts) {
   if (!opts) {
     opts = {};
   }
-  var responder = this.responder;
   var source = this.source;
   var typeName = source.typeName();
 
@@ -176,11 +154,10 @@ Controller.prototype.destroy = function (opts) {
   if (!opts) {
     opts = {};
   }
-  var responder = this.responder;
   var source = this.source;
 
   return function (request, response) {
-    source.byId(request.params('id'), function (err, model) {
+    source.byId(request.param('id'), function (err, model) {
       if (!model) {
         responder(response, 500, {
           title: 'Internal Server Error',

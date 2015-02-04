@@ -1,3 +1,5 @@
+const expect = require('chai').expect;
+
 const normalizeValue = require('../../lib/normalize_value');
 
 describe('normalizeValue', function () {
