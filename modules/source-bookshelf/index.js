@@ -41,10 +41,11 @@ Source.prototype.filter = function (params) {
   return this.model.filter(params);
 };
 
+Source.prototype.byId = function (id, cb) {
+  return this.model.byId(id).exec(cb);
+};
+
 Source.prototype.create = function (method, params, cb) {
-  if (!method) {
-    method = 'create';
-  }
   if (!this.model[method]) {
     cb(new Error('No method "'+method+'" found on model.'));
   } else {
@@ -54,10 +55,6 @@ Source.prototype.create = function (method, params, cb) {
       cb(err);
     });
   }
-};
-
-Source.prototype.byId = function (id, cb) {
-  return this.model.byId(id).exec(cb);
 };
 
 Source.prototype.read = function (opts, cb) {

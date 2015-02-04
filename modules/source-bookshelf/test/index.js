@@ -38,13 +38,13 @@ describe('Source', function () {
   });
 
   describe('#filters', function () {
-    it('should expose filters on the underlying model', function () {
+    it('should return filters for this source', function () {
       expect(Authors.filters()).to.deep.equal(AuthorsModel.filters);
     });
   });
 
   describe('#relations', function () {
-    it('should expose relations on the underlying model', function () {
+    it('should return relations for this source', function () {
       expect(Authors.relations()).to.deep.equal(AuthorsModel.relations);
     });
   });
