@@ -1,5 +1,5 @@
 describe('Endpoints', function () {
   require('./modules/application/test');
-  require('./modules/controller/test');
-  require('./modules/source-bookshelf/test');
+  //require('./modules/controller/test');
+  //require('./modules/source-bookshelf/test');
 });

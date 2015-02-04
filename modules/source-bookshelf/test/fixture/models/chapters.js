@@ -29,9 +29,9 @@ const classProps = {
       return qb.whereIn('ordering', value);
     }
   },
-  relations: {
-    'book': 'book'
-  }
+  relations: [
+    'book'
+  ]
 };
 
 module.exports = BaseModel.extend(instanceProps, classProps);
