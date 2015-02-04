@@ -42,6 +42,8 @@
     "sqlite3": "^3.0.4"
   },
   "dependencies": {
-    "extend": "^2.0.0"
+    "arrayify": "^1.0.0",
+    "extend": "^2.0.0",
+    "lodash": "^3.1.0"
   }
 }
