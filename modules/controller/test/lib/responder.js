@@ -1,4 +1,5 @@
 const expect = require('chai').expect;
+const sinon = require('sinon');
 
 const responder = require('../../lib/responder');
 
@@ -19,21 +20,14 @@ describe('responder', function () {
       }
     };
     var response = {
-      set: function (type, value) {
-        expect(type).to.equal('content-type');
-        expect(value).to.equal('application/json');
-        return this;
-      },
-      status: function (code) {
-        expect(code).to.equal(code);
-        return this;
-      },
-      send: function (body) {
-        expect(body).to.equal(data);
-        return this;
-      }
+      set: sinon.stub().returnsThis(),
+      status: sinon.stub().returnsThis(),
+      send: sinon.stub().returnsThis()
     };
     responder(response, code, data);
+    expect(response.set.calledWith('content-type', 'application/json')).to.be.true;
+    expect(response.status.calledWith(code)).to.be.true;
+    expect(response.send.calledWith(data)).to.be.true;
   }),
 
   it('should be able to use hapi-type response objects', function () {
@@ -44,21 +38,16 @@ describe('responder', function () {
         name: 'foo'
       }
     };
-    var response = function (body) {
-      expect(body).to.equal(data);
-      return {
-        type: function (type) {
-          expect(type).to.equal('application/json');
-          return this;
-        },
-        code: function (code) {
-          expect(code).to.equal(200);
-          return this;
-        }
-      };
+    var stubReturn = {
+      type: sinon.stub().returnsThis(),
+      code: sinon.stub().returnsThis()
     };
+    var response = sinon.stub().returns(stubReturn);
     response.request = true;
     responder(response, code, data);
+    expect(response.calledWith(data)).to.be.true;
+    expect(stubReturn.type.calledWith('application/json')).to.be.true;
+    expect(stubReturn.code.calledWith(code)).to.be.true;
   });
 
 });
