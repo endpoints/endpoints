@@ -8,7 +8,7 @@ This is where your Endpoints application begins. Your application contains resou
 
 ### constructor(opts)
 
-Create an instance to register resources with.
+Create an instance to register resources with, and to generate request handlers from.
 
 ```js
 const Endpoints = require('endpoints');
@@ -16,6 +16,7 @@ const express = require('express');
 const routeBuilder = require('express-routebuilder');
 
 const Application = new Endpoints.Application({
+  searchPaths: ['/abs/path/to/modules'],
   routeBuilder: function (routes, prefix) {
     return routeBuilder(express.Router(), routes, prefix);
   }
@@ -27,20 +28,25 @@ const Application = new Endpoints.Application({
 ### #register(input)
 Register a resource with your Application.  
 
-`input` - a fully resolved path to the module folder or a valid resource object.
+`input` - the name of a module (aka, any folder in the searchPaths).
 
-If providing a path, this currently expects that the provided directory will contain a `routes.js` file that exports an object compatible with [`express-routebuilder`](https://github.com/tkellen/node-express-routebuilder).
+*__Note:__ Will look for `routes.js` in the located module directory.*
 
 ### #resource(resourceName)
 Returns an object that represents the requested resource.
 
-`resourceName` - a string name of the resource to retrieve  
+`resourceName` - string name of a registered resource
 
 ### #endpoint(resourceName, prefix)
 Generate a router for a resource.
 
-`resourceName` - a string name of the resource to generate a router for  
+`resourceName` - string name of a registered resource
 `prefix` - an optional prefix for the router
 
+*__Note:__ This will require the `routes.js` file for the module and pass it into `#routeBuilder`, returning a request handler.*
+
 ### #manifest
-Generate a JSON object that documents all endpoints which have been mounted.
+Generate a JSON object that describes all mounted resources.
+
+### #index
+Generate a JSON object that describes all mounted resources for self-documentation display.

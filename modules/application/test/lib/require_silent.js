@@ -11,7 +11,13 @@ describe('requireSilent', function () {
   });
 
   it('should not throw if file is not found', function () {
-    expect(requireSilent('path/to/nowhere')).to.not.throw;
+    expect(function () {
+      requireSilent('path/to/nowhere');
+    }).to.not.throw;
+  });
+
+  it('should return error if file is not found', function () {
+    expect(requireSilent('path/to/nowhere')).to.be.an.instanceof(Error);
   });
 
 });

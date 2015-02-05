@@ -2,21 +2,28 @@ const extend = require('extend');
 const uniq = require('./lib/uniq');
 const parseOptions = require('./lib/parse_options');
 const extract = require('./lib/extract');
-const responder = require('./lib/responder');
+const createResponse = require('./lib/responders/create');
+const readResponse = require('./lib/responders/read');
+const updateResponse = require('./lib/responders/update');
+const destroyResponse = require('./lib/responders/destroy');
 
 function Controller(opts) {
   extend(this, parseOptions(opts));
 }
 
+Controller.prototype.responder = require('./lib/responder');
+
 Controller.prototype.filters = function (request) {
+  var allowedFilters = Object.keys(this.source.filters());
   return extract({
     context: request,
     contextKeysToSearch: this.requestKeysToSearch,
+    // TODO: revisit this perhaps?
     // named params in the route are automatically included with the
     // user-supplied list of valid params. given a route /resource/:id
     // the param 'id' will be considered valid even if it isn't listed
-    // in the paramsForfilters property.
-    find: this.allowedFilters.concat(Object.keys(request.params)),
+    // on the underlying source.
+    find: allowedFilters.concat(Object.keys(request.params)),
     normalizer: this.paramNormalizer
   });
 };
@@ -38,30 +45,23 @@ Controller.prototype.create = function (opts) {
   if (!opts) {
     opts = {};
   }
-  var method = opts.method || 'create';
   var source = this.source;
-  var typeName = source.typeName();
+  var type = source.typeName();
+  var responder = this.responder;
+
+  var method = opts.method || 'create';
+  if (!source.model[method]) {
+    throw new Error(
+      'Create method "' + method + '" is not present on source\'s model.'
+    );
+  }
 
   return function (request, response) {
-    var result = {};
-    source.create(
-      method,
-      request.body[typeName],
-      function (err, data) {
-        var code = 201;
-        if (err) {
-          code = 422;
-          data = {
-            errors: {
-              title: 'Unprocessable Entity',
-              detail: err.message
-            }
-          };
-        }
-        result[typeName] = data;
-        responder(response, code, result);
-      }
-    );
+    var body = request.body[type];
+    source.create(method, body, function (err, data) {
+      var payload = createResponse(err, data, type);
+      responder(payload, request, response);
+    });
   };
 };
 
@@ -69,46 +69,24 @@ Controller.prototype.read = function (opts) {
   if (!opts) {
     opts = {};
   }
-  var getFilters = this.filters.bind(this);
-  var getRelations = this.relations.bind(this);
   var source = this.source;
+  var type = source.typeName();
+  var responder = this.responder;
+
+  var mode = opts.raw ? 'raw' : 'jsonApi';
+  var isSingle = !!opts.one;
+  var filters = this.filters.bind(this);
+  var relations = this.relations.bind(this);
+
   return function (request, response, next) {
-    var prettyPrint = request.accepts('html');
-    var settings = {
-      filters: getFilters(request),
-      relations: getRelations(request).concat(opts.include || []),
-      one: opts.one,
-      mode: opts.raw ? 'raw' : 'jsonApi'
-    };
-    source.read(settings, function (err, data) {
-      var code = 200;
-      if (err) {
-        code = 400;
-        data = {
-          errors: {
-            title: 'Bad Controller',
-            detail: err.message
-          }
-        };
-      }
-
-      if (!err && !data) {
-        code = 404;
-        data = {
-          errors: {
-            title: 'Not Found',
-            detail: 'Resource not found.'
-          }
-        };
-      }
-
-      if (!!opts.pass) {
-        response.data = data;
-        response.code = code;
-        next();
-      } else {
-        responder(response, code, data, prettyPrint);
-      }
+    source.read({
+      filters: filters(request),
+      relations: relations(request).concat(opts.include || []),
+      one: isSingle,
+      mode: mode
+    }, function (err, data) {
+      var payload = readResponse(err, data, type);
+      responder(payload, request, response, next);
     });
   };
 };
@@ -118,33 +96,27 @@ Controller.prototype.update = function (opts) {
     opts = {};
   }
   var source = this.source;
-  var typeName = source.typeName();
+  var type = source.typeName();
+  var responder = this.responder;
 
   return function (request, response) {
-    var result = {};
-    source.byId(request.param('id'), function (err, model) {
+    source.byId(request.params.id, function (err, model) {
       if (!model) {
-        responder(response, 500, {
-          title: 'Internal Server Error',
-          detail: 'No resource by that id found.'
-        });
-      } else {
-        source.update(
-          model,
-          request.body[typeName],
-          function (err, data) {
-            var code = 200;
-            if (err) {
-              code = 422;
-              data = {
-                title: 'Unprocessable Entity',
-                detail: err.message
-              };
+        responder({
+          code: 500,
+          data: {
+            errors: {
+              title: 'Internal Server Error',
+              detail: 'No resource by that id found.'
             }
-            result[typeName] = data;
-            responder(response, code, result);
           }
-        );
+        }, request, response);
+      } else {
+        var body = request.body[type];
+        source.update(model, body, function (err, data) {
+          var payload = updateResponse(err, data, type);
+          responder(payload, request, response);
+        });
       }
     });
   };
@@ -155,25 +127,25 @@ Controller.prototype.destroy = function (opts) {
     opts = {};
   }
   var source = this.source;
+  var type = source.typeName();
+  var responder = this.responder;
 
   return function (request, response) {
-    source.byId(request.param('id'), function (err, model) {
+    source.byId(request.params.id, function (err, model) {
       if (!model) {
-        responder(response, 500, {
-          title: 'Internal Server Error',
-          detail: 'No resource by that id found.'
-        });
+        responder({
+          code: 500,
+          data: {
+            errors: {
+              title: 'Internal Server Error',
+              detail: 'No resource by that id found.'
+            }
+          }
+        }, request, response);
       } else {
         source.destroy(model, function (err, data) {
-          var code = 204;
-          if (err) {
-            code = 422;
-            data = {
-              title: 'Unprocessable Entity',
-              detail: err.message
-            };
-          }
-          responder(response, code, null);
+          var payload = destroyResponse(err, data, type);
+          responder(payload, request, response);
         });
       }
     });

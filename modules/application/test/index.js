@@ -10,11 +10,13 @@ var TestApp;
 describe('Application', function () {
 
   describe('lib', function () {
+
     require('./lib/parse_options');
     require('./lib/parse_resource');
     require('./lib/require_search');
     require('./lib/require_silent');
     require('./lib/slash_wrap');
+
   });
 
   beforeEach(function () {
@@ -28,6 +30,7 @@ describe('Application', function () {
   });
 
   describe('#register', function () {
+
     it('should register a resource by name', function () {
       TestApp.register('foo');
       expect(TestApp.resource('foo')).to.exist;
@@ -69,6 +72,7 @@ describe('Application', function () {
   });
 
   describe('#resource', function () {
+
     it('should throw if the requested resource does not exist', function () {
       var resourceName = 'not-existing';
       expect(function () {
@@ -84,9 +88,11 @@ describe('Application', function () {
     it('should return this for chaining', function () {
       expect(TestApp.register('foo')).to.equal(TestApp);
     });
+
   });
 
   describe('#endpoint', function () {
+
     it('should pass the routes for a resource into routeBuilder', function () {
       var fooResource;
       var spy = sinon.spy();
@@ -109,9 +115,11 @@ describe('Application', function () {
       TestApp.register('foo').endpoint('foo');
       expect(TestApp._endpoints).to.have.length(1);
     });
+
   });
 
   describe('#manifest', function () {
+
     it('should build a manifest of endpoints', function () {
       TestApp.register('foo').endpoint('foo', '/prefix');
       TestApp.register('bar').endpoint('bar');
@@ -135,9 +143,11 @@ describe('Application', function () {
         }
       ]);
     });
+
   });
 
   describe('#index', function () {
+
     it('should build a self-documenting index page', function () {
       TestApp.register('foo').endpoint('foo');
       TestApp.register('bar').endpoint('bar');
@@ -146,6 +156,7 @@ describe('Application', function () {
         bar: '/bar'
       });
     });
+
   });
 
 });

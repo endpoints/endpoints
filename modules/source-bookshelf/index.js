@@ -20,6 +20,9 @@ function Source (opts) {
   // add missing methods on the model if needed. eventually something
   // like this should exist in bookshelf or another higher order library
   // natively.
+  if (!model.create) {
+    baseMethods.addCreate(this);
+  }
   if (!model.filter) {
     baseMethods.addFilter(this);
   }
@@ -52,7 +55,7 @@ Source.prototype.create = function (method, params, cb) {
   if (!this.model[method]) {
     cb(new Error('No method "' + method + '" found on model.'));
   } else {
-    this.model[method](params).then(function (result) {
+    this.model[method](params || {}).then(function (result) {
       cb(null, result);
     }).catch(function (err) {
       cb(err);
