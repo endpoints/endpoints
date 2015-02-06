@@ -4,7 +4,16 @@ const relate = require('./relate');
 // a json-api compliant "links" object. Also supports a callback
 // function to recieve the related resources as they are passed
 // over.
-module.exports = function link (model, relations, exporter) {
+module.exports = function linkToMany (model, relations, exporter) {
+  if (!model) {
+    throw new Error('No model specified.');
+  }
+  if (!Array.isArray(relations)) {
+    throw new Error('No relations to link specified.');
+  }
+  if (!exporter) {
+    throw new Error('No exporter callback specified.');
+  }
   // iterate relations, reducing to a json-api compatible links object.
   return relations.reduce(function (links, relation) {
     // traverse the dot-notated relation and return the relations

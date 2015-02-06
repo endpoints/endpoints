@@ -26,8 +26,8 @@ function Source (opts) {
   if (!model.filter) {
     baseMethods.addFilter(this);
   }
-  if (!model.byId) {
-    baseMethods.addById(this);
+  if (!model.prototype.update) {
+    baseMethods.addUpdate(this);
   }
 }
 
@@ -43,24 +43,21 @@ Source.prototype.typeName = function () {
   return this.model.typeName;
 };
 
-Source.prototype.filter = function (params) {
-  return this.model.filter(params);
+Source.prototype.find = function (params, opts, cb) {
+  return this.model.filter(params).fetch(opts).exec(cb);
 };
 
 Source.prototype.byId = function (id, cb) {
-  return this.model.byId(id).exec(cb);
+  return this.model.filter({id:id}).fetchOne().exec(cb);
 };
 
-Source.prototype.create = function (method, params, cb) {
-  if (!this.model[method]) {
-    cb(new Error('No method "' + method + '" found on model.'));
-  } else {
-    this.model[method](params || {}).then(function (result) {
-      cb(null, result);
-    }).catch(function (err) {
-      cb(err);
-    });
+Source.prototype.create = function (opts, cb) {
+  if (!opts) {
+    opts = {};
   }
+  var method = opts.method;
+  var params = opts.params || {};
+  return this.model[method](params).exec(cb);
 };
 
 Source.prototype.read = function (opts, cb) {
@@ -71,37 +68,33 @@ Source.prototype.read = function (opts, cb) {
   var relations = opts.relations || [];
   var mode = opts.mode;
   var formatter = formatters[mode];
-  var query = this.filter(filters);
+  var query = this.model.filter(filters);
   var allowedRelations = this.relations();
   var validRelations = relations.filter(function (relation) {
     return allowedRelations.indexOf(relation) !== -1;
   });
-  query.fetch({withRelated:validRelations}).exec(function (err, data) {
-    if (!data) {
-      return cb(null, null);
-    }
+  query.fetch({withRelated:validRelations}).then(function (data) {
     var singleResult = (opts.one && data.length === 1);
     var noSingleResult = (opts.one && data.length === 0);
-    if (err) {
-      return cb(err);
+    if (!data || noSingleResult) {
+      return null;
     }
-    if (noSingleResult) {
-      return cb(null, null);
-    }
-    var output = formatter(data, {
+    return formatter(data, {
       singleResult: singleResult,
       relations: validRelations
     });
-    cb(null, output);
-  });
+  }).exec(cb);
 };
 
-Source.prototype.update = function (model, params, cb) {
-  return model.save(params, {patch:true}).exec(cb);
-};
-
-Source.prototype.destroy = function (model, cb) {
-  return model.destroy().exec(cb);
+Source.prototype.update =
+Source.prototype.destroy = function (opts, cb) {
+  if (!opts) {
+    opts = {};
+  }
+  var model = opts.model;
+  var method = opts.method;
+  var params = opts.params || {};
+  return model[method](params).exec(cb);
 };
 
 module.exports = Source;

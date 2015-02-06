@@ -23,10 +23,6 @@ Source.prototype.filter = function (params) {
   return this.model.filter(params);
 };
 
-Source.prototype.byId = function (id, cb) {
-  return this.model.byId(id, cb);
-};
-
 Source.prototype.create = function (method, params, cb) {
   if (!this.model[method]) {
     cb(new Error('No method "' + method + '" found on model.'));

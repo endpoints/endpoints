@@ -5,6 +5,9 @@ const instanceProps = {
   author: function () {
     return this.belongsTo(require('./authors'));
   },
+  series: function () {
+    return this.belongsTo(require('./series'));
+  },
   stores: function () {
     return this.belongsToMany(require('./stores'));
   }
@@ -34,6 +37,7 @@ const classProps = {
   },
   relations: [
     'author',
+    'series',
     'stores'
   ]
 };

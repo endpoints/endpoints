@@ -1,8 +1,8 @@
 const extend = require('extend');
 
 const getKey = require('./lib/get_key');
-const linkBelongsTo = require('./lib/link_belongs_to');
-const link = require('./lib/link');
+const linkToOne = require('./lib/link_to_one');
+const linkToMany = require('./lib/link_to_many');
 
 // Take an array of Bookshelf models and convert them into a
 // json-api compliant representation of the underlying data.
@@ -25,13 +25,13 @@ module.exports = function (input, opts) {
     // get a json representation of the model, excluding any related data
     var serialized = model.toJSON({shallow:true});
     // initialize belongsTo links
-    var links = linkBelongsTo(model);
+    var links = linkToOne(model, model.constructor.relations);
     // only process links if we need to
     if (relationsRequested) {
       // add link data, calling an 'exporter' method each time a relation
       // is linked. this method allows us to push the linked resources into
       // the top level `linked` key.
-      extend(links, link(model, relations, function (models, type) {
+      extend(links, linkToMany(model, relations, function (models, type) {
         // get a reference to the array of linked resources of this type
         var linkedResource = getKey(output.linked, type);
         // get the index of ids for this resource type

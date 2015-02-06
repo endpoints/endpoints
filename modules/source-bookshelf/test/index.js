@@ -38,11 +38,28 @@ describe('BookshelfSource', function () {
     });
   });
 
-  describe('#filter', function () {
-    it('should return a query object as filtered by the provided params', function () {
-      BooksSource.filter({
-        author_id: 1
-      });
-    });
+  describe('#find', function () {
+
   });
+
+  describe('#byId', function () {
+
+  });
+
+  describe('#create', function () {
+
+  });
+
+  describe('#read', function () {
+
+  });
+
+  describe('#update', function () {
+
+  });
+
+  describe('#destroy', function () {
+
+  });
+
 });

@@ -27,18 +27,16 @@ exports.addFilter = function (source) {
   };
 };
 
-exports.addById = function (source) {
-  var model = source.model;
-  model.byId = function (id) {
-    return model.forge({id:id}).fetch();
-  };
-};
-
 exports.addCreate = function (source) {
-  var model = source.model;
-  model.create = function (params) {
+  source.model.create = function (params) {
     return this.forge(params).save().then(function (model) {
       return this.forge({id:model.id}).fetch();
     }.bind(this));
+  };
+};
+
+exports.addUpdate = function (source) {
+  source.model.prototype.update = function (params) {
+    return this.save(params, {patch: true});
   };
 };

@@ -6,12 +6,12 @@ const createResponse = require('./lib/responders/create');
 const readResponse = require('./lib/responders/read');
 const updateResponse = require('./lib/responders/update');
 const destroyResponse = require('./lib/responders/destroy');
+const lookupFailed = require('./lib/responders/lookup_failed');
+const responder = require('./lib/responder');
 
 function Controller(opts) {
   extend(this, parseOptions(opts));
 }
-
-Controller.prototype.responder = require('./lib/responder');
 
 Controller.prototype.filters = function (request) {
   var allowedFilters = Object.keys(this.source.filters());
@@ -47,18 +47,17 @@ Controller.prototype.create = function (opts) {
   }
   var source = this.source;
   var type = source.typeName();
-  var responder = this.responder;
-
   var method = opts.method || 'create';
-  if (!source.model[method]) {
-    throw new Error(
-      'Create method "' + method + '" is not present on source\'s model.'
-    );
+
+  if (typeof source.model[method] !== 'function') {
+    throw new Error('Create method "' + method + '" is not present.');
   }
 
   return function (request, response) {
-    var body = request.body[type];
-    source.create(method, body, function (err, data) {
+    source.create({
+      method: method,
+      params: request.body[type]
+    }, function (err, data) {
       var payload = createResponse(err, data, type);
       responder(payload, request, response);
     });
@@ -71,7 +70,6 @@ Controller.prototype.read = function (opts) {
   }
   var source = this.source;
   var type = source.typeName();
-  var responder = this.responder;
 
   var mode = opts.raw ? 'raw' : 'jsonApi';
   var isSingle = !!opts.one;
@@ -97,27 +95,25 @@ Controller.prototype.update = function (opts) {
   }
   var source = this.source;
   var type = source.typeName();
-  var responder = this.responder;
+  var method = opts.method || 'update';
+
+  if (typeof source.model.prototype[method] !== 'function') {
+    throw new Error('Update method "' + method + '" is not present.');
+  }
 
   return function (request, response) {
     source.byId(request.params.id, function (err, model) {
       if (!model) {
-        responder({
-          code: 500,
-          data: {
-            errors: {
-              title: 'Internal Server Error',
-              detail: 'No resource by that id found.'
-            }
-          }
-        }, request, response);
-      } else {
-        var body = request.body[type];
-        source.update(model, body, function (err, data) {
-          var payload = updateResponse(err, data, type);
-          responder(payload, request, response);
-        });
+        return responder(lookupFailed, request, response);
       }
+      return source.update({
+        method: method,
+        params: request.body[type],
+        model: model
+      }, function (err, data) {
+        var payload = updateResponse(err, data, type);
+        responder(payload, request, response);
+      });
     });
   };
 };
@@ -128,26 +124,25 @@ Controller.prototype.destroy = function (opts) {
   }
   var source = this.source;
   var type = source.typeName();
-  var responder = this.responder;
+  var method = opts.method || 'destroy';
+
+  if (typeof source.model.prototype[method] !== 'function') {
+    throw new Error('Destroy method "' + method + '" is not present.');
+  }
 
   return function (request, response) {
     source.byId(request.params.id, function (err, model) {
       if (!model) {
-        responder({
-          code: 500,
-          data: {
-            errors: {
-              title: 'Internal Server Error',
-              detail: 'No resource by that id found.'
-            }
-          }
-        }, request, response);
-      } else {
-        source.destroy(model, function (err, data) {
-          var payload = destroyResponse(err, data, type);
-          responder(payload, request, response);
-        });
+        return responder(lookupFailed, request, response);
       }
+      return source.destroy({
+        method: method,
+        params: request.body[type],
+        model: model
+      }, function (err, data) {
+        var payload = destroyResponse(err, data, type);
+        responder(payload, request, response);
+      });
     });
   };
 };

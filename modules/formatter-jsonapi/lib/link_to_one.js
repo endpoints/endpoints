@@ -1,5 +1,11 @@
-module.exports = function linkBelongsTo (model) {
-  return model.constructor.relations.reduce(function (result, relationName) {
+module.exports = function linkToOne (model, relations) {
+  if (!model) {
+    throw new Error('No model specified.');
+  }
+  if (!Array.isArray(relations)) {
+    throw new Error('No relations to link specified.');
+  }
+  return relations.reduce(function (result, relationName) {
     var id, link;
     var isNestedRelation = relationName.indexOf('.') !== -1;
     var relation = model.related(relationName);

@@ -18,14 +18,6 @@ Model.prototype.create = function (params, cb) {
   });
 };
 
-Model.prototype.byId = function (id, cb) {
-  var data = this.data();
-  var result = _.find(data, {id:id});
-  process.nextTick(function () {
-    return cb(null, result);
-  });
-};
-
 Model.prototype.filter = function (params) {
   var search = _.chain(this.data());
   var filters = this.filters;

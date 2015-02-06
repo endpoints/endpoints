@@ -53,14 +53,6 @@ describe('MemorySource', function () {
     });
   });
 
-  describe('#byId', function () {
-    it('should call back with the model that matches the id', function () {
-      BooksSource.byId(1, function (err, result) {
-        expect(result).to.deep.equal(bookOne);
-      });
-    });
-  });
-
   describe('#create', function () {
     it('should create a new model and call back with it', function () {
       var newModel = {

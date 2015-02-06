@@ -3,42 +3,9 @@ const sinon = require('sinon');
 
 const Controller = require('../');
 
-const typeName = 'mock';
-const request = {
-  params: {
-    id: 1
-  },
-  query: {
-    title: 'foo-bar-baz',
-    unSupportedKey: 'something',
-    include: 'book,chapter'
-  },
-  body: {
-    mock: {
-      key: 'vaulue'
-    }
-  }
-};
-const source = {
-  typeName: function () { return typeName; },
-  create: function() {},
-  read: function () {},
-  update: function () {},
-  destroy: function () {},
-  filters: function () {
-    return {
-      title: true
-    };
-  },
-  relations: function () {
-    return ['value'];
-  },
-  model: {
-    create: function () {},
-    alternate: function () {}
-  }
-};
+const expressRequest = require('./mocks/express_request');
 
+const source = require('./mocks/source');
 const controller = new Controller({
   source: source
 });
@@ -69,7 +36,7 @@ describe('Controller', function () {
   describe('#filters', function () {
 
     it('should return an array of valid filters for a request', function () {
-      expect(controller.filters(request)).to.deep.equal({
+      expect(controller.filters(expressRequest())).to.deep.equal({
         id: 1,
         title: 'foo-bar-baz'
       });
@@ -80,7 +47,7 @@ describe('Controller', function () {
   describe('#relations', function () {
 
     it('should return an array of valid relations for a request', function () {
-      expect(controller.relations(request)).to.deep.equal(['book', 'chapter']);
+      expect(controller.relations(expressRequest())).to.deep.equal(['book', 'chapter']);
     });
 
   });
@@ -88,10 +55,9 @@ describe('Controller', function () {
   describe('#create', function () {
 
     it('should throw if user specified creation method does not exist on source model', function () {
-      var method = 'badMethod';
       expect(function () {
-        controller.create({method:method});
-      }).to.throw('Create method "' + method + '" is not present on source\'s model.');
+        controller.create({method:'badMethod'});
+      }).to.throw(/Create method/);
     });
 
     it('should return a node request handling function', function () {
@@ -106,28 +72,8 @@ describe('Controller', function () {
         sourceCreateSpy.reset();
       });
 
-      it('should call #source.create, passing the default "create" method', function () {
-        var handler = controller.create();
-        handler(request, {});
-        expect(sourceCreateSpy.calledWith('create'));
-      });
+      // TODO: test this at all?
 
-      it('should call #source.create, passing a user specified creation method', function () {
-        var method = 'alternate';
-        var handler = controller.create({method:method});
-        handler(request, {});
-        expect(sourceCreateSpy.calledWith(method));
-      });
-
-      it('should call #source.create, passing the scoped request body', function () {
-        var handler = controller.create();
-        var request = { body: {} };
-        var scopedBody = request.body[typeName] = { booleanKey: true };
-        handler(request, {});
-        expect(sourceCreateSpy.calledWith('create', scopedBody));
-      });
-
-      // TODO: test calls to the responder in source.create callback
     });
 
   });
@@ -146,14 +92,19 @@ describe('Controller', function () {
         sourceReadSpy.reset();
       });
 
+      // TODO: test this at all?
 
-      // TODO: test calls to the responder in source.read callback
-      // TODO: test calls using pass/raw
     });
 
   });
 
   describe('#update', function () {
+
+    it('should throw if user specified update method does not exist on source model prototype', function () {
+      expect(function () {
+        controller.update({method:'badMethod'});
+      }).to.throw(/Update method/);
+    });
 
     it('should return a node request handling function', function () {
       expect(controller.update()).to.be.a.function;
@@ -167,12 +118,19 @@ describe('Controller', function () {
         sourceUpdateSpy.reset();
       });
 
-      // TODO: test calls to the responder in source.update callback
+      // TODO: test this at all?
+
     });
 
   });
 
   describe('#destroy', function () {
+
+    it('should throw if user specified destroy method does not exist on source model prototype', function () {
+      expect(function () {
+        controller.destroy({method:'badMethod'});
+      }).to.throw(/Destroy method/);
+    });
 
     it('should return a node request handling function', function () {
       expect(controller.destroy()).to.be.a.function;
@@ -186,7 +144,8 @@ describe('Controller', function () {
         sourceDestroySpy.reset();
       });
 
-      // TODO: test calls to the responder in source.update callback
+      // TODO: test this at all?
+
     });
 
   });

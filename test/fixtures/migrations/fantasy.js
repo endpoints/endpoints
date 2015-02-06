@@ -1,5 +1,9 @@
 exports.up = function (knex) {
   return knex.schema.
+    createTable('series', function (t) {
+      t.increments('id');
+      t.text('title').notNullable().unique();
+    }).
     createTable('authors', function (t) {
       t.increments('id');
       t.text('name').notNullable();
@@ -28,5 +32,6 @@ exports.down = function (knex) {
     dropTable('books_stores').
     dropTable('stores').
     dropTable('books').
-    dropTable('authors');
+    dropTable('authors').
+    dropTable('series');
 };
