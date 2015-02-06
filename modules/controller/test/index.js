@@ -3,8 +3,6 @@ const sinon = require('sinon');
 
 const Controller = require('../');
 
-const expressRequest = require('./mocks/express_request');
-
 const source = require('./mocks/source');
 const controller = new Controller({
   source: source
@@ -30,25 +28,6 @@ describe('Controller', function () {
     require('./lib/search_keys');
     require('./lib/uniq');
     require('./lib/responder');
-
-  });
-
-  describe('#filters', function () {
-
-    it('should return an array of valid filters for a request', function () {
-      expect(controller.filters(expressRequest())).to.deep.equal({
-        id: 1,
-        title: 'foo-bar-baz'
-      });
-    });
-
-  });
-
-  describe('#relations', function () {
-
-    it('should return an array of valid relations for a request', function () {
-      expect(controller.relations(expressRequest())).to.deep.equal(['book', 'chapter']);
-    });
 
   });
 

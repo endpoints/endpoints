@@ -13,7 +13,7 @@ function Controller(opts) {
   extend(this, parseOptions(opts));
 }
 
-Controller.prototype.filters = function (request) {
+Controller.prototype._filters = function (request) {
   var allowedFilters = Object.keys(this.source.filters());
   return extract({
     context: request,
@@ -28,7 +28,7 @@ Controller.prototype.filters = function (request) {
   });
 };
 
-Controller.prototype.relations = function (request) {
+Controller.prototype._relations = function (request) {
   var result = extract({
     context: request,
     contextKeysToSearch: this.requestKeysToSearch,
@@ -73,8 +73,8 @@ Controller.prototype.read = function (opts) {
 
   var mode = opts.raw ? 'raw' : 'jsonApi';
   var isSingle = !!opts.one;
-  var filters = this.filters.bind(this);
-  var relations = this.relations.bind(this);
+  var filters = this._filters.bind(this);
+  var relations = this._relations.bind(this);
 
   return function (request, response, next) {
     source.read({
