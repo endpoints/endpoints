@@ -45,7 +45,6 @@
   },
   "dependencies": {
     "arrayify": "^1.0.0",
-    "extend": "^2.0.0",
     "lodash": "^3.1.0"
   }
 }

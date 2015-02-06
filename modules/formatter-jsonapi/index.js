@@ -1,4 +1,4 @@
-const extend = require('extend');
+const _ = require('lodash');
 
 const getKey = require('./lib/get_key');
 const linkToOne = require('./lib/link_to_one');
@@ -31,7 +31,7 @@ module.exports = function (input, opts) {
       // add link data, calling an 'exporter' method each time a relation
       // is linked. this method allows us to push the linked resources into
       // the top level `linked` key.
-      extend(links, linkToMany(model, relations, function (models, type) {
+      _.extend(links, linkToMany(model, relations, function (models, type) {
         // get a reference to the array of linked resources of this type
         var linkedResource = getKey(output.linked, type);
         // get the index of ids for this resource type

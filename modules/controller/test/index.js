@@ -22,11 +22,9 @@ describe('Controller', function () {
     });
 
     require('./lib/extract');
-    require('./lib/mutating_traverse');
     require('./lib/normalize_value');
     require('./lib/parse_options');
     require('./lib/search_keys');
-    require('./lib/uniq');
     require('./lib/responder');
 
   });

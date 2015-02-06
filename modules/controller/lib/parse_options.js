@@ -1,4 +1,4 @@
-const extend = require('extend');
+const _ = require('lodash');
 
 const normalizeValue = require('./normalize_value');
 
@@ -16,7 +16,7 @@ var parseOptions = function (opts) {
   if (!source) {
     throw new Error('No source specified.');
   }
-  return extend({}, defaults, opts);
+  return _.extend({}, defaults, opts);
 };
 parseOptions.defaults = defaults;
 

@@ -1,5 +1,4 @@
-const extend = require('extend');
-const uniq = require('./lib/uniq');
+const _ = require('lodash');
 const parseOptions = require('./lib/parse_options');
 const extract = require('./lib/extract');
 const createResponse = require('./lib/responders/create');
@@ -10,7 +9,7 @@ const lookupFailed = require('./lib/responders/lookup_failed');
 const responder = require('./lib/responder');
 
 function Controller(opts) {
-  extend(this, parseOptions(opts));
+  _.extend(this, parseOptions(opts));
 }
 
 Controller.prototype._filters = function (request) {
@@ -38,7 +37,7 @@ Controller.prototype._relations = function (request) {
   if (result && !Array.isArray(result)) {
     result = [result];
   }
-  return uniq(result);
+  return _.uniq(result);
 };
 
 Controller.prototype.create = function (opts) {

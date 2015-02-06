@@ -1,4 +1,4 @@
-const extend = require('extend');
+const _ = require('lodash');
 
 const parseOptions = require('./lib/parse_options');
 const parseResource = require('./lib/parse_resource');
@@ -7,7 +7,7 @@ const slashWrap = require('./lib/slash_wrap');
 function Application (opts) {
   this._resources = {};
   this._endpoints = [];
-  extend(this, parseOptions(opts));
+  _.extend(this, parseOptions(opts));
 }
 
 Application.prototype.resource = function (name) {

@@ -1,6 +1,6 @@
 const expect = require('chai').expect;
 
-const extend = require('extend');
+const _ = require('lodash');
 
 const parseOptions = require('../../lib/parse_options');
 
@@ -17,7 +17,7 @@ describe('parseOptions', function () {
       source: true,
       relationKey: 'thing',
     };
-    var defaults = extend({}, parseOptions.defaults, config);
+    var defaults = _.extend({}, parseOptions.defaults, config);
     expect(parseOptions(config)).to.deep.equal(defaults);
   });
 
