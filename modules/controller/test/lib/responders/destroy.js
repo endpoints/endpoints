@@ -9,7 +9,7 @@ describe('destroy', function () {
     var data = {
       key: 'value'
     };
-    var result = destroy(null, data, type);
+    var result = destroy(null, data, { type: type });
     expect(result.code).to.equal(204);
     expect(result.data).to.equal(null);
   });

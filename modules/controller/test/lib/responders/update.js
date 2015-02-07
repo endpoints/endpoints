@@ -5,13 +5,15 @@ const update = require('../../../lib/responders/update');
 describe('update', function () {
 
   it('should return scoped data and code 200 when there are no errors', function () {
-    var type = 'type';
+    var opts = {
+      type: 'type'
+    };
     var data = {
       key: 'value'
     };
-    var result = update(null, data, type);
+    var result = update(null, data, opts);
     expect(result.code).to.equal(200);
-    expect(result.data[type]).to.equal(data);
+    expect(result.data[opts.type]).to.equal(data);
   });
 
   it('should return errors and code 422 when there is an error', function () {

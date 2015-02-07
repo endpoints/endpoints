@@ -1,11 +1,4 @@
 const baseMethods = require('./lib/base_methods');
-const formatters = {
-  jsonApi: require('../formatter-jsonapi'),
-  raw: function (data, opts) {
-    var singleResult = opts.singleResult;
-    return singleResult ? data.first() : data.models;
-  }
-};
 
 function Source (opts) {
   if (!opts) {
@@ -66,24 +59,12 @@ Source.prototype.read = function (opts, cb) {
   }
   var filters = opts.filters;
   var relations = opts.relations || [];
-  var mode = opts.mode;
-  var formatter = formatters[mode];
   var query = this.model.filter(filters);
   var allowedRelations = this.relations();
   var validRelations = relations.filter(function (relation) {
     return allowedRelations.indexOf(relation) !== -1;
   });
-  query.fetch({withRelated:validRelations}).then(function (data) {
-    var singleResult = (opts.one && data.length === 1);
-    var noSingleResult = (opts.one && data.length === 0);
-    if (!data || noSingleResult) {
-      return null;
-    }
-    return formatter(data, {
-      singleResult: singleResult,
-      relations: validRelations
-    });
-  }).exec(cb);
+  query.fetch({withRelated:validRelations}).exec(cb);
 };
 
 Source.prototype.update =

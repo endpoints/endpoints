@@ -8,9 +8,9 @@ const linkToMany = require('./lib/link_to_many');
 // json-api compliant representation of the underlying data.
 module.exports = function (input, opts) {
   // get the relations we'll be pulling off the input data
-  var relations = opts.relations;
+  var relations = opts.relations || [];
   // cache if we are looking for a single item
-  var singleResult = opts.singleResult;
+  var singleResult = opts.one;
   // cache if we requested any relations
   var relationsRequested = !!relations.length;
   // initialize an index so we can prevent serializing the same records
@@ -63,7 +63,7 @@ module.exports = function (input, opts) {
   }
 
   // if we were looking for a single result, return it as an object
-  if (singleResult) {
+  if (singleResult && input.length === 1) {
     result[typeName] = result[typeName][0];
   }
 

@@ -1,4 +1,9 @@
-module.exports = function (err, data, type) {
+module.exports = function (err, data, opts) {
+  if (!opts) {
+    opts = {};
+  }
+  var type = opts.type;
+
   if (err) {
     return {
       code: 422,

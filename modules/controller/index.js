@@ -69,21 +69,21 @@ Controller.prototype.read = function (opts) {
   }
   var source = this.source;
   var type = source.typeName();
-
-  var mode = opts.raw ? 'raw' : 'jsonApi';
-  var isSingle = !!opts.one;
   var filters = this._filters.bind(this);
   var relations = this._relations.bind(this);
-
+  // allow a custom responder to receive the payload
+  var respond = opts.responder || responder;
   return function (request, response, next) {
+    var validRelations = relations(request).concat(opts.include || []);
     source.read({
       filters: filters(request),
-      relations: relations(request).concat(opts.include || []),
-      one: isSingle,
-      mode: mode
+      relations: validRelations
     }, function (err, data) {
-      var payload = readResponse(err, data, type);
-      responder(payload, request, response, next);
+      var payload = readResponse(err, data, _.extend({}, opts, {
+        type: type,
+        relations: validRelations
+      }));
+      respond(payload, request, response, next);
     });
   };
 };
