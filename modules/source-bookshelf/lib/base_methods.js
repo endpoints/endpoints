@@ -21,6 +21,7 @@ exports.addFilter = function (source) {
         }
         // END BRITTLE HACK
         // process the query with the filter, or, if none is found, pass it
+        // FIXME: should throw here?
         return filter ? filter.call(filters, qb, value, params) : qb;
       }, qb);
     });

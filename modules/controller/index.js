@@ -46,17 +46,17 @@ Controller.prototype.create = function (opts) {
   }
   var source = this.source;
   var type = source.typeName();
-  var method = opts.method || 'create';
+  var method = opts.method;
+  if (!method) {
+    method = opts.method = 'create';
+  }
 
   if (typeof source.model[method] !== 'function') {
     throw new Error('Create method "' + method + '" is not present.');
   }
 
   return function (request, response) {
-    source.create({
-      method: method,
-      params: request.body[type]
-    }, function (err, data) {
+    source.create(request.body[type], opts, function (err, data) {
       var payload = createResponse(err, data, type);
       responder(payload, request, response);
     });
@@ -94,7 +94,10 @@ Controller.prototype.update = function (opts) {
   }
   var source = this.source;
   var type = source.typeName();
-  var method = opts.method || 'update';
+  var method = opts.method;
+  if (!method) {
+    method = opts.method = 'update';
+  }
 
   if (typeof source.model.prototype[method] !== 'function') {
     throw new Error('Update method "' + method + '" is not present.');
@@ -105,11 +108,7 @@ Controller.prototype.update = function (opts) {
       if (!model) {
         return responder(lookupFailed, request, response);
       }
-      return source.update({
-        method: method,
-        params: request.body[type],
-        model: model
-      }, function (err, data) {
+      return source.update(request.body[type], opts, function (err, data) {
         var payload = updateResponse(err, data, type);
         responder(payload, request, response);
       });
@@ -123,7 +122,10 @@ Controller.prototype.destroy = function (opts) {
   }
   var source = this.source;
   var type = source.typeName();
-  var method = opts.method || 'destroy';
+  var method = opts.method;
+  if (!method) {
+    method = opts.method = 'destroy';
+  }
 
   if (typeof source.model.prototype[method] !== 'function') {
     throw new Error('Destroy method "' + method + '" is not present.');
@@ -134,14 +136,14 @@ Controller.prototype.destroy = function (opts) {
       if (!model) {
         return responder(lookupFailed, request, response);
       }
-      return source.destroy({
-        method: method,
-        params: request.body[type],
-        model: model
-      }, function (err, data) {
-        var payload = destroyResponse(err, data, type);
-        responder(payload, request, response);
-      });
+      return source.destroy(
+        request.body[type],
+        _.extend({model:model}, opts),
+        function (err, data) {
+          var payload = destroyResponse(err, data, type);
+          responder(payload, request, response);
+        }
+      );
     });
   };
 };
