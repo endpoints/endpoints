@@ -1,18 +1,16 @@
 const _ = require('lodash');
 
 const getKey = require('./lib/get_key');
-const linkToOne = require('./lib/link_to_one');
-const linkToMany = require('./lib/link_to_many');
+const toOneRelations = require('./lib/to_one_relations');
+const link = require('./lib/link');
 
 // Take an array of Bookshelf models and convert them into a
 // json-api compliant representation of the underlying data.
 module.exports = function (input, opts) {
   // get the relations we'll be pulling off the input data
-  var relations = opts.relations || [];
+  var linkWithInclude = opts.relations || [];
   // cache if we are looking for a single item
   var singleResult = opts.one;
-  // cache if we requested any relations
-  var relationsRequested = !!relations.length;
   // initialize an index so we can prevent serializing the same records
   // more than once to the top level `linked` key.
   var linkedResourceIndex = {};
@@ -20,18 +18,22 @@ module.exports = function (input, opts) {
   var typeName = input.model.typeName;
   // iterate through the input, adding links and populating linked data
   var result = input.reduce(function (output, model) {
+    // determine which to-one relations on this model were not
+    // explicitly included.
+    var allRelations = model.constructor.relations;
+    var linkWithoutInclude = _.difference(
+      toOneRelations(model, allRelations),
+      linkWithInclude
+    );
     // get the or initialize the primary resource key
     var primaryResource = getKey(output, typeName);
     // get a json representation of the model, excluding any related data
     var serialized = model.toJSON({shallow:true});
-    // initialize belongsTo links
-    var links = linkToOne(model, model.constructor.relations);
-    // only process links if we need to
-    if (relationsRequested) {
-      // add link data, calling an 'exporter' method each time a relation
-      // is linked. this method allows us to push the linked resources into
-      // the top level `linked` key.
-      _.extend(links, linkToMany(model, relations, function (models, type) {
+    // build a links object, adding any linked models to
+    var links = link(model, {
+      linkWithInclude: linkWithInclude,
+      linkWithoutInclude: linkWithoutInclude,
+      exporter: function (models, type) {
         // get a reference to the array of linked resources of this type
         var linkedResource = getKey(output.linked, type);
         // get the index of ids for this resource type
@@ -46,8 +48,9 @@ module.exports = function (input, opts) {
             index.push(id);
           }
         });
-      }));
-    }
+      }
+    });
+
     if (Object.keys(links).length > 0) {
       serialized.links = links;
     }

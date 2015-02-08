@@ -6,9 +6,9 @@ describe('jsonApi', function () {
 
   describe('lib', function () {
     require('./lib/get_key');
-    require('./lib/link_to_one');
-    require('./lib/link_to_many');
+    require('./lib/link');
     require('./lib/relate');
+    require('./lib/to_one_relations');
   });
 
   describe('module', function () {
