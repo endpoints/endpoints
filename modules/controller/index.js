@@ -57,7 +57,9 @@ Controller.prototype.create = function (opts) {
 
   return function (request, response) {
     source.create(request.body[type], opts, function (err, data) {
-      var payload = createResponse(err, data, type);
+      var payload = createResponse(err, data, _.extend({}, opts, {
+        type: type
+      }));
       responder(payload, request, response);
     });
   };
@@ -108,10 +110,16 @@ Controller.prototype.update = function (opts) {
       if (!model) {
         return responder(lookupFailed, request, response);
       }
-      return source.update(request.body[type], opts, function (err, data) {
-        var payload = updateResponse(err, data, type);
-        responder(payload, request, response);
-      });
+      return source.update(
+        request.body[type],
+        _.extend({model:model}, opts),
+        function (err, data) {
+          var payload = updateResponse(err, data, _.extend({}, opts, {
+            type: type
+          }));
+          responder(payload, request, response);
+        }
+      );
     });
   };
 };
@@ -140,7 +148,9 @@ Controller.prototype.destroy = function (opts) {
         request.body[type],
         _.extend({model:model}, opts),
         function (err, data) {
-          var payload = destroyResponse(err, data, type);
+          var payload = destroyResponse(err, data, _.extend({}, opts, {
+            type: type
+          }));
           responder(payload, request, response);
         }
       );
