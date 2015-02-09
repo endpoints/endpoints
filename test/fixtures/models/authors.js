@@ -40,7 +40,8 @@ const classProps = {
     }
   },
   relations: [
-    'books'
+    'books',
+    'books.series'
   ]
 };
 

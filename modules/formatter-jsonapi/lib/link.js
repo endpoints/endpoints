@@ -7,6 +7,7 @@ module.exports = function (model, opts) {
   var links = {};
   var linkWithoutIncludes = opts.linkWithoutInclude || [];
   var linkWithIncludes = opts.linkWithInclude || [];
+  var exporter = opts.exporter;
 
   // Link relations that were not explictly included. For example,
   // a record in a database of employees might look like this:
@@ -45,6 +46,7 @@ module.exports = function (model, opts) {
   // resources to the top level "linked" object
   linkWithIncludes.reduce(function (result, relationName) {
     var related = relate(model, relationName);
+    var type = related.type;
     var link = {
       type: related.type
     };
@@ -62,9 +64,15 @@ module.exports = function (model, opts) {
         }
         return result;
       }, []);
+      if (exporter) {
+        exporter(related, type);
+      }
     } else {
       // for singular resources, store the id under `id`
       link.id = related.get('id') || null;
+      if (exporter) {
+        exporter([related], type);
+      }
     }
     result[relationName] = link;
     return result;

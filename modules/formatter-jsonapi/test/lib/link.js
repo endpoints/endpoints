@@ -1,3 +1,4 @@
+const sinon = require('sinon');
 const expect = require('chai').expect;
 const _ = require('lodash');
 const fantasyDatabase = require('fantasy-database');
@@ -11,6 +12,7 @@ const Authors = require('../../../../test/fixtures/models/authors');
 describe('link', function () {
 
   var booksModel, authorsModel;
+  var booksByAuthorOne = _.chain(fantasyDatabase.books).filter({author_id:1}).pluck('id').value();
 
   before(function () {
     return DB.reset().then(function () {
@@ -29,9 +31,8 @@ describe('link', function () {
   });
 
   it('should generate links object for a model', function () {
-    var booksByAuthorOne = _.chain(fantasyDatabase.books).filter({author_id:1}).pluck('id').value();
     expect(link(authorsModel, {
-      linkWithInclude: ['books']
+      linkWithInclude: ['books'],
     })).to.deep.equal({
       books: {
         type: 'books',
@@ -40,9 +41,18 @@ describe('link', function () {
     });
   });
 
+  it('should call exporter for each included link', function () {
+    var spy = sinon.spy();
+    link(authorsModel, {
+      linkWithInclude: ['books', 'books.series'],
+      exporter: spy
+    });
+    expect(spy.callCount).to.equal(2);
+  });
+
   it('should generate toOne links entries for a model', function () {
     expect(link(booksModel, {
-      linkWithoutInclude: ['author']
+      linkWithoutInclude: ['author'],
     })).to.deep.equal({
       author: {
         href: '/authors/1',
