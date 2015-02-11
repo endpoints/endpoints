@@ -24,23 +24,6 @@ function Source (opts) {
   }
 }
 
-Source.prototype._validFilters = function (request) {
-  var allowedFilters = Object.keys(this.filters());
-  return Object.keys(request).reduce(function (result, filter) {
-    if (allowedFilters.indexOf(filter) !== -1) {
-      result[filter] = request[filter];
-    }
-    return result;
-  }, {});
-};
-
-Source.prototype._validRelations = function (request) {
-  var allowedRelations = this.relations();
-  return request.filter(function (relation) {
-    return allowedRelations.indexOf(relation) !== -1;
-  });
-};
-
 Source.prototype._find = function (params, opts, cb) {
   return this.model.filter(params).fetch(opts).exec(cb);
 };
@@ -79,8 +62,8 @@ Source.prototype.read = function (opts, cb) {
   if (!opts) {
     opts = {};
   }
-  var filters = this._validFilters(opts.filters || {});
-  var relations = this._validRelations(opts.relations || []);
+  var filters = opts.filters || {};
+  var relations = opts.relations || [];
   return this._find(filters, { withRelated: relations }, cb);
 };
 
