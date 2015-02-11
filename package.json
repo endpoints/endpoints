@@ -25,7 +25,9 @@
     "node": ">= 0.10"
   },
   "scripts": {
-    "test": "npm run lint && npm run style && mocha -R spec",
+    "test-unit": "npm run lint && npm run style && mocha -b -R spec test/unit",
+    "test-integration": "npm run lint && npm run style && mocha -b -R spec test/integration",
+    "test": "npm run lint && npm run style && mocha -b -R spec",
     "style": "jscs modules test",
     "lint": "jshint index.js modules test"
   },
