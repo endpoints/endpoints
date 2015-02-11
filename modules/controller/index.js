@@ -12,9 +12,14 @@ function Controller(opts) {
   _.extend(this, parseOptions(opts));
 }
 
+Controller.prototype._isValidRelation = function(relation) {
+  var allowedRelations = this.source.relations();
+  return allowedRelations.indexOf(relation) !== -1;
+};
+
 Controller.prototype._filters = function (request) {
   var allowedFilters = Object.keys(this.source.filters());
-  return extract({
+  return this.validFilters(extract({
     context: request,
     contextKeysToSearch: this.requestKeysToSearch,
     // TODO: revisit this perhaps?
@@ -24,7 +29,7 @@ Controller.prototype._filters = function (request) {
     // on the underlying source.
     find: allowedFilters.concat(Object.keys(request.params)),
     normalizer: this.paramNormalizer
-  });
+  }));
 };
 
 Controller.prototype._relations = function (request) {
@@ -37,7 +42,22 @@ Controller.prototype._relations = function (request) {
   if (result && !Array.isArray(result)) {
     result = [result];
   }
-  return _.uniq(result);
+  return this.validRelations(_.uniq(result));
+};
+
+Controller.prototype.validFilters = function (filters) {
+  var allowedFilters = Object.keys(this.source.filters());
+  return Object.keys(filters).reduce(function (result, filter) {
+    if (allowedFilters.indexOf(filter) !== -1) {
+      result[filter] = filters[filter];
+    }
+    return result;
+  }, {});
+};
+
+Controller.prototype.validRelations = function(relations) {
+  var isValidRelation = this._isValidRelation.bind(this);
+  return relations.filter(isValidRelation);
 };
 
 Controller.prototype.create = function (opts) {
@@ -73,17 +93,30 @@ Controller.prototype.read = function (opts) {
   var type = source.typeName();
   var filters = this._filters.bind(this);
   var relations = this._relations.bind(this);
+  var isValidRelation = this._isValidRelation.bind(this);
+
+  var includes = opts.include || [];
+
   // allow a custom responder to receive the payload
   var respond = opts.responder || responder;
+
+  // forEach instead of use validRelation() so that we get the exact bad actor
+  includes.forEach(function(relation) {
+    if (!isValidRelation(relation)) {
+      throw new Error('Model does not have relation "' + relation + '."');
+    }
+  });
+
   return function (request, response, next) {
-    var validRelations = relations(request).concat(opts.include || []);
+    var validRels = relations(request).concat(includes);
     source.read({
       filters: filters(request),
-      relations: validRelations
+      relations: validRels
     }, function (err, data) {
       var payload = readResponse(err, data, _.extend({}, opts, {
+        // FIXME: type is not used in readResponse
         type: type,
-        relations: validRelations
+        relations: validRels
       }));
       respond(payload, request, response, next);
     });
