@@ -35,8 +35,34 @@ describe('read', function() {
           authorRouteHandler({params:{}});
         });
       });
-      it('must place primary data under a top-level key named "data"');
-      it('must make primary data either a single resource object or an array of resource objects');
+      it('must place primary data under a top-level key named "data"', function() {
+        var authorRouteHandler = authorController.read({
+          responder: function(payload) {
+            expect(payload.code).to.equal(200);
+            expect(payload.data).to.have.property('data');
+          }
+        });
+        authorRouteHandler(req);
+      });
+      it('must make primary data for a single record an object', function() {
+        var authorRouteHandler = authorController.read({
+          one: true,
+          responder: function(payload) {
+            expect(payload.code).to.equal(200);
+            expect(payload.data.data).to.be.an('object');
+          }
+        });
+        authorRouteHandler(req);
+      });
+      it('must make primary data for multiple records an array', function() {
+        var authorRouteHandler = authorController.read({
+          responder: function(payload) {
+            expect(payload.code).to.equal(200);
+            expect(payload.data.data).to.be.an('array');
+          }
+        });
+        authorRouteHandler(req);
+      });
       it('must not include any top-level members other than "data," "meta," or "links," "linked"');
     });
 
