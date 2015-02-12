@@ -6,7 +6,6 @@ const readResponse = require('./lib/responders/read');
 const updateResponse = require('./lib/responders/update');
 const destroyResponse = require('./lib/responders/destroy');
 const lookupFailed = require('./lib/responders/lookup_failed');
-const responder = require('./lib/responder');
 
 function Controller(opts) {
   _.extend(this, parseOptions(opts));
@@ -40,6 +39,8 @@ Controller.prototype._relations = function (request) {
   return _.uniq(result);
 };
 
+Controller.prototype.responder = require('./lib/responder');
+
 Controller.prototype.create = function (opts) {
   if (!opts) {
     opts = {};
@@ -47,6 +48,7 @@ Controller.prototype.create = function (opts) {
   var source = this.source;
   var type = source.typeName();
   var method = opts.method;
+  var responder = opts.responder || this.responder;
   if (!method) {
     method = opts.method = 'create';
   }
@@ -74,7 +76,7 @@ Controller.prototype.read = function (opts) {
   var filters = this._filters.bind(this);
   var relations = this._relations.bind(this);
   // allow a custom responder to receive the payload
-  var respond = opts.responder || responder;
+  var respond = opts.responder || this.responder;
   return function (request, response, next) {
     var validRelations = relations(request).concat(opts.include || []);
     source.read({
@@ -97,6 +99,7 @@ Controller.prototype.update = function (opts) {
   var source = this.source;
   var type = source.typeName();
   var method = opts.method;
+  var respond = opts.responder || this.responder;
   if (!method) {
     method = opts.method = 'update';
   }
@@ -108,7 +111,7 @@ Controller.prototype.update = function (opts) {
   return function (request, response) {
     source.byId(request.params.id, function (err, model) {
       if (!model) {
-        return responder(lookupFailed, request, response);
+        return respond(lookupFailed, request, response);
       }
       return source.update(
         request.body[type],
@@ -117,7 +120,7 @@ Controller.prototype.update = function (opts) {
           var payload = updateResponse(err, data, _.extend({}, opts, {
             type: type
           }));
-          responder(payload, request, response);
+          respond(payload, request, response);
         }
       );
     });
@@ -131,6 +134,7 @@ Controller.prototype.destroy = function (opts) {
   var source = this.source;
   var type = source.typeName();
   var method = opts.method;
+  var respond = opts.responder || this.responder;
   if (!method) {
     method = opts.method = 'destroy';
   }
@@ -142,7 +146,7 @@ Controller.prototype.destroy = function (opts) {
   return function (request, response) {
     source.byId(request.params.id, function (err, model) {
       if (!model) {
-        return responder(lookupFailed, request, response);
+        return respond(lookupFailed, request, response);
       }
       return source.destroy(
         request.body[type],
@@ -151,7 +155,7 @@ Controller.prototype.destroy = function (opts) {
           var payload = destroyResponse(err, data, _.extend({}, opts, {
             type: type
           }));
-          responder(payload, request, response);
+          respond(payload, request, response);
         }
       );
     });
