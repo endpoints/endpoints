@@ -43,7 +43,8 @@ module.exports = function (err, data, opts) {
     code: 200,
     data: jsonApi(data, {
       one: singleResult,
-      relations: relations
+      relations: relations,
+      typeName: opts.type
     })
   };
 };

@@ -14,8 +14,8 @@ module.exports = function (input, opts) {
   // initialize an index so we can prevent serializing the same records
   // more than once to the top level `linked` key.
   var linkedResourceIndex = {};
-  // get the underlying model type so we know what the primary resource is
-  var typeName = input.model.typeName;
+  // get the model type so we know what the primary resource is
+  var typeName = opts.typeName;
   // iterate through the input, adding links and populating linked data
   var result = input.reduce(function (output, model) {
     // determine which to-one relations on this model were not
