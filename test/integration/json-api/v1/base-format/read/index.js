@@ -2,6 +2,7 @@ const expect = require('chai').expect;
 
 const DB = require('../../../../../fixtures/classes/database');
 const authorController = require('../../../../../fixtures/controllers/authors');
+const bookController = require('../../../../../fixtures/controllers/books');
 
 var req = require('../../../../../fixtures/mocks/express_request')();
 
@@ -63,7 +64,18 @@ describe('read', function() {
         });
         authorRouteHandler(req);
       });
-      it('must not include any top-level members other than "data," "meta," or "links," "linked"');
+      it('must not include any top-level members other than "data," "meta," or "links," "linked"', function() {
+        var allowedTopLevel = ['data', 'linked', 'links', 'meta'];
+        var authorRouteHandler = authorController.read({
+          responder: function(payload) {
+            expect(payload.code).to.equal(200);
+            Object.keys(payload.data).forEach(function(key) {
+              expect(allowedTopLevel).to.contain(key);
+            });
+          }
+        });
+        authorRouteHandler(req);
+      });
     });
 
     describe('resourceObjects', function() {
