@@ -18,7 +18,7 @@ describe('toOneRelations', function () {
   });
 
   it('should return an array of to-one relations on a model', function () {
-    expect(toOneRelations(model, model.constructor.relations)).to.deep.equal(['author', 'series']);
+    expect(toOneRelations(model, model.constructor.relations)).to.deep.equal({'author': 'author_id', 'series': 'series_id'});
   });
 /*
   it('should ignore nested relations', function () {

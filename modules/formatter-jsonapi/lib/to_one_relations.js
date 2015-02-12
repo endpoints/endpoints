@@ -8,6 +8,7 @@ module.exports = function (model, relations) {
     }
     // find related information about the model
     var relation = model.related(relationName);
+    var relKey = relation.relatedData.foreignKey;
     // if a relation is specified on the model that doesn't
     // actually exist, we should bail out quickly.
     if (!relation) {
@@ -17,8 +18,8 @@ module.exports = function (model, relations) {
     }
     // is this relation of a kind we care about? if yes, add it!
     if (relation.relatedData.type === 'belongsTo') {
-      result.push(relationName);
+      result[relationName] = relKey;
     }
     return result;
-  }, []);
+  }, {});
 };

@@ -21,10 +21,8 @@ module.exports = function (input, opts) {
     // determine which to-one relations on this model were not
     // explicitly included.
     var allRelations = model.constructor.relations;
-    var linkWithoutInclude = _.difference(
-      toOneRelations(model, allRelations),
-      linkWithInclude
-    );
+    var toOneRels = toOneRelations(model, allRelations);
+    var linkWithoutInclude = _.difference(Object.keys(toOneRels), linkWithInclude);
     // get the or initialize the primary resource key
     var primaryResource = getKey(output, 'data');
     // get a json representation of the model, excluding any related data
@@ -61,6 +59,11 @@ module.exports = function (input, opts) {
     serialized.id = String(serialized.id);
     // Include type on primary resource
     serialized.type = typeName;
+
+    // Remove foreign keys from model
+    for (var rel in toOneRels) {
+      delete serialized[toOneRels[rel]];
+    }
 
     if (Object.keys(links).length > 0) {
       serialized.links = links;

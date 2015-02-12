@@ -81,8 +81,34 @@ describe('read', function() {
     describe('resourceObjects', function() {
 
       describe('resourceAttributes', function() {
-        it('must not contain a foreign key as an attribute');
-        it('must include relations as linked resources');
+        it('must not contain a foreign key as an attribute', function() {
+          var bookRouteHandler = bookController.read({
+            one:true,
+            responder: function(payload) {
+              expect(payload.code).to.equal(200);
+              expect(payload.data.data).to.be.an('object');
+              expect(payload.data.data).to.not.have.property('author_id');
+              expect(payload.data.data).to.not.have.property('series_id');
+            }
+          });
+          bookRouteHandler({params: {
+            id: 1
+          }});
+        });
+        it('must include relations as linked resources', function() {
+          var bookRouteHandler = bookController.read({
+            one:true,
+            responder: function(payload) {
+              expect(payload.code).to.equal(200);
+              expect(payload.data.data).to.be.an('object');
+              expect(payload.data.data.links).to.have.property('author');
+              expect(payload.data.data.links).to.have.property('series');
+            }
+          });
+          bookRouteHandler({params: {
+            id: 1
+          }});
+        });
       });
 
       describe('resourceIdentification', function() {
