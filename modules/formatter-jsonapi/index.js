@@ -14,8 +14,6 @@ module.exports = function (input, opts) {
   // initialize an index so we can prevent serializing the same records
   // more than once to the top level `linked` key.
   var linkedResourceIndex = {};
-  // get the underlying model type so we know what the primary resource is
-  var typeName = input.model.typeName;
   // iterate through the input, adding links and populating linked data
   var result = input.reduce(function (output, model) {
     // determine which to-one relations on this model were not
@@ -26,7 +24,7 @@ module.exports = function (input, opts) {
       linkWithInclude
     );
     // get the or initialize the primary resource key
-    var primaryResource = getKey(output, typeName);
+    var primaryResource = getKey(output, 'data');
     // get a json representation of the model, excluding any related data
     var serialized = model.toJSON({shallow:true});
     // build a links object, adding any linked models to
@@ -67,12 +65,12 @@ module.exports = function (input, opts) {
 
   // if we were looking for a single result, return it as an object
   if (singleResult && input.length === 1) {
-    result[typeName] = result[typeName][0];
+    result.data = result.data[0];
   }
 
   // if there is nothing in the root object, represent it as an empty array
-  if (!result[typeName]) {
-    result[typeName] = [];
+  if (!result.data) {
+    result.data = [];
   }
 
   // bam.  done.
