@@ -14,6 +14,8 @@ module.exports = function (input, opts) {
   // initialize an index so we can prevent serializing the same records
   // more than once to the top level `linked` key.
   var linkedResourceIndex = {};
+  // get the underlying model type so we know what the primary resource is
+  var typeName = opts.typeName;
   // iterate through the input, adding links and populating linked data
   var result = input.reduce(function (output, model) {
     // determine which to-one relations on this model were not
@@ -32,6 +34,7 @@ module.exports = function (input, opts) {
       linkWithInclude: linkWithInclude,
       linkWithoutInclude: linkWithoutInclude,
       exporter: function (models, type) {
+        var shallowModel;
         // get a reference to the array of linked resources of this type
         var linkedResource = getKey(output.linked, type);
         // get the index of ids for this resource type
@@ -42,12 +45,22 @@ module.exports = function (input, opts) {
           var id = model.get('id');
           // only add the linked resource if it doesn't already exist.
           if (id && index.indexOf(id) === -1) {
+            shallowModel = model.toJSON({shallow:true});
+            // json-api requires id be a string -- shouldn't rely on server
+            shallowModel.id = String(shallowModel.id);
+            // Include type on linked resources
+            shallowModel.type = model.typeName;
             linkedResource.push(model.toJSON({shallow:true}));
             index.push(id);
           }
         });
       }
     });
+
+    // json-api requires id be a string -- shouldn't rely on server
+    serialized.id = String(serialized.id);
+    // Include type on primary resource
+    serialized.type = typeName;
 
     if (Object.keys(links).length > 0) {
       serialized.links = links;

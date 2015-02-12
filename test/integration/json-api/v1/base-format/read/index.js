@@ -90,13 +90,57 @@ describe('read', function() {
       });
 
       describe('resourceTypes', function() {
-        it('must contain a type');
-        it('must have a string value for type');
+        it('must contain a type', function() {
+          var bookRouteHandler = bookController.read({
+            one:true,
+            responder: function(payload) {
+              expect(payload.code).to.equal(200);
+              expect(payload.data.data).to.have.property('type');
+            }
+          });
+          bookRouteHandler({params: {
+            id: 1
+          }});
+        });
+        it('must have a string value for type', function() {
+          var bookRouteHandler = bookController.read({
+            one:true,
+            responder: function(payload) {
+              expect(payload.code).to.equal(200);
+              expect(payload.data.data.type).to.be.a('string');
+            }
+          });
+          bookRouteHandler({params: {
+            id: 1
+          }});
+        });
       });
 
       describe('resourceIds', function() {
-        it('must contain an id');
-        it('must have a string value for id');
+        it('must contain an id', function() {
+          var bookRouteHandler = bookController.read({
+            one:true,
+            responder: function(payload) {
+              expect(payload.code).to.equal(200);
+              expect(payload.data.data).to.have.property('id');
+            }
+          });
+          bookRouteHandler({params: {
+            id: 1
+          }});
+        });
+        it('must have a string value for type', function() {
+          var bookRouteHandler = bookController.read({
+            one:true,
+            responder: function(payload) {
+              expect(payload.code).to.equal(200);
+              expect(payload.data.data.id).to.be.a('string');
+            }
+          });
+          bookRouteHandler({params: {
+            id: 1
+          }});
+        });
       });
 
       describe('links', function() {
