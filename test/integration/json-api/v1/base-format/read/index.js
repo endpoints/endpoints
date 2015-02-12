@@ -7,7 +7,7 @@ var req = require('../../../../../fixtures/mocks/express_request')();
 
 describe('read', function() {
 
-  before(function() {
+  beforeEach(function() {
     return DB.reset();
   });
 
@@ -18,7 +18,7 @@ describe('read', function() {
         var authorRouteHandler = authorController.read({
           responder: function(payload) {
             expect(payload.code).to.equal(200);
-            expect(payload).to.be.an('object');
+            expect(payload.data).to.be.an('object');
           }
         });
         authorRouteHandler(req);
@@ -29,7 +29,7 @@ describe('read', function() {
           var authorRouteHandler = authorController.read({
             responder: function(payload) {
               expect(payload.code).to.equal(400);
-              expect(payload).to.be.an('object');
+              expect(payload.data).to.be.an('object');
             }
           });
           authorRouteHandler({params:{}});

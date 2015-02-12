@@ -18,9 +18,7 @@ function migrateUntil(stopVersion) {
 module.exports = Bookshelf;
 
 module.exports.empty = function() {
-  return bPromise.each(tables, function(table) {
-    return Knex.raw('DROP TABLE ' + table);
-  });
+  return Knex.migrate.rollback();
 };
 
 module.exports.reset = function () {
