@@ -18,7 +18,7 @@ function migrateUntil(stopVersion) {
 module.exports = Bookshelf;
 
 module.exports.empty = function() {
-  return Knex.migrate.rollback();
+  return Knex.migrate.rollback(config);
 };
 
 module.exports.reset = function () {

@@ -15,56 +15,61 @@ describe('read', function() {
   describe('documentStructure', function() {
 
     describe('topLevel', function() {
-      it('must respond to a successful request with an object', function() {
+      it('must respond to a successful request with an object', function(done) {
         var authorRouteHandler = authorController.read({
           responder: function(payload) {
             expect(payload.code).to.equal(200);
             expect(payload.data).to.be.an('object');
+            done();
           }
         });
         authorRouteHandler(req);
       });
-      it('must respond to an unsuccessful request with a JSON object', function() {
+      it('must respond to an unsuccessful request with a JSON object', function(done) {
 
         DB.empty().then(function() {
           var authorRouteHandler = authorController.read({
             responder: function(payload) {
               expect(payload.code).to.equal(400);
               expect(payload.data).to.be.an('object');
+              done();
             }
           });
           authorRouteHandler({params:{}});
         });
       });
-      it('must place primary data under a top-level key named "data"', function() {
+      it('must place primary data under a top-level key named "data"', function(done) {
         var authorRouteHandler = authorController.read({
           responder: function(payload) {
             expect(payload.code).to.equal(200);
             expect(payload.data).to.have.property('data');
+            done();
           }
         });
         authorRouteHandler(req);
       });
-      it('must make primary data for a single record an object', function() {
+      it('must make primary data for a single record an object', function(done) {
         var authorRouteHandler = authorController.read({
           one: true,
           responder: function(payload) {
             expect(payload.code).to.equal(200);
             expect(payload.data.data).to.be.an('object');
+            done();
           }
         });
         authorRouteHandler(req);
       });
-      it('must make primary data for multiple records an array', function() {
+      it('must make primary data for multiple records an array', function(done) {
         var authorRouteHandler = authorController.read({
           responder: function(payload) {
             expect(payload.code).to.equal(200);
             expect(payload.data.data).to.be.an('array');
+            done();
           }
         });
         authorRouteHandler(req);
       });
-      it('must not include any top-level members other than "data," "meta," or "links," "linked"', function() {
+      it('must not include any top-level members other than "data," "meta," or "links," "linked"', function(done) {
         var allowedTopLevel = ['data', 'linked', 'links', 'meta'];
         var authorRouteHandler = authorController.read({
           responder: function(payload) {
@@ -72,6 +77,7 @@ describe('read', function() {
             Object.keys(payload.data).forEach(function(key) {
               expect(allowedTopLevel).to.contain(key);
             });
+            done();
           }
         });
         authorRouteHandler(req);
@@ -81,7 +87,7 @@ describe('read', function() {
     describe('resourceObjects', function() {
 
       describe('resourceAttributes', function() {
-        it('must not contain a foreign key as an attribute', function() {
+        it('must not contain a foreign key as an attribute', function(done) {
           var bookRouteHandler = bookController.read({
             one:true,
             responder: function(payload) {
@@ -89,13 +95,14 @@ describe('read', function() {
               expect(payload.data.data).to.be.an('object');
               expect(payload.data.data).to.not.have.property('author_id');
               expect(payload.data.data).to.not.have.property('series_id');
+              done();
             }
           });
           bookRouteHandler({params: {
             id: 1
           }});
         });
-        it('must include relations as linked resources', function() {
+        it('must include relations as linked resources', function(done) {
           var bookRouteHandler = bookController.read({
             one:true,
             responder: function(payload) {
@@ -103,6 +110,7 @@ describe('read', function() {
               expect(payload.data.data).to.be.an('object');
               expect(payload.data.data.links).to.have.property('author');
               expect(payload.data.data.links).to.have.property('series');
+              done();
             }
           });
           bookRouteHandler({params: {
@@ -116,24 +124,26 @@ describe('read', function() {
       });
 
       describe('resourceTypes', function() {
-        it('must contain a type', function() {
+        it('must contain a type', function(done) {
           var bookRouteHandler = bookController.read({
             one:true,
             responder: function(payload) {
               expect(payload.code).to.equal(200);
               expect(payload.data.data).to.have.property('type');
+              done();
             }
           });
           bookRouteHandler({params: {
             id: 1
           }});
         });
-        it('must have a string value for type', function() {
+        it('must have a string value for type', function(done) {
           var bookRouteHandler = bookController.read({
             one:true,
             responder: function(payload) {
               expect(payload.code).to.equal(200);
               expect(payload.data.data.type).to.be.a('string');
+              done();
             }
           });
           bookRouteHandler({params: {
@@ -143,24 +153,26 @@ describe('read', function() {
       });
 
       describe('resourceIds', function() {
-        it('must contain an id', function() {
+        it('must contain an id', function(done) {
           var bookRouteHandler = bookController.read({
             one:true,
             responder: function(payload) {
               expect(payload.code).to.equal(200);
               expect(payload.data.data).to.have.property('id');
+              done();
             }
           });
           bookRouteHandler({params: {
             id: 1
           }});
         });
-        it('must have a string value for type', function() {
+        it('must have a string value for type', function(done) {
           var bookRouteHandler = bookController.read({
             one:true,
             responder: function(payload) {
               expect(payload.code).to.equal(200);
               expect(payload.data.data.id).to.be.a('string');
+              done();
             }
           });
           bookRouteHandler({params: {
