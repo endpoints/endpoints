@@ -122,6 +122,40 @@ Controller.prototype.read = function (opts) {
   };
 };
 
+Controller.prototype.readRelation = function (opts) {
+  if (!opts) {
+    opts = {};
+  }
+  var source = this.source;
+  var isValidRelation = this._isValidRelation.bind(this);
+  var respond = opts.responder || this.responder;
+
+  return function (request, response) {
+    // this is a hot mess, but it works as a proof of concept
+    var id = request.params.id;
+    var relation = request.params.relation;
+    if (!isValidRelation(relation)) {
+      return respond({
+        code: '???',
+        body: '???'
+      }, request, response);
+    }
+    source.byId(id, relation, function (err, model) {
+      var related = model && model.related(relation);
+      var isSingle = related && related.relatedData.type === 'belongsTo';
+      var type = related && related.relatedData.target.typeName;
+      if (isSingle) {
+        related = [related];
+      }
+      var payload = readResponse(err, related, _.extend({}, opts, {
+        type: type,
+        one: isSingle
+      }));
+      respond(payload, request, response);
+    });
+  };
+};
+
 Controller.prototype.update = function (opts) {
   if (!opts) {
     opts = {};

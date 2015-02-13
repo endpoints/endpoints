@@ -40,8 +40,15 @@ Source.prototype.typeName = function () {
   return this.model.typeName;
 };
 
-Source.prototype.byId = function (id, cb) {
-  return this.model.filter({id:id}).fetchOne().exec(cb);
+// not in love with this new method signature, it differs from the rest a lot.
+Source.prototype.byId = function (id, relations, cb) {
+  if (arguments.length === 2) {
+    cb = relations;
+    relations = [];
+  }
+  return this.model.filter({id:id}).fetchOne({
+    withRelated: relations
+  }).exec(cb);
 };
 
 Source.prototype.create = function (params, opts, cb) {
