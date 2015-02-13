@@ -38,6 +38,7 @@ exports.addCreate = function (source) {
 
 exports.addUpdate = function (source) {
   source.model.prototype.update = function (params) {
+    delete params.type;
     return this.save(params, {patch: true});
   };
 };

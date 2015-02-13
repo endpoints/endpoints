@@ -75,6 +75,7 @@ describe('BookshelfSource', function () {
           title: 'test book',
           date_published: '2015-02-01'
         }, { method: 'create' }, function (err, book) {
+          expect(book).to.be.an.instanceof(BooksModel);
           BooksSource.read(null, function (findNewErr, allBooksPlusNew) {
             expect(totalBooks + 1).to.equal(allBooksPlusNew.length);
             done();
@@ -134,11 +135,10 @@ describe('BookshelfSource', function () {
       BooksSource.byId(1, function (findErr, bookOne) {
         BooksSource.update({
           title: 'altered book'
-        }, { method: 'update', model: bookOne }, function () {
-          BooksSource.byId(1, function (err, book) {
-            expect(book.get('title')).to.equal(newTitle);
-            done();
-          });
+        }, { method: 'update', model: bookOne }, function (err, data) {
+          expect(data).to.be.an.instanceof(BooksModel);
+          expect(data.get('title')).to.equal(newTitle);
+          done();
         });
       });
     });

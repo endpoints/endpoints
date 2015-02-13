@@ -1,5 +1,35 @@
+const expect = require('chai').expect;
+
+const DB = require('../../../../../fixtures/classes/database');
+const authorController = require('../../../../../fixtures/controllers/authors');
+
 describe('updatingResources', function() {
-  it('must have a JSON object at the root of every response');
+
+  beforeEach(function() {
+    return DB.reset();
+  });
+
+  it('must have a JSON object at the root of every response', function(done) {
+    var authorRouteHandler = authorController.update({
+      responder: function(payload) {
+        expect(payload.code).to.equal(200);
+        expect(payload.data.data).to.be.an('object');
+        done();
+      }
+    });
+    authorRouteHandler({
+      params: {
+        id: 1
+      },
+      body: {
+        data: {
+          type: 'authors',
+          id: 1,
+          name: 'tiddlywinks'
+        }
+      }
+    });
+  });
   it('must not include any top-level members other than "data," "meta," or "links," "linked"');
 
   it('must require a single resource object as primary data');

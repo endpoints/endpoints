@@ -78,7 +78,7 @@ Controller.prototype.create = function (opts) {
   }
 
   return function (request, response) {
-    source.create(request.body[type], opts, function (err, data) {
+    source.create(request.body.data, opts, function (err, data) {
       var payload = createResponse(err, data, _.extend({}, opts, {
         type: type
       }));
@@ -144,7 +144,7 @@ Controller.prototype.update = function (opts) {
         return respond(lookupFailed, request, response);
       }
       return source.update(
-        request.body[type],
+        request.body.data,
         _.extend({model:model}, opts),
         function (err, data) {
           var payload = updateResponse(err, data, _.extend({}, opts, {

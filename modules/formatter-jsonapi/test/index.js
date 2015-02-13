@@ -9,6 +9,7 @@ describe('jsonApi', function () {
     require('./lib/link');
     require('./lib/relate');
     require('./lib/to_one_relations');
+    require('./lib/format_model');
   });
 
   describe('module', function () {
