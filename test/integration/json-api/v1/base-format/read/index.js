@@ -91,10 +91,11 @@ describe('read', function() {
           var bookRouteHandler = bookController.read({
             one:true,
             responder: function(payload) {
+              var dataObj = payload.data.data;
               expect(payload.code).to.equal(200);
-              expect(payload.data.data).to.be.an('object');
-              expect(payload.data.data).to.not.have.property('author_id');
-              expect(payload.data.data).to.not.have.property('series_id');
+              expect(dataObj).to.be.an('object');
+              expect(dataObj).to.not.have.property('author_id');
+              expect(dataObj).to.not.have.property('series_id');
               done();
             }
           });
@@ -106,10 +107,11 @@ describe('read', function() {
           var bookRouteHandler = bookController.read({
             one:true,
             responder: function(payload) {
+              var dataObj = payload.data.data;
               expect(payload.code).to.equal(200);
-              expect(payload.data.data).to.be.an('object');
-              expect(payload.data.data.links).to.have.property('author');
-              expect(payload.data.data.links).to.have.property('series');
+              expect(dataObj).to.be.an('object');
+              expect(dataObj.links).to.have.property('author');
+              expect(dataObj.links).to.have.property('series');
               done();
             }
           });
@@ -182,11 +184,24 @@ describe('read', function() {
       });
 
       describe('links', function() {
-        it('must have a json object as the value of any links key');
+        it('must have an object as the value of any links key', function(done) {
+          var bookRouteHandler = bookController.read({
+            one:true,
+            responder: function(payload) {
+              expect(payload.code).to.equal(200);
+              expect(payload.data.data.links).to.be.an('Object');
+              done();
+            }
+          });
+          bookRouteHandler({params: {
+            id: 1
+          }});
+        });
       });
 
       describe('resourceURLs', function() {
-        it('should include a URL in its links object keyed by "self" that identifies the resource represented by this object');
+        it('should include a string in its links object keyed by "self"');
+        it('should set the value of "self" to a URL that identifies the resource represented by this object');
         it('must respond to a get request to any `self` url with the resource as primary data');
       });
 
