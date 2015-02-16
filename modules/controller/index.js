@@ -17,7 +17,7 @@ Controller.prototype._isValidRelation = function(relation) {
 };
 
 Controller.prototype._filters = function (request) {
-  var allowedFilters = Object.keys(this.source.filters());
+  var allowedFilters = this.source.filters();
   return this.validFilters(extract({
     context: request,
     contextKeysToSearch: this.requestKeysToSearch,
@@ -45,8 +45,8 @@ Controller.prototype._relations = function (request) {
 };
 
 Controller.prototype.validFilters = function (filters) {
-  var allowedFilters = Object.keys(this.source.filters());
-  return Object.keys(filters).reduce(function (result, filter) {
+  var allowedFilters = this.source.filters();
+  return allowedFilters.reduce(function (result, filter) {
     if (allowedFilters.indexOf(filter) !== -1) {
       result[filter] = filters[filter];
     }
@@ -93,10 +93,11 @@ Controller.prototype.read = function (opts) {
   }
   var source = this.source;
   var type = source.typeName();
-  var filters = this._filters.bind(this);
-  var relations = this._relations.bind(this);
+  var allowedFilters = this._filters.bind(this);
+  var allowedRelations = this._relations.bind(this);
   var isValidRelation = this._isValidRelation.bind(this);
   var includes = opts.include || [];
+  var filters = opts.filters || {};
   var respond = opts.responder || this.responder;
 
   // forEach instead of use validRelation() so that we get the exact bad actor
@@ -107,9 +108,10 @@ Controller.prototype.read = function (opts) {
   });
 
   return function (request, response, next) {
-    var validRels = relations(request).concat(includes);
+    var validRels = allowedRelations(request).concat(includes);
+    var validFilters = _.extend(filters, allowedFilters(request));
     source.read({
-      filters: filters(request),
+      filters: validFilters,
       relations: validRels
     }, function (err, data) {
       var payload = readResponse(err, data, _.extend({}, opts, {
