@@ -3,7 +3,7 @@ const formatModel = require('./lib/format_model');
 // Take an array of Bookshelf models and convert them into a
 // json-api compliant representation of the underlying data.
 module.exports = function (input, opts) {
-  var formatted = {linked:{}};
+  var formatted = {linked:[]};
   var isSingle = !input.length;
 
   if (isSingle) {

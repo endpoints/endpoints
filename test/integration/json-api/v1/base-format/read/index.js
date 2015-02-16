@@ -359,7 +359,6 @@ describe('read', function() {
                   (linkedAuthor.type && linkedAuthor.id);
 
                 expect(payload.code).to.equal(200);
-                expect(payload.data.linked).to.have.property('authors');
                 expect(objectLinkage).to.exist;
                 done();
               }
@@ -428,8 +427,32 @@ describe('read', function() {
     });
 
     describe('compoundDocuments', function() {
-      it('should include linked resources');
-      it('must include linked resources as an array of resource objects in a top level `linked` member');
+      // Covered above in relations object linkages tests
+      // it('should include linked resources', function() {});
+      it('must include linked resources as an array of resource objects in a top level `linked` member', function(done) {
+        var bookRouteHandler = bookController.read({
+          one:true,
+          responder: function(payload) {
+            var linkedAuthor = payload.data.data.links.author;
+            expect(payload.code).to.equal(200);
+            expect(payload.data.linked).to.not.have.property('authors');
+            expect(payload.data.linked[0].type).to.equal(linkedAuthor.type);
+            expect(payload.data.linked[0].id).to.equal(linkedAuthor.id);
+            done();
+          }
+        });
+        bookRouteHandler({
+          params: {
+            id: 1
+          },
+          query: {
+            include: 'author'
+          }
+        });
+      });
+
+      // To test this at the integration level, we need some nested
+      // relations pointing to the same resources
       it('must not include more than one resource object for each type and id pair');
     });
 
@@ -439,7 +462,6 @@ describe('read', function() {
     // });
 
     describe('topLevelLinks', function() {
-      // it('should include a self link'); // superceded above
       it('should include pagination links if necessary');
     });
   });

@@ -34,7 +34,7 @@ module.exports = function (model, opts) {
     var type = relatedData.target.typeName;
     var link = {
       type: relatedData.target.typeName,
-      id: id
+      id: String(id)
     };
     if (id) {
       link.href = '/' + type + '/' + id;
@@ -64,7 +64,7 @@ module.exports = function (model, opts) {
       // and should serialize to an `ids` key rather than the `id`
       // key
       link.ids = related.reduce(function (result, model) {
-        var id = model.get('id');
+        var id = String(model.id);
         // exclude nulls and duplicates, the point of a links
         // entry is to provide linkage to related resources,
         // not a full mapping of the underlying data
@@ -78,7 +78,7 @@ module.exports = function (model, opts) {
       }
     } else {
       // for singular resources, store the id under `id`
-      link.id = related.get('id') || null;
+      link.id = String(related.id || null);
       if (exporter) {
         exporter([related], type);
       }

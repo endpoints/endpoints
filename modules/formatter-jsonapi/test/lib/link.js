@@ -12,7 +12,7 @@ const Authors = require('../../../../test/fixtures/models/authors');
 describe('link', function () {
 
   var booksModel, authorsModel;
-  var booksByAuthorOne = _.chain(fantasyDatabase.books).filter({author_id:1}).pluck('id').value();
+  var booksByAuthorOne = _.chain(fantasyDatabase.books).filter({author_id:1}).pluck('id').map(function(i) {return String(i);}).value();
 
   before(function () {
     return DB.reset().then(function () {
@@ -56,7 +56,7 @@ describe('link', function () {
     })).to.deep.equal({
       author: {
         href: '/authors/1',
-        id: 1,
+        id: '1',
         type: 'authors'
       }
     });
@@ -67,7 +67,7 @@ describe('link', function () {
       toOneWithoutInclude: ['series']
     })).to.deep.equal({
       series: {
-        id: null,
+        id: 'null',
         type: 'series'
       }
     });
