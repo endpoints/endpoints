@@ -1,4 +1,7 @@
 module.exports = function (model, relations) {
+  if (!Array.isArray(relations)) {
+    return {};
+  }
   return relations.reduce(function (result, relationName) {
     // nested relations are specified by dot notated strings
     // if a relation has a dot in it, it is nested, and therefor

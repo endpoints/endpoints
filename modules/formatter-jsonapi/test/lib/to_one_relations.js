@@ -17,16 +17,22 @@ describe('toOneRelations', function () {
     });
   });
 
-  it('should return an array of to-one relations on a model', function () {
-    expect(toOneRelations(model, model.constructor.relations)).to.deep.equal({'author': 'author_id', 'series': 'series_id'});
+  it('should return an empty object if invalid relations are provided', function () {
+    expect(toOneRelations(model)).to.deep.equal({});
   });
-/*
+
+  it('should return an object describing the to-one relations on a model', function () {
+    expect(toOneRelations(model, ['author'])).to.deep.equal({
+      author: 'author_id'
+    });
+  });
+
   it('should ignore nested relations', function () {
-    var relations = Books.relations.slice();
-    relations.push('authors.books');
-    expect(linkWithoutInclude(model, relations)).to.deep.equal(bookLinks);
+    expect(toOneRelations(model, ['author', 'author.books'])).to.deep.equal({
+      author: 'author_id'
+    });
   });
-*/
+
   it('should throw on invalid relations', function () {
     expect(function () {
       toOneRelations(model, ['invalid']);
