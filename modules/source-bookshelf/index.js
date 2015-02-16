@@ -29,7 +29,16 @@ Source.prototype._find = function (params, opts, cb) {
 };
 
 Source.prototype.filters = function () {
-  return this.model.filters || {};
+  var filters = Object.keys(this.model.filters || {});
+  // TODO: remove this and have the id filter be present by
+  // default on all bookshelf models. the alternative to this
+  // is putting the id filter in every model as boilerplate
+  // or waiting until the next version of bookshelf, where
+  // something like this can be added by default.
+  if (filters.indexOf('id') === -1) {
+    filters.push('id');
+  }
+  return filters;
 };
 
 Source.prototype.relations = function () {

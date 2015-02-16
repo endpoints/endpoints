@@ -27,7 +27,8 @@ describe('BookshelfSource', function () {
   describe('#filters', function () {
 
     it('should return filters for this source', function () {
-      expect(BooksSource.filters()).to.deep.equal(BooksModel.filters);
+      var expected = Object.keys(BooksModel.filters).concat(['id']);
+      expect(BooksSource.filters()).to.deep.equal(expected);
     });
 
   });
