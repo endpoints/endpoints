@@ -298,6 +298,32 @@ describe('read', function() {
               id: 1
             }});
           });
+
+          it('must include object linkage to resource objects included in the same compound document', function(done) {
+            var bookRouteHandler = bookController.read({
+              one:true,
+              responder: function(payload) {
+                var linkedAuthor = payload.data.data.links.author;
+                var objectLinkage =
+                  linkedAuthor.data ||
+                  (linkedAuthor.type && linkedAuthor.id);
+
+                expect(payload.code).to.equal(200);
+                expect(payload.data.linked).to.have.property('authors');
+                expect(objectLinkage).to.exist;
+                done();
+              }
+            });
+            bookRouteHandler({
+              params: {
+                id: 1
+              },
+              query: {
+                include: 'author'
+              }
+            });
+          });
+
           it('must express object linkages as type and id for to-one relationships', function(done) {
             var bookRouteHandler = bookController.read({
               one:true,
@@ -347,9 +373,6 @@ describe('read', function() {
 
           // We don't do polymorphism
           // it('must express object linkages as a data member whose value is an array of objects containing type and id for heterogeneous to-many relationships');
-
-          // Seems to be tested above by forcing the includes
-          // it('must include object linkage to resource objects included in the same compound document');
         });
       });
     });
@@ -360,12 +383,10 @@ describe('read', function() {
       it('must not include more than one resource object for each type and id pair');
     });
 
-    describe('metaInformation', function() {
-      // The document MAY be extended to include meta-information as
-      // "meta" members in several locations: at the top-level,
-      // within resource objects, and within link objects.
-      it('must be an object value');
-    });
+    // Not currently used by endpoints
+    // describe('metaInformation', function() {
+    //   it('must be an object value');
+    // });
 
     describe('topLevelLinks', function() {
       // it('should include a self link'); // superceded above
