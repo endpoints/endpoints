@@ -12,12 +12,10 @@ module.exports = {
   update: function () {},
   destroy: function () {},
   filters: function () {
-    return {
-      title: true
-    };
+    return ['id', 'title'];
   },
   relations: function () {
-    return ['value'];
+    return ['relation'];
   },
   model: Model
 };
