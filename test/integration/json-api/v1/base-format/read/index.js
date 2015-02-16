@@ -451,9 +451,21 @@ describe('read', function() {
         });
       });
 
-      // To test this at the integration level, we need some nested
-      // relations pointing to the same resources
-      it('must not include more than one resource object for each type and id pair');
+      it('must not include more than one resource object for each type and id pair', function(done) {
+        var bookRouteHandler = bookController.read({
+          responder: function(payload) {
+            expect(payload.code).to.equal(200);
+            expect(payload.data.linked.length).to.equal(2);
+            done();
+          }
+        });
+        bookRouteHandler({
+          params: {},
+          query: {
+            include: 'author'
+          }
+        });
+      });
     });
 
     // Not currently used by endpoints

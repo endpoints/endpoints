@@ -1,3 +1,5 @@
+const _ = require('lodash');
+
 const formatModel = require('./lib/format_model');
 
 // Take an array of Bookshelf models and convert them into a
@@ -14,6 +16,12 @@ module.exports = function (input, opts) {
       return formatModel(output, model, opts);
     }, formatted);
   }
+
+  // limit the linked array to unique type/id combinations
+  formatted.linked = _.uniq(formatted.linked, function(rel) {
+    return rel.type + rel.id;
+  });
+
   // if there is no linked data, don't include it.
   if (Object.keys(formatted.linked).length === 0) {
     delete formatted.linked;
