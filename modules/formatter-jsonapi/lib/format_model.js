@@ -31,7 +31,7 @@ module.exports = function formatModel(output, model, opts) {
       // iterate each of the linked resources
       models.forEach(function (model) {
         // cache the model's ID
-        var id = model.get('id');
+        var id = model.id;
         // only add the linked resource if it doesn't already exist.
         if (id && index.indexOf(id) === -1) {
           shallowModel = model.toJSON({shallow:true});
@@ -56,9 +56,10 @@ module.exports = function formatModel(output, model, opts) {
     delete serialized[toOneRels[rel]];
   }
 
-  if (Object.keys(links).length > 0) {
-    serialized.links = links;
-  }
+  // always add a self-referential link
+  links.self = '/' + typeName + '/' + model.id;
+  serialized.links = links;
+
   // add the model to the primary resource key
   primaryResource.push(serialized);
   // return the output we have built up so far

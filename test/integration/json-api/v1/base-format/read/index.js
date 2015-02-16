@@ -200,9 +200,38 @@ describe('read', function() {
       });
 
       describe('resourceURLs', function() {
-        it('should include a string in its links object keyed by "self"');
-        it('should set the value of "self" to a URL that identifies the resource represented by this object');
-        it('must respond to a get request to any `self` url with the resource as primary data');
+        it('should include a string in its links object keyed by "self"', function(done) {
+          var bookRouteHandler = bookController.read({
+            one:true,
+            responder: function(payload) {
+              var links = payload.data.data.links;
+              expect(payload.code).to.equal(200);
+              expect(links).to.have.property('self');
+              expect(links.self).to.be.a('String');
+              done();
+            }
+          });
+          bookRouteHandler({params: {
+            id: 1
+          }});
+        });
+        it('should set the value of "self" to a URL that identifies the resource represented by this object', function(done) {
+          var bookRouteHandler = bookController.read({
+            one:true,
+            responder: function(payload) {
+              var links = payload.data.data.links;
+              expect(payload.code).to.equal(200);
+              expect(links.self).to.equal('/books/1');
+              done();
+            }
+          });
+          bookRouteHandler({params: {
+            id: 1
+          }});
+        });
+
+        // API TEST
+        // it('must respond to a get request to any `self` url with the resource as primary data');
       });
 
       describe('resourceRelationships', function() {
