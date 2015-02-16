@@ -51,6 +51,9 @@ describe('read', function() {
       it('must make primary data for a single record an object', function(done) {
         var authorRouteHandler = authorController.read({
           one: true,
+          filters: {
+            id: 1
+          },
           responder: function(payload) {
             expect(payload.code).to.equal(200);
             expect(payload.data.data).to.be.an('object');
@@ -90,6 +93,9 @@ describe('read', function() {
         it('must not contain a foreign key as an attribute', function(done) {
           var bookRouteHandler = bookController.read({
             one:true,
+            filters: {
+              id: 1
+            },
             responder: function(payload) {
               var dataObj = payload.data.data;
               expect(payload.code).to.equal(200);
@@ -106,6 +112,9 @@ describe('read', function() {
         it('must include relations as linked resources', function(done) {
           var bookRouteHandler = bookController.read({
             one:true,
+            filters: {
+              id: 1
+            },
             responder: function(payload) {
               var dataObj = payload.data.data;
               expect(payload.code).to.equal(200);
@@ -129,6 +138,9 @@ describe('read', function() {
         it('must contain a type', function(done) {
           var bookRouteHandler = bookController.read({
             one:true,
+            filters: {
+              id: 1
+            },
             responder: function(payload) {
               expect(payload.code).to.equal(200);
               expect(payload.data.data).to.have.property('type');
@@ -142,6 +154,9 @@ describe('read', function() {
         it('must have a string value for type', function(done) {
           var bookRouteHandler = bookController.read({
             one:true,
+            filters: {
+              id: 1
+            },
             responder: function(payload) {
               expect(payload.code).to.equal(200);
               expect(payload.data.data.type).to.be.a('string');
@@ -158,6 +173,9 @@ describe('read', function() {
         it('must contain an id', function(done) {
           var bookRouteHandler = bookController.read({
             one:true,
+            filters: {
+              id: 1
+            },
             responder: function(payload) {
               expect(payload.code).to.equal(200);
               expect(payload.data.data).to.have.property('id');
@@ -171,6 +189,9 @@ describe('read', function() {
         it('must have a string value for type', function(done) {
           var bookRouteHandler = bookController.read({
             one:true,
+            filters: {
+              id: 1
+            },
             responder: function(payload) {
               expect(payload.code).to.equal(200);
               expect(payload.data.data.id).to.be.a('string');
@@ -187,6 +208,9 @@ describe('read', function() {
         it('must have an object as the value of any links key', function(done) {
           var bookRouteHandler = bookController.read({
             one:true,
+            filters: {
+              id: 1
+            },
             responder: function(payload) {
               expect(payload.code).to.equal(200);
               expect(payload.data.data.links).to.be.an('Object');
@@ -203,6 +227,9 @@ describe('read', function() {
         it('should include a string in its links object keyed by "self"', function(done) {
           var bookRouteHandler = bookController.read({
             one:true,
+            filters: {
+              id: 1
+            },
             responder: function(payload) {
               var links = payload.data.data.links;
               expect(payload.code).to.equal(200);
@@ -218,6 +245,9 @@ describe('read', function() {
         it('should set the value of "self" to a URL that identifies the resource represented by this object', function(done) {
           var bookRouteHandler = bookController.read({
             one:true,
+            filters: {
+              id: 1
+            },
             responder: function(payload) {
               var links = payload.data.data.links;
               expect(payload.code).to.equal(200);

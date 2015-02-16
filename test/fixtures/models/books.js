@@ -16,9 +16,6 @@ const instanceProps = {
 const classProps = {
   typeName: 'books',
   filters: {
-    id: function (qb, value) {
-      return qb.whereIn('id', value);
-    },
     author_id: function (qb, value) {
       return qb.whereIn('author_id', value);
     },
