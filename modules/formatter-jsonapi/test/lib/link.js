@@ -52,7 +52,7 @@ describe('link', function () {
 
   it('should generate toOne links entries for a model', function () {
     expect(link(booksModel, {
-      linkWithoutInclude: ['author'],
+      toOneWithoutInclude: ['author'],
     })).to.deep.equal({
       author: {
         href: '/authors/1',
@@ -64,7 +64,7 @@ describe('link', function () {
 
   it('should handle null toOne link entries for a model', function () {
     expect(link(booksModel, {
-      linkWithoutInclude: ['series']
+      toOneWithoutInclude: ['series']
     })).to.deep.equal({
       series: {
         id: null,

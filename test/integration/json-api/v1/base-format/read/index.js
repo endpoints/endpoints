@@ -130,9 +130,10 @@ describe('read', function() {
         });
       });
 
-      describe('resourceIdentification', function() {
-        it('must have a unique type and id pair');
-      });
+      // More of a DB/ORM test
+      // describe('resourceIdentification', function() {
+      //   it('must have a unique type and id pair');
+      // });
 
       describe('resourceTypes', function() {
         it('must contain a type', function(done) {
@@ -273,6 +274,8 @@ describe('read', function() {
               expect(payload.code).to.equal(200);
               expect(links).to.have.property('author');
               expect(links).to.have.property('series');
+              expect(links).to.have.property('stores');
+              expect(links).to.have.property('author.books');
               done();
             }
           });
@@ -284,8 +287,7 @@ describe('read', function() {
         // seems like this is taken care of in the self test above
         // it('shall not have a relationship to another object keyed as "self"');
 
-        it('must make references either a string URL or a link object', function(done) {
-          // endpoints always uses objects for now
+        it('must make to-one references a link object', function(done) {
           var bookRouteHandler = bookController.read({
             one:true,
             responder: function(payload) {
@@ -293,6 +295,24 @@ describe('read', function() {
               expect(payload.code).to.equal(200);
               expect(links.author).to.be.an('Object');
               expect(links.series).to.be.an('Object');
+              done();
+            }
+          });
+          bookRouteHandler({params: {
+            id: 1
+          }});
+        });
+
+        it('must make to-many references a string URL', function(done) {
+          var bookRouteHandler = bookController.read({
+            one:true,
+            responder: function(payload) {
+              var links = payload.data.data.links;
+              expect(payload.code).to.equal(200);
+              expect(links.stores).to.be.a('String');
+              expect(links['author.books']).to.be.a('String');
+              expect(links.stores).to.equal('/books/1/stores');
+              expect(links['author.books']).to.equal('/books/1/author.books');
               done();
             }
           });
