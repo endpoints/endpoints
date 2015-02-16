@@ -235,20 +235,121 @@ describe('read', function() {
       });
 
       describe('resourceRelationships', function() {
-        it('should contain references to related objects in the links object');
-        it('shall not have a relationship to another object keyed as "self"');
-        it('must be either a string URL or a link object');
+        it('should contain references to related objects in the links object', function(done) {
+          var bookRouteHandler = bookController.read({
+            one:true,
+            responder: function(payload) {
+              var links = payload.data.data.links;
+              expect(payload.code).to.equal(200);
+              expect(links).to.have.property('author');
+              expect(links).to.have.property('series');
+              done();
+            }
+          });
+          bookRouteHandler({params: {
+            id: 1
+          }});
+        });
 
+        // seems like this is taken care of in the self test above
+        // it('shall not have a relationship to another object keyed as "self"');
+
+        it('must make references either a string URL or a link object', function(done) {
+          // endpoints always uses objects for now
+          var bookRouteHandler = bookController.read({
+            one:true,
+            responder: function(payload) {
+              var links = payload.data.data.links;
+              expect(payload.code).to.equal(200);
+              expect(links.author).to.be.an('Object');
+              expect(links.series).to.be.an('Object');
+              done();
+            }
+          });
+          bookRouteHandler({params: {
+            id: 1
+          }});
+        });
+
+        // currently not implementing string rels - may be a good vector
+        // for many-to-many relations in the future
         describe('stringURLRelationship', function() {
           it('should not change related URL even when the resource changes');
         });
 
         describe('linkObjectRelationship', function() {
-          it('must contain either a "self," "resource," "meta" property or an object linkage');
-          it('must express object linkages as type and id for to-one relationships');
-          it('must express object linkages as type and ids for to-many relationships');
-          it('must express object linkages as a data member whose value is an array of objects containing type and id for heterogeneous to-many relationships');
-          it('must include object linkage to resource objects included in the same compound document');
+          it('must contain either a "self," "resource," "meta" property or an object linkage via a data object or type and id', function(done) {
+            var bookRouteHandler = bookController.read({
+              one:true,
+              responder: function(payload) {
+                var linkedAuthor = payload.data.data.links.author;
+                var minProp =
+                  linkedAuthor.self ||
+                  linkedAuthor.resource ||
+                  linkedAuthor.meta ||
+                  linkedAuthor.data ||
+                  (linkedAuthor.type && linkedAuthor.id);
+                expect(payload.code).to.equal(200);
+                expect(minProp).to.exist;
+                done();
+              }
+            });
+            bookRouteHandler({params: {
+              id: 1
+            }});
+          });
+          it('must express object linkages as type and id for to-one relationships', function(done) {
+            var bookRouteHandler = bookController.read({
+              one:true,
+              responder: function(payload) {
+                var links = payload.data.data.links;
+                expect(payload.code).to.equal(200);
+                expect(links.author).to.have.property('type');
+                expect(links.author).to.have.property('id');
+                done();
+              }
+            });
+            bookRouteHandler({
+              params: {
+                id: 1
+              },
+              query: {
+                // object linkages only require type and id if the
+                // relation is in the top-level `linked` object
+                // only testing that case here
+                include: 'author'
+              }
+            });
+          });
+          it('must express object linkages as type and ids for to-many relationships', function(done) {
+            var bookRouteHandler = bookController.read({
+              one:true,
+              responder: function(payload) {
+                var links = payload.data.data.links;
+                expect(payload.code).to.equal(200);
+                expect(links.series).to.have.property('type');
+                expect(links.series).to.have.property('id');
+                done();
+              }
+            });
+            bookRouteHandler({
+              params: {
+                id: 1
+              },
+              query: {
+                // object linkages only require type and id if the
+                // relation is in the top-level `linked` object
+                // only testing that case here
+                include: 'series'
+              }
+            });
+          });
+
+          // We don't do polymorphism
+          // it('must express object linkages as a data member whose value is an array of objects containing type and id for heterogeneous to-many relationships');
+
+          // Seems to be tested above by forcing the includes
+          // it('must include object linkage to resource objects included in the same compound document');
         });
       });
     });
