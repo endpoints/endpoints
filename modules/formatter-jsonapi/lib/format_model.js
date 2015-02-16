@@ -20,7 +20,6 @@ module.exports = function formatModel(output, model, opts) {
   var toManyWithoutInclude = _.difference(linkWithoutInclude, toOneWithoutInclude);
   // get the underlying model type so we know what the primary resource is
   var typeName = opts.typeName;
-  var linkedIndex = {};
   // build a links object, adding any linked models to
   var links = link(model, {
     linkWithInclude: linkWithInclude,
@@ -30,20 +29,18 @@ module.exports = function formatModel(output, model, opts) {
     exporter: function (models, type) {
       var shallowModel;
       // get the index of ids for this resource type
-      var index = getKey(linkedIndex, type);
       // iterate each of the linked resources
       models.forEach(function (model) {
         // cache the model's ID
         var id = model.id;
         // only add the linked resource if it doesn't already exist.
-        if (id && index.indexOf(id) === -1) {
+        if (id) {
           shallowModel = model.toJSON({shallow:true});
           // json-api requires id be a string -- shouldn't rely on server
           shallowModel.id = String(shallowModel.id);
           // Include type on linked resources
           shallowModel.type = type;
           output.linked.push(shallowModel);
-          index.push(id);
         }
       });
     }
