@@ -127,6 +127,7 @@ describe('Application', function () {
         {
           name: 'foo',
           filters: [
+            'id',
             'qux'
           ],
           includes: [
@@ -152,7 +153,7 @@ describe('Application', function () {
       TestApp.register('foo').endpoint('foo');
       TestApp.register('bar').endpoint('bar');
       expect(TestApp.index()).to.deep.equal({
-        foo: '/foo?include={bar,baz}&{qux}',
+        foo: '/foo?include={bar,baz}&{id,qux}',
         bar: '/bar'
       });
     });

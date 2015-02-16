@@ -4,9 +4,7 @@ module.exports = {
       return ['bar', 'baz'];
     },
     filters: function () {
-      return {
-        qux: true
-      };
+      return ['id', 'qux'];
     }
   }
 };

@@ -59,7 +59,7 @@ Application.prototype.manifest = function () {
     var filters = [];
     var includes = [];
     if (source) {
-      filters = Object.keys(source.filters());
+      filters = source.filters();
       includes = source.relations();
     }
     result.push({
