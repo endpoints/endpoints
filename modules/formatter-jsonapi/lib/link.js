@@ -5,12 +5,13 @@ module.exports = function (model, opts) {
     opts = {};
   }
   var links = {};
-  var linkWithoutIncludes = opts.linkWithoutInclude || [];
+  var toOneWithoutIncludes = opts.toOneWithoutInclude || [];
+  var toManyWithoutIncludes = opts.toManyWithoutInclude || [];
   var linkWithIncludes = opts.linkWithInclude || [];
   var exporter = opts.exporter;
 
-  // Link relations that were not explictly included. For example,
-  // a record in a database of employees might look like this:
+  // To-one link relations that were not explictly included. For
+  // example, a record in a database of employees might look like this:
   // {
   //   "id": "1",
   //   "name": "tyler",
@@ -25,7 +26,7 @@ module.exports = function (model, opts) {
   //     "id": "1"
   //   }
   // }
-  linkWithoutIncludes.reduce(function (result, relationName) {
+  toOneWithoutIncludes.reduce(function (result, relationName) {
     var relation = model.related(relationName);
     var relatedData = relation.relatedData;
     var fkey = relatedData.foreignKey;
@@ -38,6 +39,14 @@ module.exports = function (model, opts) {
     if (id) {
       link.href = '/' + type + '/' + id;
     }
+    result[relationName] = link;
+    return result;
+  }, links);
+
+  // To-many link relations that were not explicitly included.
+  // Added to `links` as a string URL reference
+  toManyWithoutIncludes.reduce(function (result, relationName) {
+    var link = '/' + opts.primaryType + '/' + model.id + '/' + relationName;
     result[relationName] = link;
     return result;
   }, links);

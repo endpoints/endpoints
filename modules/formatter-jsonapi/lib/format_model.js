@@ -15,13 +15,17 @@ module.exports = function formatModel(output, model, opts) {
   var serialized = model.toJSON({shallow:true});
   // get the relations we'll be pulling off the input data
   var linkWithInclude = opts.relations || [];
-  var linkWithoutInclude = _.difference(Object.keys(toOneRels), linkWithInclude);
+  var linkWithoutInclude = _.difference(allRelations, linkWithInclude);
+  var toOneWithoutInclude = _.intersection(linkWithoutInclude, Object.keys(toOneRels));
+  var toManyWithoutInclude = _.difference(linkWithoutInclude, toOneWithoutInclude);
   // get the underlying model type so we know what the primary resource is
   var typeName = opts.typeName;
   // build a links object, adding any linked models to
   var links = link(model, {
     linkWithInclude: linkWithInclude,
-    linkWithoutInclude: linkWithoutInclude,
+    toManyWithoutInclude: toManyWithoutInclude,
+    toOneWithoutInclude: toOneWithoutInclude,
+    primaryType: typeName,
     exporter: function (models, type) {
       var shallowModel;
       // get a reference to the array of linked resources of this type
