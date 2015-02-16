@@ -1,5 +1,4 @@
 const expect = require('chai').expect;
-const sinon = require('sinon');
 
 const Controller = require('../');
 
@@ -29,6 +28,27 @@ describe('Controller', function () {
 
   });
 
+  describe('#validFilters', function () {
+
+    it('should return an array of requested filters which are valid on the source', function () {
+      expect(controller.validFilters([])).to.deep.equal([]);
+      expect(controller.validFilters(['cat', 'dog'])).to.deep.equal([]);
+      expect(controller.validFilters(['title', 'dog'])).to.deep.equal(['title']);
+    });
+
+  });
+
+  describe('#validRelations', function () {
+
+    it('should return an array of requested relations which are valid on the source', function () {
+      expect(controller.validRelations([])).to.deep.equal([]);
+      expect(controller.validRelations(['cat', 'dog'])).to.deep.equal([]);
+      expect(controller.validRelations(['relation', 'dog'])).to.deep.equal(['relation']);
+    });
+
+  });
+
+
   describe('#create', function () {
 
     it('should throw if user specified creation method does not exist on source model', function () {
@@ -41,43 +61,31 @@ describe('Controller', function () {
       expect(controller.create()).to.be.a.function;
     });
 
-    describe('request handler', function () {
-
-      var sourceCreateSpy = sinon.spy(source, 'create');
-
-      beforeEach(function () {
-        sourceCreateSpy.reset();
-      });
-
-      // TODO: test this at all?
-
-    });
-
   });
 
   describe('#read', function () {
 
-    it('should return a node request handling function', function () {
-      expect(controller.read()).to.be.a.function;
+    it('should throw if user specified includes do not exist on the source', function () {
+      expect(function () {
+        controller.read({include:['badRelation']});
+      }).to.throw(/Model does not have/);
     });
 
-    describe('request handler', function () {
+    it('should throw if user specified filters do not exist on the source', function () {
+      expect(function () {
+        controller.read({filters:['badFilter']});
+      }).to.throw(/Model does not have/);
+    });
 
-      var sourceReadSpy = sinon.spy(source, 'read');
-
-      beforeEach(function () {
-        sourceReadSpy.reset();
-      });
-
-      // TODO: test this at all?
-
+    it('should return a node request handling function', function () {
+      expect(controller.read()).to.be.a.function;
     });
 
   });
 
   describe('#update', function () {
 
-    it('should throw if user specified update method does not exist on source model prototype', function () {
+    it('should throw if user specified update method does not exist on source', function () {
       expect(function () {
         controller.update({method:'badMethod'});
       }).to.throw(/Update method/);
@@ -85,18 +93,6 @@ describe('Controller', function () {
 
     it('should return a node request handling function', function () {
       expect(controller.update()).to.be.a.function;
-    });
-
-    describe('request handler', function () {
-
-      var sourceUpdateSpy = sinon.spy(source, 'update');
-
-      beforeEach(function () {
-        sourceUpdateSpy.reset();
-      });
-
-      // TODO: test this at all?
-
     });
 
   });
@@ -111,18 +107,6 @@ describe('Controller', function () {
 
     it('should return a node request handling function', function () {
       expect(controller.destroy()).to.be.a.function;
-    });
-
-    describe('request handler', function () {
-
-      var sourceDestroySpy = sinon.spy(source, 'destroy');
-
-      beforeEach(function () {
-        sourceDestroySpy.reset();
-      });
-
-      // TODO: test this at all?
-
     });
 
   });
