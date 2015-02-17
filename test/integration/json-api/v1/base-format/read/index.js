@@ -2,7 +2,6 @@ const expect = require('chai').expect;
 const _ = require('lodash');
 
 const DB = require('../../../../../fixtures/classes/database');
-const authorController = require('../../../../../fixtures/controllers/authors');
 const bookController = require('../../../../../fixtures/controllers/books');
 
 var req = require('../../../../../fixtures/mocks/express_request')();
@@ -17,40 +16,40 @@ describe('read', function() {
 
     describe('topLevel', function() {
       it('must respond to a successful request with an object', function(done) {
-        var authorRouteHandler = authorController.read({
+        var bookRouteHandler = bookController.read({
           responder: function(payload) {
             expect(payload.code).to.equal(200);
             expect(payload.data).to.be.an('object');
             done();
           }
         });
-        authorRouteHandler(req);
+        bookRouteHandler(req);
       });
       it('must respond to an unsuccessful request with a JSON object', function(done) {
 
         DB.empty().then(function() {
-          var authorRouteHandler = authorController.read({
+          var bookRouteHandler = bookController.read({
             responder: function(payload) {
               expect(payload.code).to.equal(400);
               expect(payload.data).to.be.an('object');
               done();
             }
           });
-          authorRouteHandler({params:{}});
+          bookRouteHandler({params:{}});
         });
       });
       it('must place primary data under a top-level key named "data"', function(done) {
-        var authorRouteHandler = authorController.read({
+        var bookRouteHandler = bookController.read({
           responder: function(payload) {
             expect(payload.code).to.equal(200);
             expect(payload.data).to.have.property('data');
             done();
           }
         });
-        authorRouteHandler(req);
+        bookRouteHandler(req);
       });
       it('must make primary data for a single record an object', function(done) {
-        var authorRouteHandler = authorController.read({
+        var bookRouteHandler = bookController.read({
           one: true,
           filters: {
             id: 1
@@ -61,21 +60,21 @@ describe('read', function() {
             done();
           }
         });
-        authorRouteHandler(req);
+        bookRouteHandler(req);
       });
       it('must make primary data for multiple records an array', function(done) {
-        var authorRouteHandler = authorController.read({
+        var bookRouteHandler = bookController.read({
           responder: function(payload) {
             expect(payload.code).to.equal(200);
             expect(payload.data.data).to.be.an('array');
             done();
           }
         });
-        authorRouteHandler(req);
+        bookRouteHandler(req);
       });
       it('must not include any top-level members other than "data," "meta," or "links," "linked"', function(done) {
         var allowedTopLevel = ['data', 'linked', 'links', 'meta'];
-        var authorRouteHandler = authorController.read({
+        var bookRouteHandler = bookController.read({
           responder: function(payload) {
             expect(payload.code).to.equal(200);
             Object.keys(payload.data).forEach(function(key) {
@@ -84,7 +83,7 @@ describe('read', function() {
             done();
           }
         });
-        authorRouteHandler(req);
+        bookRouteHandler(req);
       });
     });
 
