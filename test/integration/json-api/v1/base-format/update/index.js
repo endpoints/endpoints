@@ -1,40 +1,84 @@
 const expect = require('chai').expect;
 
 const DB = require('../../../../../fixtures/classes/database');
-const authorController = require('../../../../../fixtures/controllers/authors');
+const bookController = require('../../../../../fixtures/controllers/books');
+
+var req;
 
 describe('updatingResources', function() {
 
   beforeEach(function() {
-    return DB.reset();
-  });
-
-  it('must have a JSON object at the root of every response', function(done) {
-    var authorRouteHandler = authorController.update({
-      responder: function(payload) {
-        expect(payload.code).to.equal(200);
-        expect(payload.data.data).to.be.an('object');
-        done();
-      }
-    });
-    authorRouteHandler({
+    req = {
+      headers: {
+        'content-type': 'application/vnd.api+json'
+      },
       params: {
         id: 1
       },
       body: {
         data: {
-          type: 'authors',
+          type: 'books',
           id: 1,
-          name: 'tiddlywinks'
+          title: 'tiddlywinks'
         }
       }
-    });
+    };
+    return DB.reset();
   });
-  it('must not include any top-level members other than "data," "meta," or "links," "linked"');
+
+  it('must respond to a successful request with an object', function(done) {
+    var bookRouteHandler = bookController.update({
+      responder: function(payload) {
+        expect(payload.code).to.equal(200);
+        expect(payload.data).to.be.an('object');
+        done();
+      }
+    });
+    bookRouteHandler(req);
+  });
+
+  it('must respond to an unsuccessful request with a JSON object', function(done) {
+    req.body.data.id = 'asdf';
+    var bookRouteHandler = bookController.update({
+      responder: function(payload) {
+        expect(payload.code).to.equal(422);
+        expect(payload.data).to.be.an('object');
+        done();
+      }
+    });
+    bookRouteHandler(req);
+  });
+
+
+  it('must not include any top-level members other than "data," "meta," "links," or "linked"', function(done) {
+    var allowedTopLevel = ['data', 'linked', 'links', 'meta'];
+    var bookRouteHandler = bookController.update({
+      responder: function(payload) {
+        expect(payload.code).to.equal(200);
+        Object.keys(payload.data).forEach(function(key) {
+          expect(allowedTopLevel).to.contain(key);
+        });
+        done();
+      }
+    });
+    bookRouteHandler(req);
+  });
+
 
   it('must require a single resource object as primary data');
   it('should allow existing resources to be modified');
-  it('must require a content-type header of application/vnd.api+json');
+
+  it('must require a content-type header of application/vnd.api+json', function(done) {
+    req.headers['content-type'] = '';
+    var bookRouteHandler = bookController.update({
+      responder: function(payload) {
+        expect(payload.code).to.equal(415);
+        done();
+      }
+    });
+    bookRouteHandler(req);
+  });
+
   it('must require relevant extensions in the content-type header');
   it('must not allow partial updates');
 
