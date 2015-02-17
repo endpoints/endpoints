@@ -1,8 +1,78 @@
-describe('creatingResources', function() {
-  it('must have a JSON object at the root of every response');
-  it('must not include any top-level members other than "data," "meta," or "links," "linked"');
+const expect = require('chai').expect;
 
-  it('should allow resources of a given type to be created');
+const DB = require('../../../../../fixtures/classes/database');
+const bookController = require('../../../../../fixtures/controllers/books');
+
+var req = {
+  body: {
+    data: {
+      'series_id': 1,
+      'author_id': 1,
+      'title': 'The Lost Book of Tolkien',
+      'date_published': '2015-02-17'
+    }
+  }
+};
+
+describe('creatingResources', function() {
+
+  beforeEach(function() {
+    return DB.reset();
+  });
+
+  it('must respond to a successful request with an object', function(done) {
+    var bookRouteHandler = bookController.create({
+      responder: function(payload) {
+        expect(payload.code).to.equal(201);
+        expect(payload.data).to.be.an('object');
+        done();
+      }
+    });
+    bookRouteHandler(req);
+  });
+
+  it('must respond to an unsuccessful request with a JSON object', function(done) {
+
+    DB.empty().then(function() {
+      var bookRouteHandler = bookController.create({
+        responder: function(payload) {
+          expect(payload.code).to.equal(422);
+          expect(payload.data).to.be.an('object');
+          done();
+        }
+      });
+      bookRouteHandler({body:{}});
+    });
+  });
+
+  it('must not include any top-level members other than "data," "meta," "links," or "linked"', function(done) {
+    var allowedTopLevel = ['data', 'linked', 'links', 'meta'];
+    var bookRouteHandler = bookController.create({
+      responder: function(payload) {
+        expect(payload.code).to.equal(201);
+        Object.keys(payload.data).forEach(function(key) {
+          expect(allowedTopLevel).to.contain(key);
+        });
+        done();
+      }
+    });
+    bookRouteHandler(req);
+  });
+
+  it('should allow resources of a given type to be created', function(done) {
+    var bookRouteHandler = bookController.create({
+      responder: function(payload) {
+        var data = payload.data.data;
+        expect(payload.code).to.equal(201);
+        expect(data).to.have.property('id');
+        expect(data.date_published).to.equal(req.body.data.date_published);
+        expect(data.title).to.equal(req.body.data.title);
+        done();
+      }
+    });
+    bookRouteHandler(req);
+  });
+
   it('must require a content-type header of application/vnd.api+json');
   it('must require relevant extensions in the content-type header');
   it('must require a single resource object as primary data');

@@ -72,7 +72,7 @@ describe('read', function() {
         });
         bookRouteHandler(req);
       });
-      it('must not include any top-level members other than "data," "meta," or "links," "linked"', function(done) {
+      it('must not include any top-level members other than "data," "meta," "links," or "linked"', function(done) {
         var allowedTopLevel = ['data', 'linked', 'links', 'meta'];
         var bookRouteHandler = bookController.read({
           responder: function(payload) {
