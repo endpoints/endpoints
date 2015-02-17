@@ -1,6 +1,7 @@
 const _ = require('lodash');
 const parseOptions = require('./lib/parse_options');
 const extract = require('./lib/extract');
+const verifyContentType = require('./lib/verify_content_type');
 const createResponse = require('./lib/responders/create');
 const readResponse = require('./lib/responders/read');
 const updateResponse = require('./lib/responders/update');
@@ -10,6 +11,14 @@ const lookupFailed = require('./lib/responders/lookup_failed');
 function Controller(opts) {
   _.extend(this, parseOptions(opts));
 }
+
+Controller.errors = {
+  '415': Object.create(Error.prototype, {
+    message: {value: 'Content-Type must be "application/vnd.api+json"'},
+    httpStatus: {value: 415},
+    title: {value: 'Unsupported Media Type'}
+  })
+};
 
 Controller.prototype._filters = function (request) {
   var allowedFilters = this.source.filters();
@@ -57,7 +66,7 @@ Controller.prototype.create = function (opts) {
   var source = this.source;
   var type = source.typeName();
   var method = opts.method;
-  var responder = opts.responder || this.responder;
+  var respond = opts.responder || this.responder;
   if (!method) {
     method = opts.method = 'create';
   }
@@ -67,11 +76,16 @@ Controller.prototype.create = function (opts) {
   }
 
   return function (request, response) {
+    if (!verifyContentType(request)) {
+      respond(createResponse(Controller.errors['415']), request, response);
+      return;
+    }
+
     source.create(request.body.data, opts, function (err, data) {
       var payload = createResponse(err, data, _.extend({}, opts, {
         type: type
       }));
-      responder(payload, request, response);
+      respond(payload, request, response);
     });
   };
 };
@@ -173,6 +187,11 @@ Controller.prototype.update = function (opts) {
   }
 
   return function (request, response) {
+    if (!verifyContentType(request)) {
+      respond(createResponse(Controller.errors['415']), request, response);
+      return;
+    }
+
     source.byId(request.params.id, function (err, model) {
       if (!model) {
         return respond(lookupFailed, request, response);

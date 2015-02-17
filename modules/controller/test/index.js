@@ -25,6 +25,7 @@ describe('Controller', function () {
     require('./lib/parse_options');
     require('./lib/search_keys');
     require('./lib/responder');
+    require('./lib/verify_content_type');
 
   });
 
