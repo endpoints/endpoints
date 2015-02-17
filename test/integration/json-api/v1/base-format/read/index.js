@@ -130,7 +130,7 @@ describe('read', function() {
         });
       });
 
-      // More of a DB/ORM test
+      // TODO: DB/ORM test
       // describe('resourceIdentification', function() {
       //   it('must have a unique type and id pair');
       // });
@@ -225,7 +225,11 @@ describe('read', function() {
       });
 
       describe('resourceURLs', function() {
-        it('should include a string in its links object keyed by "self"', function(done) {
+        // OPTIONAL
+        // A resource object **MAY** include a URL in its links object,
+        // keyed by "self", that identifies the resource represented by
+        // the resource object.
+        it('may include a string in its links object keyed by "self"', function(done) {
           var bookRouteHandler = bookController.read({
             one:true,
             filters: {
@@ -243,7 +247,7 @@ describe('read', function() {
             id: 1
           }});
         });
-        it('should set the value of "self" to a URL that identifies the resource represented by this object', function(done) {
+        it('must set the value of "self" to a URL that identifies the resource represented by this object', function(done) {
           var bookRouteHandler = bookController.read({
             one:true,
             filters: {
@@ -261,12 +265,17 @@ describe('read', function() {
           }});
         });
 
-        // API TEST
+        // TODO: API TEST
         // it('must respond to a get request to any `self` url with the resource as primary data');
       });
 
       describe('resourceRelationships', function() {
-        it('should contain references to related objects in the links object', function(done) {
+        // OPTIONAL
+        // A resource object MAY contain references to other resource
+        // objects ("relationships"). Relationships may be to-one or
+        // to-many. Relationships can be specified by including a member
+        // in a resource's links object.
+        it('may contain references to related objects in the links object', function(done) {
           var bookRouteHandler = bookController.read({
             one:true,
             responder: function(payload) {
@@ -284,10 +293,17 @@ describe('read', function() {
           }});
         });
 
-        // seems like this is taken care of in the self test above
+        // TODO: unit test - Endpoints should throw if a model has a
+        // relation named 'self'
         // it('shall not have a relationship to another object keyed as "self"');
 
-        it('must make to-one references a link object', function(done) {
+        // The value of a relationship **MUST** be either a string URL
+        // or a link object.
+        //
+        // Endpoints takes the view that to-many relationships may
+        // contain numerous records. By default, it returns link objects
+        // for to-one references and string URLs for to-many references.
+        it('should make to-one references a link object', function(done) {
           var bookRouteHandler = bookController.read({
             one:true,
             responder: function(payload) {
@@ -302,8 +318,7 @@ describe('read', function() {
             id: 1
           }});
         });
-
-        it('must make to-many references a string URL', function(done) {
+        it('should make to-many references a string URL', function(done) {
           var bookRouteHandler = bookController.read({
             one:true,
             responder: function(payload) {
@@ -321,9 +336,8 @@ describe('read', function() {
           }});
         });
 
-        // currently not implementing string rels - may be a good vector
-        // for many-to-many relations in the future
         describe('stringURLRelationship', function() {
+          // TODO: implement
           it('should not change related URL even when the resource changes');
         });
 
@@ -389,14 +403,15 @@ describe('read', function() {
                 id: 1
               },
               query: {
-                // object linkages only require type and id if the
-                // relation is in the top-level `linked` object
-                // only testing that case here
+                // Object linkages only require type and id if the
+                // relation is in the top-level `linked` object.
+                // Only testing that case here.
                 include: 'author'
               }
             });
           });
           it('must express object linkages as type and ids for to-many relationships', function(done) {
+            // FIXME: This test isn't actually testing what it should
             var bookRouteHandler = bookController.read({
               one:true,
               responder: function(payload) {
@@ -412,23 +427,30 @@ describe('read', function() {
                 id: 1
               },
               query: {
-                // object linkages only require type and id if the
-                // relation is in the top-level `linked` object
-                // only testing that case here
+                // Object linkages only require type and ids if the
+                // relation is in the top-level `linked` object.
+                // Only testing that case here.
                 include: 'series'
               }
             });
           });
 
-          // We don't do polymorphism
+          // We don't do heterogeneous to-many relationships
           // it('must express object linkages as a data member whose value is an array of objects containing type and id for heterogeneous to-many relationships');
         });
       });
     });
 
     describe('compoundDocuments', function() {
-      // Covered above in relations object linkages tests
-      // it('should include linked resources', function() {});
+      // An endpoint **MAY** return resources linked to the primary data
+      // by default.
+      //
+      // Endpoints handles this by allowing the API implementer to set
+      // default includes in the router. Endpoints will not include
+      // linked resources by default.
+      //
+      // An endpoint MAY also support custom inclusion of linked
+      // resources based upon an include request parameter.
       it('must include linked resources as an array of resource objects in a top level `linked` member', function(done) {
         var bookRouteHandler = bookController.read({
           one:true,
@@ -468,22 +490,23 @@ describe('read', function() {
       });
     });
 
-    // Not currently used by endpoints
+    it('must not include other resource objects in the linked section when the client specifies an include parameter');
+    it('must have the identical relationship name as the key in the links section of the parent resource object');
+
+    // Meta object not currently used by endpoints
     // describe('metaInformation', function() {
     //   it('must be an object value');
     // });
 
-    describe('topLevelLinks', function() {
-      it('should include pagination links if necessary');
-    });
+    // Pagination not currently used by endpoints
+    // describe('topLevelLinks', function() {
+    //   it('should include pagination links if necessary');
+    // });
   });
 
-  describe('inclusionOfLinkedResources', function() {
-    it('should include linked resources by default');
-    it('should support custom inclusion of linked resources based upon an include request parameter');
-    it('must not include other resource objects in the linked section when the client specifies an include parameter');
-    it('must have the identical relationship name as the key in the links section of the parent resource object');
-  });
+  // These tests have been moved above to 'compoundDocuments'
+  // describe('inclusionOfLinkedResources', function() {
+  // });
 
   describe('sparseFieldsets', function() {
     it('should support returning only specific fields in the response on a per-type basis by including a fields[TYPE] parameter');
