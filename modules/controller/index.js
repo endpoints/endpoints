@@ -105,7 +105,8 @@ Controller.prototype.read = function (opts) {
   }
 
   return function (request, response, next) {
-    var validRels = allowedRelations(request).concat(includes);
+    var qsIncludes = allowedRelations(request);
+    var validRels = qsIncludes.length ? qsIncludes : includes;
     var validFilters = _.extend({}, filters, allowedFilters(request));
     source.read({
       relations: validRels,
