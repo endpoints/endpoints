@@ -1,4 +1,5 @@
 const expect = require('chai').expect;
+const _ = require('lodash');
 
 const DB = require('../../../../../fixtures/classes/database');
 const authorController = require('../../../../../fixtures/controllers/authors');
@@ -490,8 +491,49 @@ describe('read', function() {
       });
     });
 
-    it('must not include other resource objects in the linked section when the client specifies an include parameter');
-    it('must have the identical relationship name as the key in the links section of the parent resource object');
+    it('must not include other resource objects in the linked section when the client specifies an include parameter', function(done) {
+      var bookRouteHandler = bookController.read({
+        one:true,
+        include: ['series'],
+        responder: function(payload) {
+          var linkedTypes = _.pluck(payload.data.linked, 'type');
+          expect(payload.code).to.equal(200);
+          expect(linkedTypes.indexOf('series')).to.equal(-1);
+          done();
+        }
+      });
+      bookRouteHandler({
+        params: {
+          id: 1
+        },
+        query: {
+          include: 'author'
+        }
+      });
+    });
+
+    it('must have the identical relationship name as the key in the links section of the parent resource object', function(done) {
+      var bookRouteHandler = bookController.read({
+        one:true,
+        responder: function(payload) {
+          var linksTypes = Object.keys(payload.data.data.links);
+          expect(payload.code).to.equal(200);
+          expect(linksTypes.indexOf('author')).to.be.at.least(0);
+          expect(linksTypes.indexOf('series')).to.be.at.least(0);
+          expect(linksTypes.indexOf('stores')).to.be.at.least(0);
+          expect(linksTypes.indexOf('author.books')).to.be.at.least(0);
+          done();
+        }
+      });
+      bookRouteHandler({
+        params: {
+          id: 1
+        },
+        query: {
+          include: 'author,series,stores,author.books'
+        }
+      });
+    });
 
     // Meta object not currently used by endpoints
     // describe('metaInformation', function() {
