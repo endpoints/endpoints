@@ -25,7 +25,7 @@ describe('formatModel', function () {
       author_id:1,
       title: 'test book',
       date_published: '2015-02-01'
-    }, {method: 'create'}, function(err, book) {
+    }, {modelMethod: 'create'}).then(function(book) {
       var seed = {linked:{}};
       var formatted = formatModel(seed, book, opts);
       var flatBook = book.toJSON();

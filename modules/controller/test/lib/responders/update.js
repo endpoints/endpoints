@@ -26,7 +26,7 @@ describe('update', function () {
       author_id:1,
       title: 'test book',
       date_published: '2015-02-01'
-    }, {method: 'create'}, function(err, book) {
+    }, {modelMethod: 'create'}).then(function(book) {
       var result = update(null, book, opts);
       var flatBook = book.toJSON();
       expect(result.code).to.equal(200);

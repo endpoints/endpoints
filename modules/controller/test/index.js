@@ -25,30 +25,8 @@ describe('Controller', function () {
     require('./lib/parse_options');
     require('./lib/search_keys');
     require('./lib/responder');
-    require('./lib/verify_content_type');
 
   });
-
-  describe('#validFilters', function () {
-
-    it('should return an array of requested filters which are valid on the source', function () {
-      expect(controller.validFilters([])).to.deep.equal([]);
-      expect(controller.validFilters(['cat', 'dog'])).to.deep.equal([]);
-      expect(controller.validFilters(['title', 'dog'])).to.deep.equal(['title']);
-    });
-
-  });
-
-  describe('#validRelations', function () {
-
-    it('should return an array of requested relations which are valid on the source', function () {
-      expect(controller.validRelations([])).to.deep.equal([]);
-      expect(controller.validRelations(['cat', 'dog'])).to.deep.equal([]);
-      expect(controller.validRelations(['relation', 'dog'])).to.deep.equal(['relation']);
-    });
-
-  });
-
 
   describe('#create', function () {
 
@@ -80,6 +58,14 @@ describe('Controller', function () {
 
     it('should return a node request handling function', function () {
       expect(controller.read()).to.be.a.function;
+    });
+
+  });
+
+  describe('#readRelation', function() {
+
+    it('should return a node request handling function', function () {
+      expect(controller.readRelation()).to.be.a.function;
     });
 
   });
