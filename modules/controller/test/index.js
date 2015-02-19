@@ -11,12 +11,12 @@ describe('Controller', function () {
 
   describe('lib', function () {
 
-    describe('responders', function () {
+    describe('payloads', function () {
 
-      require('./lib/responders/create');
-      require('./lib/responders/destroy');
-      require('./lib/responders/read');
-      require('./lib/responders/update');
+      require('./lib/payloads/create');
+      require('./lib/payloads/destroy');
+      require('./lib/payloads/read');
+      require('./lib/payloads/update');
 
     });
 

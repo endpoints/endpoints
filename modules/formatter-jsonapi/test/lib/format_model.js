@@ -21,11 +21,11 @@ describe('formatModel', function () {
     };
     // We're passing everything through the formatter now. That requires
     // a Bookshelf model.
-    BooksSource.create({
+    BooksSource.create('create', {
       author_id:1,
       title: 'test book',
       date_published: '2015-02-01'
-    }, {modelMethod: 'create'}).then(function(book) {
+    }).then(function(book) {
       var seed = {linked:{}};
       var formatted = formatModel(seed, book, opts);
       var flatBook = book.toJSON();

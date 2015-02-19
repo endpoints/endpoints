@@ -1,91 +1,125 @@
 const _ = require('lodash');
 
-const parseOptions = require('./lib/parse_options');
 const extract = require('./lib/extract');
+const sourceHas = require('./lib/source_has');
+const parseOptions = require('./lib/parse_options');
+const requestHandler = require('./lib/request_handler');
 
 const payloads = {
-  create: require('./lib/responders/create'),
-  read: require('./lib/responders/read'),
-  readRelation: require('./lib/responders/read'),
-  update: require('./lib/responders/update'),
-  destroy: require('./lib/responders/destroy'),
-  lookupFailed: require('./lib/responders/lookup_failed')
+  create: require('./lib/payloads/create'),
+  read: require('./lib/payloads/read'),
+  readRelation: require('./lib/payloads/read'),
+  update: require('./lib/payloads/update'),
+  destroy: require('./lib/payloads/destroy'),
+  lookupFailed: require('./lib/payloads/lookup_failed')
 };
-const sourceHas = require('./lib/source_has');
-const contentType = require('./lib/content_type');
 
 function Controller(opts) {
   _.extend(this, parseOptions(opts));
 }
+Controller.prototype.responder = require('./lib/responder');
 
-Controller.prototype._configureMethod = function (method, opts) {
+Controller.prototype._configureController = function (method, opts) {
   var source = this.source;
-  var requestHandler = this._buildRequestHandler.bind(this);
-  var optsOrDefault = this._optsOrDefault.bind(this);
 
-  opts = optsOrDefault(opts, method);
+  var defaults = {
+    sourceMethod: method,
+    method: opts && opts.method ? opts.method : method,
+    payload: payloads[method],
+    responder: this.responder,
+    controller: this['_' + method].bind(this),
+    include: [],
+    filters: {},
+    type: source.typeName(),
+  };
+
+  var config = _.defaults({}, opts, defaults);
 
   var validate = _.compose(_.flatten, _.compact)([
-    sourceHas(source.relations(), opts.include, 'relations'),
-    sourceHas(source.filters(), Object.keys(opts.filters), 'filters'),
-    sourceHas(
-      method === 'create' ? source.model : source.model.prototype,
-      opts.method,
-      'method'
-    )
+    sourceHas(source.relations(), config.include, 'relations'),
+    sourceHas(source.filters(), Object.keys(config.filters), 'filters'),
+    // this is crap
+    (method === 'read' || method === 'readRelation') ? null :
+      sourceHas(
+        method === 'create' ? source.model : source.model.prototype,
+        config.method,
+        'method'
+      )
   ]);
 
   if (validate.length) {
     throw new Error(validate.join('\n'));
   }
 
-  return requestHandler(opts);
+  return config;
 };
 
-Controller.prototype._optsOrDefault = function(opts, method) {
-  var source = this.source;
-  return _.defaults({}, opts, {
-    include: [],
-    filters: {},
-    type: source.typeName(),
-    modelMethod: opts && opts.method ? opts.method : method,
-    controllerMethod: method
+Controller.prototype.create = function (opts) {
+  var config = this._configureController('create', opts);
+  return requestHandler(config);
+};
+
+Controller.prototype.read = function (opts) {
+  var config = this._configureController('read', opts);
+  return requestHandler(config);
+};
+
+Controller.prototype.readRelation = function (opts) {
+  var config = this._configureController('readRelation', opts);
+  return requestHandler(config);
+};
+
+Controller.prototype.update = function (opts) {
+  var config = this._configureController('update', opts);
+  return requestHandler(config);
+};
+
+Controller.prototype.destroy = function (opts) {
+  var config = this._configureController('destroy', opts);
+  return requestHandler(config);
+};
+
+Controller.prototype._create = function(opts, request) {
+  return this.source.create(opts.method, request.body.data);
+};
+
+Controller.prototype._read = function(opts, request) {
+  var includes = this._includes(request);
+  var filters = this._filters(request);
+  return this.source.read({
+    relations: includes.length ? includes : opts.include,
+    filters: Object.keys(filters).length ? filters : opts.filters
   });
 };
 
-Controller.prototype._buildRequestHandler = function(opts) {
-  var responder = opts.responder || this.responder;
-  var method = opts.controllerMethod;
-
-  var payload = payloads[method];
-  var handle = this['_' + method + 'Handler'].bind(this);
-
-  return function(request, response, next) {
-    var err = contentType(request, response);
-
-    if (err) {
-      return responder(payload(err), request, response);
+Controller.prototype._readRelation = function(opts, request) {
+  var source = this.source;
+  var relation = request.params ? request.params.relation : null;
+  return source.byId(request.params.id, relation).then(function (model) {
+    if (!model) {
+      // this isn't going to cause a 404 correctly
+      throw new Error('Unable to locate model.');
     }
-
-    handle(opts, request, response, next);
-  };
+    return model.related(relation);
+  });
 };
 
-Controller.prototype._createHandler = function(opts, request, response, next) {
-  var dataFromSource = this._dataFromSource.bind(this);
-  dataFromSource(request.body.data, opts, payloads.create, request, response, next);
+Controller.prototype._update =
+Controller.prototype._destroy = function(opts, request) {
+  var source = this.source;
+  var method = opts.method;
+  var sourceMethod = opts.sourceMethod;
+  return source.byId(request.params.id).then(function (model) {
+    if (!model) {
+      // this isn't going to cause a 404 correctly
+      throw new Error('Unable to locate model.');
+    }
+    return source[sourceMethod](model, method, request.body.data);
+  });
 };
 
-Controller.prototype._readHandler = function(opts, request, response, next) {
-  var dataFromSource = this._dataFromSource.bind(this);
-  var allowedFilters = this._filters.bind(this);
-  var allowedRelations = this._relations.bind(this);
-  var qsIncludes = allowedRelations(request);
-  // Assign valid relations and filters
-  opts.relations = qsIncludes.length ? qsIncludes : opts.include;
-  opts.filters = _.extend({}, opts.filters, allowedFilters(request));
-  dataFromSource(null, opts, payloads.read, request, response, next);
-};
+// these will be removed or simplified greatly when i add
+// support for sparse fieldsets, sorting, etc
 
 Controller.prototype._filters = function (request) {
   var allowedFilters = this.source.filters();
@@ -103,7 +137,7 @@ Controller.prototype._filters = function (request) {
   return result;
 };
 
-Controller.prototype._relations = function (request) {
+Controller.prototype._includes = function (request) {
   var result = extract({
     context: request,
     contextKeysToSearch: this.requestKeysToSearch,
@@ -114,88 +148,6 @@ Controller.prototype._relations = function (request) {
     result = [result];
   }
   return _.intersection(this.source.relations(), _.uniq(result));
-};
-
-Controller.prototype._readRelationHandler =
-  function(opts, request, response, next) {
-    var source = this.source;
-    var relation = request.params ? request.params.relation : null;
-    var responder = opts.responder || this.responder;
-    var payload = payloads.read;
-
-    source.byId(request.params.id, relation).then(function (model) {
-      var related = model && model.related(relation);
-      var isSingle = related && related.relatedData.type === 'belongsTo';
-
-      if (isSingle) {
-        related = [related];
-      }
-
-      opts.one = isSingle;
-      opts.type = related.relatedData.target.typeName;
-
-      responder(payload(null, related, opts), request, response, next);
-    }).catch(function(err) {
-      responder(payload(err, null, opts), request, response, next);
-    }
-  );
-};
-
-Controller.prototype._destroyHandler =
-Controller.prototype._updateHandler = function(opts, request, response, next) {
-  var source = this.source;
-  var dataFromSource = this._dataFromSource.bind(this);
-  var relation = request.params ? request.params.relation : null;
-  var responder = opts.responder || this.responder;
-  var payload = payloads[opts.controllerMethod];
-
-  source.byId(request.params.id, relation).then(function (model) {
-    if (!model) {
-      return responder(payloads.lookupFailed, request, response, next);
-    }
-    opts = _.extend({model:model}, opts);
-    return dataFromSource(request.body.data, opts, payload, request, response, next);
-  }).catch(function(err) {
-    return responder(payloads.lookupFailed, request, response, next);
-  });
-};
-
-Controller.prototype._dataFromSource =
-  function(params, opts, polyResponse, request, response, next) {
-    var source = this.source;
-    var responder = opts.responder || this.responder;
-    var payload;
-
-    source[opts.controllerMethod](params, opts).then(function(data) {
-      payload = polyResponse(null, data, opts);
-    }).catch(function(err) {
-      payload = polyResponse(err, null, opts);
-    }).finally(function() {
-      responder(payload, request, response, next);
-    }
-  );
-};
-
-Controller.prototype.responder = require('./lib/responder');
-
-Controller.prototype.create = function (opts) {
-  return this._configureMethod('create', opts);
-};
-
-Controller.prototype.read = function (opts) {
-  return this._configureMethod('read', opts);
-};
-
-Controller.prototype.readRelation = function (opts) {
-  return this._configureMethod('readRelation', opts);
-};
-
-Controller.prototype.update = function (opts) {
-  return this._configureMethod('update', opts);
-};
-
-Controller.prototype.destroy = function (opts) {
-  return this._configureMethod('destroy', opts);
 };
 
 module.exports = Controller;
