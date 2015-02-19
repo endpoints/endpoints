@@ -3,30 +3,41 @@ const _ = require('lodash');
 const parseOptions = require('./lib/parse_options');
 const extract = require('./lib/extract');
 
-const createResponse = require('./lib/responders/create');
-const readResponse = require('./lib/responders/read');
-const updateResponse = require('./lib/responders/update');
-const destroyResponse = require('./lib/responders/destroy');
-const lookupFailedResponse = require('./lib/responders/lookup_failed');
-
-const filterInitValidator = require('./lib/validators/init/filters');
-const relationsInitValidator = require('./lib/validators/init/relations');
-const modelMethodInitValidator = require('./lib/validators/init/model_method');
-const relationExistsReqValidator = require('./lib/validators/request/relation_exists');
-const contentTypeReqValidator = require('./lib/validators/request/content_type');
+const payloads = {
+  create: require('./lib/responders/create'),
+  read: require('./lib/responders/read'),
+  readRelation: require('./lib/responders/read'),
+  update: require('./lib/responders/update'),
+  destroy: require('./lib/responders/destroy'),
+  lookupFailed: require('./lib/responders/lookup_failed')
+};
+const sourceHas = require('./lib/source_has');
+const contentType = require('./lib/content_type');
 
 function Controller(opts) {
   _.extend(this, parseOptions(opts));
 }
 
 Controller.prototype._configureMethod = function (method, opts) {
+  var source = this.source;
   var requestHandler = this._buildRequestHandler.bind(this);
-  var validateInit = this._validateInit.bind(this);
   var optsOrDefault = this._optsOrDefault.bind(this);
 
   opts = optsOrDefault(opts, method);
 
-  validateInit(opts);
+  var validate = _.compose(_.flatten, _.compact)([
+    sourceHas(source.relations(), opts.include, 'relations'),
+    sourceHas(source.filters(), Object.keys(opts.filters), 'filters'),
+    sourceHas(
+      method === 'create' ? source.model : source.model.prototype,
+      opts.method,
+      'method'
+    )
+  ]);
+
+  if (validate.length) {
+    throw new Error(validate.join('\n'));
+  }
 
   return requestHandler(opts);
 };
@@ -42,84 +53,27 @@ Controller.prototype._optsOrDefault = function(opts, method) {
   });
 };
 
-Controller.prototype._validateInit = function(opts) {
-  var source = this.source;
-
-  filterInitValidator(opts, source);
-  relationsInitValidator(opts, source);
-  modelMethodInitValidator(opts, source);
-};
-
 Controller.prototype._buildRequestHandler = function(opts) {
-  var source = this.source;
   var responder = opts.responder || this.responder;
   var method = opts.controllerMethod;
 
-  var validateRequest = this._lookupValidateRequest(method);
-  var polyResponse = this._lookupPolyResponse(method);
-  var handle = this._lookupHandler(method).bind(this);
+  var payload = payloads[method];
+  var handle = this['_' + method + 'Handler'].bind(this);
 
   return function(request, response, next) {
-    var err = validateRequest(request, response, source);
+    var err = contentType(request, response);
 
     if (err) {
-      return responder(polyResponse(err), request, response);
+      return responder(payload(err), request, response);
     }
 
     handle(opts, request, response, next);
   };
 };
 
-Controller.prototype._lookupValidateRequest = function(method) {
-  switch (method) {
-    case 'readRelation':
-      return relationExistsReqValidator;
-    case 'create':
-    case 'update':
-      return contentTypeReqValidator;
-    default:
-      return function() {};
-  }
-};
-
-Controller.prototype._lookupPolyResponse = function(method) {
-  switch (method) {
-    case 'read':
-    case 'readRelation':
-      return readResponse;
-    case 'create':
-      return createResponse;
-    case 'update':
-      return updateResponse;
-    case 'destroy':
-      return destroyResponse;
-    case 'lookupFailed':
-      return lookupFailedResponse;
-    default:
-      return readResponse;
-  }
-};
-
-Controller.prototype._lookupHandler = function(method) {
-  switch (method) {
-    case 'create':
-      return this._createHandler;
-    case 'read':
-      return this._readHandler;
-    case 'readRelation':
-      return this._readRelatedHandler;
-    case 'update':
-      return this._updateHandler;
-    case 'destroy':
-      return this._destroyHandler;
-    default:
-      return this._readHandler;
-  }
-};
-
 Controller.prototype._createHandler = function(opts, request, response, next) {
   var dataFromSource = this._dataFromSource.bind(this);
-  dataFromSource(request.body.data, opts, createResponse, request, response, next);
+  dataFromSource(request.body.data, opts, payloads.create, request, response, next);
 };
 
 Controller.prototype._readHandler = function(opts, request, response, next) {
@@ -130,7 +84,7 @@ Controller.prototype._readHandler = function(opts, request, response, next) {
   // Assign valid relations and filters
   opts.relations = qsIncludes.length ? qsIncludes : opts.include;
   opts.filters = _.extend({}, opts.filters, allowedFilters(request));
-  dataFromSource(null, opts, readResponse, request, response, next);
+  dataFromSource(null, opts, payloads.read, request, response, next);
 };
 
 Controller.prototype._filters = function (request) {
@@ -162,12 +116,12 @@ Controller.prototype._relations = function (request) {
   return _.intersection(this.source.relations(), _.uniq(result));
 };
 
-Controller.prototype._readRelatedHandler =
+Controller.prototype._readRelationHandler =
   function(opts, request, response, next) {
     var source = this.source;
     var relation = request.params ? request.params.relation : null;
     var responder = opts.responder || this.responder;
-
+    var payload = payloads.read;
 
     source.byId(request.params.id, relation).then(function (model) {
       var related = model && model.related(relation);
@@ -180,11 +134,9 @@ Controller.prototype._readRelatedHandler =
       opts.one = isSingle;
       opts.type = related.relatedData.target.typeName;
 
-      var payload = readResponse(null, related, opts);
-      responder(payload, request, response, next);
+      responder(payload(null, related, opts), request, response, next);
     }).catch(function(err) {
-      var payload = readResponse(err, null, opts);
-      responder(payload, request, response, next);
+      responder(payload(err, null, opts), request, response, next);
     }
   );
 };
@@ -195,16 +147,16 @@ Controller.prototype._updateHandler = function(opts, request, response, next) {
   var dataFromSource = this._dataFromSource.bind(this);
   var relation = request.params ? request.params.relation : null;
   var responder = opts.responder || this.responder;
-  var polyResponse = opts.controllerMethod === 'update' ? updateResponse : destroyResponse;
+  var payload = payloads[opts.controllerMethod];
 
   source.byId(request.params.id, relation).then(function (model) {
     if (!model) {
-      return responder(lookupFailedResponse, request, response, next);
+      return responder(payloads.lookupFailed, request, response, next);
     }
     opts = _.extend({model:model}, opts);
-    return dataFromSource(request.body.data, opts, polyResponse, request, response, next);
+    return dataFromSource(request.body.data, opts, payload, request, response, next);
   }).catch(function(err) {
-    return responder(lookupFailedResponse, request, response, next);
+    return responder(payloads.lookupFailed, request, response, next);
   });
 };
 
