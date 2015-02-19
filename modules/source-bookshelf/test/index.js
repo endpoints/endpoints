@@ -126,7 +126,7 @@ describe('BookshelfSource', function () {
 
     it('should allow filtering', function (done) {
       BooksSource.read({
-        filters: { id: 1 }
+        filter: { id: 1 }
       }).then(function (books) {
         expect(books.first().toJSON()).to.deep.equal(fantasyDatabase.books[0]);
         done();
@@ -135,8 +135,8 @@ describe('BookshelfSource', function () {
 
     it('should allow finding with related data', function (done) {
       BooksSource.read({
-        filters: { id: 1 },
-        relations: ['author']
+        filter: { id: 1 },
+        include: ['author']
       }).then(function (books) {
         expect(books.first().toJSON({
           shallow: true
