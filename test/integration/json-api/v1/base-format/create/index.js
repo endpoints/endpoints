@@ -3,20 +3,24 @@ const expect = require('chai').expect;
 const DB = require('../../../../../fixtures/classes/database');
 const bookController = require('../../../../../fixtures/controllers/books');
 
-var req = {
-  body: {
-    data: {
-      'series_id': 1,
-      'author_id': 1,
-      'title': 'The Lost Book of Tolkien',
-      'date_published': '2015-02-17'
-    }
-  }
-};
+var req;
 
 describe('creatingResources', function() {
 
   beforeEach(function() {
+    req = {
+      headers: {
+        'content-type': 'application/vnd.api+json'
+      },
+      body: {
+        data: {
+          'series_id': 1,
+          'author_id': 1,
+          'title': 'The Lost Book of Tolkien',
+          'date_published': '2015-02-17'
+        }
+      }
+    };
     return DB.reset();
   });
 
@@ -32,17 +36,15 @@ describe('creatingResources', function() {
   });
 
   it('must respond to an unsuccessful request with a JSON object', function(done) {
-
-    DB.empty().then(function() {
-      var bookRouteHandler = bookController.create({
-        responder: function(payload) {
-          expect(payload.code).to.equal(422);
-          expect(payload.data).to.be.an('object');
-          done();
-        }
-      });
-      bookRouteHandler({body:{}});
+    req.body = {};
+    var bookRouteHandler = bookController.create({
+      responder: function(payload) {
+        expect(payload.code).to.equal(422);
+        expect(payload.data).to.be.an('object');
+        done();
+      }
     });
+    bookRouteHandler(req);
   });
 
   it('must not include any top-level members other than "data," "meta," "links," or "linked"', function(done) {
@@ -73,7 +75,16 @@ describe('creatingResources', function() {
     bookRouteHandler(req);
   });
 
-  it('must require a content-type header of application/vnd.api+json');
+  it('must require a content-type header of application/vnd.api+json', function(done) {
+    req.headers['content-type'] = '';
+    var bookRouteHandler = bookController.create({
+      responder: function(payload) {
+        expect(payload.code).to.equal(415);
+        done();
+      }
+    });
+    bookRouteHandler(req);
+  });
   it('must require relevant extensions in the content-type header');
   it('must require a single resource object as primary data');
   it('must not allow partial updates');

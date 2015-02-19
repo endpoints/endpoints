@@ -4,7 +4,7 @@ const _ = require('lodash');
 const DB = require('../../../../../fixtures/classes/database');
 const bookController = require('../../../../../fixtures/controllers/books');
 
-var req = require('../../../../../fixtures/mocks/express_request')();
+var req = require('../../../../../fixtures/mocks/express_request');
 
 describe('read', function() {
 
@@ -23,7 +23,7 @@ describe('read', function() {
             done();
           }
         });
-        bookRouteHandler(req);
+        bookRouteHandler(req());
       });
       it('must respond to an unsuccessful request with a JSON object', function(done) {
 
@@ -35,7 +35,9 @@ describe('read', function() {
               done();
             }
           });
-          bookRouteHandler({params:{}});
+          bookRouteHandler(req({
+            params: {}
+          }));
         });
       });
       it('must place primary data under a top-level key named "data"', function(done) {
@@ -46,7 +48,7 @@ describe('read', function() {
             done();
           }
         });
-        bookRouteHandler(req);
+        bookRouteHandler(req());
       });
       it('must make primary data for a single record an object', function(done) {
         var bookRouteHandler = bookController.read({
@@ -60,7 +62,7 @@ describe('read', function() {
             done();
           }
         });
-        bookRouteHandler(req);
+        bookRouteHandler(req());
       });
       it('must make primary data for multiple records an array', function(done) {
         var bookRouteHandler = bookController.read({
@@ -70,7 +72,7 @@ describe('read', function() {
             done();
           }
         });
-        bookRouteHandler(req);
+        bookRouteHandler(req());
       });
       it('must not include any top-level members other than "data," "meta," "links," or "linked"', function(done) {
         var allowedTopLevel = ['data', 'linked', 'links', 'meta'];
@@ -83,7 +85,7 @@ describe('read', function() {
             done();
           }
         });
-        bookRouteHandler(req);
+        bookRouteHandler(req());
       });
     });
 
@@ -105,9 +107,7 @@ describe('read', function() {
               done();
             }
           });
-          bookRouteHandler({params: {
-            id: 1
-          }});
+          bookRouteHandler(req({params: { id: 1 } }));
         });
         it('must include relations as linked resources', function(done) {
           var bookRouteHandler = bookController.read({
@@ -124,9 +124,7 @@ describe('read', function() {
               done();
             }
           });
-          bookRouteHandler({params: {
-            id: 1
-          }});
+          bookRouteHandler(req({params: { id: 1 } }));
         });
       });
 
@@ -148,9 +146,7 @@ describe('read', function() {
               done();
             }
           });
-          bookRouteHandler({params: {
-            id: 1
-          }});
+          bookRouteHandler(req({params: { id: 1 } }));
         });
         it('must have a string value for type', function(done) {
           var bookRouteHandler = bookController.read({
@@ -164,9 +160,7 @@ describe('read', function() {
               done();
             }
           });
-          bookRouteHandler({params: {
-            id: 1
-          }});
+          bookRouteHandler(req({params: { id: 1 } }));
         });
       });
 
@@ -183,9 +177,7 @@ describe('read', function() {
               done();
             }
           });
-          bookRouteHandler({params: {
-            id: 1
-          }});
+          bookRouteHandler(req({params: { id: 1 } }));
         });
         it('must have a string value for type', function(done) {
           var bookRouteHandler = bookController.read({
@@ -199,9 +191,7 @@ describe('read', function() {
               done();
             }
           });
-          bookRouteHandler({params: {
-            id: 1
-          }});
+          bookRouteHandler(req({params: { id: 1 } }));
         });
       });
 
@@ -218,9 +208,7 @@ describe('read', function() {
               done();
             }
           });
-          bookRouteHandler({params: {
-            id: 1
-          }});
+          bookRouteHandler(req({params: { id: 1 } }));
         });
       });
 
@@ -243,9 +231,7 @@ describe('read', function() {
               done();
             }
           });
-          bookRouteHandler({params: {
-            id: 1
-          }});
+          bookRouteHandler(req({params: { id: 1 } }));
         });
         it('must set the value of "self" to a URL that identifies the resource represented by this object', function(done) {
           var bookRouteHandler = bookController.read({
@@ -260,9 +246,7 @@ describe('read', function() {
               done();
             }
           });
-          bookRouteHandler({params: {
-            id: 1
-          }});
+          bookRouteHandler(req({params: { id: 1 } }));
         });
 
         // TODO: API TEST
@@ -288,9 +272,7 @@ describe('read', function() {
               done();
             }
           });
-          bookRouteHandler({params: {
-            id: 1
-          }});
+          bookRouteHandler(req({params: { id: 1 } }));
         });
 
         // TODO: unit test - Endpoints should throw if a model has a
@@ -314,9 +296,7 @@ describe('read', function() {
               done();
             }
           });
-          bookRouteHandler({params: {
-            id: 1
-          }});
+          bookRouteHandler(req({params: { id: 1 } }));
         });
         it('should make to-many references a string URL', function(done) {
           var bookRouteHandler = bookController.read({
@@ -331,9 +311,7 @@ describe('read', function() {
               done();
             }
           });
-          bookRouteHandler({params: {
-            id: 1
-          }});
+          bookRouteHandler(req({params: { id: 1 } }));
         });
 
         describe('stringURLRelationship', function() {
@@ -358,9 +336,7 @@ describe('read', function() {
                 done();
               }
             });
-            bookRouteHandler({params: {
-              id: 1
-            }});
+            bookRouteHandler(req({params: { id: 1 } }));
           });
 
           it('must include object linkage to resource objects included in the same compound document', function(done) {
@@ -377,14 +353,14 @@ describe('read', function() {
                 done();
               }
             });
-            bookRouteHandler({
+            bookRouteHandler(req({
               params: {
                 id: 1
               },
               query: {
                 include: 'author'
               }
-            });
+            }));
           });
 
           it('must express object linkages as type and id for to-one relationships', function(done) {
@@ -398,7 +374,7 @@ describe('read', function() {
                 done();
               }
             });
-            bookRouteHandler({
+            bookRouteHandler(req({
               params: {
                 id: 1
               },
@@ -408,7 +384,7 @@ describe('read', function() {
                 // Only testing that case here.
                 include: 'author'
               }
-            });
+            }));
           });
           it('must express object linkages as type and ids for to-many relationships', function(done) {
             // FIXME: This test isn't actually testing what it should
@@ -422,7 +398,7 @@ describe('read', function() {
                 done();
               }
             });
-            bookRouteHandler({
+            bookRouteHandler(req({
               params: {
                 id: 1
               },
@@ -432,7 +408,7 @@ describe('read', function() {
                 // Only testing that case here.
                 include: 'series'
               }
-            });
+            }));
           });
 
           // We don't do heterogeneous to-many relationships
@@ -463,14 +439,14 @@ describe('read', function() {
             done();
           }
         });
-        bookRouteHandler({
+        bookRouteHandler(req({
           params: {
             id: 1
           },
           query: {
             include: 'author'
           }
-        });
+        }));
       });
 
       it('must not include more than one resource object for each type and id pair', function(done) {
@@ -481,12 +457,12 @@ describe('read', function() {
             done();
           }
         });
-        bookRouteHandler({
+        bookRouteHandler(req({
           params: {},
           query: {
             include: 'author'
           }
-        });
+        }));
       });
     });
 
@@ -501,14 +477,14 @@ describe('read', function() {
           done();
         }
       });
-      bookRouteHandler({
+      bookRouteHandler(req({
         params: {
           id: 1
         },
         query: {
           include: 'author'
         }
-      });
+      }));
     });
 
     it('must have the identical relationship name as the key in the links section of the parent resource object', function(done) {
@@ -524,14 +500,14 @@ describe('read', function() {
           done();
         }
       });
-      bookRouteHandler({
+      bookRouteHandler(req({
         params: {
           id: 1
         },
         query: {
           include: 'author,series,stores,author.books'
         }
-      });
+      }));
     });
 
     // Meta object not currently used by endpoints

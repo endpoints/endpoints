@@ -24,8 +24,8 @@ function Source (opts) {
   }
 }
 
-Source.prototype._find = function (params, opts, cb) {
-  return this.model.filter(params).fetch(opts).exec(cb);
+Source.prototype._find = function (params, opts) {
+  return this.model.filter(params).fetch(opts);
 };
 
 Source.prototype.filters = function () {
@@ -50,53 +50,38 @@ Source.prototype.typeName = function () {
 };
 
 // not in love with this new method signature, it differs from the rest a lot.
-Source.prototype.byId = function (id, relations, cb) {
-  if (arguments.length === 2) {
-    cb = relations;
-    relations = [];
-  }
+Source.prototype.byId = function (id, relations) {
+  relations = relations || [];
   return this.model.filter({id:id}).fetchOne({
     withRelated: relations
-  }).exec(cb);
+  });
 };
 
-Source.prototype.create = function (params, opts, cb) {
+Source.prototype.create = function (method, params) {
+  if (!method) {
+    throw new Error('No method provided to create with.');
+  }
   if (!params) {
     params = {};
   }
-  if (!opts) {
-    opts = {};
-  }
-  var method = opts.method;
-  if (!method) {
-    throw new Error('No method specified.');
-  }
-  return this.model[method](params).exec(cb);
+  return this.model[method](params);
 };
 
-Source.prototype.read = function (opts, cb) {
+Source.prototype.read = function (opts) {
   if (!opts) {
     opts = {};
   }
   var filters = opts.filters || {};
   var relations = opts.relations || [];
-  return this._find(filters, { withRelated: relations }, cb);
+  return this._find(filters, { withRelated: relations });
 };
 
 Source.prototype.update =
-Source.prototype.destroy = function (params, opts, cb) {
-  if (!params) {
-    params = {};
-  }
-  if (!opts) {
-    opts = {};
-  }
-  var model = opts.model;
-  var method = opts.method;
+Source.prototype.destroy = function (model, method, params) {
   if (!method) {
-    throw new Error('No method specified.');
+    throw new Error('No method provided to update or delete with.');
   }
-  return model[method](params).exec(cb);
+  return model[method](params);
 };
 
 module.exports = Source;

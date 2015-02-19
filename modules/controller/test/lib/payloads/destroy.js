@@ -1,6 +1,6 @@
 const expect = require('chai').expect;
 
-const destroy = require('../../../lib/responders/destroy');
+const destroy = require('../../../lib/payloads/destroy');
 
 describe('destroy', function () {
 

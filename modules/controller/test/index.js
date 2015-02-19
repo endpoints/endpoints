@@ -11,12 +11,12 @@ describe('Controller', function () {
 
   describe('lib', function () {
 
-    describe('responders', function () {
+    describe('payloads', function () {
 
-      require('./lib/responders/create');
-      require('./lib/responders/destroy');
-      require('./lib/responders/read');
-      require('./lib/responders/update');
+      require('./lib/payloads/create');
+      require('./lib/payloads/destroy');
+      require('./lib/payloads/read');
+      require('./lib/payloads/update');
 
     });
 
@@ -28,33 +28,12 @@ describe('Controller', function () {
 
   });
 
-  describe('#validFilters', function () {
-
-    it('should return an array of requested filters which are valid on the source', function () {
-      expect(controller.validFilters([])).to.deep.equal([]);
-      expect(controller.validFilters(['cat', 'dog'])).to.deep.equal([]);
-      expect(controller.validFilters(['title', 'dog'])).to.deep.equal(['title']);
-    });
-
-  });
-
-  describe('#validRelations', function () {
-
-    it('should return an array of requested relations which are valid on the source', function () {
-      expect(controller.validRelations([])).to.deep.equal([]);
-      expect(controller.validRelations(['cat', 'dog'])).to.deep.equal([]);
-      expect(controller.validRelations(['relation', 'dog'])).to.deep.equal(['relation']);
-    });
-
-  });
-
-
   describe('#create', function () {
 
     it('should throw if user specified creation method does not exist on source model', function () {
       expect(function () {
         controller.create({method:'badMethod'});
-      }).to.throw(/Create method/);
+      }).to.throw(/Model does not have/);
     });
 
     it('should return a node request handling function', function () {
@@ -83,12 +62,20 @@ describe('Controller', function () {
 
   });
 
+  describe('#readRelation', function() {
+
+    it('should return a node request handling function', function () {
+      expect(controller.readRelation()).to.be.a.function;
+    });
+
+  });
+
   describe('#update', function () {
 
     it('should throw if user specified update method does not exist on source', function () {
       expect(function () {
         controller.update({method:'badMethod'});
-      }).to.throw(/Update method/);
+      }).to.throw(/Model does not have/);
     });
 
     it('should return a node request handling function', function () {
@@ -102,7 +89,7 @@ describe('Controller', function () {
     it('should throw if user specified destroy method does not exist on source model prototype', function () {
       expect(function () {
         controller.destroy({method:'badMethod'});
-      }).to.throw(/Destroy method/);
+      }).to.throw(/Model does not have/);
     });
 
     it('should return a node request handling function', function () {

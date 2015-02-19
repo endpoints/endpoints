@@ -7,10 +7,10 @@ module.exports = function (err, data, opts) {
 
   if (err) {
     return {
-      code: 422,
+      code: err.httpStatus || 422,
       data: {
         errors: {
-          title: 'Unprocessable Entity',
+          title: err.title || 'Unprocessable Entity',
           detail: err.message
         }
       }

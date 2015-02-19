@@ -1,15 +1,126 @@
 const _ = require('lodash');
-const parseOptions = require('./lib/parse_options');
+
 const extract = require('./lib/extract');
-const createResponse = require('./lib/responders/create');
-const readResponse = require('./lib/responders/read');
-const updateResponse = require('./lib/responders/update');
-const destroyResponse = require('./lib/responders/destroy');
-const lookupFailed = require('./lib/responders/lookup_failed');
+const sourceHas = require('./lib/source_has');
+const parseOptions = require('./lib/parse_options');
+const requestHandler = require('./lib/request_handler');
+
+const payloads = {
+  create: require('./lib/payloads/create'),
+  read: require('./lib/payloads/read'),
+  readRelation: require('./lib/payloads/read'),
+  update: require('./lib/payloads/update'),
+  destroy: require('./lib/payloads/destroy'),
+  lookupFailed: require('./lib/payloads/lookup_failed')
+};
 
 function Controller(opts) {
   _.extend(this, parseOptions(opts));
 }
+Controller.prototype.responder = require('./lib/responder');
+
+Controller.prototype._validateController = function (config) {
+  var source = this.source;
+  var method = config.sourceMethod;
+
+  return _.compose(_.flatten, _.compact)([
+    sourceHas(source.relations(), config.include, 'relations'),
+    sourceHas(source.filters(), Object.keys(config.filters), 'filters'),
+    // this is crap
+    (method === 'read' || method === 'readRelation') ? null :
+      sourceHas(
+        method === 'create' ? source.model : source.model.prototype,
+        config.method,
+        'method'
+      )
+  ]);
+};
+
+Controller.prototype._configureController = function (method, opts) {
+  var defaults = {
+    sourceMethod: method,
+    method: opts && opts.method ? opts.method : method,
+    payload: payloads[method],
+    responder: this.responder,
+    controller: this['_' + method].bind(this),
+    include: [],
+    filters: {},
+    type: this.source.typeName(),
+  };
+  var config = _.defaults({}, opts, defaults);
+  var validationFailures = this._validateController(config);
+  if (validationFailures.length) {
+    throw new Error(validationFailures.join('\n'));
+  }
+  return config;
+};
+
+Controller.prototype.create = function (opts) {
+  var config = this._configureController('create', opts);
+  return requestHandler(config);
+};
+
+Controller.prototype.read = function (opts) {
+  var config = this._configureController('read', opts);
+  return requestHandler(config);
+};
+
+Controller.prototype.readRelation = function (opts) {
+  var config = this._configureController('readRelation', opts);
+  return requestHandler(config);
+};
+
+Controller.prototype.update = function (opts) {
+  var config = this._configureController('update', opts);
+  return requestHandler(config);
+};
+
+Controller.prototype.destroy = function (opts) {
+  var config = this._configureController('destroy', opts);
+  return requestHandler(config);
+};
+
+Controller.prototype._create = function(opts, request) {
+  return this.source.create(opts.method, request.body.data);
+};
+
+Controller.prototype._read = function(opts, request) {
+  var includes = this._includes(request);
+  var filters = this._filters(request);
+  return this.source.read({
+    relations: includes.length ? includes : opts.include,
+    filters: Object.keys(filters).length ? filters : opts.filters
+  });
+};
+
+Controller.prototype._readRelation = function(opts, request) {
+  var source = this.source;
+  var relation = request.params ? request.params.relation : null;
+  return source.byId(request.params.id, relation).then(function (model) {
+    if (!model) {
+      // this isn't going to cause a 404 correctly
+      throw new Error('Unable to locate model.');
+    }
+    return model.related(relation);
+  });
+};
+
+Controller.prototype._update =
+Controller.prototype._destroy = function(opts, request) {
+  var source = this.source;
+  var method = opts.method;
+  var sourceMethod = opts.sourceMethod;
+  return source.byId(request.params.id).then(function (model) {
+    if (!model) {
+      // this isn't going to cause a 404 correctly
+      throw new Error('Unable to locate model.');
+    }
+    return source[sourceMethod](model, method, request.body.data);
+  });
+};
+
+// these will be removed or simplified greatly when i add
+// support for sparse fieldsets, sorting, etc
 
 Controller.prototype._filters = function (request) {
   var allowedFilters = this.source.filters();
@@ -27,7 +138,7 @@ Controller.prototype._filters = function (request) {
   return result;
 };
 
-Controller.prototype._relations = function (request) {
+Controller.prototype._includes = function (request) {
   var result = extract({
     context: request,
     contextKeysToSearch: this.requestKeysToSearch,
@@ -37,193 +148,7 @@ Controller.prototype._relations = function (request) {
   if (result && !Array.isArray(result)) {
     result = [result];
   }
-  return this.validRelations(_.uniq(result));
-};
-
-Controller.prototype.validFilters = function (filters) {
-  return _.intersection(this.source.filters(), filters);
-};
-
-Controller.prototype.validRelations = function(relations) {
-  return _.intersection(this.source.relations(), relations);
-};
-
-Controller.prototype.responder = require('./lib/responder');
-
-Controller.prototype.create = function (opts) {
-  if (!opts) {
-    opts = {};
-  }
-  var source = this.source;
-  var type = source.typeName();
-  var method = opts.method;
-  var responder = opts.responder || this.responder;
-  if (!method) {
-    method = opts.method = 'create';
-  }
-
-  if (typeof source.model[method] !== 'function') {
-    throw new Error('Create method "' + method + '" is not present.');
-  }
-
-  return function (request, response) {
-    source.create(request.body.data, opts, function (err, data) {
-      var payload = createResponse(err, data, _.extend({}, opts, {
-        type: type
-      }));
-      responder(payload, request, response);
-    });
-  };
-};
-
-Controller.prototype.read = function (opts) {
-  if (!opts) {
-    opts = {};
-  }
-  var source = this.source;
-  var type = source.typeName();
-  var allowedFilters = this._filters.bind(this);
-  var allowedRelations = this._relations.bind(this);
-
-  var includes = opts.include || [];
-  var filters = opts.filters || {};
-  var respond = opts.responder || this.responder;
-
-  var invalidRelations = _.difference(includes, source.relations());
-  var invalidFilters = _.difference(Object.keys(filters), source.filters());
-
-  if (invalidRelations.length > 0) {
-    throw new Error(
-      'Model does not have relation(s): ' + invalidRelations.join(', ')
-    );
-  }
-
-  if (invalidFilters.length > 0) {
-    throw new Error(
-      'Model does not have filter(s): ' + invalidFilters.join(', ')
-    );
-  }
-
-  return function (request, response, next) {
-    var qsIncludes = allowedRelations(request);
-    var validRels = qsIncludes.length ? qsIncludes : includes;
-    var validFilters = _.extend({}, filters, allowedFilters(request));
-    source.read({
-      relations: validRels,
-      filters: validFilters,
-    }, function (err, data) {
-      var payload = readResponse(err, data, _.extend({}, opts, {
-        // FIXME: type is not used in readResponse
-        type: type,
-        relations: validRels
-      }));
-      respond(payload, request, response, next);
-    });
-  };
-};
-
-Controller.prototype.readRelation = function (opts) {
-  if (!opts) {
-    opts = {};
-  }
-  var source = this.source;
-  var relations = source.relations();
-  var respond = opts.responder || this.responder;
-
-  return function (request, response) {
-    // this is a hot mess, but it works as a proof of concept
-    var id = request.params.id;
-    var relation = request.params.relation;
-    if (relations.indexOf(relation) === -1) {
-      return respond({
-        code: '???',
-        body: '???'
-      }, request, response);
-    }
-    source.byId(id, relation, function (err, model) {
-      var related = model && model.related(relation);
-      var isSingle = related && related.relatedData.type === 'belongsTo';
-      var type = related && related.relatedData.target.typeName;
-      if (isSingle) {
-        related = [related];
-      }
-      var payload = readResponse(err, related, _.extend({}, opts, {
-        type: type,
-        one: isSingle
-      }));
-      respond(payload, request, response);
-    });
-  };
-};
-
-Controller.prototype.update = function (opts) {
-  if (!opts) {
-    opts = {};
-  }
-  var source = this.source;
-  var type = source.typeName();
-  var method = opts.method;
-  var respond = opts.responder || this.responder;
-  if (!method) {
-    method = opts.method = 'update';
-  }
-
-  if (typeof source.model.prototype[method] !== 'function') {
-    throw new Error('Update method "' + method + '" is not present.');
-  }
-
-  return function (request, response) {
-    source.byId(request.params.id, function (err, model) {
-      if (!model) {
-        return respond(lookupFailed, request, response);
-      }
-      return source.update(
-        request.body.data,
-        _.extend({model:model}, opts),
-        function (err, data) {
-          var payload = updateResponse(err, data, _.extend({}, opts, {
-            type: type
-          }));
-          respond(payload, request, response);
-        }
-      );
-    });
-  };
-};
-
-Controller.prototype.destroy = function (opts) {
-  if (!opts) {
-    opts = {};
-  }
-  var source = this.source;
-  var type = source.typeName();
-  var method = opts.method;
-  var respond = opts.responder || this.responder;
-  if (!method) {
-    method = opts.method = 'destroy';
-  }
-
-  if (typeof source.model.prototype[method] !== 'function') {
-    throw new Error('Destroy method "' + method + '" is not present.');
-  }
-
-  return function (request, response) {
-    source.byId(request.params.id, function (err, model) {
-      if (!model) {
-        return respond(lookupFailed, request, response);
-      }
-      return source.destroy(
-        request.body[type],
-        _.extend({model:model}, opts),
-        function (err, data) {
-          var payload = destroyResponse(err, data, _.extend({}, opts, {
-            type: type
-          }));
-          respond(payload, request, response);
-        }
-      );
-    });
-  };
+  return _.intersection(this.source.relations(), _.uniq(result));
 };
 
 module.exports = Controller;

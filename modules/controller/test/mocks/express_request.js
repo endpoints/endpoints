@@ -15,6 +15,9 @@ module.exports = function (body) {
       mock: {
         key: 'vaulue'
       }
+    },
+    headers: {
+      'content-type': 'application/vnd.api+json'
     }
   };
 };
