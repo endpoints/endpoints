@@ -1,7 +1,9 @@
 const EXPECTED_TYPE = 'application/vnd.api+json';
 
-module.exports = function(contentType) {
+module.exports = function(request) {
   var err;
+
+  var contentType = request.headers['content-type'];
 
   var isValidContentType = (
     contentType &&

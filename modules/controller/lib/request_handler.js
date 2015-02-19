@@ -5,12 +5,20 @@ module.exports = function (opts) {
   var payload = opts.payload;
   var responder = opts.responder;
   var method = opts.method;
+  var validators = [];
+
+  if (method === 'update' || method === 'create') {
+    validators.push(verifyContentType);
+  }
 
   return function (request, response, next) {
     var err;
-    var headers = request.headers;
-    if (method === 'update' || method === 'create') {
-      err = verifyContentType(headers['content-type']);
+
+    for (var validate in validators) {
+      err = validators[validate](request);
+      if (err) {
+        break;
+      }
     }
 
     if (err) {
