@@ -9,7 +9,7 @@ module.exports = function(contentType) {
   );
 
   if (!isValidContentType) {
-    err = new Error('Content-Type must be "application/vnd.api+json"');
+    err = new Error('Content-Type must be "' + EXPECTED_TYPE + '"');
     err.httpStatus = 415;
     err.title = 'Unsupported Media Type';
   }
