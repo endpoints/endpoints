@@ -9,7 +9,7 @@ module.exports = function (opts) {
   return function (request, response, next) {
     var err;
     var headers = request.headers;
-    if (method === 'update') {
+    if (method === 'update' || method === 'create') {
       err = verifyContentType(headers['content-type']);
     }
 

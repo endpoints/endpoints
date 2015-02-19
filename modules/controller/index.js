@@ -22,6 +22,7 @@ Controller.prototype.responder = require('./lib/responder');
 Controller.prototype._validateController = function (config) {
   var source = this.source;
   var method = config.sourceMethod;
+
   return _.compose(_.flatten, _.compact)([
     sourceHas(source.relations(), config.include, 'relations'),
     sourceHas(source.filters(), Object.keys(config.filters), 'filters'),
