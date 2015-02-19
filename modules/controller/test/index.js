@@ -29,12 +29,9 @@ describe('Controller', function () {
 
     });
 
-    require('./lib/extract');
-    require('./lib/normalize_value');
     require('./lib/parse_options');
     require('./lib/request_handler');
     require('./lib/responder');
-    require('./lib/search_keys');
     require('./lib/source_has');
     require('./lib/verify_accept');
     require('./lib/verify_content_type');
@@ -156,6 +153,16 @@ describe('Controller', function () {
 
     it('should set the method property to the method argument if opts.method does not exist', function() {
       expect(controller._configureController('read').method).to.equal('read');
+    });
+
+    it('should throw if user specified filters do not exist on the source', function () {
+      expect(function () {
+        controller.read({
+          filter: {
+            badFilter: 'value'
+          }
+        });
+      }).to.throw(/Model does not have/);
     });
 
     it('should set the payload property to a function', function() {

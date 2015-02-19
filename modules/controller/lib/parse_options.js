@@ -1,11 +1,10 @@
 const _ = require('lodash');
 
-const normalizeValue = require('./normalize_value');
-
 var defaults = {
-  relationKey: 'include',
-  requestKeysToSearch: ['params', 'body', 'query'],
-  paramNormalizer: normalizeValue
+  includeKey: 'include',
+  filterKey: 'filter',
+  fieldsKey: 'fields',
+  sortKey: 'sort'
 };
 
 var parseOptions = function (opts) {
