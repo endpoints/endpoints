@@ -19,23 +19,10 @@ function Controller(opts) {
 }
 Controller.prototype.responder = require('./lib/responder');
 
-Controller.prototype._configureController = function (method, opts) {
+Controller.prototype._validateController = function (config) {
   var source = this.source;
-
-  var defaults = {
-    sourceMethod: method,
-    method: opts && opts.method ? opts.method : method,
-    payload: payloads[method],
-    responder: this.responder,
-    controller: this['_' + method].bind(this),
-    include: [],
-    filters: {},
-    type: source.typeName(),
-  };
-
-  var config = _.defaults({}, opts, defaults);
-
-  var validate = _.compose(_.flatten, _.compact)([
+  var method = config.sourceMethod;
+  return _.compose(_.flatten, _.compact)([
     sourceHas(source.relations(), config.include, 'relations'),
     sourceHas(source.filters(), Object.keys(config.filters), 'filters'),
     // this is crap
@@ -46,11 +33,24 @@ Controller.prototype._configureController = function (method, opts) {
         'method'
       )
   ]);
+};
 
-  if (validate.length) {
-    throw new Error(validate.join('\n'));
+Controller.prototype._configureController = function (method, opts) {
+  var defaults = {
+    sourceMethod: method,
+    method: opts && opts.method ? opts.method : method,
+    payload: payloads[method],
+    responder: this.responder,
+    controller: this['_' + method].bind(this),
+    include: [],
+    filters: {},
+    type: this.source.typeName(),
+  };
+  var config = _.defaults({}, opts, defaults);
+  var validationFailures = this._validateController(config);
+  if (validationFailures.length) {
+    throw new Error(validationFailures.join('\n'));
   }
-
   return config;
 };
 
