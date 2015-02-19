@@ -6,7 +6,6 @@ module.exports = function (err, data, opts) {
   }
   var isRaw = !!opts.raw;
   var singleResult = !!opts.one;
-  var relations = opts.relations;
 
   if (err) {
     return {
@@ -43,7 +42,7 @@ module.exports = function (err, data, opts) {
     code: 200,
     data: jsonApi(data, {
       one: singleResult,
-      relations: relations,
+      relations: Object.keys(data.first().relations),
       typeName: opts.type
     })
   };

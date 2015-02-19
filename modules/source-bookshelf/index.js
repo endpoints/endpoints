@@ -57,21 +57,17 @@ Source.prototype.byId = function (id, relations) {
   });
 };
 
-Source.prototype.create = function (params, opts) {
+Source.prototype.create = function (method, params) {
+  if (!method) {
+    throw new Error('No method provided to create with.');
+  }
   if (!params) {
     params = {};
-  }
-  if (!opts) {
-    opts = {};
-  }
-  var method = opts.modelMethod;
-  if (!method) {
-    throw new Error('No method specified.');
   }
   return this.model[method](params);
 };
 
-Source.prototype.read = function (params, opts) {
+Source.prototype.read = function (opts) {
   if (!opts) {
     opts = {};
   }
@@ -81,17 +77,9 @@ Source.prototype.read = function (params, opts) {
 };
 
 Source.prototype.update =
-Source.prototype.destroy = function (params, opts) {
-  if (!params) {
-    params = {};
-  }
-  if (!opts) {
-    opts = {};
-  }
-  var model = opts.model;
-  var method = opts.modelMethod;
+Source.prototype.destroy = function (model, method, params) {
   if (!method) {
-    throw new Error('No method specified.');
+    throw new Error('No method provided to update or delete with.');
   }
   return model[method](params);
 };

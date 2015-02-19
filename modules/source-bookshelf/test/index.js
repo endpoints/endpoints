@@ -64,18 +64,18 @@ describe('BookshelfSource', function () {
 
     it('should throw if no method is provided', function () {
       expect(function () {
-        BooksSource.create({});
+        BooksSource.create();
       }).to.throw(/No method/);
     });
 
     it('should create resource using the underlying model', function (done) {
       BooksSource.read(null).then(function (allBooks) {
         var totalBooks = allBooks.length;
-        BooksSource.create({
+        BooksSource.create('create', {
           author_id:1,
           title: 'test book',
           date_published: '2015-02-01'
-        }, { modelMethod: 'create' }).then(function (book) {
+        }).then(function (book) {
           expect(book).to.be.an.instanceof(BooksModel);
           BooksSource.read(null).then(function (allBooksPlusNew) {
             expect(totalBooks + 1).to.equal(allBooksPlusNew.length);
@@ -91,14 +91,14 @@ describe('BookshelfSource', function () {
   describe('#read', function (done) {
 
     it('should find data using the underlying model', function (done) {
-      BooksSource.read(null, {}).then(function (books) {
+      BooksSource.read({}).then(function (books) {
         expect(books.length).to.equal(fantasyDatabase.books.length);
         done();
       });
     });
 
     it('should allow filtering', function (done) {
-      BooksSource.read(null, {
+      BooksSource.read({
         filters: { id: 1 }
       }).then(function (books) {
         expect(books.first().toJSON()).to.deep.equal(fantasyDatabase.books[0]);
@@ -107,7 +107,7 @@ describe('BookshelfSource', function () {
     });
 
     it('should allow finding with related data', function (done) {
-      BooksSource.read(null, {
+      BooksSource.read({
         filters: { id: 1 },
         relations: ['author']
       }).then(function (books) {
@@ -127,16 +127,16 @@ describe('BookshelfSource', function () {
 
     it('should throw if no method is provided', function () {
       expect(function () {
-        BooksSource.update({});
+        BooksSource.update();
       }).to.throw(/No method/);
     });
 
     it('should update resource using the underlying model', function (done) {
       var newTitle = 'altered book';
       BooksSource.byId(1).then(function (bookOne) {
-        BooksSource.update({
+        BooksSource.update(bookOne, 'update', {
           title: 'altered book'
-        }, { modelMethod: 'update', model: bookOne }).then(function (data) {
+        }).then(function (data) {
           expect(data).to.be.an.instanceof(BooksModel);
           expect(data.get('title')).to.equal(newTitle);
           done();
@@ -150,17 +150,14 @@ describe('BookshelfSource', function () {
 
     it('should throw if no method is provided', function () {
       expect(function () {
-        BooksSource.destroy({});
+        BooksSource.destroy();
       }).to.throw(/No method/);
     });
 
     it('should destroy resource using the underlying model', function (done) {
-      BooksSource.read(null, {}).then(function (allBooks) {
+      BooksSource.read({}).then(function (allBooks) {
         var totalBooks = allBooks.length;
-        BooksSource.destroy({}, {
-          modelMethod: 'destroy',
-          model: allBooks.first()
-        }).then(function (book) {
+        BooksSource.destroy(allBooks.first(), 'destroy').then(function (book) {
           BooksSource.read(null, {}).then(function (allBooksMinusOne) {
             expect(totalBooks - 1).to.equal(allBooksMinusOne.length);
             done();

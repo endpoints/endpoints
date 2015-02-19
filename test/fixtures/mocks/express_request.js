@@ -1,7 +1,8 @@
+const _ = require('lodash');
 const sinon = require('sinon');
 
-module.exports = function (body) {
-  return {
+module.exports = function (obj) {
+  return _.extend({
     accepts: sinon.stub().returns(false),
     params: {
       id: 1
@@ -9,12 +10,15 @@ module.exports = function (body) {
     query: {
       title: 'foo-bar-baz',
       unSupportedKey: 'something',
-      include: 'books'
+      include: 'book,chapter'
     },
     body: {
       mock: {
-        key: 'value'
+        key: 'vaulue'
       }
+    },
+    headers: {
+      'content-type': 'application/vnd.api+json'
     }
-  };
+  }, obj);
 };

@@ -7,29 +7,28 @@ const BooksSource = new BookshelfSource({
 });
 const DB = require('../../../../../test/fixtures/classes/database');
 
-const update = require('../../../lib/responders/update');
+const create = require('../../../lib/payloads/create');
 
-describe('update', function () {
+describe('create', function () {
 
   beforeEach(function () {
     return DB.reset();
   });
 
-  it('should return scoped data and code 200 when there are no errors', function (done) {
+  it('should return scoped data and code 201 when there are no errors', function (done) {
     var opts = {
       type: 'type'
     };
     // We're passing everything through the formatter now. That requires
-    // a Bookshelf model. This unit doesn't actually update anything: we
-    // just want a handy model, so we're going to create one.
-    BooksSource.create({
+    // a Bookshelf model.
+    BooksSource.create('create', {
       author_id:1,
       title: 'test book',
       date_published: '2015-02-01'
-    }, {modelMethod: 'create'}).then(function(book) {
-      var result = update(null, book, opts);
+    }).then(function(book) {
+      var result = create(null, book, opts);
       var flatBook = book.toJSON();
-      expect(result.code).to.equal(200);
+      expect(result.code).to.equal(201);
       expect(result.data.data.id).to.equal(String(flatBook.id));
       expect(result.data.data.title).to.equal(flatBook.title);
       expect(result.data.data.type).to.equal('type');
@@ -39,14 +38,14 @@ describe('update', function () {
   });
 
   it('should return errors and code 422 when there is an error', function () {
-    var errMsg = 'Update error.';
+    var errMsg = 'Create error.';
     var data = {
       errors: {
         title: 'Unprocessable Entity',
         detail: errMsg
       }
     };
-    var result = update(new Error(errMsg));
+    var result = create(new Error(errMsg));
     expect(result.code).to.equal(422);
     expect(result.data).to.deep.equal(data);
   });

@@ -1,6 +1,6 @@
 const expect = require('chai').expect;
 
-const read = require('../../../lib/responders/read');
+const read = require('../../../lib/payloads/read');
 
 describe('read', function () {
 
