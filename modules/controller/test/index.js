@@ -33,7 +33,7 @@ describe('Controller', function () {
     it('should throw if user specified creation method does not exist on source model', function () {
       expect(function () {
         controller.create({method:'badMethod'});
-      }).to.throw(/Create method/);
+      }).to.throw(/Model does not have/);
     });
 
     it('should return a node request handling function', function () {
@@ -75,7 +75,7 @@ describe('Controller', function () {
     it('should throw if user specified update method does not exist on source', function () {
       expect(function () {
         controller.update({method:'badMethod'});
-      }).to.throw(/Update method/);
+      }).to.throw(/Model does not have/);
     });
 
     it('should return a node request handling function', function () {
@@ -89,7 +89,7 @@ describe('Controller', function () {
     it('should throw if user specified destroy method does not exist on source model prototype', function () {
       expect(function () {
         controller.destroy({method:'badMethod'});
-      }).to.throw(/Destroy method/);
+      }).to.throw(/Model does not have/);
     });
 
     it('should return a node request handling function', function () {
