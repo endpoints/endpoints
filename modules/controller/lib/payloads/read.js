@@ -42,7 +42,7 @@ module.exports = function (err, data, opts) {
     code: 200,
     data: jsonApi(data, {
       one: singleResult,
-      relations: Object.keys(data.first().relations),
+      relations: data.sourceOpts.include,
       typeName: opts.type
     })
   };
