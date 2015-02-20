@@ -38,7 +38,7 @@ describe('update', function () {
     });
   });
 
-  it('should return errors and code 422 when there is an error', function () {
+  it('should return errors and default to code 422 when there is an error', function () {
     var errMsg = 'Update error.';
     var data = {
       errors: {
@@ -49,6 +49,13 @@ describe('update', function () {
     var result = update(new Error(errMsg));
     expect(result.code).to.equal(422);
     expect(result.data).to.deep.equal(data);
+  });
+
+  it('should return specific status codes when included as an error property', function() {
+    var err = new Error('404 Error');
+    err.httpStatus = 404;
+    var result = update(err);
+    expect(result.code).to.equal(404);
   });
 
 });

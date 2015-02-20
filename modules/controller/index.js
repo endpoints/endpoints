@@ -97,11 +97,12 @@ Controller.prototype._readRelation = function(opts, request) {
   var source = this.source;
   var relation = request.params ? request.params.relation : null;
   return source.byId(request.params.id, relation).then(function (model) {
-    if (!model) {
-      // this isn't going to cause a 404 correctly
-      throw new Error('Unable to locate model.');
-    }
     return model.related(relation);
+  }).catch(function() {
+    var err = new Error('Unable to locate model.');
+    err.httpStatus = 404;
+    err.title = 'Not found';
+    throw err;
   });
 };
 
@@ -111,11 +112,12 @@ Controller.prototype._destroy = function(opts, request) {
   var method = opts.method;
   var sourceMethod = opts.sourceMethod;
   return source.byId(request.params.id).then(function (model) {
-    if (!model) {
-      // this isn't going to cause a 404 correctly
-      throw new Error('Unable to locate model.');
-    }
     return source[sourceMethod](model, method, request.body.data);
+  }).catch(function() {
+    var err = new Error('Unable to locate model.');
+    err.httpStatus = 404;
+    err.title = 'Not found';
+    throw err;
   });
 };
 

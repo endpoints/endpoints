@@ -9,10 +9,10 @@ module.exports = function (err, data, opts) {
 
   if (err) {
     return {
-      code: 400,
+      code: err.httpStatus || 400,
       data: {
         errors: {
-          title: 'Bad Controller Read',
+          title: err.title || 'Bad Controller Read',
           detail: err.message
         }
       }
