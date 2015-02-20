@@ -1,5 +1,7 @@
 describe('extensions', function () {
 
+  it('must require relevant extensions in the content-type header');
+
   // The base JSON API specification MAY be extended to support
   // additional capabilities.
 

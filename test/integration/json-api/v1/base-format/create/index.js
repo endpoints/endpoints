@@ -13,6 +13,7 @@ describe('creatingResources', function() {
     createReq = req({
       body: {
         data: {
+          'type': 'books',
           'series_id': 1,
           'author_id': 1,
           'title': 'The Lost Book of Tolkien',
@@ -48,7 +49,7 @@ describe('creatingResources', function() {
     createReq.body = {};
     var bookRouteHandler = bookController.create({
       responder: function(payload) {
-        expect(payload.code).to.equal(422);
+        expect(payload.code).to.be.within(400, 499); // any error
         expect(payload.data).to.be.an('object');
         done();
       }
@@ -79,10 +80,30 @@ describe('creatingResources', function() {
     });
     bookRouteHandler(createReq);
   });
-  it('must require relevant extensions in the content-type header');
-  it('must require a single resource object as primary data');
+
   it('must not allow partial updates');
-  it('must require a type member of the data');
+
+  it('must require a single resource object as primary data', function(done) {
+    createReq.body.data = [createReq.body.data];
+    var bookRouteHandler = bookController.create({
+      responder: function(payload) {
+        expect(payload.code).to.equal(400);
+        done();
+      }
+    });
+    bookRouteHandler(createReq);
+  });
+
+  it('must require primary data to have a type member', function(done) {
+    delete createReq.body.data.type;
+    var bookRouteHandler = bookController.create({
+      responder: function(payload) {
+        expect(payload.code).to.equal(400);
+        done();
+      }
+    });
+    bookRouteHandler(createReq);
+  });
 
   describe('clientGeneratedIds', function() {
     it('may accept a client-generated ID along with a request to create a resource', function(done) {
@@ -184,7 +205,16 @@ describe('creatingResources', function() {
         bookRouteHandler(createReq);
       });
 
-      it('must return 409 Conflict when processing a request where the type does not match the endpoint');
+      it('must return 409 Conflict when processing a request where the type does not match the endpoint', function(done) {
+        createReq.body.data.type = 'authors';
+        var bookRouteHandler = bookController.create({
+          responder: function(payload) {
+            expect(payload.code).to.equal(409);
+            done();
+          }
+        });
+        bookRouteHandler(createReq);
+      });
     });
 
     // Not testable as written. Each error handling branch should be

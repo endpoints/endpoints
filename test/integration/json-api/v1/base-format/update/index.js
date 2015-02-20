@@ -75,7 +75,28 @@ describe('updatingResources', function() {
   });
 
 
-  it('must require a single resource object as primary data');
+  it('must require a single resource object as primary data', function(done) {
+    updateReq.body.data = [updateReq.body.data];
+    var bookRouteHandler = bookController.update({
+      responder: function(payload) {
+        expect(payload.code).to.equal(400);
+        done();
+      }
+    });
+    bookRouteHandler(updateReq);
+  });
+
+  it('must require primary data to have a type member', function(done) {
+    delete updateReq.body.data.type;
+    var bookRouteHandler = bookController.update({
+      responder: function(payload) {
+        expect(payload.code).to.equal(400);
+        done();
+      }
+    });
+    bookRouteHandler(updateReq);
+  });
+
   it('should allow existing resources to be modified');
 
   it('must require a content-type header of application/vnd.api+json', function(done) {
@@ -140,7 +161,16 @@ describe('updatingResources', function() {
 
     describe('409Conflict', function() {
       it('should return 409 Conflict when processing an update that violates server-enforced constraints');
-      it('must return 409 Conflict when processing a request in which the type and id do not match the endpoint');
+      it('must return 409 Conflict when processing a request where the type does not match the endpoint', function(done) {
+        updateReq.body.data.type = 'authors';
+        var bookRouteHandler = bookController.update({
+          responder: function(payload) {
+            expect(payload.code).to.equal(409);
+            done();
+          }
+        });
+        bookRouteHandler(updateReq);
+      });
     });
 
     describe('otherResponses', function() {
