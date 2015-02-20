@@ -91,6 +91,9 @@ Source.prototype.read = function (opts) {
     qb = processSort(model, qb, opts.sort);
   }).fetch({
     withRelated: _.intersection(this.relations(), opts.include)
+  }).then(function (result) {
+    result.sourceOpts = opts;
+    return result;
   });
 };
 
