@@ -12,7 +12,7 @@ module.exports = function (payload, request, response, next) {
   var data = payload.data;
   var isExpress = !!response.send;
   var isHapi = !!response.request;
-  var contentType = 'application/json';
+  var contentType = 'application/vnd.api+json';
   if (!isExpress && !isHapi) {
     throw new Error('Unsupported server type!');
   }
