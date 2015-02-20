@@ -1,3 +1,4 @@
+const verifyAccept = require('./verify_accept');
 const verifyContentType = require('./verify_content_type');
 
 module.exports = function (opts) {
@@ -6,6 +7,8 @@ module.exports = function (opts) {
   var responder = opts.responder;
   var method = opts.method;
   var validators = [];
+
+  validators.push(verifyAccept);
 
   if (method === 'update' || method === 'create') {
     validators.push(verifyContentType);

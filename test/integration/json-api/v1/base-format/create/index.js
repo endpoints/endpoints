@@ -3,15 +3,14 @@ const expect = require('chai').expect;
 const DB = require('../../../../../fixtures/classes/database');
 const bookController = require('../../../../../fixtures/controllers/books');
 
-var req;
+var req = require('../../../../../fixtures/mocks/express_request');
+
+var createReq;
 
 describe('creatingResources', function() {
 
   beforeEach(function() {
-    req = {
-      headers: {
-        'content-type': 'application/vnd.api+json'
-      },
+    createReq = req({
       body: {
         data: {
           'series_id': 1,
@@ -20,8 +19,19 @@ describe('creatingResources', function() {
           'date_published': '2015-02-17'
         }
       }
-    };
+    });
     return DB.reset();
+  });
+
+  it('must require an ACCEPT header specifying the JSON API media type', function(done) {
+    var bookRouteHandler = bookController.read({
+      responder: function(payload) {
+        expect(payload.code).to.equal(406);
+        done();
+      }
+    });
+    createReq.headers = { accept: '' };
+    bookRouteHandler(createReq);
   });
 
   it('must respond to a successful request with an object', function(done) {
@@ -32,11 +42,11 @@ describe('creatingResources', function() {
         done();
       }
     });
-    bookRouteHandler(req);
+    bookRouteHandler(createReq);
   });
 
   it('must respond to an unsuccessful request with a JSON object', function(done) {
-    req.body = {};
+    createReq.body = {};
     var bookRouteHandler = bookController.create({
       responder: function(payload) {
         expect(payload.code).to.equal(422);
@@ -44,7 +54,7 @@ describe('creatingResources', function() {
         done();
       }
     });
-    bookRouteHandler(req);
+    bookRouteHandler(createReq);
   });
 
   it('must not include any top-level members other than "data," "meta," "links," or "linked"', function(done) {
@@ -58,7 +68,7 @@ describe('creatingResources', function() {
         done();
       }
     });
-    bookRouteHandler(req);
+    bookRouteHandler(createReq);
   });
 
   it('should allow resources of a given type to be created', function(done) {
@@ -67,23 +77,23 @@ describe('creatingResources', function() {
         var data = payload.data.data;
         expect(payload.code).to.equal(201);
         expect(data).to.have.property('id');
-        expect(data.date_published).to.equal(req.body.data.date_published);
-        expect(data.title).to.equal(req.body.data.title);
+        expect(data.date_published).to.equal(createReq.body.data.date_published);
+        expect(data.title).to.equal(createReq.body.data.title);
         done();
       }
     });
-    bookRouteHandler(req);
+    bookRouteHandler(createReq);
   });
 
   it('must require a content-type header of application/vnd.api+json', function(done) {
-    req.headers['content-type'] = '';
+    createReq.headers['content-type'] = '';
     var bookRouteHandler = bookController.create({
       responder: function(payload) {
         expect(payload.code).to.equal(415);
         done();
       }
     });
-    bookRouteHandler(req);
+    bookRouteHandler(createReq);
   });
   it('must require relevant extensions in the content-type header');
   it('must require a single resource object as primary data');

@@ -5,10 +5,20 @@ const DB = require('../../../../../fixtures/classes/database');
 const bookController = require('../../../../../fixtures/controllers/books');
 
 var req = require('../../../../../fixtures/mocks/express_request');
+var readReq;
 
 describe('read', function() {
 
   beforeEach(function() {
+    readReq = req({
+      params: {
+        id: 1
+      },
+      // all of this should work without the content-type
+      headers: {
+        'accept': 'application/vnd.api+json'
+      }
+    });
     return DB.reset();
   });
 
@@ -23,7 +33,7 @@ describe('read', function() {
             done();
           }
         });
-        bookRouteHandler(req());
+        bookRouteHandler(readReq);
       });
       it('must respond to an unsuccessful request with a JSON object', function(done) {
 
@@ -48,7 +58,7 @@ describe('read', function() {
             done();
           }
         });
-        bookRouteHandler(req());
+        bookRouteHandler(readReq);
       });
       it('must make primary data for a single record an object', function(done) {
         var bookRouteHandler = bookController.read({
@@ -62,7 +72,7 @@ describe('read', function() {
             done();
           }
         });
-        bookRouteHandler(req());
+        bookRouteHandler(readReq);
       });
       it('must make primary data for multiple records an array', function(done) {
         var bookRouteHandler = bookController.read({
@@ -72,7 +82,7 @@ describe('read', function() {
             done();
           }
         });
-        bookRouteHandler(req());
+        bookRouteHandler(readReq);
       });
       it('must not include any top-level members other than "data," "meta," "links," or "linked"', function(done) {
         var allowedTopLevel = ['data', 'linked', 'links', 'meta'];
@@ -85,7 +95,7 @@ describe('read', function() {
             done();
           }
         });
-        bookRouteHandler(req());
+        bookRouteHandler(readReq);
       });
     });
 
@@ -107,7 +117,7 @@ describe('read', function() {
               done();
             }
           });
-          bookRouteHandler(req({params: { id: 1 } }));
+          bookRouteHandler(readReq);
         });
         it('must include relations as linked resources', function(done) {
           var bookRouteHandler = bookController.read({
@@ -124,7 +134,7 @@ describe('read', function() {
               done();
             }
           });
-          bookRouteHandler(req({params: { id: 1 } }));
+          bookRouteHandler(readReq);
         });
       });
 
@@ -146,7 +156,7 @@ describe('read', function() {
               done();
             }
           });
-          bookRouteHandler(req({params: { id: 1 } }));
+          bookRouteHandler(readReq);
         });
         it('must have a string value for type', function(done) {
           var bookRouteHandler = bookController.read({
@@ -160,7 +170,7 @@ describe('read', function() {
               done();
             }
           });
-          bookRouteHandler(req({params: { id: 1 } }));
+          bookRouteHandler(readReq);
         });
       });
 
@@ -177,7 +187,7 @@ describe('read', function() {
               done();
             }
           });
-          bookRouteHandler(req({params: { id: 1 } }));
+          bookRouteHandler(readReq);
         });
         it('must have a string value for type', function(done) {
           var bookRouteHandler = bookController.read({
@@ -191,7 +201,7 @@ describe('read', function() {
               done();
             }
           });
-          bookRouteHandler(req({params: { id: 1 } }));
+          bookRouteHandler(readReq);
         });
       });
 
@@ -208,7 +218,7 @@ describe('read', function() {
               done();
             }
           });
-          bookRouteHandler(req({params: { id: 1 } }));
+          bookRouteHandler(readReq);
         });
       });
 
@@ -231,7 +241,7 @@ describe('read', function() {
               done();
             }
           });
-          bookRouteHandler(req({params: { id: 1 } }));
+          bookRouteHandler(readReq);
         });
         it('must set the value of "self" to a URL that identifies the resource represented by this object', function(done) {
           var bookRouteHandler = bookController.read({
@@ -246,7 +256,7 @@ describe('read', function() {
               done();
             }
           });
-          bookRouteHandler(req({params: { id: 1 } }));
+          bookRouteHandler(readReq);
         });
 
         // TODO: API TEST
@@ -272,7 +282,7 @@ describe('read', function() {
               done();
             }
           });
-          bookRouteHandler(req({params: { id: 1 } }));
+          bookRouteHandler(readReq);
         });
 
         // TODO: unit test - Endpoints should throw if a model has a
@@ -296,7 +306,7 @@ describe('read', function() {
               done();
             }
           });
-          bookRouteHandler(req({params: { id: 1 } }));
+          bookRouteHandler(readReq);
         });
         it('should make to-many references a string URL', function(done) {
           var bookRouteHandler = bookController.read({
@@ -311,7 +321,7 @@ describe('read', function() {
               done();
             }
           });
-          bookRouteHandler(req({params: { id: 1 } }));
+          bookRouteHandler(readReq);
         });
 
         describe('stringURLRelationship', function() {
@@ -336,7 +346,7 @@ describe('read', function() {
                 done();
               }
             });
-            bookRouteHandler(req({params: { id: 1 } }));
+            bookRouteHandler(readReq);
           });
 
           it('must include object linkage to resource objects included in the same compound document', function(done) {
@@ -353,14 +363,8 @@ describe('read', function() {
                 done();
               }
             });
-            bookRouteHandler(req({
-              params: {
-                id: 1
-              },
-              query: {
-                include: 'author'
-              }
-            }));
+            readReq.query = { include: 'author' };
+            bookRouteHandler(readReq);
           });
 
           it('must express object linkages as type and id for to-one relationships', function(done) {
@@ -374,17 +378,8 @@ describe('read', function() {
                 done();
               }
             });
-            bookRouteHandler(req({
-              params: {
-                id: 1
-              },
-              query: {
-                // Object linkages only require type and id if the
-                // relation is in the top-level `linked` object.
-                // Only testing that case here.
-                include: 'author'
-              }
-            }));
+            readReq.query = { include: 'author' };
+            bookRouteHandler(readReq);
           });
           it('must express object linkages as type and ids for to-many relationships', function(done) {
             // FIXME: This test isn't actually testing what it should
@@ -398,17 +393,8 @@ describe('read', function() {
                 done();
               }
             });
-            bookRouteHandler(req({
-              params: {
-                id: 1
-              },
-              query: {
-                // Object linkages only require type and ids if the
-                // relation is in the top-level `linked` object.
-                // Only testing that case here.
-                include: 'series'
-              }
-            }));
+            readReq.query = { include: 'series' };
+            bookRouteHandler(readReq);
           });
 
           // We don't do heterogeneous to-many relationships
@@ -439,14 +425,8 @@ describe('read', function() {
             done();
           }
         });
-        bookRouteHandler(req({
-          params: {
-            id: 1
-          },
-          query: {
-            include: 'author'
-          }
-        }));
+        readReq.query = { include: 'author' };
+        bookRouteHandler(readReq);
       });
 
       it('must not include more than one resource object for each type and id pair', function(done) {
@@ -477,14 +457,8 @@ describe('read', function() {
           done();
         }
       });
-      bookRouteHandler(req({
-        params: {
-          id: 1
-        },
-        query: {
-          include: 'author'
-        }
-      }));
+      readReq.query = { include: 'author' };
+      bookRouteHandler(readReq);
     });
 
     it('must have the identical relationship name as the key in the links section of the parent resource object', function(done) {
@@ -500,14 +474,8 @@ describe('read', function() {
           done();
         }
       });
-      bookRouteHandler(req({
-        params: {
-          id: 1
-        },
-        query: {
-          include: 'author,series,stores,author.books'
-        }
-      }));
+      readReq.query = { include: 'author,series,stores,author.books' };
+      bookRouteHandler(readReq);
     });
 
     // Meta object not currently used by endpoints
@@ -525,28 +493,42 @@ describe('read', function() {
   // describe('inclusionOfLinkedResources', function() {
   // });
 
-  describe('sparseFieldsets', function() {
-    it('should support returning only specific fields in the response on a per-type basis by including a fields[TYPE] parameter');
-    it('must not include other fields when the client specifies sparse fieldsets');
-  });
+  describe('fetchingResources', function() {
 
-  describe('sorting', function() {
-    it('should support requests to sort collections with a sort query parameter');
-    it('should support multiple sort criteria using comma-separated fields');
-    it('should sort multiple criteria in the order specified');
-    it('must sort ascending or descending based on explicit sort order using "+" or "-"');
-  });
+    it('must require an ACCEPT header specifying the JSON API media type', function(done) {
+      var bookRouteHandler = bookController.read({
+        responder: function(payload) {
+          expect(payload.code).to.equal(406);
+          done();
+        }
+      });
+      readReq.headers = { accept: '' };
+      bookRouteHandler(readReq);
+    });
 
-  describe('pagination', function() {
-    it('should limit the number of resources returned in a response to a subset of the whole set available');
-    it('should provide links to traverse a paginated data set');
-    it('must put any pagination links on the object that corresponds to a collection');
-    it('must only use "first," "last," "prev," and "next" as keys for pagination links');
-    it('must omit or set values to null for links that are unavailable');
-    it('must remain consistent with the sorting rules');
-  });
+    describe('sparseFieldsets', function() {
+      it('should support returning only specific fields in the response on a per-type basis by including a fields[TYPE] parameter');
+      it('must not include other fields when the client specifies sparse fieldsets');
+    });
 
-  describe('filtering', function() {
-    it('must only use the filter query parameter for filtering data');
+    describe('sorting', function() {
+      it('should support requests to sort collections with a sort query parameter');
+      it('should support multiple sort criteria using comma-separated fields');
+      it('should sort multiple criteria in the order specified');
+      it('must sort ascending or descending based on explicit sort order using "+" or "-"');
+    });
+
+    describe('pagination', function() {
+      it('should limit the number of resources returned in a response to a subset of the whole set available');
+      it('should provide links to traverse a paginated data set');
+      it('must put any pagination links on the object that corresponds to a collection');
+      it('must only use "first," "last," "prev," and "next" as keys for pagination links');
+      it('must omit or set values to null for links that are unavailable');
+      it('must remain consistent with the sorting rules');
+    });
+
+    describe('filtering', function() {
+      it('must only use the filter query parameter for filtering data');
+    });
   });
 });

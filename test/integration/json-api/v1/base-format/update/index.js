@@ -3,15 +3,14 @@ const expect = require('chai').expect;
 const DB = require('../../../../../fixtures/classes/database');
 const bookController = require('../../../../../fixtures/controllers/books');
 
-var req;
+var req = require('../../../../../fixtures/mocks/express_request');
+
+var updateReq;
 
 describe('updatingResources', function() {
 
   beforeEach(function() {
-    req = {
-      headers: {
-        'content-type': 'application/vnd.api+json'
-      },
+    updateReq = req({
       params: {
         id: 1
       },
@@ -22,8 +21,19 @@ describe('updatingResources', function() {
           title: 'tiddlywinks'
         }
       }
-    };
+    });
     return DB.reset();
+  });
+
+  it('must require an ACCEPT header specifying the JSON API media type', function(done) {
+    var bookRouteHandler = bookController.read({
+      responder: function(payload) {
+        expect(payload.code).to.equal(406);
+        done();
+      }
+    });
+    updateReq.headers = { accept: '' };
+    bookRouteHandler(updateReq);
   });
 
   it('must respond to a successful request with an object', function(done) {
@@ -34,11 +44,11 @@ describe('updatingResources', function() {
         done();
       }
     });
-    bookRouteHandler(req);
+    bookRouteHandler(updateReq);
   });
 
   it('must respond to an unsuccessful request with a JSON object', function(done) {
-    req.body.data.id = 'asdf';
+    updateReq.body.data.id = 'asdf';
     var bookRouteHandler = bookController.update({
       responder: function(payload) {
         expect(payload.code).to.equal(404);
@@ -46,7 +56,7 @@ describe('updatingResources', function() {
         done();
       }
     });
-    bookRouteHandler(req);
+    bookRouteHandler(updateReq);
   });
 
 
@@ -61,7 +71,7 @@ describe('updatingResources', function() {
         done();
       }
     });
-    bookRouteHandler(req);
+    bookRouteHandler(updateReq);
   });
 
 
@@ -69,14 +79,14 @@ describe('updatingResources', function() {
   it('should allow existing resources to be modified');
 
   it('must require a content-type header of application/vnd.api+json', function(done) {
-    req.headers['content-type'] = '';
+    updateReq.headers['content-type'] = '';
     var bookRouteHandler = bookController.update({
       responder: function(payload) {
         expect(payload.code).to.equal(415);
         done();
       }
     });
-    bookRouteHandler(req);
+    bookRouteHandler(updateReq);
   });
 
   it('must require relevant extensions in the content-type header');
@@ -116,14 +126,14 @@ describe('updatingResources', function() {
 
     describe('404NotFound', function() {
       it('must return 404 Not Found when processing a request to modify a resource that does not exist', function(done) {
-        req.body.data.id = 'nevergonnagetit';
+        updateReq.body.data.id = 'nevergonnagetit';
         var bookRouteHandler = bookController.update({
           responder: function(payload) {
             expect(payload.code).to.equal(404);
             done();
           }
         });
-        bookRouteHandler(req);
+        bookRouteHandler(updateReq);
       });
       it('must return 404 Not Found when processing a request that references a related resource that does not exist');
     });
