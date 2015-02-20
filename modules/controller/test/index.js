@@ -1,4 +1,7 @@
-const expect = require('chai').expect;
+const chai = require('chai');
+const expect = chai.expect;
+
+chai.use(require('chai-as-promised'));
 
 const Controller = require('../');
 
@@ -64,6 +67,12 @@ describe('Controller', function () {
 
   describe('#readRelation', function() {
 
+    it('should throw if user specified model that does not exist', function() {
+      return expect(
+        controller._readRelation(null, {params:{id:'badId'}})
+      ).to.be.rejectedWith(/Unable to locate/);
+    });
+
     it('should return a node request handling function', function () {
       expect(controller.readRelation()).to.be.a.function;
     });
@@ -76,6 +85,12 @@ describe('Controller', function () {
       expect(function () {
         controller.update({method:'badMethod'});
       }).to.throw(/Model does not have/);
+    });
+
+    it('should throw if user specified model that does not exist', function() {
+      return expect(
+        controller._readRelation(null, {params:{id:'badId'}})
+      ).to.be.rejectedWith(/Unable to locate/);
     });
 
     it('should return a node request handling function', function () {
@@ -92,10 +107,15 @@ describe('Controller', function () {
       }).to.throw(/Model does not have/);
     });
 
+    it('should throw if user specified model that does not exist', function() {
+      return expect(
+        controller._readRelation(null, {params:{id:'badId'}})
+      ).to.be.rejectedWith(/Unable to locate/);
+    });
+
     it('should return a node request handling function', function () {
       expect(controller.destroy()).to.be.a.function;
     });
-
   });
 
 });

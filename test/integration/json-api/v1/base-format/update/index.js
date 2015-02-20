@@ -41,7 +41,7 @@ describe('updatingResources', function() {
     req.body.data.id = 'asdf';
     var bookRouteHandler = bookController.update({
       responder: function(payload) {
-        expect(payload.code).to.equal(422);
+        expect(payload.code).to.equal(404);
         expect(payload.data).to.be.an('object');
         done();
       }
@@ -115,7 +115,16 @@ describe('updatingResources', function() {
     });
 
     describe('404NotFound', function() {
-      it('must return 404 Not Found when processing a request to modify a resource that does not exist');
+      it('must return 404 Not Found when processing a request to modify a resource that does not exist', function(done) {
+        req.body.data.id = 'nevergonnagetit';
+        var bookRouteHandler = bookController.update({
+          responder: function(payload) {
+            expect(payload.code).to.equal(404);
+            done();
+          }
+        });
+        bookRouteHandler(req);
+      });
       it('must return 404 Not Found when processing a request that references a related resource that does not exist');
     });
 
