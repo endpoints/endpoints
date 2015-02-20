@@ -48,7 +48,7 @@ describe('responder', function () {
       send: sinon.stub().returnsThis()
     };
     responder(payload, request, response);
-    expect(response.set.calledWith('content-type', 'application/json')).to.be.true;
+    expect(response.set.calledWith('content-type', 'application/vnd.api+json')).to.be.true;
     expect(response.status.calledWith(payload.code)).to.be.true;
     expect(response.send.calledWith(payload.data)).to.be.true;
   }),
@@ -71,7 +71,7 @@ describe('responder', function () {
     response.request = true;
     responder(payload, {}, response);
     expect(response.calledWith(payload.data)).to.be.true;
-    expect(stubReturn.type.calledWith('application/json')).to.be.true;
+    expect(stubReturn.type.calledWith('application/vnd.api+json')).to.be.true;
     expect(stubReturn.code.calledWith(payload.code)).to.be.true;
   });
 
