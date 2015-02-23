@@ -26,8 +26,12 @@ describe('Controller', function () {
     require('./lib/extract');
     require('./lib/normalize_value');
     require('./lib/parse_options');
-    require('./lib/search_keys');
+    require('./lib/request_handler');
     require('./lib/responder');
+    require('./lib/search_keys');
+    require('./lib/source_has');
+    require('./lib/verify_accept');
+    require('./lib/verify_content_type');
 
   });
 
