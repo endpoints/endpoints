@@ -25,7 +25,7 @@
     "node": ">= 0.10"
   },
   "scripts": {
-    "test-unit": "npm run lint && npm run style && mocha -b -R spec test/unit",
+    "test-unit": "npm run lint && npm run style && istanbul cover _mocha -- -b -R spec test/unit",
     "test-integration": "npm run lint && npm run style && mocha -b -R spec test/integration",
     "test": "npm run lint && npm run style && mocha -b -R spec",
     "style": "jscs modules test",
@@ -39,6 +39,7 @@
     "express": "^4.11.2",
     "express-routebuilder": "^2.1.0",
     "fantasy-database": "^1.1.0",
+    "istanbul": "^0.3.6",
     "jscs": "^1.10.0",
     "jshint": "^2.5.11",
     "knex": "^0.7.3",
