@@ -123,6 +123,7 @@ describe('Application', function () {
     it('should build a manifest of endpoints', function () {
       TestApp.register('foo').endpoint('foo', '/prefix');
       TestApp.register('bar').endpoint('bar');
+      TestApp.register('baz').endpoint('baz');
       expect(TestApp.manifest()).to.deep.equal([
         {
           name: 'foo',
@@ -138,9 +139,18 @@ describe('Application', function () {
         },
         {
           name: 'bar',
-          filters: [],
+          filters: [
+            'id',
+            'qux'
+          ],
           includes: [],
           url: '/bar'
+        },
+        {
+          name: 'baz',
+          filters: [],
+          includes: [],
+          url: '/baz'
         }
       ]);
     });
@@ -152,9 +162,11 @@ describe('Application', function () {
     it('should build a self-documenting index page', function () {
       TestApp.register('foo').endpoint('foo');
       TestApp.register('bar').endpoint('bar');
+      TestApp.register('baz').endpoint('baz');
       expect(TestApp.index()).to.deep.equal({
         foo: '/foo?include={bar,baz}&{id,qux}',
-        bar: '/bar'
+        bar: '/bar?{id,qux}',
+        baz: '/baz'
       });
     });
 

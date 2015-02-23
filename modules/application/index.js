@@ -37,9 +37,6 @@ Application.prototype.register = function (input) {
 
 Application.prototype.endpoint = function (resourceName, prefix) {
   var resource = this.resource(resourceName);
-  if (!resource) {
-    throw new Error('Unable to build endpoint for ' + resourceName);
-  }
   var url = slashWrap(prefix) + resourceName;
   var output = this.routeBuilder(resource.routes, url);
   this._endpoints.push({
