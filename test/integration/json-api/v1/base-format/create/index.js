@@ -152,23 +152,28 @@ describe('creatingResources', function() {
       });
     });
 
-    describe('204NoContent', function() {
-      it('must respond with either 201 or 204 if the request included a client-generated ID');
-    });
+    // Endpoints will respond with a 201 on all create requests
+    // Tested above.
+    // describe('204NoContent', function() {
+    //   it('must respond with either 201 or 204 if the request included a client-generated ID');
+    // });
 
-    describe('403Forbidden', function() {
-      it('should return 403 Forbidden in response to an unsupported creation request');
-    });
+    // API decision to not create the route - endpoints will always support creation
+    // describe('403Forbidden', function() {
+    //   it('should return 403 Forbidden in response to an unsupported creation request');
+    // });
 
     describe('409Conflict', function() {
       it('must return 409 Conflict when processing a request to create a resource with an existing client-generated ID');
       it('must return 409 Conflict when processing a request where the type does not match the endpoint');
     });
 
-    describe('otherResponses', function() {
-      it('should use other HTTP codes to represent errors');
-      it('must interpret errors in accordance with HTTP semantics');
-      it('should return error details');
-    });
+    // Not testable as written. Each error handling branch should be
+    // unit-tested for proper HTTP semantics.
+    // describe('otherResponses', function() {
+    //   it('should use other HTTP codes to represent errors');
+    //   it('must interpret errors in accordance with HTTP semantics');
+    //   it('should return error details');
+    // });
   });
 });
