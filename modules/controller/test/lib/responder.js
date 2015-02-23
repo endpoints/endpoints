@@ -75,4 +75,24 @@ describe('responder', function () {
     expect(stubReturn.code.calledWith(payload.code)).to.be.true;
   });
 
+  it('should include headers described in the payload', function() {
+    var payload = {
+      code: 201,
+      data: {},
+      headers: {
+        location: '/foos/1'
+      }
+    };
+    var request = {
+      accepts: sinon.stub().returns(false)
+    };
+    var response = {
+      set: sinon.stub().returnsThis(),
+      status: sinon.stub().returnsThis(),
+      send: sinon.stub().returnsThis()
+    };
+    responder(payload, request, response);
+    expect(response.set.calledWith('location', payload.headers.location)).to.be.true;
+  });
+
 });

@@ -5,6 +5,8 @@ module.exports = function (err, data, opts) {
     opts = {};
   }
 
+  var typeName = opts.type;
+
   if (err) {
     return {
       code: err.httpStatus || 422,
@@ -20,7 +22,10 @@ module.exports = function (err, data, opts) {
   return {
     code: 201,
     data: jsonApi(data, {
-      typeName: opts.type
-    })
+      typeName: typeName
+    }),
+    headers: {
+      location: '/' + typeName + '/' + data.id
+    }
   };
 };
