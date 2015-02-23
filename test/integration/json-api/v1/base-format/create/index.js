@@ -85,12 +85,21 @@ describe('creatingResources', function() {
   it('must require a type member of the data');
 
   describe('clientGeneratedIds', function() {
-    // A server MAY accept a client-generated ID along with a
-    // request to create a resource. An ID MUST be specified
-    // with an "id" key, the value of which MUST be a
-    // universally unique identifier. The client SHOULD use a
-    // properly generated and formatted UUID as described in RFC
-    // 4122 [RFC4122].
+    it('may accept a client-generated ID along with a request to create a resource', function(done) {
+      createReq.body.data.id = 9999;
+      var bookRouteHandler = bookController.create({
+        responder: function(payload) {
+          var data = payload.data.data;
+          expect(payload.code).to.equal(201);
+          expect(data.id).to.equal(String(createReq.body.data.id));
+          expect(data.date_published).to.equal(createReq.body.data.date_published);
+          expect(data.title).to.equal(createReq.body.data.title);
+          done();
+        }
+      });
+      bookRouteHandler(createReq);
+    });
+
     it('must return 403 Forbidden in response to an unsupported request using a client-generated ID');
   });
 
@@ -164,7 +173,17 @@ describe('creatingResources', function() {
     // });
 
     describe('409Conflict', function() {
-      it('must return 409 Conflict when processing a request to create a resource with an existing client-generated ID');
+      it('must return 409 Conflict when processing a request to create a resource with an existing client-generated ID', function(done) {
+        createReq.body.data.id = 1;
+        var bookRouteHandler = bookController.create({
+          responder: function(payload) {
+            expect(payload.code).to.equal(409);
+            done();
+          }
+        });
+        bookRouteHandler(createReq);
+      });
+
       it('must return 409 Conflict when processing a request where the type does not match the endpoint');
     });
 

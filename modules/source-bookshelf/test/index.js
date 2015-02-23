@@ -83,7 +83,34 @@ describe('BookshelfSource', function () {
           });
         });
       });
+    });
 
+    it('should create with an id specified', function(done) {
+      BooksSource.read(null).then(function (allBooks) {
+        var totalBooks = allBooks.length;
+        BooksSource.create('create', {
+          id: 9999,
+          author_id:1,
+          title: 'test book',
+          date_published: '2015-02-01'
+        }).then(function (book) {
+          expect(book).to.be.an.instanceof(BooksModel);
+          expect(book.id).to.equal(9999);
+          BooksSource.read(null).then(function (allBooksPlusNew) {
+            expect(totalBooks + 1).to.equal(allBooksPlusNew.length);
+            done();
+          });
+        });
+      });
+    });
+
+    it('should throw if trying to create with an existing id', function() {
+      return expect(BooksSource.create('create', {
+        id: 1,
+        author_id:1,
+        title: 'test book',
+        date_published: '2015-02-01'
+      })).to.be.rejectedWith(/SQLITE_CONSTRAINT: UNIQUE/);
     });
 
   });
