@@ -10,8 +10,7 @@ const payloads = {
   read: require('./lib/payloads/read'),
   readRelation: require('./lib/payloads/read'),
   update: require('./lib/payloads/update'),
-  destroy: require('./lib/payloads/destroy'),
-  lookupFailed: require('./lib/payloads/lookup_failed')
+  destroy: require('./lib/payloads/destroy')
 };
 
 function Controller(opts) {
