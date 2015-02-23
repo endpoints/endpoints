@@ -37,7 +37,6 @@ describe('creatingResources', function() {
   it('must respond to a successful request with an object', function(done) {
     var bookRouteHandler = bookController.create({
       responder: function(payload) {
-        expect(payload.code).to.equal(201);
         expect(payload.data).to.be.an('object');
         done();
       }
@@ -61,24 +60,9 @@ describe('creatingResources', function() {
     var allowedTopLevel = ['data', 'linked', 'links', 'meta'];
     var bookRouteHandler = bookController.create({
       responder: function(payload) {
-        expect(payload.code).to.equal(201);
         Object.keys(payload.data).forEach(function(key) {
           expect(allowedTopLevel).to.contain(key);
         });
-        done();
-      }
-    });
-    bookRouteHandler(createReq);
-  });
-
-  it('should allow resources of a given type to be created', function(done) {
-    var bookRouteHandler = bookController.create({
-      responder: function(payload) {
-        var data = payload.data.data;
-        expect(payload.code).to.equal(201);
-        expect(data).to.have.property('id');
-        expect(data.date_published).to.equal(createReq.body.data.date_published);
-        expect(data.title).to.equal(createReq.body.data.title);
         done();
       }
     });
@@ -113,11 +97,59 @@ describe('creatingResources', function() {
   describe('responses', function() {
 
     describe('201Created', function() {
-      it('must respond to a successful resource creation');
-      it('must include a Location header identifying the location of the new resource');
-      it('must respond with 201 on a successful request if the request did not include a client-generated ID');
-      it('must include a document containing the primary resource created');
-      it('must make the self link and Location header the same');
+      it('must respond to a successful resource creation', function(done) {
+        var bookRouteHandler = bookController.create({
+          responder: function(payload) {
+            expect(payload.code).to.equal(201);
+            done();
+          }
+        });
+        bookRouteHandler(createReq);
+      });
+
+      it('must include a Location header identifying the location of the new resource', function(done) {
+        var bookRouteHandler = bookController.create({
+          responder: function(payload) {
+            expect(payload.headers.location).to.equal('/books/' + payload.data.data.id);
+            done();
+          }
+        });
+        bookRouteHandler(createReq);
+      });
+
+      it('must respond with 201 on a successful request if the request did not include a client-generated ID', function(done) {
+        var bookRouteHandler = bookController.create({
+          responder: function(payload) {
+            expect(payload.code).to.equal(201);
+            done();
+          }
+        });
+        bookRouteHandler(createReq);
+      });
+
+      it('must include a document containing the primary resource created', function(done) {
+        var bookRouteHandler = bookController.create({
+          responder: function(payload) {
+            var data = payload.data.data;
+            expect(payload.code).to.equal(201);
+            expect(data).to.have.property('id');
+            expect(data.date_published).to.equal(createReq.body.data.date_published);
+            expect(data.title).to.equal(createReq.body.data.title);
+            done();
+          }
+        });
+        bookRouteHandler(createReq);
+      });
+
+      it('must make the self link and Location header the same', function(done) {
+        var bookRouteHandler = bookController.create({
+          responder: function(payload) {
+            expect(payload.headers.location).to.equal(payload.data.data.links.self);
+            done();
+          }
+        });
+        bookRouteHandler(createReq);
+      });
     });
 
     describe('204NoContent', function() {
