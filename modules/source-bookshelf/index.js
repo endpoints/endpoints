@@ -2,7 +2,6 @@ const _ = require('lodash');
 const baseMethods = require('./lib/base_methods');
 
 const processFilter = require('./lib/process_filter');
-//const processFields = require('./lib/process_fields');
 const processSort = require('./lib/process_sort');
 
 function Source (opts) {
@@ -83,11 +82,8 @@ Source.prototype.read = function (opts) {
     opts = {};
   }
   var model = this.model;
-  //var type = this.typeName();
   return this.model.collection().query(function (qb) {
-    // TODO: support filtering/sparse-fielding non-primary resources?
     qb = processFilter(model, qb, opts.filter);
-    //qb = processFields(model, qb, opts.fields[type]);
     qb = processSort(model, qb, opts.sort);
   }).fetch({
     withRelated: _.intersection(this.relations(), opts.include)

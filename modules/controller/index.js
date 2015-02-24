@@ -20,7 +20,7 @@ Controller.prototype._requestHandler = require('./lib/request_handler');
 Controller.prototype.responder = require('./lib/responder');
 
 Controller.prototype.getParams = function (request, opts) {
-  var query = request.query;
+  var query = request.query || {};
   var include = query[this.includeKey];
   var filter = query[this.filterKey];
   var fields = query[this.fieldsKey];

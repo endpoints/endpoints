@@ -1,6 +1,5 @@
 const _ = require('lodash');
 
-
 // TODO: investigate how to deal with express's query parser
 // converting + into a space.
 function isAscending (key) {

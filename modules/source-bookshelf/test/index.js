@@ -51,16 +51,15 @@ describe('BookshelfSource', function () {
 
   describe('#byId', function () {
 
-    it('should find resource on the underlying model by id', function (done) {
-      BooksSource.byId(1).then(function (book) {
+    it('should find resource on the underlying model by id', function () {
+      return BooksSource.byId(1).then(function (book) {
         expect(book.toJSON()).to.deep.equal(fantasyDatabase.books[0]);
-        done();
       });
     });
 
   });
 
-  describe('#create', function (done) {
+  describe('#create', function () {
 
     it('should throw if no method is provided', function () {
       expect(function () {
@@ -68,8 +67,8 @@ describe('BookshelfSource', function () {
       }).to.throw(/No method/);
     });
 
-    it('should create resource using the underlying model', function (done) {
-      BooksSource.read(null).then(function (allBooks) {
+    it('should create resource using the underlying model', function () {
+      return BooksSource.read(null).then(function (allBooks) {
         var totalBooks = allBooks.length;
         BooksSource.create('create', {
           author_id:1,
@@ -79,14 +78,13 @@ describe('BookshelfSource', function () {
           expect(book).to.be.an.instanceof(BooksModel);
           BooksSource.read(null).then(function (allBooksPlusNew) {
             expect(totalBooks + 1).to.equal(allBooksPlusNew.length);
-            done();
           });
         });
       });
     });
 
-    it('should create with an id specified', function(done) {
-      BooksSource.read(null).then(function (allBooks) {
+    it('should create with an id specified', function() {
+      return BooksSource.read(null).then(function (allBooks) {
         var totalBooks = allBooks.length;
         BooksSource.create('create', {
           id: 9999,
@@ -98,14 +96,13 @@ describe('BookshelfSource', function () {
           expect(book.id).to.equal(9999);
           BooksSource.read(null).then(function (allBooksPlusNew) {
             expect(totalBooks + 1).to.equal(allBooksPlusNew.length);
-            done();
           });
         });
       });
     });
 
     it('should throw if trying to create with an existing id', function() {
-      return expect(BooksSource.create('create', {
+      expect(BooksSource.create('create', {
         id: 1,
         author_id:1,
         title: 'test book',
@@ -115,26 +112,26 @@ describe('BookshelfSource', function () {
 
   });
 
-  describe('#read', function (done) {
+  describe('#read', function () {
 
-    it('should find data using the underlying model', function (done) {
-      BooksSource.read({}).then(function (books) {
+    it('should find data using the underlying model', function () {
+      return BooksSource.read({}).then(function (books) {
         expect(books.length).to.equal(fantasyDatabase.books.length);
-        done();
       });
     });
 
-    it('should allow filtering', function (done) {
-      BooksSource.read({
+    it('should allow filtering', function () {
+      return BooksSource.read({
         filter: { id: 1 }
       }).then(function (books) {
-        expect(books.first().toJSON()).to.deep.equal(fantasyDatabase.books[0]);
-        done();
+        expect(books.first().toJSON({
+          shallow:true
+        })).to.deep.equal(fantasyDatabase.books[0]);
       });
     });
 
-    it('should allow finding with related data', function (done) {
-      BooksSource.read({
+    it('should allow finding with related data', function () {
+      return BooksSource.read({
         filter: { id: 1 },
         include: ['author']
       }).then(function (books) {
@@ -144,7 +141,6 @@ describe('BookshelfSource', function () {
         expect(books.first().related('author').toJSON({
           shallow: true
         })).to.deep.equal(fantasyDatabase.authors[0]);
-        done();
       });
     });
 
@@ -158,15 +154,14 @@ describe('BookshelfSource', function () {
       }).to.throw(/No method/);
     });
 
-    it('should update resource using the underlying model', function (done) {
+    it('should update resource using the underlying model', function () {
       var newTitle = 'altered book';
-      BooksSource.byId(1).then(function (bookOne) {
+      return BooksSource.byId(1).then(function (bookOne) {
         BooksSource.update(bookOne, 'update', {
           title: 'altered book'
         }).then(function (data) {
           expect(data).to.be.an.instanceof(BooksModel);
           expect(data.get('title')).to.equal(newTitle);
-          done();
         });
       });
     });
@@ -181,13 +176,12 @@ describe('BookshelfSource', function () {
       }).to.throw(/No method/);
     });
 
-    it('should destroy resource using the underlying model', function (done) {
-      BooksSource.read({}).then(function (allBooks) {
+    it('should destroy resource using the underlying model', function () {
+      return BooksSource.read({}).then(function (allBooks) {
         var totalBooks = allBooks.length;
         BooksSource.destroy(allBooks.first(), 'destroy').then(function (book) {
           BooksSource.read(null, {}).then(function (allBooksMinusOne) {
             expect(totalBooks - 1).to.equal(allBooksMinusOne.length);
-            done();
           });
         });
       });

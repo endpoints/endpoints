@@ -2,7 +2,7 @@ module.exports = {
   client: 'sqlite3',
   debug: false,
   connection: {
-    filename: ':memory:'
+    filename: __dirname + '/db.sqlite3'
   },
-  directory: __dirname  + '/migrations',
+  directory: __dirname + '/migrations',
 };
