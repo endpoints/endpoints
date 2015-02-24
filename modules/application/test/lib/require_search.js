@@ -11,7 +11,7 @@ describe('requireSearch', function () {
   it('should throw if no searchPaths are specified', function () {
     expect(function () {
       requireSearch('file');
-    }).to.throw;
+    }).to.throw(/No searchPaths/);
   });
 
   it('should require a file, looking in multiple locations to find it', function () {

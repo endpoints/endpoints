@@ -17,6 +17,9 @@ describe('parseResource', function () {
 
   it('should throw if a custom resource is defined without a name', function () {
     expect(function () {
+      parseResource();
+    }).to.throw('Unable to parse a module without a name.');
+    expect(function () {
       parseResource({});
     }).to.throw('Unable to parse a module without a name.');
   });
