@@ -28,6 +28,11 @@ Source.prototype._find = function (params, opts) {
   return this.model.filter(params).fetch(opts);
 };
 
+Source.prototype._sanitizeData = function(data) {
+  delete data.type;
+  return data;
+};
+
 Source.prototype.filters = function () {
   var filters = Object.keys(this.model.filters || {});
   // TODO: remove this and have the id filter be present by
@@ -64,6 +69,7 @@ Source.prototype.create = function (method, params) {
   if (!params) {
     params = {};
   }
+  this._sanitizeData(params);
   return this.model[method](params);
 };
 
@@ -80,6 +86,9 @@ Source.prototype.update =
 Source.prototype.destroy = function (model, method, params) {
   if (!method) {
     throw new Error('No method provided to update or delete with.');
+  }
+  if (params) {
+    this._sanitizeData(params);
   }
   return model[method](params);
 };
