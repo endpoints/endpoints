@@ -20,7 +20,7 @@ describe('verifyAccept', function() {
   });
 
   it('should not return an error if it has an accepts header containing "text/html"', function() {
-    var req = {headers:{'accepts': 'text/html'}};
+    var req = {headers:{'accept': 'text/html'}};
     expect(verifyAccept(req)).to.be.undefined;
   });
 });

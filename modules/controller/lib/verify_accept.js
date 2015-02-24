@@ -5,7 +5,7 @@ module.exports = function(request) {
 
   var headers = request.headers;
   var accept = headers.accept;
-  var isBrowser = headers.accepts && headers.accepts.indexOf('text/html') !== -1;
+  var isBrowser = accept && accept.indexOf('text/html') !== -1;
 
   var isValidAccept = (
     accept &&
