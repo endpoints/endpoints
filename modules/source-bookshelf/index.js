@@ -85,9 +85,9 @@ Source.prototype.read = function (opts) {
   var model = this.model;
   //var type = this.typeName();
   return this.model.collection().query(function (qb) {
-    // TODO: support filtering/sparse-fielding non-primary resources?
     qb = processFilter(model, qb, opts.filter);
-    //qb = processFields(model, qb, opts.fields[type]);
+    // TODO: support filtering/sparse-fielding non-primary resources?
+    // qb = processFields(model, qb, opts.fields);
     qb = processSort(model, qb, opts.sort);
   }).fetch({
     withRelated: _.intersection(this.relations(), opts.include)
