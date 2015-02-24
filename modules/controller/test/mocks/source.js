@@ -28,5 +28,8 @@ module.exports = {
   relations: function () {
     return ['relation'];
   },
+  fields: function () {
+    return ['id', 'title'];
+  },
   model: Model
 };
