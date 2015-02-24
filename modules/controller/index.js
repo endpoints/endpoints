@@ -1,9 +1,7 @@
 const _ = require('lodash');
 
-const extract = require('./lib/extract');
 const sourceHas = require('./lib/source_has');
 const parseOptions = require('./lib/parse_options');
-const requestHandler = require('./lib/request_handler');
 
 const payloads = {
   create: require('./lib/payloads/create'),
@@ -16,6 +14,9 @@ const payloads = {
 function Controller(opts) {
   _.extend(this, parseOptions(opts));
 }
+
+Controller.prototype._extract = require('./lib/extract');
+Controller.prototype._requestHandler = require('./lib/request_handler');
 Controller.prototype.responder = require('./lib/responder');
 
 Controller.prototype._validateController = function (config) {
@@ -33,6 +34,24 @@ Controller.prototype._validateController = function (config) {
         'method'
       )
   ]);
+};
+
+Controller.prototype._throwIfModel = function(model) {
+  if (model) {
+    var err = new Error('Model with this ID already exists');
+    err.httpStatus = 409;
+    err.title = 'Conflict';
+    throw err;
+  }
+};
+
+Controller.prototype._throwIfNoModel = function(model) {
+  if (!model || model instanceof Error) {
+    var err = new Error('Unable to locate model.');
+    err.httpStatus = 404;
+    err.title = 'Not found';
+    throw err;
+  }
 };
 
 Controller.prototype._configureController = function (method, opts) {
@@ -56,43 +75,40 @@ Controller.prototype._configureController = function (method, opts) {
 
 Controller.prototype.create = function (opts) {
   var config = this._configureController('create', opts);
-  return requestHandler(config);
+  return this._requestHandler(config);
 };
 
 Controller.prototype.read = function (opts) {
   var config = this._configureController('read', opts);
-  return requestHandler(config);
+  return this._requestHandler(config);
 };
 
 Controller.prototype.readRelation = function (opts) {
   var config = this._configureController('readRelation', opts);
-  return requestHandler(config);
+  return this._requestHandler(config);
 };
 
 Controller.prototype.update = function (opts) {
   var config = this._configureController('update', opts);
-  return requestHandler(config);
+  return this._requestHandler(config);
 };
 
 Controller.prototype.destroy = function (opts) {
   var config = this._configureController('destroy', opts);
-  return requestHandler(config);
+  return this._requestHandler(config);
 };
 
 Controller.prototype._create = function(opts, request) {
   var source = this.source;
   var data = request.body.data;
+  var throwIfModel = this._throwIfModel;
   if (data && data.id) {
-    return source.byId(data.id).then(function (model) {
-      if (model) {
-        var err = new Error('Model with this ID already exists');
-        err.httpStatus = 409;
-        err.title = 'Conflict';
-        throw err;
+    return source.byId(data.id)
+      .then(throwIfModel)
+      .then(function() {
+        return source.create(opts.method, request.body.data);
       }
-    }).then(function() {
-      return source.create(opts.method, request.body.data);
-    });
+    );
   } else {
     return source.create(opts.method, request.body.data);
   }
@@ -109,14 +125,11 @@ Controller.prototype._read = function(opts, request) {
 
 Controller.prototype._readRelation = function(opts, request) {
   var source = this.source;
-  var relation = request.params ? request.params.relation : null;
+  var relation = request.params.relation || null;
+  var throwIfNoModel = this._throwIfNoModel;
   return source.byId(request.params.id, relation).then(function (model) {
+    throwIfNoModel(model);
     return model.related(relation);
-  }).catch(function() {
-    var err = new Error('Unable to locate model.');
-    err.httpStatus = 404;
-    err.title = 'Not found';
-    throw err;
   });
 };
 
@@ -125,14 +138,10 @@ Controller.prototype._destroy = function(opts, request) {
   var source = this.source;
   var method = opts.method;
   var sourceMethod = opts.sourceMethod;
+  var throwIfNoModel = this._throwIfNoModel;
   return source.byId(request.params.id).then(function (model) {
     return source[sourceMethod](model, method, request.body.data);
-  }).catch(function() {
-    var err = new Error('Unable to locate model.');
-    err.httpStatus = 404;
-    err.title = 'Not found';
-    throw err;
-  });
+  }).catch(throwIfNoModel);
 };
 
 // these will be removed or simplified greatly when i add
@@ -140,7 +149,7 @@ Controller.prototype._destroy = function(opts, request) {
 
 Controller.prototype._filters = function (request) {
   var allowedFilters = this.source.filters();
-  var result = extract({
+  var result = this._extract({
     context: request,
     contextKeysToSearch: this.requestKeysToSearch,
     // TODO: revisit this perhaps?
@@ -155,13 +164,13 @@ Controller.prototype._filters = function (request) {
 };
 
 Controller.prototype._includes = function (request) {
-  var result = extract({
+  var result = this._extract({
     context: request,
     contextKeysToSearch: this.requestKeysToSearch,
     find: this.relationKey,
     normalizer: this.paramNormalizer
   }) || [];
-  if (result && !Array.isArray(result)) {
+  if (!Array.isArray(result)) {
     result = [result];
   }
   return _.intersection(this.source.relations(), _.uniq(result));

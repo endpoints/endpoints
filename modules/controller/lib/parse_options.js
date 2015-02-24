@@ -12,8 +12,7 @@ var parseOptions = function (opts) {
   if (!opts) {
     opts = {};
   }
-  var source = opts.source;
-  if (!source) {
+  if (!opts.source) {
     throw new Error('No source specified.');
   }
   return _.extend({}, defaults, opts);

@@ -30,7 +30,7 @@ exports.addFilter = function (source) {
 
 exports.addCreate = function (source) {
   source.model.create = function (params) {
-    return this.forge(params).save(null, {method:'insert'}).then(function (model) {
+    return this.forge(params).save(null, {method: 'insert'}).then(function (model) {
       return this.forge({id:model.id}).fetch();
     }.bind(this));
   };
@@ -39,6 +39,6 @@ exports.addCreate = function (source) {
 exports.addUpdate = function (source) {
   source.model.prototype.update = function (params) {
     delete params.type;
-    return this.save(params, {patch: true});
+    return this.save(params, {patch: true, method: 'update'});
   };
 };
