@@ -38,6 +38,7 @@ describe('Controller', function () {
     require('./lib/source_has');
     require('./lib/verify_accept');
     require('./lib/verify_content_type');
+    require('./lib/verify_data_object');
   });
 
   describe('#_throwIfModel', function() {
