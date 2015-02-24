@@ -30,7 +30,7 @@ exports.addFilter = function (source) {
 
 exports.addCreate = function (source) {
   source.model.create = function (params) {
-    return this.forge(params).save().then(function (model) {
+    return this.forge(params).save(null, {method:'insert'}).then(function (model) {
       return this.forge({id:model.id}).fetch();
     }.bind(this));
   };

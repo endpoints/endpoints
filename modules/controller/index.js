@@ -80,7 +80,22 @@ Controller.prototype.destroy = function (opts) {
 };
 
 Controller.prototype._create = function(opts, request) {
-  return this.source.create(opts.method, request.body.data);
+  var source = this.source;
+  var data = request.body.data;
+  if (data && data.id) {
+    return source.byId(data.id).then(function (model) {
+      if (model) {
+        var err = new Error('Model with this ID already exists');
+        err.httpStatus = 409;
+        err.title = 'Conflict';
+        throw err;
+      }
+    }).then(function() {
+      return source.create(opts.method, request.body.data);
+    });
+  } else {
+    return source.create(opts.method, request.body.data);
+  }
 };
 
 Controller.prototype._read = function(opts, request) {
