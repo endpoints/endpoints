@@ -1,8 +1,15 @@
 const expect = require('chai').expect;
 
-const jsonApi = require('../');
+const BookshelfSource = require('../../source-bookshelf');
+const BooksModel = require('../../../test/fixtures/models/books');
+const BooksSource = new BookshelfSource({
+  model: BooksModel
+});
+const DB = require('../../../test/fixtures/classes/database');
 
-describe('jsonApi', function () {
+const formatter = require('../');
+
+describe('formatter-jsonapi', function () {
 
   describe('lib', function () {
     require('./lib/get_key');
@@ -12,8 +19,41 @@ describe('jsonApi', function () {
     require('./lib/format_model');
   });
 
-  describe('module', function () {
-    expect(jsonApi).to.equal(jsonApi);
+  var opts;
+
+  beforeEach(function () {
+    opts = {};
+    return DB.reset();
+  });
+
+
+  it('should accept a model and return an object', function(done) {
+    BooksSource.create('create', {
+      author_id:1,
+      title: 'test book',
+      date_published: '2015-02-01'
+    }).then(function(book) {
+      expect(formatter(book, opts)).to.be.an('object');
+      done();
+    });
+  });
+
+  it('should accept a collection and return an object', function(done) {
+    BooksSource.read().then(function(books) {
+      expect(books).to.have.property('length');
+      expect(formatter(books, opts)).to.be.an('object');
+      done();
+    });
+  });
+
+  it('should accept a single-item collection and return an object', function(done) {
+    opts.one = true;
+    BooksSource.read().then(function(books) {
+      var coll = BooksModel.collection([books.at(0)]);
+      expect(coll.length).to.equal(1);
+      expect(formatter(coll, opts)).to.be.an('object');
+      done();
+    });
   });
 
 });

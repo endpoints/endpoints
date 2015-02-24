@@ -59,6 +59,7 @@ module.exports = function (model, opts) {
     var link = {
       type: related.type
     };
+
     if (Array.isArray(related.models) || Array.isArray(related)) {
       // if the related is an array, we have a hasMany relation
       // and should serialize to an `ids` key rather than the `id`
