@@ -3,6 +3,7 @@ const _ = require('lodash');
 const baseMethods = require('./lib/base_methods');
 const processFilter = require('./lib/process_filter');
 const processSort = require('./lib/process_sort');
+const destructureRequest = require('./lib/destructure_request_data');
 
 function Source (opts) {
   if (!opts) {
@@ -27,11 +28,6 @@ function Source (opts) {
     baseMethods.addUpdate(this);
   }
 }
-
-Source.prototype._sanitizeData = function(data) {
-  delete data.type;
-  return data;
-};
 
 Source.prototype.filters = function () {
   var filters = Object.keys(this.model.filters || {});
@@ -69,8 +65,8 @@ Source.prototype.create = function (method, params) {
   if (!params) {
     params = {};
   }
-  this._sanitizeData(params);
-  return this.model[method](params);
+  var destructured = destructureRequest(this.model.forge(), params);
+  return this.model[method](destructured.data, destructured.toManyRels);
 };
 
 Source.prototype.read = function (opts) {
@@ -94,10 +90,8 @@ Source.prototype.destroy = function (model, method, params) {
   if (!method) {
     throw new Error('No method provided to update or delete with.');
   }
-  if (params) {
-    this._sanitizeData(params);
-  }
-  return model[method](params);
+  var destructured = destructureRequest(model, params);
+  return model[method](destructured.data, destructured.toManyRels);
 };
 
 module.exports = Source;

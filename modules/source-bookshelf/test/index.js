@@ -10,6 +10,10 @@ const DB = require('../../../test/fixtures/classes/database');
 
 describe('BookshelfSource', function () {
 
+  describe('lib', function () {
+    require('./lib/sanitize_request_data');
+  });
+
   beforeEach(function () {
     return DB.reset();
   });

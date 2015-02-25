@@ -1,4 +1,5 @@
 const expect = require('chai').expect;
+const _ = require('lodash');
 
 const DB = require('../../../../../fixtures/classes/database');
 const bookController = require('../../../../../fixtures/controllers/books');
@@ -14,10 +15,13 @@ describe('creatingResources', function() {
       body: {
         data: {
           'type': 'books',
-          'series_id': 1,
-          'author_id': 1,
           'title': 'The Lost Book of Tolkien',
-          'date_published': '2015-02-17'
+          'date_published': '2015-02-17',
+          links: {
+            author: {type: 'authors', id: '1'},
+            series: {type: 'series', id: '1'},
+            stores: {type: 'stores', ids: ['1']}
+          }
         }
       }
     });
@@ -181,6 +185,46 @@ describe('creatingResources', function() {
           }
         });
         bookRouteHandler(createReq);
+      });
+
+      it('must add all relations', function(done) {
+        var bookRouteHandler = bookController.create({
+          responder: function(payload) {
+            expect(payload.code).to.equal(201);
+            expect(payload.data).to.be.an('object');
+
+            var readReq = {
+              params: {
+                id: payload.data.data.id
+              },
+              headers: {
+                'accept': 'application/vnd.api+json'
+              },
+              query: {
+                include: 'stores'
+              }
+            };
+            bookController.read({
+              responder: function(payload) {
+                var readResult = payload.data;
+                var payloadData = readResult.data[0];
+                var payloadLinks = payloadData.links;
+                var createData = createReq.body.data;
+                var createLinks = createReq.body.data.links;
+
+                expect(readResult.linked.length).to.equal(1);
+                expect(readResult.linked[0].id).to.equal(createData.links.stores.ids[0]);
+                expect(payloadData.title).to.equal(createData.title);
+                expect(payloadData.date_published).to.equal(createData.date_published);
+                expect(payloadLinks.author.id).to.equal(createLinks.author.id);
+                expect(payloadLinks.series.id).to.equal(createLinks.series.id);
+                expect(payloadLinks.stores.ids).to.deep.equal(createLinks.stores.ids);
+                done();
+              }
+            })(readReq);
+          }
+        });
+        bookRouteHandler(_.cloneDeep(createReq));
       });
     });
 

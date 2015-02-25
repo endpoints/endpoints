@@ -1,4 +1,5 @@
 const expect = require('chai').expect;
+const _ = require('lodash');
 
 const DB = require('../../../../../fixtures/classes/database');
 const bookController = require('../../../../../fixtures/controllers/books');
@@ -59,7 +60,6 @@ describe('updatingResources', function() {
     bookRouteHandler(updateReq);
   });
 
-
   it('must not include any top-level members other than "data," "meta," "links," or "linked"', function(done) {
     var allowedTopLevel = ['data', 'linked', 'links', 'meta'];
     var bookRouteHandler = bookController.update({
@@ -73,7 +73,6 @@ describe('updatingResources', function() {
     });
     bookRouteHandler(updateReq);
   });
-
 
   it('must require a single resource object as primary data', function(done) {
     updateReq.body.data = [updateReq.body.data];
@@ -97,8 +96,6 @@ describe('updatingResources', function() {
     bookRouteHandler(updateReq);
   });
 
-  it('should allow existing resources to be modified');
-
   it('must require a content-type header of application/vnd.api+json', function(done) {
     updateReq.headers['content-type'] = '';
     var bookRouteHandler = bookController.update({
@@ -110,15 +107,111 @@ describe('updatingResources', function() {
     bookRouteHandler(updateReq);
   });
 
-  it('must require relevant extensions in the content-type header');
-
   // TODO: Source/DB test: verify rollback on error
   // it('must not allow partial updates');
 
   describe('updatingResourceAttributes', function() {
-    it('should allow any or all attributes to be included in the resource object');
-    it('must interpret missing fields as their current values');
-    it('must not interpret missing fields as null values');
+    it('should allow only some attributes to be included in the resource object', function(done) {
+      var bookRouteHandler = bookController.update({
+        responder: function(payload) {
+          expect(payload.code).to.equal(200);
+          expect(payload.data).to.be.an('object');
+          done();
+        }
+      });
+      bookRouteHandler(updateReq);
+    });
+
+    it('should allow all attributes to be included in the resource object', function(done) {
+      var readReq = {
+        params: {
+          id: 1
+        },
+        headers: {
+          'accept': 'application/vnd.api+json'
+        },
+        query: {
+          include: 'stores'
+        }
+      };
+      var updateData = {
+        id: 1,
+        date_published: '2014-02-25',
+        type: 'books',
+        title: 'tiddlywinks',
+        links: {
+          author: {type: 'authors', id: '2'},
+          series: {type: 'series', id: '2'},
+          stores: {type: 'stores', ids: ['1', '2']}
+        }
+      };
+
+      updateReq.body.data = updateData;
+
+      var bookRouteHandler = bookController.update({
+        responder: function(payload) {
+          expect(payload.code).to.equal(200);
+          expect(payload.data).to.be.an('object');
+
+          bookController.read({
+            responder: function(payload) {
+              var secondRead = payload.data;
+              var payloadData = secondRead.data[0];
+              var payloadLinks = payloadData.links;
+              var updateLinks = updateData.links;
+
+              expect(secondRead.linked.length).to.equal(2);
+              expect(payloadData.title).to.equal(updateData.title);
+              expect(payloadData.date_published).to.equal(updateData.date_published);
+              expect(payloadLinks.author.id).to.equal(updateLinks.author.id);
+              expect(payloadLinks.series.id).to.equal(updateLinks.series.id);
+              expect(payloadLinks.stores.ids).to.deep.equal(updateLinks.stores.ids);
+              done();
+            }
+          })(readReq);
+        }
+      });
+      bookRouteHandler(_.cloneDeep(updateReq));
+    });
+
+    it('must interpret missing fields as their current values', function(done) {
+      var firstRead;
+      var readReq = {
+        params: {
+          id: 1
+        },
+        headers: {
+          'accept': 'application/vnd.api+json'
+        },
+        query: {
+          include: 'stores'
+        }
+      };
+      var bookRouteHandler = bookController.update({
+        responder: function(payload) {
+
+          bookController.read({
+            responder: function(payload) {
+              var secondRead = payload.data;
+              var secondReadData = secondRead.data[0];
+              var firstReadData = firstRead.data[0];
+              expect(secondRead.linked).to.deep.equal(firstRead.linked);
+              expect(secondReadData.title).to.not.equal(firstReadData.title);
+              expect(secondReadData.date_published).to.equal(firstReadData.date_published);
+              expect(secondReadData.links).to.deep.equal(firstReadData.links);
+              done();
+            }
+          })(readReq);
+        }
+      });
+
+      bookController.read({
+        responder: function(payload) {
+          firstRead = payload.data;
+          bookRouteHandler(updateReq);
+        }
+      })(readReq);
+    });
   });
 
   describe('updatingResourceToOneRelationships', function() {
@@ -160,6 +253,7 @@ describe('updatingResources', function() {
         });
         bookRouteHandler(updateReq);
       });
+
       it('must return 404 Not Found when processing a request that references a related resource that does not exist');
     });
 
@@ -172,7 +266,7 @@ describe('updatingResources', function() {
           responder: function(payload) {
             expect(payload.code).to.equal(409);
             done();
-            }
+          }
         });
         bookRouteHandler(updateReq);
       });
