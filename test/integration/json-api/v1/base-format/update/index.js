@@ -51,7 +51,7 @@ describe('updatingResources', function() {
     updateReq.body.data.id = 'asdf';
     var bookRouteHandler = bookController.update({
       responder: function(payload) {
-        expect(payload.code).to.equal(404);
+        expect(payload.code).to.be.within(400, 499);
         expect(payload.data).to.be.an('object');
         done();
       }
@@ -150,7 +150,8 @@ describe('updatingResources', function() {
 
     describe('404NotFound', function() {
       it('must return 404 Not Found when processing a request to modify a resource that does not exist', function(done) {
-        updateReq.body.data.id = 'nevergonnagetit';
+        updateReq.body.data.id = '9999';
+        updateReq.params.id = '9999';
         var bookRouteHandler = bookController.update({
           responder: function(payload) {
             expect(payload.code).to.equal(404);
@@ -164,6 +165,18 @@ describe('updatingResources', function() {
 
     describe('409Conflict', function() {
       it('should return 409 Conflict when processing an update that violates server-enforced constraints');
+
+      it('must return 409 Conflict when processing a request where the id does not match the endpoint', function(done) {
+        updateReq.body.data.id = 2;
+        var bookRouteHandler = bookController.update({
+          responder: function(payload) {
+            expect(payload.code).to.equal(409);
+            done();
+            }
+        });
+        bookRouteHandler(updateReq);
+      });
+
       it('must return 409 Conflict when processing a request where the type does not match the endpoint', function(done) {
         updateReq.body.data.type = 'authors';
         var bookRouteHandler = bookController.update({

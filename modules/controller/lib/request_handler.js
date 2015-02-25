@@ -7,7 +7,7 @@ module.exports = function (opts) {
   var payload = opts.payload;
   var responder = opts.responder;
   var method = opts.method;
-  var endpointType = opts.type;
+  var source = opts.source;
   var validators = [];
 
   validators.push(verifyAccept);
@@ -20,8 +20,13 @@ module.exports = function (opts) {
   return function (request, response, next) {
     var err;
 
+    var endpoint = {
+      type: opts.type,
+      id: request.params ? request.params.id : null
+    };
+
     for (var validate in validators) {
-      err = validators[validate](request, endpointType);
+      err = validators[validate](request, endpoint);
       if (err) {
         break;
       }
@@ -31,7 +36,7 @@ module.exports = function (opts) {
       return responder(payload(err), request, response);
     }
 
-    controller(opts, request).then(function(data) {
+    controller(source, opts, request).then(function(data) {
       responder(payload(null, data, opts), request, response, next);
     }).catch(function(err) {
       responder(payload(err), request, response, next);

@@ -31,7 +31,9 @@ describe('requestHandler', function() {
 
     requestHandler({
       method: 'read',
-      controller: controllerStub
+      controller: controllerStub,
+      responder: function () {},
+      payload: function () {}
     })(req, {}, function() {});
 
     expect(controllerStub.calledOnce).to.be.true;

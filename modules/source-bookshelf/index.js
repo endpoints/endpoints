@@ -1,4 +1,8 @@
+const _ = require('lodash');
+
 const baseMethods = require('./lib/base_methods');
+const processFilter = require('./lib/process_filter');
+const processSort = require('./lib/process_sort');
 
 function Source (opts) {
   if (!opts) {
@@ -23,10 +27,6 @@ function Source (opts) {
     baseMethods.addUpdate(this);
   }
 }
-
-Source.prototype._find = function (params, opts) {
-  return this.model.filter(params).fetch(opts);
-};
 
 Source.prototype._sanitizeData = function(data) {
   delete data.type;
@@ -77,9 +77,16 @@ Source.prototype.read = function (opts) {
   if (!opts) {
     opts = {};
   }
-  var filters = opts.filters || {};
-  var relations = opts.relations || [];
-  return this._find(filters, { withRelated: relations });
+  var model = this.model;
+  return model.collection().query(function (qb) {
+    qb = processFilter(model, qb, opts.filter);
+    qb = processSort(model, qb, opts.sort);
+  }).fetch({
+    withRelated: _.intersection(this.relations(), opts.include || [])
+  }).then(function (result) {
+    result.sourceOpts = opts;
+    return result;
+  });
 };
 
 Source.prototype.update =
