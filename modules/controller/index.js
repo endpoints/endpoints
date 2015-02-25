@@ -46,11 +46,24 @@ Controller.prototype._throwIfModel = function(model) {
 };
 
 Controller.prototype._throwIfNoModel = function(model) {
-  if (!model || model instanceof Error) {
+  if (!model) {
     var err = new Error('Unable to locate model.');
     err.httpStatus = 404;
     err.title = 'Not found';
     throw err;
+  }
+
+  // Bookshelf throws an error for any number of unrelated reasons.
+  // json-api requires we throw specific errors for certain situations.
+  if (model instanceof Error) {
+    if (/No rows were affected/.test(model.message)) {
+      model.httpStatus = 404;
+      model.title = 'Not found';
+    } else {
+      model.httpStatus = 500;
+      model.title = 'Server Error';
+    }
+    throw model;
   }
 };
 
@@ -63,7 +76,7 @@ Controller.prototype._configureController = function (method, opts) {
     controller: this['_' + method].bind(this),
     include: [],
     filters: {},
-    type: this.source.typeName(),
+    type: this.source.typeName()
   };
   var config = _.defaults({}, opts, defaults);
   var validationFailures = this._validateController(config);
@@ -140,6 +153,7 @@ Controller.prototype._destroy = function(opts, request) {
   var sourceMethod = opts.sourceMethod;
   var throwIfNoModel = this._throwIfNoModel;
   return source.byId(request.params.id).then(function (model) {
+    throwIfNoModel(model);
     return source[sourceMethod](model, method, request.body.data);
   }).catch(throwIfNoModel);
 };
