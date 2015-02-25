@@ -59,6 +59,7 @@ describe('Controller', function () {
     it('should throw if passed an error', function() {
       expect(function() {controller._throwIfNoModel(new Error());}).to.throw();
       expect(function() {controller._throwIfNoModel(new Error('No rows were affected'));}).to.throw();
+      expect(function() {controller._throwIfNoModel(new Error('Unable to locate model.'));}).to.throw();
     });
 
     it('should not throw if passed a non-error argument', function() {
