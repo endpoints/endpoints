@@ -8,6 +8,7 @@ module.exports = function (request, opts) {
   var sort = query.sort;
   return {
     include: include ? include.split(',') : opts.include,
+    // todo: normalize true/false strings to booleans here
     filter: _.extend((filter ? filter : opts.filter), request.params),
     fields: fields ? fields : opts.fields,
     sort: sort ? sort.split(',') : opts.sort
