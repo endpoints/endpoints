@@ -111,7 +111,9 @@ describe('updatingResources', function() {
   });
 
   it('must require relevant extensions in the content-type header');
-  it('must not allow partial updates');
+
+  // TODO: Source/DB test: verify rollback on error
+  // it('must not allow partial updates');
 
   describe('updatingResourceAttributes', function() {
     it('should allow any or all attributes to be included in the resource object');
@@ -141,9 +143,10 @@ describe('updatingResources', function() {
       it('must include a representation of the updated resource on a 200 OK response');
     });
 
-    describe('403Forbidden', function() {
-      it('must return 403 Forbidden on an unsupported request to update a resource or relationship');
-    });
+    // API decision to not create the route - endpoints will always support updating
+    // describe('403Forbidden', function() {
+    //   it('must return 403 Forbidden on an unsupported request to update a resource or relationship');
+    // });
 
     describe('404NotFound', function() {
       it('must return 404 Not Found when processing a request to modify a resource that does not exist', function(done) {
@@ -173,11 +176,13 @@ describe('updatingResources', function() {
       });
     });
 
-    describe('otherResponses', function() {
-      it('should use other HTTP codes to represent errors');
-      it('must interpret errors in accordance with HTTP semantics');
-      it('should return error details');
-    });
+    // Not testable as written. Each error handling branch should be
+    // unit-tested for proper HTTP semantics.
+    // describe('otherResponses', function() {
+    //   it('should use other HTTP codes to represent errors');
+    //   it('must interpret errors in accordance with HTTP semantics');
+    //   it('should return error details');
+    // });
   });
 });
 
@@ -209,14 +214,17 @@ describe('updatingRelationships', function() {
       it('must return 204 No Content if the update is successful and the attributes remain up to date');
     });
 
-    describe('403Forbidden', function() {
-      it('must return 403 Forbidden in response to an unsupported request to update a relationship');
-    });
+    // API decision to not create the route - endpoints will always support updating
+    // describe('403Forbidden', function() {
+    //   it('must return 403 Forbidden in response to an unsupported request to update a relationship');
+    // });
 
-    describe('otherResponses', function() {
-      it('should use other HTTP codes to represent errors');
-      it('must interpret errors in accordance with HTTP semantics');
-      it('should return error details');
-    });
+    // Not testable as written. Each error handling branch should be
+    // unit-tested for proper HTTP semantics.
+    // describe('otherResponses', function() {
+    //   it('should use other HTTP codes to represent errors');
+    //   it('must interpret errors in accordance with HTTP semantics');
+    //   it('should return error details');
+    // });
   });
 });

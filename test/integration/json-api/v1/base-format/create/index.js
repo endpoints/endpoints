@@ -81,7 +81,8 @@ describe('creatingResources', function() {
     bookRouteHandler(createReq);
   });
 
-  it('must not allow partial updates');
+  // TODO: Source/DB test: verify rollback on error
+  // it('must not allow partial updates');
 
   it('must require a single resource object as primary data', function(done) {
     createReq.body.data = [createReq.body.data];
@@ -121,6 +122,7 @@ describe('creatingResources', function() {
       bookRouteHandler(createReq);
     });
 
+    // Pending https://github.com/endpoints/endpoints/issues/51
     it('must return 403 Forbidden in response to an unsupported request using a client-generated ID');
   });
 

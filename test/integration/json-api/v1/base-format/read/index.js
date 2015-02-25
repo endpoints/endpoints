@@ -35,6 +35,7 @@ describe('read', function() {
         });
         bookRouteHandler(readReq);
       });
+
       it('must respond to an unsuccessful request with a JSON object', function(done) {
 
         DB.empty().then(function() {
@@ -50,6 +51,7 @@ describe('read', function() {
           }));
         });
       });
+
       it('must place primary data under a top-level key named "data"', function(done) {
         var bookRouteHandler = bookController.read({
           responder: function(payload) {
@@ -60,6 +62,7 @@ describe('read', function() {
         });
         bookRouteHandler(readReq);
       });
+
       it('must make primary data for a single record an object', function(done) {
         var bookRouteHandler = bookController.read({
           one: true,
@@ -74,6 +77,7 @@ describe('read', function() {
         });
         bookRouteHandler(readReq);
       });
+
       it('must make primary data for multiple records an array', function(done) {
         var bookRouteHandler = bookController.read({
           responder: function(payload) {
@@ -84,6 +88,7 @@ describe('read', function() {
         });
         bookRouteHandler(readReq);
       });
+
       it('must not include any top-level members other than "data," "meta," "links," or "linked"', function(done) {
         var allowedTopLevel = ['data', 'linked', 'links', 'meta'];
         var bookRouteHandler = bookController.read({
@@ -119,6 +124,7 @@ describe('read', function() {
           });
           bookRouteHandler(readReq);
         });
+
         it('must include relations as linked resources', function(done) {
           var bookRouteHandler = bookController.read({
             one:true,
@@ -158,6 +164,7 @@ describe('read', function() {
           });
           bookRouteHandler(readReq);
         });
+
         it('must have a string value for type', function(done) {
           var bookRouteHandler = bookController.read({
             one:true,
@@ -189,6 +196,7 @@ describe('read', function() {
           });
           bookRouteHandler(readReq);
         });
+
         it('must have a string value for type', function(done) {
           var bookRouteHandler = bookController.read({
             one:true,
@@ -243,6 +251,7 @@ describe('read', function() {
           });
           bookRouteHandler(readReq);
         });
+
         it('must set the value of "self" to a URL that identifies the resource represented by this object', function(done) {
           var bookRouteHandler = bookController.read({
             one:true,
@@ -308,6 +317,7 @@ describe('read', function() {
           });
           bookRouteHandler(readReq);
         });
+
         it('should make to-many references a string URL', function(done) {
           var bookRouteHandler = bookController.read({
             one:true,
@@ -381,6 +391,7 @@ describe('read', function() {
             readReq.query = { include: 'author' };
             bookRouteHandler(readReq);
           });
+
           it('must express object linkages as type and ids for to-many relationships', function(done) {
             // FIXME: This test isn't actually testing what it should
             var bookRouteHandler = bookController.read({
@@ -478,12 +489,12 @@ describe('read', function() {
       bookRouteHandler(readReq);
     });
 
-    // Meta object not currently used by endpoints
+    // TODO: Meta object not currently used by endpoints
     // describe('metaInformation', function() {
     //   it('must be an object value');
     // });
 
-    // Pagination not currently used by endpoints
+    // TODO: Pagination not currently used by endpoints
     // describe('topLevelLinks', function() {
     //   it('should include pagination links if necessary');
     // });
