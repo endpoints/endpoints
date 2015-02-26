@@ -20,7 +20,7 @@ Controller.prototype._requestHandler = require('./lib/request_handler');
 METHODS.forEach(function (method) {
   Controller.prototype[method] = function (config) {
     var controller = configureController(method, this.source, config);
-    var validationFailures = validateController(this.source, controller);
+    var validationFailures = validateController(method, this.source, controller);
     if (validationFailures.length) {
       throw new Error(validationFailures.join('\n'));
     }
