@@ -31,8 +31,8 @@ describe('configureController', function() {
     expect(configureController('read', source).type).to.be.a('string');
   });
 
-  it('should set the controller property to a function', function() {
-    expect(configureController('read', source).controller).to.be.a('function');
+  it('should set the sourceInterface property to a function', function() {
+    expect(configureController('read', source).sourceInterface).to.be.a('function');
   });
 
   it('should set the include property to a array', function() {

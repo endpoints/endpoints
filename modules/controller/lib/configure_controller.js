@@ -24,7 +24,7 @@ module.exports = function (method, source, opts) {
     sourceMethod: method,
     method: opts && opts.method ? opts.method : method,
     payload: payloads[method],
-    controller: sourceInterface[method],
+    sourceInterface: sourceInterface[method],
     responder: responder,
     type: source.typeName(),
     include: [],

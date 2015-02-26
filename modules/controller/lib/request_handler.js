@@ -3,7 +3,7 @@ const verifyContentType = require('./verify_content_type');
 const verifyDataObject = require('./verify_data_object');
 
 module.exports = function (opts) {
-  var controller = opts.controller;
+  var sourceInterface = opts.sourceInterface;
   var payload = opts.payload;
   var responder = opts.responder;
   var method = opts.method;
@@ -36,7 +36,7 @@ module.exports = function (opts) {
       return responder(payload(err), request, response);
     }
 
-    controller(source, opts, request).then(function(data) {
+    sourceInterface(source, opts, request).then(function(data) {
       responder(payload(null, data, opts), request, response, next);
     }).catch(function(err) {
       responder(payload(err), request, response, next);
