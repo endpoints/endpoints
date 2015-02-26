@@ -22,7 +22,7 @@ describe('requestHandler', function() {
     expect(requestHandler({method:'destroy'})).to.be.a('function');
   });
 
-  it('should return a handler that calls the passed-in controller', function() {
+  it('should return a handler that calls the passed-in sourceInterface', function() {
     var req = {
       headers: {
         accept: 'application/vnd.api+json'
@@ -31,7 +31,7 @@ describe('requestHandler', function() {
 
     requestHandler({
       method: 'read',
-      controller: controllerStub,
+      sourceInterface: controllerStub,
       responder: function () {},
       payload: function () {}
     })(req, {}, function() {});
@@ -42,7 +42,7 @@ describe('requestHandler', function() {
   it('should call the passed-in responder on a validation error', function() {
     requestHandler({
       method: 'read',
-      controller: controllerStub,
+      sourceInterface: controllerStub,
       payload: function(err) {return err;},
       responder: responderStub
     })({headers:{}}, {}, function() {});

@@ -19,18 +19,12 @@ const sourceInterface = {
 const responder = require('./responder');
 
 module.exports = function (method, source, opts) {
-  if (!method) {
-    throw new Error('No method specified.');
-  }
-  if (!source) {
-    throw new Error('No source specified.');
-  }
   var defaults = {
     source: source,
     sourceMethod: method,
     method: opts && opts.method ? opts.method : method,
     payload: payloads[method],
-    controller: sourceInterface[method],
+    sourceInterface: sourceInterface[method],
     responder: responder,
     type: source.typeName(),
     include: [],
