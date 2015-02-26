@@ -57,7 +57,7 @@ describe('creatingResources', function() {
     bookRouteHandler(createReq);
   });
 
-  it.skip('must not include any top-level members other than "data," "meta," "links," or "linked"', function(done) {
+  it('must not include any top-level members other than "data," "meta," "links," or "linked"', function(done) {
     var allowedTopLevel = ['data', 'linked', 'links', 'meta'];
     var bookRouteHandler = bookController.create({
       responder: function(payload) {
