@@ -21,9 +21,6 @@ function Source (opts) {
   if (!model.create) {
     baseMethods.addCreate(this);
   }
-  if (!model.filter) {
-    baseMethods.addFilter(this);
-  }
   if (!model.prototype.update) {
     baseMethods.addUpdate(this);
   }
@@ -53,7 +50,9 @@ Source.prototype.typeName = function () {
 // not in love with this new method signature, it differs from the rest a lot.
 Source.prototype.byId = function (id, relations) {
   relations = relations || [];
-  return this.model.filter({id:id}).fetchOne({
+  return this.model.collection().query(function (qb) {
+    return qb.where({id:id});
+  }).fetchOne({
     withRelated: relations
   });
 };
