@@ -6,18 +6,6 @@ const configureController = require('../../lib/configure_controller');
 
 describe('configureController', function() {
 
-  it('should throw if no method is specified', function () {
-    expect(function () {
-      configureController();
-    }).to.throw(/No method/);
-  });
-
-  it('should throw if no source is specified', function () {
-    expect(function () {
-      configureController('read');
-    }).to.throw(/No source/);
-  });
-
   it('should set a sourceMethod property that matches the passed-in method', function() {
     var method = 'read';
     expect(configureController(method, source).sourceMethod).to.equal(method);
