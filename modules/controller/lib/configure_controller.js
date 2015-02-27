@@ -26,7 +26,7 @@ module.exports = function (method, source, opts) {
     payload: payloads[method],
     sourceInterface: sourceInterface[method],
     responder: responder,
-    type: source.typeName(),
+    typeName: source.typeName(),
     include: [],
     filter: {},
     //fields: {},

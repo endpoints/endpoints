@@ -21,7 +21,7 @@ module.exports = function (opts) {
     var err;
 
     var endpoint = {
-      type: opts.type,
+      typeName: opts.typeName,
       id: request.params ? request.params.id : null
     };
 

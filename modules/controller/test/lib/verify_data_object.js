@@ -17,14 +17,14 @@ describe('verifyDataObject', function() {
   });
 
   it('should return an error if the data type does not match the endpoint type', function() {
-    expect(verifyDataObject({body:{data:{type:'authors'}}}, {type:'books'})).to.be.instanceof(Error);
+    expect(verifyDataObject({body:{data:{type:'authors'}}}, {typeName:'books'})).to.be.instanceof(Error);
   });
 
   it('should return an error if the data id does not match the endpoint id', function() {
-    expect(verifyDataObject({body:{data:{type:'books', id:2}}}, {type:'books', id:1})).to.be.instanceof(Error);
+    expect(verifyDataObject({body:{data:{type:'books', id:2}}}, {typeName:'books', id:1})).to.be.instanceof(Error);
   });
 
   it('should have no return value if the data id and type matches the endpoint id and type', function() {
-    expect(verifyDataObject({body:{data:{type:'authors', id:1}}}, {type:'authors', id:1})).to.be.undefined;
+    expect(verifyDataObject({body:{data:{type:'authors', id:1}}}, {typeName:'authors', id:1})).to.be.undefined;
   });
 });

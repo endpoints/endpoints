@@ -3,7 +3,7 @@ const BaseModel = require('../classes/database').Model;
 const instanceProps = {
   tableName: 'series',
   books: function () {
-    return this.hasMany(require('../books'));
+    return this.hasMany(require('./books'));
   }
 };
 

@@ -5,8 +5,6 @@ module.exports = function (err, data, opts) {
     opts = {};
   }
 
-  var typeName = opts.type;
-
   if (err) {
     return {
       code: err.httpStatus || 422,
@@ -19,13 +17,13 @@ module.exports = function (err, data, opts) {
     };
   }
 
+  opts.singleResult = true;
+
   return {
     code: 201,
-    data: jsonApi(data, {
-      typeName: typeName
-    }),
+    data: jsonApi(data, opts),
     headers: {
-      location: '/' + typeName + '/' + data.id
+      location: '/' + opts.typeName + '/' + data.id
     }
   };
 };

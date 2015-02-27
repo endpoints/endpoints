@@ -41,9 +41,9 @@ module.exports = function (err, data, opts) {
   return {
     code: 200,
     data: jsonApi(data, {
-      one: singleResult,
-      relations: Object.keys(data.first().relations),
-      typeName: opts.type
+      singleResult: singleResult,
+      relations: data.sourceOpts.include,
+      typeName: opts.typeName
     })
   };
 };

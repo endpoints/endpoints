@@ -5,6 +5,7 @@ module.exports = function (model, opts) {
     opts = {};
   }
   var links = {};
+  var primaryType = model.constructor.typeName;
   var toOneWithoutIncludes = opts.toOneWithoutInclude || [];
   var toManyWithoutIncludes = opts.toManyWithoutInclude || [];
   var linkWithIncludes = opts.linkWithInclude || [];
@@ -46,7 +47,7 @@ module.exports = function (model, opts) {
   // To-many link relations that were not explicitly included.
   // Added to `links` as a string URL reference
   toManyWithoutIncludes.reduce(function (result, relationName) {
-    var link = '/' + opts.primaryType + '/' + model.id + '/' + relationName;
+    var link = '/' + primaryType + '/' + model.id + '/' + relationName;
     result[relationName] = link;
     return result;
   }, links);
@@ -75,18 +76,23 @@ module.exports = function (model, opts) {
         return result;
       }, []);
       if (exporter) {
-        exporter(related, type);
+        related.forEach(function (model) {
+          exporter(model, type);
+        });
       }
     } else {
       // for singular resources, store the id under `id`
       link.id = String(related.id || null);
       if (exporter) {
-        exporter([related], type);
+        exporter(related, type);
       }
     }
     result[relationName] = link;
     return result;
   }, links);
+
+  // always add a self-referential link
+  links.self = '/' + primaryType + '/' + model.id;
 
   return links;
 };

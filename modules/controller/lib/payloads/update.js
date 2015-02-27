@@ -19,8 +19,6 @@ module.exports = function (err, data, opts) {
 
   return {
     code: 200,
-    data: jsonApi(data, {
-      typeName: opts.type
-    })
+    data: jsonApi(data, opts)
   };
 };

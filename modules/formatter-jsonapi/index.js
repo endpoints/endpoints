@@ -2,41 +2,37 @@ const _ = require('lodash');
 
 const formatModel = require('./lib/format_model');
 
-// Take an array of Bookshelf models and convert them into a
-// json-api compliant representation of the underlying data.
 module.exports = function (input, opts) {
-  var formatted = {linked:[]};
-  var isSingle = !input.length;
-
-  if (isSingle) {
-    formatModel(formatted, input, opts);
-  } else {
-    // iterate through the input, adding links and populating linked data
-    input.reduce(function(output, model) {
-      return formatModel(output, model, opts);
-    }, formatted);
+  var linked = [];
+  // this method recieves each model that was explictly sideloaded (included)
+  var exporter = function (model) {
+    // each model that appears in the top level linked object needs to be
+    // formatted for json-api compliance too. we *could* allow links within
+    // links by recursing here but i don't think it is needed... yet?
+    linked.push(formatModel({
+      typeName: model.constructor.typeName
+    }, null, model));
+  };
+  // prepare a formatting method to configure each model
+  var formatter = formatModel.bind(null, opts, exporter);
+  // format every incoming model
+  var serialized = input.map ? input.map(formatter) : formatter(input);
+  // if we are requesting a single item, return it as an object, not an array
+  if (opts.singleResult && input.length) {
+    serialized = serialized[0];
   }
-
-  // limit the linked array to unique type/id combinations
-  formatted.linked = _.uniq(formatted.linked, function(rel) {
-    return rel.type + rel.id;
-  });
-
-  // if there is no linked data, don't include it.
-  if (Object.keys(formatted.linked).length === 0) {
-    delete formatted.linked;
+  // prepare json-api compliant output
+  var output = {
+    data: serialized
+  };
+  // if the exporter was ever called, we should have objects in
+  // the linked array. since it is possible for the same model
+  // to be linked more than once, prune any duplicates.
+  if (linked.length > 0) {
+    output.linked = _(linked).flatten().uniq(function(rel) {
+      return rel.type + rel.id;
+    }).value();
   }
-
-  // if we were looking for a single result, return it as an object
-  if ((opts.one && input.length === 1) || isSingle) {
-    formatted.data = formatted.data[0];
-  }
-
-  // if there is nothing in the root object, represent it as an empty array
-  if (!formatted.data) {
-    formatted.data = [];
-  }
-
-  // bam.  done.
-  return formatted;
+  // bam, done.
+  return output;
 };

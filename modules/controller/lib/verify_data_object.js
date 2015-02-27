@@ -18,7 +18,7 @@ module.exports = function(request, endpoint) {
     return err;
   }
 
-  if (type !== endpoint.type) {
+  if (type !== endpoint.typeName) {
     err = Kapow(409, 'Data type does not match endpoint type.');
     return err;
   }
