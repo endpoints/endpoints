@@ -37,17 +37,18 @@ describe('link', function () {
       books: {
         type: 'books',
         ids: booksByAuthorOne
-      }
+      },
+      self: '/authors/1'
     });
   });
 
-  it('should call exporter for each included link', function () {
+  it('should call exporter for each linked model', function () {
     var spy = sinon.spy();
     link(authorsModel, {
-      linkWithInclude: ['books', 'books.series'],
+      linkWithInclude: ['books'],
       exporter: spy
     });
-    expect(spy.callCount).to.equal(2);
+    expect(spy.callCount).to.equal(4);
   });
 
   it('should generate toOne links entries for a model', function () {
@@ -58,7 +59,8 @@ describe('link', function () {
         href: '/authors/1',
         id: '1',
         type: 'authors'
-      }
+      },
+      self: '/books/11'
     });
   });
 
@@ -69,7 +71,8 @@ describe('link', function () {
       series: {
         id: 'null',
         type: 'series'
-      }
+      },
+      self: '/books/11'
     });
   });
 

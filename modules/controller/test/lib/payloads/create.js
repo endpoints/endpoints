@@ -16,9 +16,6 @@ describe('create', function () {
   });
 
   it('should return scoped data and code 201 when there are no errors', function (done) {
-    var opts = {
-      type: 'type'
-    };
     // We're passing everything through the formatter now. That requires
     // a Bookshelf model.
     BooksSource.create('create', {
@@ -26,12 +23,12 @@ describe('create', function () {
       title: 'test book',
       date_published: '2015-02-01'
     }).then(function(book) {
-      var result = create(null, book, opts);
+      var result = create(null, book, {typeName:BooksSource.typeName()});
       var flatBook = book.toJSON();
       expect(result.code).to.equal(201);
       expect(result.data.data.id).to.equal(String(flatBook.id));
       expect(result.data.data.title).to.equal(flatBook.title);
-      expect(result.data.data.type).to.equal('type');
+      expect(result.data.data.type).to.equal(BooksSource.typeName());
       expect(result.data.data.date_published).to.equal(flatBook.date_published);
       done();
     });

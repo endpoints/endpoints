@@ -12,7 +12,6 @@ const formatter = require('../');
 describe('formatter-jsonapi', function () {
 
   describe('lib', function () {
-    require('./lib/get_key');
     require('./lib/link');
     require('./lib/relate');
     require('./lib/to_one_relations');

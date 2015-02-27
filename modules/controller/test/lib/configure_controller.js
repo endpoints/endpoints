@@ -27,8 +27,8 @@ describe('configureController', function() {
     expect(configureController('read', source).responder).to.be.a('function');
   });
 
-  it('should set the type property to a string', function() {
-    expect(configureController('read', source).type).to.be.a('string');
+  it('should set the typeName property to a string', function() {
+    expect(configureController('read', source).typeName).to.be.a('string');
   });
 
   it('should set the sourceInterface property to a function', function() {

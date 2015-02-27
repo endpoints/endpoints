@@ -1,15 +1,16 @@
 // Given a Bookshelf model or collection, return all
 // related models for the requested relationName.
 function getRelated (relationName, input) {
-  var result, type;
+  var result;
   if (Array.isArray(input) || Array.isArray(input.models)) {
     result = input.map(getRelated.bind(null, relationName)).
-      reduce(function (result, node) { return result.concat(node); }, []);
+      reduce(function (result, node) {
+        return result.concat(node.models);
+      }, []);
   } else {
     result = input.related(relationName);
-    type = result.relatedData.target.typeName;
+    result.type = result.relatedData.target.typeName;
   }
-  result.type = type;
   return result;
 }
 
