@@ -31,7 +31,7 @@ describe('creatingResources', function() {
   it('must require an ACCEPT header specifying the JSON API media type', function(done) {
     var bookRouteHandler = bookController.read({
       responder: function(payload) {
-        expect(payload.code).to.equal(406);
+        expect(payload.code).to.equal('406');
         done();
       }
     });
@@ -78,7 +78,7 @@ describe('creatingResources', function() {
     createReq.headers['content-type'] = '';
     var bookRouteHandler = bookController.create({
       responder: function(payload) {
-        expect(payload.code).to.equal(415);
+        expect(payload.code).to.equal('415');
         done();
       }
     });
@@ -92,7 +92,7 @@ describe('creatingResources', function() {
     createReq.body.data = [createReq.body.data];
     var bookRouteHandler = bookController.create({
       responder: function(payload) {
-        expect(payload.code).to.equal(400);
+        expect(payload.code).to.equal('400');
         done();
       }
     });
@@ -103,7 +103,7 @@ describe('creatingResources', function() {
     delete createReq.body.data.type;
     var bookRouteHandler = bookController.create({
       responder: function(payload) {
-        expect(payload.code).to.equal(400);
+        expect(payload.code).to.equal('400');
         done();
       }
     });
@@ -244,7 +244,7 @@ describe('creatingResources', function() {
         createReq.body.data.id = 1;
         var bookRouteHandler = bookController.create({
           responder: function(payload) {
-            expect(payload.code).to.equal(409);
+            expect(payload.code).to.equal('409');
             done();
           }
         });
@@ -255,7 +255,7 @@ describe('creatingResources', function() {
         createReq.body.data.type = 'authors';
         var bookRouteHandler = bookController.create({
           responder: function(payload) {
-            expect(payload.code).to.equal(409);
+            expect(payload.code).to.equal('409');
             done();
           }
         });

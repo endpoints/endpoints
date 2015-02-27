@@ -1,3 +1,4 @@
+const Kapow = require('kapow');
 const EXPECTED_ACCEPT = 'application/vnd.api+json';
 
 module.exports = function(request) {
@@ -13,9 +14,7 @@ module.exports = function(request) {
   );
 
   if (!isValidAccept && !isBrowser) {
-    err = new Error('Content-Type must be "' + EXPECTED_ACCEPT + '"');
-    err.httpStatus = 406;
-    err.title = 'Not Acceptable';
+    err = Kapow(406, 'Content-Type must be "' + EXPECTED_ACCEPT + '"');
   }
 
   return err;

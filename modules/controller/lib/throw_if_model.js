@@ -1,9 +1,8 @@
+const Kapow = require('kapow');
+
 module.exports = function(model) {
   if (model) {
-    var err = new Error('Model with this ID already exists');
-    err.httpStatus = 409;
-    err.title = 'Conflict';
-    throw err;
+    throw Kapow(409, 'Model with this ID already exists');
   }
   return model;
 };

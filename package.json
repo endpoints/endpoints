@@ -49,6 +49,7 @@
   },
   "dependencies": {
     "arrayify": "^1.0.0",
+    "kapow": "^1.0.0",
     "lodash": "^3.1.0"
   }
 }

@@ -509,7 +509,7 @@ describe('read', function() {
     it('must require an ACCEPT header specifying the JSON API media type', function(done) {
       var bookRouteHandler = bookController.read({
         responder: function(payload) {
-          expect(payload.code).to.equal(406);
+          expect(payload.code).to.equal('406');
           done();
         }
       });

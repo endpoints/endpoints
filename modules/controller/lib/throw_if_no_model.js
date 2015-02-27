@@ -1,9 +1,8 @@
+const Kapow = require('kapow');
+
 module.exports = function(model) {
   if (!model) {
-    var err = new Error('Unable to locate model.');
-    err.httpStatus = 404;
-    err.title = 'Not found';
-    throw err;
+    throw Kapow(404, 'Unable to locate model.');
   }
 
   // Bookshelf throws an error for any number of unrelated reasons.
@@ -13,11 +12,9 @@ module.exports = function(model) {
       /No rows were affected/.test(model.message) ||
       /Unable to locate model/.test(model.message)
     ) {
-      model.httpStatus = 404;
-      model.title = 'Not found';
+      model = Kapow.wrap(model, 404);
     } else {
-      model.httpStatus = 500;
-      model.title = 'Server Error';
+      model = Kapow.wrap(model, 500);
     }
     throw model;
   }

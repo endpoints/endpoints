@@ -1,4 +1,5 @@
 const sanitizeRequestData = require('./sanitize_request_data');
+const Kapow = require('kapow');
 
 module.exports = function(model, params) {
   if (!params) {
@@ -11,11 +12,7 @@ module.exports = function(model, params) {
   if (relations) {
     params = Object.keys(relations).reduce(function(result, key) {
       if (!model.related(key)) {
-        // TODO: pull all error responses into a single lib
-        var err = new Error('Unable to update relationships');
-        err.httpStatus = 403;
-        err.title = 'Forbidden';
-        throw err;
+        throw Kapow(403, 'Unable to update relationships');
       }
 
       var fkey;

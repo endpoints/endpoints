@@ -1,3 +1,4 @@
+const Kapow = require('kapow');
 const EXPECTED_TYPE = 'application/vnd.api+json';
 
 module.exports = function(request) {
@@ -11,9 +12,7 @@ module.exports = function(request) {
   );
 
   if (!isValidContentType) {
-    err = new Error('Content-Type must be "' + EXPECTED_TYPE + '"');
-    err.httpStatus = 415;
-    err.title = 'Unsupported Media Type';
+    err = Kapow(415, 'Content-Type must be "' + EXPECTED_TYPE + '"');
   }
 
   return err;

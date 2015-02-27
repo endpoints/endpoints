@@ -29,7 +29,7 @@ describe('updatingResources', function() {
   it('must require an ACCEPT header specifying the JSON API media type', function(done) {
     var bookRouteHandler = bookController.update({
       responder: function(payload) {
-        expect(payload.code).to.equal(406);
+        expect(payload.code).to.equal('406');
         done();
       }
     });
@@ -78,7 +78,7 @@ describe('updatingResources', function() {
     updateReq.body.data = [updateReq.body.data];
     var bookRouteHandler = bookController.update({
       responder: function(payload) {
-        expect(payload.code).to.equal(400);
+        expect(payload.code).to.equal('400');
         done();
       }
     });
@@ -89,7 +89,7 @@ describe('updatingResources', function() {
     delete updateReq.body.data.type;
     var bookRouteHandler = bookController.update({
       responder: function(payload) {
-        expect(payload.code).to.equal(400);
+        expect(payload.code).to.equal('400');
         done();
       }
     });
@@ -100,7 +100,7 @@ describe('updatingResources', function() {
     updateReq.headers['content-type'] = '';
     var bookRouteHandler = bookController.update({
       responder: function(payload) {
-        expect(payload.code).to.equal(415);
+        expect(payload.code).to.equal('415');
         done();
       }
     });
@@ -247,7 +247,7 @@ describe('updatingResources', function() {
         updateReq.params.id = '9999';
         var bookRouteHandler = bookController.update({
           responder: function(payload) {
-            expect(payload.code).to.equal(404);
+            expect(payload.code).to.equal('404');
             done();
           }
         });
@@ -264,7 +264,7 @@ describe('updatingResources', function() {
         updateReq.body.data.id = 2;
         var bookRouteHandler = bookController.update({
           responder: function(payload) {
-            expect(payload.code).to.equal(409);
+            expect(payload.code).to.equal('409');
             done();
           }
         });
@@ -275,7 +275,7 @@ describe('updatingResources', function() {
         updateReq.body.data.type = 'authors';
         var bookRouteHandler = bookController.update({
           responder: function(payload) {
-            expect(payload.code).to.equal(409);
+            expect(payload.code).to.equal('409');
             done();
           }
         });
