@@ -2,8 +2,7 @@ const _ = require('lodash');
 
 const configureController = require('./lib/configure_controller');
 const validateController = require('./lib/validate_controller');
-
-const METHODS = ['create', 'read', 'readRelation', 'update', 'destroy'];
+const requestHandler = require('./lib/request_handler');
 
 function Controller(opts) {
   if (!opts) {
@@ -15,17 +14,22 @@ function Controller(opts) {
   _.extend(this, opts);
 }
 
-Controller.prototype._requestHandler = require('./lib/request_handler');
-
-METHODS.forEach(function (method) {
-  Controller.prototype[method] = function (config) {
-    var controller = configureController(method, this.source, config);
-    var validationFailures = validateController(method, this.source, controller);
+Controller.method = function (method) {
+  return function (config) {
+    var source = this.source;
+    var controller = configureController(method, source, config);
+    var validationFailures = validateController(method, source, controller);
     if (validationFailures.length) {
       throw new Error(validationFailures.join('\n'));
     }
-    return this._requestHandler(controller);
+    return requestHandler(controller);
   };
-}, this);
+};
+
+Controller.prototype.create = Controller.method('create');
+Controller.prototype.read = Controller.method('read');
+Controller.prototype.readRelation = Controller.method('readRelation');
+Controller.prototype.update = Controller.method('update');
+Controller.prototype.destroy = Controller.method('destroy');
 
 module.exports = Controller;
