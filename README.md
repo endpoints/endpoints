@@ -1,10 +1,10 @@
 # endpoints [![Build Status](https://secure.travis-ci.org/endpoints/endpoints.png)](http://travis-ci.org/endpoints/endpoints)
-> A json-api compliant framework for javascript.
+> a hypermedia API framework for javascript.
 
 [![NPM](https://nodei.co/npm/endpoints.png)](https://nodei.co/npm/endpoints/)
 
 # What is it?
-A json-api compliant framework for javascript that works with Bookshelf and any http server that supports express or hapi style request handlers.
+A hypermedia API framework compliant with the [json api](http://jsonapi.org) specification, compatible with any http server that supports express or hapi style request handlers.
 
 *Check out the [example implementation](https://github.com/endpoints/example).*
 
