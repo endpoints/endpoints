@@ -600,7 +600,23 @@ describe('read', function() {
     });
 
     describe('filtering', function() {
-      it('must only use the filter query parameter for filtering data');
+      it('must only use the filter query parameter for filtering data', function(done) {
+        var bookRouteHandler = bookController.read({
+          responder: function(payload) {
+            expect(payload.data.data.length).to.equal(2);
+            expect(payload.data.data[0].id).to.equal('7');
+            expect(payload.data.data[1].id).to.equal('11');
+            done();
+          }
+        });
+        delete readReq.params;
+        readReq.query = {
+          filter: {
+            date_published: '2000-07-08,1937-09-21'
+          }
+        };
+        bookRouteHandler(readReq);
+      });
     });
   });
 });
