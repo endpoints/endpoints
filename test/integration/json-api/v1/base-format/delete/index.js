@@ -1,13 +1,57 @@
+const expect = require('chai').expect;
+// const _ = require('lodash');
+
+const DB = require('../../../../../fixtures/classes/database');
+const bookController = require('../../../../../fixtures/controllers/books');
+
+var req = require('../../../../../fixtures/mocks/express_request');
+
+var destroyReq;
+
 describe('deletingResources', function() {
-  it('must have a JSON object at the root of every response');
 
-  it('must not include any top-level members other than "data," "meta," or "links," "linked"');
+  beforeEach(function() {
+    destroyReq = req({
+      params: {
+        id: 1
+      }
+    });
+    return DB.reset();
+  });
 
-  it('should allow existing resources to be deleted');
+  it('must respond to a successful request with null', function(done) {
+    var bookRouteHandler = bookController.destroy({
+      responder: function(payload) {
+        expect(payload.code).to.be.within(200, 299);
+        expect(payload.data).to.be.null;
+        done();
+      }
+    });
+    bookRouteHandler(destroyReq);
+  });
 
-  it('must require a content-type header of application/vnd.api+json');
+  it('must respond to an unsuccessful request with a JSON object', function(done) {
+    destroyReq.params.id = 9999;
+    var bookRouteHandler = bookController.destroy({
+      responder: function(payload) {
+        expect(payload.code).to.be.within(400, 499); // any error
+        expect(payload.data).to.be.an('object');
+        done();
+      }
+    });
+    bookRouteHandler(destroyReq);
+  });
 
-  it('must require relevant extensions in the content-type header');
+  it('must not require a content-type header of application/vnd.api+json', function(done) {
+    destroyReq.headers['content-type'] = '';
+    var bookRouteHandler = bookController.destroy({
+      responder: function(payload) {
+        expect(payload.code).to.equal('204');
+        done();
+      }
+    });
+    bookRouteHandler(destroyReq);
+  });
 
   // TODO: Source/DB test: verify rollback on error
   // it('must not allow partial updates');
@@ -17,11 +61,28 @@ describe('deletingResources', function() {
   describe('responses', function() {
 
     describe('204NoContent', function() {
-      it('must return 204 No Content on a successful DELETE request');
+      it('must return 204 No Content on a successful DELETE request', function(done) {
+        var bookRouteHandler = bookController.destroy({
+          responder: function(payload) {
+            expect(payload.code).to.equal('204');
+            done();
+          }
+        });
+        bookRouteHandler(destroyReq);
+      });
     });
 
     describe('404NotFound', function() {
-      it('must return 404 Not Found when processing a request to delete a resource that does not exist');
+      it('must return 404 Not Found when processing a request to delete a resource that does not exist', function(done) {
+        destroyReq.params.id = 9999;
+        var bookRouteHandler = bookController.destroy({
+          responder: function(payload) {
+            expect(payload.code).to.equal('404');
+            done();
+          }
+        });
+        bookRouteHandler(destroyReq);
+      });
     });
 
     // Not testable as written. Each error handling branch should be
