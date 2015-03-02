@@ -523,10 +523,71 @@ describe('read', function() {
     });
 
     describe('sorting', function() {
-      it('should support requests to sort collections with a sort query parameter');
-      it('should support multiple sort criteria using comma-separated fields');
-      it('should sort multiple criteria in the order specified');
-      it('must sort ascending or descending based on explicit sort order using "+" or "-"');
+      it('should support requests to sort collections with a sort query parameter', function(done) {
+        var bookRouteHandler = bookController.read({
+          responder: function(payload) {
+            expect(payload.data.data[0].title).to.equal('Harry Potter and the Chamber of Secrets');
+            done();
+          }
+        });
+        delete readReq.params;
+        readReq.query = {
+          sort: '+title'
+        };
+        bookRouteHandler(readReq);
+      });
+
+      it.skip('should support sorting by nested relationship attributes', function(done) {
+        var bookRouteHandler = bookController.read({
+          responder: function(payload) {
+            expect(payload.data.data[0].title).to.equal('Harry Potter and the Philosopher\'s Stone');
+            done();
+          }
+        });
+        delete readReq.params;
+        readReq.query = {
+          sort: '+author.name'
+        };
+        bookRouteHandler(readReq);
+      });
+
+      it('should sort multiple criteria using comma-separated fields in the order specified', function(done) {
+        var bookRouteHandler = bookController.read({
+          responder: function(payload) {
+            expect(payload.data.data[0].title).to.equal('Harry Potter and the Chamber of Secrets');
+
+            readReq.query = {
+              sort: '-date_published,+title'
+            };
+            secondBookRouteHandler(readReq);
+          }
+        });
+        var secondBookRouteHandler = bookController.read({
+          responder: function(payload) {
+            expect(payload.data.data[0].title).to.equal('Harry Potter and the Deathly Hallows');
+            done();
+          }
+        });
+        delete readReq.params;
+        readReq.query = {
+          sort: '+title,-date_published'
+        };
+        bookRouteHandler(readReq);
+      });
+
+      it('must sort ascending or descending based on explicit sort order using "+" or "-"', function(done) {
+        var bookRouteHandler = bookController.read({
+          responder: function(payload) {
+            expect(payload.data.data[0].title).to.equal('The Two Towers');
+            done();
+          }
+        });
+        delete readReq.params;
+        readReq.query = {
+          sort: '-title'
+        };
+        bookRouteHandler(readReq);
+      });
     });
 
     describe('pagination', function() {

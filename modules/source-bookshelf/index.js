@@ -39,6 +39,10 @@ Source.prototype.filters = function () {
   return filters;
 };
 
+Source.prototype.fields = function() {
+  return this.model.fields || [];
+};
+
 Source.prototype.relations = function () {
   return this.model.relations || [];
 };
@@ -72,10 +76,11 @@ Source.prototype.read = function (opts) {
   if (!opts) {
     opts = {};
   }
-  var model = this.model;
+  var self = this;
+  var model = self.model;
   return model.collection().query(function (qb) {
     qb = processFilter(model, qb, opts.filter);
-    qb = processSort(model, qb, opts.sort);
+    qb = processSort(self, qb, opts.sort);
   }).fetch({
     withRelated: _.intersection(this.relations(), opts.include || [])
   }).then(function (result) {

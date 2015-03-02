@@ -9,7 +9,7 @@ const instanceProps = {
 
 const classProps = {
   typeName: 'stores',
-  columns: [
+  fields: [
     'id',
     'name'
   ],
