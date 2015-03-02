@@ -40,7 +40,7 @@ describe('updatingResources', function() {
   it('must respond to a successful request with an object', function(done) {
     var bookRouteHandler = bookController.update({
       responder: function(payload) {
-        expect(payload.code).to.equal(200);
+        expect(payload.code).to.be.within(200, 299);
         expect(payload.data).to.be.an('object');
         done();
       }
@@ -64,7 +64,7 @@ describe('updatingResources', function() {
     var allowedTopLevel = ['data', 'linked', 'links', 'meta'];
     var bookRouteHandler = bookController.update({
       responder: function(payload) {
-        expect(payload.code).to.equal(200);
+        expect(payload.code).to.equal('200');
         Object.keys(payload.data).forEach(function(key) {
           expect(allowedTopLevel).to.contain(key);
         });
@@ -114,7 +114,7 @@ describe('updatingResources', function() {
     it('should allow only some attributes to be included in the resource object', function(done) {
       var bookRouteHandler = bookController.update({
         responder: function(payload) {
-          expect(payload.code).to.equal(200);
+          expect(payload.code).to.equal('200');
           expect(payload.data).to.be.an('object');
           done();
         }
@@ -150,7 +150,7 @@ describe('updatingResources', function() {
 
       var bookRouteHandler = bookController.update({
         responder: function(payload) {
-          expect(payload.code).to.equal(200);
+          expect(payload.code).to.equal('200');
           expect(payload.data).to.be.an('object');
 
           bookController.read({

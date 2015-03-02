@@ -6,8 +6,10 @@ module.exports = function (err, data, opts) {
   }
 
   if (err) {
+    err.httpStatus = err.httpStatus || 422;
+
     return {
-      code: err.httpStatus || 422,
+      code: String(err.httpStatus),
       data: {
         errors: {
           title: err.title || 'Unprocessable Entity',
@@ -20,7 +22,7 @@ module.exports = function (err, data, opts) {
   opts.singleResult = true;
 
   return {
-    code: 201,
+    code: '201',
     data: jsonApi(data, opts),
     headers: {
       location: '/' + opts.typeName + '/' + data.id

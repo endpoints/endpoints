@@ -26,7 +26,7 @@ describe('update', function () {
     }).then(function(book) {
       var result = update(null, book, {typeName:BooksSource.typeName()});
       var flatBook = book.toJSON();
-      expect(result.code).to.equal(200);
+      expect(result.code).to.equal('200');
       expect(result.data.data.id).to.equal(String(flatBook.id));
       expect(result.data.data.title).to.equal(flatBook.title);
       expect(result.data.data.type).to.equal(BooksSource.typeName());
@@ -44,7 +44,7 @@ describe('update', function () {
       }
     };
     var result = update(new Error(errMsg));
-    expect(result.code).to.equal(422);
+    expect(result.code).to.equal('422');
     expect(result.data).to.deep.equal(data);
   });
 
@@ -52,7 +52,7 @@ describe('update', function () {
     var err = new Error('404 Error');
     err.httpStatus = 404;
     var result = update(err);
-    expect(result.code).to.equal(404);
+    expect(result.code).to.equal('404');
   });
 
 });

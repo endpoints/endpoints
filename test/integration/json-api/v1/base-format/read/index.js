@@ -28,7 +28,7 @@ describe('read', function() {
       it('must respond to a successful request with an object', function(done) {
         var bookRouteHandler = bookController.read({
           responder: function(payload) {
-            expect(payload.code).to.equal(200);
+            expect(payload.code).to.equal('200');
             expect(payload.data).to.be.an('object');
             done();
           }
@@ -41,7 +41,7 @@ describe('read', function() {
         DB.empty().then(function() {
           var bookRouteHandler = bookController.read({
             responder: function(payload) {
-              expect(payload.code).to.equal(400);
+              expect(payload.code).to.equal('400');
               expect(payload.data).to.be.an('object');
               done();
             }
@@ -55,7 +55,7 @@ describe('read', function() {
       it('must place primary data under a top-level key named "data"', function(done) {
         var bookRouteHandler = bookController.read({
           responder: function(payload) {
-            expect(payload.code).to.equal(200);
+            expect(payload.code).to.equal('200');
             expect(payload.data).to.have.property('data');
             done();
           }
@@ -70,7 +70,7 @@ describe('read', function() {
             id: 1
           },
           responder: function(payload) {
-            expect(payload.code).to.equal(200);
+            expect(payload.code).to.equal('200');
             expect(payload.data.data).to.be.an('object');
             done();
           }
@@ -81,7 +81,7 @@ describe('read', function() {
       it('must make primary data for multiple records an array', function(done) {
         var bookRouteHandler = bookController.read({
           responder: function(payload) {
-            expect(payload.code).to.equal(200);
+            expect(payload.code).to.equal('200');
             expect(payload.data.data).to.be.an('array');
             done();
           }
@@ -93,7 +93,7 @@ describe('read', function() {
         var allowedTopLevel = ['data', 'linked', 'links', 'meta'];
         var bookRouteHandler = bookController.read({
           responder: function(payload) {
-            expect(payload.code).to.equal(200);
+            expect(payload.code).to.equal('200');
             Object.keys(payload.data).forEach(function(key) {
               expect(allowedTopLevel).to.contain(key);
             });
@@ -115,7 +115,7 @@ describe('read', function() {
             },
             responder: function(payload) {
               var dataObj = payload.data.data;
-              expect(payload.code).to.equal(200);
+              expect(payload.code).to.equal('200');
               expect(dataObj).to.be.an('object');
               expect(dataObj).to.not.have.property('author_id');
               expect(dataObj).to.not.have.property('series_id');
@@ -133,7 +133,7 @@ describe('read', function() {
             },
             responder: function(payload) {
               var dataObj = payload.data.data;
-              expect(payload.code).to.equal(200);
+              expect(payload.code).to.equal('200');
               expect(dataObj).to.be.an('object');
               expect(dataObj.links).to.have.property('author');
               expect(dataObj.links).to.have.property('series');
@@ -157,7 +157,7 @@ describe('read', function() {
               id: 1
             },
             responder: function(payload) {
-              expect(payload.code).to.equal(200);
+              expect(payload.code).to.equal('200');
               expect(payload.data.data).to.have.property('type');
               done();
             }
@@ -172,7 +172,7 @@ describe('read', function() {
               id: 1
             },
             responder: function(payload) {
-              expect(payload.code).to.equal(200);
+              expect(payload.code).to.equal('200');
               expect(payload.data.data.type).to.be.a('string');
               done();
             }
@@ -189,7 +189,7 @@ describe('read', function() {
               id: 1
             },
             responder: function(payload) {
-              expect(payload.code).to.equal(200);
+              expect(payload.code).to.equal('200');
               expect(payload.data.data).to.have.property('id');
               done();
             }
@@ -204,7 +204,7 @@ describe('read', function() {
               id: 1
             },
             responder: function(payload) {
-              expect(payload.code).to.equal(200);
+              expect(payload.code).to.equal('200');
               expect(payload.data.data.id).to.be.a('string');
               done();
             }
@@ -221,7 +221,7 @@ describe('read', function() {
               id: 1
             },
             responder: function(payload) {
-              expect(payload.code).to.equal(200);
+              expect(payload.code).to.equal('200');
               expect(payload.data.data.links).to.be.an('Object');
               done();
             }
@@ -243,7 +243,7 @@ describe('read', function() {
             },
             responder: function(payload) {
               var links = payload.data.data.links;
-              expect(payload.code).to.equal(200);
+              expect(payload.code).to.equal('200');
               expect(links).to.have.property('self');
               expect(links.self).to.be.a('String');
               done();
@@ -260,7 +260,7 @@ describe('read', function() {
             },
             responder: function(payload) {
               var links = payload.data.data.links;
-              expect(payload.code).to.equal(200);
+              expect(payload.code).to.equal('200');
               expect(links.self).to.equal('/books/1');
               done();
             }
@@ -283,7 +283,7 @@ describe('read', function() {
             one:true,
             responder: function(payload) {
               var links = payload.data.data.links;
-              expect(payload.code).to.equal(200);
+              expect(payload.code).to.equal('200');
               expect(links).to.have.property('author');
               expect(links).to.have.property('series');
               expect(links).to.have.property('stores');
@@ -309,7 +309,7 @@ describe('read', function() {
             one:true,
             responder: function(payload) {
               var links = payload.data.data.links;
-              expect(payload.code).to.equal(200);
+              expect(payload.code).to.equal('200');
               expect(links.author).to.be.an('Object');
               expect(links.series).to.be.an('Object');
               done();
@@ -323,7 +323,7 @@ describe('read', function() {
             one:true,
             responder: function(payload) {
               var links = payload.data.data.links;
-              expect(payload.code).to.equal(200);
+              expect(payload.code).to.equal('200');
               expect(links.stores).to.be.a('String');
               expect(links['author.books']).to.be.a('String');
               expect(links.stores).to.equal('/books/1/stores');
@@ -351,7 +351,7 @@ describe('read', function() {
                   linkedAuthor.meta ||
                   linkedAuthor.data ||
                   (linkedAuthor.type && linkedAuthor.id);
-                expect(payload.code).to.equal(200);
+                expect(payload.code).to.equal('200');
                 expect(minProp).to.exist;
                 done();
               }
@@ -368,7 +368,7 @@ describe('read', function() {
                   linkedAuthor.data ||
                   (linkedAuthor.type && linkedAuthor.id);
 
-                expect(payload.code).to.equal(200);
+                expect(payload.code).to.equal('200');
                 expect(objectLinkage).to.exist;
                 done();
               }
@@ -382,7 +382,7 @@ describe('read', function() {
               one:true,
               responder: function(payload) {
                 var links = payload.data.data.links;
-                expect(payload.code).to.equal(200);
+                expect(payload.code).to.equal('200');
                 expect(links.author).to.have.property('type');
                 expect(links.author).to.have.property('id');
                 done();
@@ -398,7 +398,7 @@ describe('read', function() {
               one:true,
               responder: function(payload) {
                 var links = payload.data.data.links;
-                expect(payload.code).to.equal(200);
+                expect(payload.code).to.equal('200');
                 expect(links.series).to.have.property('type');
                 expect(links.series).to.have.property('id');
                 done();
@@ -429,7 +429,7 @@ describe('read', function() {
           one:true,
           responder: function(payload) {
             var linkedAuthor = payload.data.data.links.author;
-            expect(payload.code).to.equal(200);
+            expect(payload.code).to.equal('200');
             expect(payload.data.linked).to.not.have.property('authors');
             expect(payload.data.linked[0].type).to.equal(linkedAuthor.type);
             expect(payload.data.linked[0].id).to.equal(linkedAuthor.id);
@@ -443,7 +443,7 @@ describe('read', function() {
       it('must not include more than one resource object for each type and id pair', function(done) {
         var bookRouteHandler = bookController.read({
           responder: function(payload) {
-            expect(payload.code).to.equal(200);
+            expect(payload.code).to.equal('200');
             expect(payload.data.linked.length).to.equal(2);
             done();
           }
@@ -463,7 +463,7 @@ describe('read', function() {
         include: ['series'],
         responder: function(payload) {
           var linkedTypes = _.pluck(payload.data.linked, 'type');
-          expect(payload.code).to.equal(200);
+          expect(payload.code).to.equal('200');
           expect(linkedTypes.indexOf('series')).to.equal(-1);
           done();
         }
@@ -477,7 +477,7 @@ describe('read', function() {
         one:true,
         responder: function(payload) {
           var linksTypes = Object.keys(payload.data.data.links);
-          expect(payload.code).to.equal(200);
+          expect(payload.code).to.equal('200');
           expect(linksTypes.indexOf('author')).to.be.at.least(0);
           expect(linksTypes.indexOf('series')).to.be.at.least(0);
           expect(linksTypes.indexOf('stores')).to.be.at.least(0);

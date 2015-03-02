@@ -42,6 +42,7 @@ describe('creatingResources', function() {
   it('must respond to a successful request with an object', function(done) {
     var bookRouteHandler = bookController.create({
       responder: function(payload) {
+        expect(payload.code).to.be.within(200, 299);
         expect(payload.data).to.be.an('object');
         done();
       }
@@ -116,7 +117,7 @@ describe('creatingResources', function() {
       var bookRouteHandler = bookController.create({
         responder: function(payload) {
           var data = payload.data.data;
-          expect(payload.code).to.equal(201);
+          expect(payload.code).to.equal('201');
           expect(data.id).to.equal(String(createReq.body.data.id));
           expect(data.date_published).to.equal(createReq.body.data.date_published);
           expect(data.title).to.equal(createReq.body.data.title);
@@ -136,7 +137,7 @@ describe('creatingResources', function() {
       it('must respond to a successful resource creation', function(done) {
         var bookRouteHandler = bookController.create({
           responder: function(payload) {
-            expect(payload.code).to.equal(201);
+            expect(payload.code).to.equal('201');
             done();
           }
         });
@@ -156,7 +157,7 @@ describe('creatingResources', function() {
       it('must respond with 201 on a successful request if the request did not include a client-generated ID', function(done) {
         var bookRouteHandler = bookController.create({
           responder: function(payload) {
-            expect(payload.code).to.equal(201);
+            expect(payload.code).to.equal('201');
             done();
           }
         });
@@ -167,7 +168,7 @@ describe('creatingResources', function() {
         var bookRouteHandler = bookController.create({
           responder: function(payload) {
             var data = payload.data.data;
-            expect(payload.code).to.equal(201);
+            expect(payload.code).to.equal('201');
             expect(data).to.have.property('id');
             expect(data.date_published).to.equal(createReq.body.data.date_published);
             expect(data.title).to.equal(createReq.body.data.title);
@@ -190,7 +191,7 @@ describe('creatingResources', function() {
       it('must add all relations', function(done) {
         var bookRouteHandler = bookController.create({
           responder: function(payload) {
-            expect(payload.code).to.equal(201);
+            expect(payload.code).to.equal('201');
             expect(payload.data).to.be.an('object');
 
             var readReq = {

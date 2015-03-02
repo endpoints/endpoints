@@ -10,7 +10,7 @@ describe('destroy', function () {
       key: 'value'
     };
     var result = destroy(null, data, { type: type });
-    expect(result.code).to.equal(204);
+    expect(result.code).to.equal('204');
     expect(result.data).to.equal(null);
   });
 
@@ -23,7 +23,7 @@ describe('destroy', function () {
       }
     };
     var result = destroy(new Error(errMsg));
-    expect(result.code).to.equal(400);
+    expect(result.code).to.equal('400');
     expect(result.data).to.deep.equal(data);
   });
 
@@ -31,7 +31,7 @@ describe('destroy', function () {
     var err = new Error('404 Error');
     err.httpStatus = 404;
     var result = destroy(err);
-    expect(result.code).to.equal(404);
+    expect(result.code).to.equal('404');
   });
 
 });

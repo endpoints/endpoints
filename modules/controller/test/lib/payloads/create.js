@@ -25,7 +25,7 @@ describe('create', function () {
     }).then(function(book) {
       var result = create(null, book, {typeName:BooksSource.typeName()});
       var flatBook = book.toJSON();
-      expect(result.code).to.equal(201);
+      expect(result.code).to.equal('201');
       expect(result.data.data.id).to.equal(String(flatBook.id));
       expect(result.data.data.title).to.equal(flatBook.title);
       expect(result.data.data.type).to.equal(BooksSource.typeName());
@@ -43,7 +43,7 @@ describe('create', function () {
       }
     };
     var result = create(new Error(errMsg));
-    expect(result.code).to.equal(422);
+    expect(result.code).to.equal('422');
     expect(result.data).to.deep.equal(data);
   });
 
@@ -51,7 +51,7 @@ describe('create', function () {
     var err = new Error('404 Error');
     err.httpStatus = 404;
     var result = create(err);
-    expect(result.code).to.equal(404);
+    expect(result.code).to.equal('404');
   });
 
 });

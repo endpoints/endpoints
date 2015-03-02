@@ -14,7 +14,7 @@ describe('read', function () {
 
   it('should return data and code 404 when no results were found', function () {
     var result = read(null, null);
-    expect(result.code).to.equal(404);
+    expect(result.code).to.equal('404');
     /* TODO: test json-api serialization using source-memory
     expect(result.data).to.deep.equal({
       errors: {
@@ -28,7 +28,7 @@ describe('read', function () {
   it('should return errors and default to code 400 when there is an error', function () {
     var errMsg = 'Read error.';
     var result = read(new Error(errMsg));
-    expect(result.code).to.equal(400);
+    expect(result.code).to.equal('400');
     /* TODO: test json-api serialization using source-memory
     var data = {
       errors: {
@@ -44,7 +44,7 @@ describe('read', function () {
     var err = new Error('404 Error');
     err.httpStatus = 404;
     var result = read(err);
-    expect(result.code).to.equal(404);
+    expect(result.code).to.equal('404');
   });
 
 });

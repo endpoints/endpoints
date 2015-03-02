@@ -8,8 +8,10 @@ module.exports = function (err, data, opts) {
   var singleResult = !!opts.one;
 
   if (err) {
+    err.httpStatus = err.httpStatus || 400;
+
     return {
-      code: err.httpStatus || 400,
+      code: String(err.httpStatus),
       data: {
         errors: {
           title: err.title || 'Bad Controller Read',
@@ -21,7 +23,7 @@ module.exports = function (err, data, opts) {
 
   if (!data || singleResult && data.length === 0) {
     return {
-      code: 404,
+      code: '404',
       data: {
         errors: {
           title: 'Not Found',
@@ -33,13 +35,13 @@ module.exports = function (err, data, opts) {
 
   if (isRaw) {
     return {
-      code: 200,
+      code: '200',
       data: data
     };
   }
 
   return {
-    code: 200,
+    code: '200',
     data: jsonApi(data, {
       singleResult: singleResult,
       relations: data.sourceOpts.include,
