@@ -4,6 +4,9 @@ const Kapow = require('kapow');
 module.exports = function(errs, defaultErr) {
     var resp;
 
+    defaultErr = defaultErr || 400;
+    errs = errs || [Kapow(defaultErr)];
+
     if (!Array.isArray(errs)) {
       errs = [errs];
     }

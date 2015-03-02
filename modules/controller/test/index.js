@@ -34,6 +34,7 @@ describe('Controller', function () {
       require('./lib/payloads/destroy');
       require('./lib/payloads/read');
       require('./lib/payloads/update');
+      require('./lib/payloads/error_payload');
 
     });
 
