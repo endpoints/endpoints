@@ -518,8 +518,19 @@ describe('read', function() {
     });
 
     describe('sparseFieldsets', function() {
-      it('should support returning only specific fields in the response on a per-type basis by including a fields[TYPE] parameter');
-      it('must not include other fields when the client specifies sparse fieldsets');
+      it('should support returning **only** specific fields in the response on a per-type basis by including a fields[TYPE] parameter', function(done) {
+        var bookRouteHandler = bookController.read({
+          responder: function(payload) {
+            var dataObj = payload.data.data[0];
+            expect(dataObj).to.have.property('id');
+            expect(dataObj).to.have.property('title');
+            expect(dataObj).to.not.have.property('date_published');
+            done();
+          }
+        });
+        readReq.query = { fields: {books: 'id,title'} };
+        bookRouteHandler(readReq);
+      });
     });
 
     describe('sorting', function() {

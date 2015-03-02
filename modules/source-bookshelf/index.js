@@ -82,6 +82,10 @@ Source.prototype.read = function (opts) {
     qb = processFilter(model, qb, opts.filter);
     qb = processSort(self, qb, opts.sort);
   }).fetch({
+
+    // adding this in the queryBuilder changes the qb, but fetch still
+    // returns all columns
+    columns: opts.fields ? opts.fields[self.typeName()] : undefined,
     withRelated: _.intersection(this.relations(), opts.include || [])
   }).then(function (result) {
     result.sourceOpts = opts;
