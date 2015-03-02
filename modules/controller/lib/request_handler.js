@@ -6,19 +6,18 @@ module.exports = function (opts) {
   var sourceInterface = opts.sourceInterface;
   var payload = opts.payload;
   var responder = opts.responder;
-  var method = opts.method;
   var source = opts.source;
   var validators = [];
 
   validators.push(verifyAccept);
 
-  if (method === 'update' || method === 'create') {
-    validators.push(verifyContentType);
-    validators.push(verifyDataObject);
-  }
-
   return function (request, response, next) {
     var err;
+
+    if (request.body) {
+      validators.push(verifyContentType);
+      validators.push(verifyDataObject);
+    }
 
     var endpoint = {
       typeName: opts.typeName,
