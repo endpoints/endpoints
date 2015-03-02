@@ -1,22 +1,13 @@
 const jsonApi = require('../../../formatter-jsonapi');
+const errorPayload = require('./error_payload');
 
-module.exports = function (err, data, opts) {
+module.exports = function (errs, data, opts) {
   if (!opts) {
     opts = {};
   }
 
-  if (err) {
-    err.httpStatus = err.httpStatus || 422;
-
-    return {
-      code: String(err.httpStatus),
-      data: {
-        errors: {
-          title: err.title || 'Unprocessable Entity',
-          detail: err.message
-        }
-      }
-    };
+  if (errs) {
+    return errorPayload(errs, 422);
   }
 
   return {

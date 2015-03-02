@@ -38,10 +38,10 @@ describe('update', function () {
   it('should return errors and default to code 422 when there is an error', function () {
     var errMsg = 'Update error.';
     var data = {
-      errors: {
+      errors: [{
         title: 'Unprocessable Entity',
         detail: errMsg
-      }
+      }]
     };
     var result = update(new Error(errMsg));
     expect(result.code).to.equal('422');

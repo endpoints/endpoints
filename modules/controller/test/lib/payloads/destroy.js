@@ -17,10 +17,10 @@ describe('destroy', function () {
   it('should return errors and default to code 400 when there is an error', function () {
     var errMsg = 'Destroy error.';
     var data = {
-      errors: {
-        title: 'Bad Controller Destroy',
+      errors: [{
+        title: 'Bad Request',
         detail: errMsg
-      }
+      }]
     };
     var result = destroy(new Error(errMsg));
     expect(result.code).to.equal('400');

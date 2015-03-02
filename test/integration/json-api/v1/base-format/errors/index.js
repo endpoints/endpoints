@@ -1,7 +1,5 @@
 describe('errors', function() {
-  it('must have a JSON object at the root of every response');
   it('should return error objects that include additional information about problems encountered');
-  it('must return a collection keyed by "errors" in the top level of the response');
   it('should not return errors with primary data');
   it('should have an id member');
   it('should have a href member with further details of the problem');

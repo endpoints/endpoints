@@ -50,12 +50,13 @@ describe('creatingResources', function() {
     bookRouteHandler(createReq);
   });
 
-  it('must respond to an unsuccessful request with a JSON object', function(done) {
+  it('must respond to an unsuccessful request with a JSON object containing a collection keyed by "errors" in the top level', function(done) {
     createReq.body = {};
     var bookRouteHandler = bookController.create({
       responder: function(payload) {
         expect(payload.code).to.be.within(400, 499); // any error
         expect(payload.data).to.be.an('object');
+        expect(payload.data.errors).to.be.an('array');
         done();
       }
     });

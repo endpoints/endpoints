@@ -54,6 +54,7 @@ describe('updatingResources', function() {
       responder: function(payload) {
         expect(payload.code).to.be.within(400, 499);
         expect(payload.data).to.be.an('object');
+        expect(payload.data.errors).to.be.an('array');
         done();
       }
     });

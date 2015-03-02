@@ -1,36 +1,21 @@
-const jsonApi = require('../../../formatter-jsonapi');
+const Kapow = require('kapow');
 
-module.exports = function (err, data, opts) {
+const jsonApi = require('../../../formatter-jsonapi');
+const errorPayload = require('./error_payload');
+
+module.exports = function (errs, data, opts) {
   if (!opts) {
     opts = {};
   }
   var isRaw = !!opts.raw;
   var singleResult = !!opts.one;
 
-  if (err) {
-    err.httpStatus = err.httpStatus || 400;
-
-    return {
-      code: String(err.httpStatus),
-      data: {
-        errors: {
-          title: err.title || 'Bad Controller Read',
-          detail: err.message
-        }
-      }
-    };
+  if (errs) {
+    return errorPayload(errs, 400);
   }
 
   if (!data || singleResult && data.length === 0) {
-    return {
-      code: '404',
-      data: {
-        errors: {
-          title: 'Not Found',
-          detail: 'Resource not found.'
-        }
-      }
-    };
+    return errorPayload(Kapow(404, 'Resource not found.'));
   }
 
   if (isRaw) {

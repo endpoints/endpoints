@@ -1,21 +1,12 @@
-module.exports = function (err, data, opts) {
+const errorPayload = require('./error_payload');
+
+module.exports = function (errs, data, opts) {
   if (!opts) {
     opts = {};
   }
-  console.log(err);
 
-  if (err) {
-    err.httpStatus = err.httpStatus || 400;
-
-    return {
-      code: String(err.httpStatus),
-      data: {
-        errors: {
-          title: err.title || 'Bad Controller Destroy',
-          detail: err.message
-        }
-      }
-    };
+  if (errs) {
+    return errorPayload(errs, 400);
   }
 
   return {

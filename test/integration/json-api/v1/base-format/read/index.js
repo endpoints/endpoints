@@ -37,12 +37,12 @@ describe('read', function() {
       });
 
       it('must respond to an unsuccessful request with a JSON object', function(done) {
-
         DB.empty().then(function() {
           var bookRouteHandler = bookController.read({
             responder: function(payload) {
               expect(payload.code).to.equal('400');
               expect(payload.data).to.be.an('object');
+              expect(payload.data.errors).to.be.an('array');
               done();
             }
           });

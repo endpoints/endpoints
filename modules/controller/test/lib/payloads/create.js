@@ -37,12 +37,13 @@ describe('create', function () {
   it('should return errors and default to code 422 when there is an error', function () {
     var errMsg = 'Create error.';
     var data = {
-      errors: {
+      errors: [{
         title: 'Unprocessable Entity',
         detail: errMsg
-      }
+      }]
     };
     var result = create(new Error(errMsg));
+    console.log(result);
     expect(result.code).to.equal('422');
     expect(result.data).to.deep.equal(data);
   });
