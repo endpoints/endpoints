@@ -43,7 +43,6 @@ describe('create', function () {
       }]
     };
     var result = create(new Error(errMsg));
-    console.log(result);
     expect(result.code).to.equal('422');
     expect(result.data).to.deep.equal(data);
   });
