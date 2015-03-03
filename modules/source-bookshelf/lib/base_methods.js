@@ -28,7 +28,7 @@ exports.addUpdate = function (source) {
 
       // Bookshelf .previousAttributes() doesn't work
       // See: https://github.com/tgriesser/bookshelf/issues/326#issuecomment-76637186
-      if (_.isEqual(model.toJSON(), clientState)) {
+      if (_.isEqual(model.toJSON({shallow: true}), clientState)) {
         return null;
       }
       return model;
