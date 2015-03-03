@@ -8,9 +8,7 @@ describe('getParams', function () {
     query: {
       include: 'cat,dog',
       filter: {
-        type: {
-          id: 1
-        }
+        id: '1,2'
       },
       sort: '+last,+first,-birthday',
       fields: {
@@ -22,9 +20,7 @@ describe('getParams', function () {
   var defaultConfig = {
     include: ['cat', 'dog'],
     filter: {
-      type: {
-        id: 1
-      }
+      id: ['1', '2']
     },
     sort: ['+last', '+first', '-birthday'],
     fields: {
@@ -36,22 +32,22 @@ describe('getParams', function () {
   var paramsWithDefault = getParams({}, defaultConfig);
 
   it('should extract and normalize `include` params from a request, or use defaults', function () {
-    expect(paramsWithRequest.include).to.deep.equal(request.query.include.split(','));
+    expect(paramsWithRequest.include).to.deep.equal(defaultConfig.include);
     expect(paramsWithDefault.include).to.deep.equal(defaultConfig.include);
   });
 
   it('should extract `filter` params from a request, or use defaults', function () {
-    expect(paramsWithRequest.filter).to.deep.equal(request.query.filter);
+    expect(paramsWithRequest.filter).to.deep.equal(defaultConfig.filter);
     expect(paramsWithDefault.filter).to.deep.equal(defaultConfig.filter);
   });
 
   it('should extract `fields` params from a request, or use defaults', function () {
-    expect(paramsWithRequest.fields).to.deep.equal(request.query.fields);
+    expect(paramsWithRequest.fields).to.deep.equal(defaultConfig.fields);
     expect(paramsWithDefault.fields).to.deep.equal(defaultConfig.fields);
   });
 
   it('should extract `sort` params from a request, or use defaults', function () {
-    expect(paramsWithRequest.sort).to.deep.equal(request.query.sort.split(','));
+    expect(paramsWithRequest.sort).to.deep.equal(defaultConfig.sort);
     expect(paramsWithDefault.sort).to.deep.equal(defaultConfig.sort);
   });
 

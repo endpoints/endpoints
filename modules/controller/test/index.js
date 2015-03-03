@@ -53,6 +53,7 @@ describe('Controller', function () {
     require('./lib/request_handler');
     require('./lib/responder');
     require('./lib/source_has');
+    require('./lib/split_string_props');
     require('./lib/throw_if_model');
     require('./lib/throw_if_no_model');
     require('./lib/validate_controller');

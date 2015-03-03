@@ -8,7 +8,6 @@ module.exports = function (model, query, filterBy) {
   var filters = model.filters;
   return _.transform(filterBy, function (result, value, key) {
     var filter = filters[key];
-    value = String(value).split(',');
     if (key === 'id' && !filter) {
       filter = idFilter;
     }
