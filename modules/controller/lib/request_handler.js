@@ -7,16 +7,13 @@ module.exports = function (opts) {
   var payload = opts.payload;
   var responder = opts.responder;
   var source = opts.source;
-  var validators = [];
-
-  validators.push(verifyAccept);
 
   return function (request, response, next) {
     var err;
+    var validators = [verifyAccept];
 
     if (request.body) {
-      validators.push(verifyContentType);
-      validators.push(verifyDataObject);
+      validators = validators.concat([verifyContentType, verifyDataObject]);
     }
 
     var endpoint = {
