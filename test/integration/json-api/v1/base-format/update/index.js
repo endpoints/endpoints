@@ -3,6 +3,7 @@ const _ = require('lodash');
 
 const DB = require('../../../../../fixtures/classes/database');
 const bookController = require('../../../../../fixtures/controllers/books');
+const storeController = require('../../../../../fixtures/controllers/stores');
 
 var req = require('../../../../../fixtures/mocks/express_request');
 
@@ -385,11 +386,31 @@ describe('updatingResources', function() {
   describe('responses', function() {
 
     describe('204NoContent', function() {
-      it('must return 204 No Content on a successful update when attributes remain up-to-date');
+      it('must return 204 No Content on a successful update when attributes remain up-to-date', function(done) {
+        var storeRouteHandler = storeController.update({
+          responder: function(payload) {
+            expect(payload.code).to.equal('204');
+            done();
+          }
+        });
+        storeRouteHandler(req({
+          params: {id: 1},
+          body: {data: {type: 'stores', id: 1, name: 'Updated Store'}}
+        }));
+      });
     });
 
     describe('200Ok', function() {
-      it('must return 200 OK if it accepts the update but changes the resource in some way');
+      it('must return 200 OK if it accepts the update but changes the resource in some way', function(done) {
+        var bookRouteHandler = bookController.update({
+          responder: function(payload) {
+            expect(payload.code).to.equal('200');
+            expect(payload.data).to.be.an('object');
+            done();
+          }
+        });
+        bookRouteHandler(updateReq);
+      });
       it('must include a representation of the updated resource on a 200 OK response');
     });
 

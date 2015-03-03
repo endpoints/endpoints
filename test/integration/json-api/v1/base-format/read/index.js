@@ -590,14 +590,15 @@ describe('read', function() {
       });
     });
 
-    describe('pagination', function() {
-      it('should limit the number of resources returned in a response to a subset of the whole set available');
-      it('should provide links to traverse a paginated data set');
-      it('must put any pagination links on the object that corresponds to a collection');
-      it('must only use "first," "last," "prev," and "next" as keys for pagination links');
-      it('must omit or set values to null for links that are unavailable');
-      it('must remain consistent with the sorting rules');
-    });
+    // TODO: Pagination
+    // describe('pagination', function() {
+    //   it('should limit the number of resources returned in a response to a subset of the whole set available');
+    //   it('should provide links to traverse a paginated data set');
+    //   it('must put any pagination links on the object that corresponds to a collection');
+    //   it('must only use "first," "last," "prev," and "next" as keys for pagination links');
+    //   it('must omit or set values to null for links that are unavailable');
+    //   it('must remain consistent with the sorting rules');
+    // });
 
     describe('filtering', function() {
       it('must only use the filter query parameter for filtering data', function(done) {

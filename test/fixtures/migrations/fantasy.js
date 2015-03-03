@@ -16,6 +16,7 @@ exports.up = function (knex) {
       t.integer('series_id').references('id').inTable('series');
       t.date('date_published').notNullable();
       t.text('title');
+      t.timestamps();
     }).
     createTable('stores', function (t) {
       t.increments('id');

@@ -95,7 +95,7 @@ Source.prototype.destroy = function (model, method, params) {
     throw new Error('No method provided to update or delete with.');
   }
   var destructured = destructureRequest(model, params);
-  return model[method](destructured.data, destructured.toManyRels);
+  return model[method](destructured.data, destructured.toManyRels, model.toJSON());
 };
 
 module.exports = Source;

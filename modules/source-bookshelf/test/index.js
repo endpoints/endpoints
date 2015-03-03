@@ -57,7 +57,10 @@ describe('BookshelfSource', function () {
 
     it('should find resource on the underlying model by id', function (done) {
       BooksSource.byId(1).then(function (book) {
-        expect(book.toJSON()).to.deep.equal(fantasyDatabase.books[0]);
+        book = book.toJSON();
+        delete book.created_at;
+        delete book.updated_at;
+        expect(book).to.deep.equal(fantasyDatabase.books[0]);
         done();
       });
     });
@@ -131,7 +134,10 @@ describe('BookshelfSource', function () {
       BooksSource.read({
         filter: { id: 1 }
       }).then(function (books) {
-        expect(books.first().toJSON()).to.deep.equal(fantasyDatabase.books[0]);
+        var firstBook = books.first().toJSON();
+        delete firstBook.created_at;
+        delete firstBook.updated_at;
+        expect(firstBook).to.deep.equal(fantasyDatabase.books[0]);
         done();
       });
     });
@@ -141,9 +147,10 @@ describe('BookshelfSource', function () {
         filter: { id: 1 },
         include: ['author']
       }).then(function (books) {
-        expect(books.first().toJSON({
-          shallow: true
-        })).to.deep.equal(fantasyDatabase.books[0]);
+        var firstBook = books.first().toJSON({shallow: true});
+        delete firstBook.created_at;
+        delete firstBook.updated_at;
+        expect(firstBook).to.deep.equal(fantasyDatabase.books[0]);
         expect(books.first().related('author').toJSON({
           shallow: true
         })).to.deep.equal(fantasyDatabase.authors[0]);
@@ -167,7 +174,7 @@ describe('BookshelfSource', function () {
         BooksSource.update(bookOne, 'update', {
           title: 'altered book'
         }).then(function (data) {
-          expect(data).to.be.an.instanceof(BooksModel);
+          expect(data).to.be.an('object');
           expect(data.get('title')).to.equal(newTitle);
           done();
         });
