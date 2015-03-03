@@ -7,7 +7,6 @@ module.exports = function (errs, data, opts) {
   }
 
   if (errs) {
-    console.log(errs);
     return errorPayload(errs, 422);
   }
 

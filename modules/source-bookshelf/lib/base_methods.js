@@ -19,7 +19,6 @@ exports.addUpdate = function (source) {
   source.model.prototype.update = function (params, toManyRels, previous) {
     const clientState = _.extend(previous, params);
     return this.save(params, {patch: true, method: 'update'}).tap(function (model) {
-      console.log(model.toJSON());
       return bPromise.map(toManyRels, function(rel) {
         return model.related(rel.name).detach().then(function() {
           return model.related(rel.name).attach(rel.ids);
