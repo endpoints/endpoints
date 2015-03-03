@@ -70,7 +70,6 @@ describe('deletingResources', function() {
           bookController.read({
             responder: function(payload) {
               var secondRead = payload.data;
-              console.log(secondRead);
               expect(secondRead.data.length).to.equal(firstRead.data.length - 1);
               expect(_.pluck(secondRead.data, 'id').indexOf(destroyReq.params.id)).to.equal(-1);
               done();

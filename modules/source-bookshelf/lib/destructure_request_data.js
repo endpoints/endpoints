@@ -22,7 +22,7 @@ module.exports = function(model, params) {
       // toOne relations
       if (relationType === 'belongsTo' || relationType === 'hasOne') {
         fkey = model.related(key).relatedData.foreignKey;
-        params[fkey] = relation.id;
+        params[fkey] = relation === null ? relation : relation.id;
       }
 
       // toMany relations

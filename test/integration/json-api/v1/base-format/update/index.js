@@ -141,8 +141,6 @@ describe('updatingResources', function() {
         type: 'books',
         title: 'tiddlywinks',
         links: {
-          author: {type: 'authors', id: '2'},
-          series: {type: 'series', id: '2'},
           stores: {type: 'stores', ids: ['1', '2']}
         }
       };
@@ -164,8 +162,6 @@ describe('updatingResources', function() {
               expect(secondRead.linked.length).to.equal(2);
               expect(payloadData.title).to.equal(updateData.title);
               expect(payloadData.date_published).to.equal(updateData.date_published);
-              expect(payloadLinks.author.id).to.equal(updateLinks.author.id);
-              expect(payloadLinks.series.id).to.equal(updateLinks.series.id);
               expect(payloadLinks.stores.ids).to.deep.equal(updateLinks.stores.ids);
               done();
             }
@@ -216,14 +212,174 @@ describe('updatingResources', function() {
   });
 
   describe('updatingResourceToOneRelationships', function() {
-    it('must require to-One relationship links to be either an object with type and id or null');
+    it('must update to-One relationship with an object with type and id under links', function(done) {
+      var readReq = {
+        params: {
+          id: 1
+        },
+        headers: {
+          'accept': 'application/vnd.api+json'
+        }
+      };
+      var updateData = {
+        id: 1,
+        type: 'books',
+        links: {
+          author: {type: 'authors', id: '2'},
+          series: {type: 'series', id: '2'}
+        }
+      };
+
+      updateReq.body.data = updateData;
+
+      var bookRouteHandler = bookController.update({
+        responder: function(payload) {
+          expect(payload.code).to.equal('200');
+          expect(payload.data).to.be.an('object');
+
+          bookController.read({
+            responder: function(payload) {
+              var payloadLinks = payload.data.data[0].links;
+              var updateLinks = updateData.links;
+              expect(payloadLinks.author.id).to.equal(updateLinks.author.id);
+              expect(payloadLinks.series.id).to.equal(updateLinks.series.id);
+              done();
+            }
+          })(readReq);
+        }
+      });
+      bookRouteHandler(_.cloneDeep(updateReq));
+    });
+
+    it('must attempt to remove to-One relationship with null', function(done) {
+      var readReq = {
+        params: {
+          id: 1
+        },
+        headers: {
+          'accept': 'application/vnd.api+json'
+        }
+      };
+      var updateData = {
+        id: 1,
+        type: 'books',
+        links: {
+          series: null
+        }
+      };
+
+      updateReq.body.data = updateData;
+
+      var bookRouteHandler = bookController.update({
+        responder: function(payload) {
+          expect(payload.code).to.equal('200');
+          expect(payload.data).to.be.an('object');
+
+          bookController.read({
+            responder: function(payload) {
+              var payloadLinks = payload.data.data[0].links;
+              // var updateLinks = updateData.links;
+              expect(payloadLinks.series.id).to.equal('null');
+              done();
+            }
+          })(readReq);
+        }
+      });
+      bookRouteHandler(_.cloneDeep(updateReq));
+    });
   });
 
+  // A server MAY reject an attempt to do a full replacement of a to-many relationship. In such a case, the server MUST reject the entire update, and return a 403 Forbidden response.
+  // Note: Since full replacement may be a very dangerous operation, a server may choose to disallow it. A server may reject full replacement if it has not provided the client with the full list of associated objects, and does not want to allow deletion of records the client has not seen.
   describe('updatingResourceToManyRelationships', function() {
-    it('must require homogeneous to-Many relationship links to be an object with type and ids members');
-    it('must require heterogeneous to-Many relationship links to be an object with a data member containing an array of objects with type and id members');
-    it('should reject an attempt to do a full replacement of a to-many relationship');
-    it('must reject full-replacement atomically and with a 403 Forbidden response');
+    it('must update homogeneous to-Many relationship with an object with type and ids members under links', function(done) {
+      var readReq = {
+        params: {
+          id: 1
+        },
+        headers: {
+          'accept': 'application/vnd.api+json'
+        },
+        query: {
+          include: 'stores'
+        }
+      };
+      var updateData = {
+        id: 1,
+        type: 'books',
+        links: {
+          stores: {type: 'stores', ids: ['1', '2']}
+        }
+      };
+
+      updateReq.body.data = updateData;
+
+      var bookRouteHandler = bookController.update({
+        responder: function(payload) {
+          expect(payload.code).to.equal('200');
+          expect(payload.data).to.be.an('object');
+
+          bookController.read({
+            responder: function(payload) {
+              var secondRead = payload.data;
+              var payloadLinks = secondRead.data[0].links;
+              var updateLinks = updateData.links;
+
+              expect(secondRead.linked.length).to.equal(2);
+              expect(payloadLinks.stores.ids).to.deep.equal(updateLinks.stores.ids);
+              done();
+            }
+          })(readReq);
+        }
+      });
+      bookRouteHandler(_.cloneDeep(updateReq));
+    });
+
+    it('must attempt to remove to-Many relationships with an the ids member of the data object set to []', function(done) {
+      var readReq = {
+        params: {
+          id: 1
+        },
+        headers: {
+          'accept': 'application/vnd.api+json'
+        },
+        query: {
+          include: 'stores'
+        }
+      };
+      var updateData = {
+        id: 1,
+        type: 'books',
+        links: {
+          stores: {type: 'stores', ids: []}
+        }
+      };
+
+      updateReq.body.data = updateData;
+
+      var bookRouteHandler = bookController.update({
+        responder: function(payload) {
+          expect(payload.code).to.equal('200');
+          expect(payload.data).to.be.an('object');
+
+          bookController.read({
+            responder: function(payload) {
+              var secondRead = payload.data;
+              var payloadLinks = secondRead.data[0].links;
+              var updateLinks = updateData.links;
+
+              expect(secondRead).to.not.have.property('linked');
+              expect(payloadLinks.stores.ids).to.deep.equal(updateLinks.stores.ids);
+              done();
+            }
+          })(readReq);
+        }
+      });
+      bookRouteHandler(_.cloneDeep(updateReq));
+    });
+
+    // Endpoints does not support heterogenous to-Many relationships
+    // it('must require heterogeneous to-Many relationship links to be an object with a data member containing an array of objects with type and id members');
   });
 
   describe('responses', function() {
@@ -259,7 +415,25 @@ describe('updatingResources', function() {
     });
 
     describe('409Conflict', function() {
-      it('should return 409 Conflict when processing an update that violates server-enforced constraints');
+      it('should return 409 Conflict when processing an update that violates server-enforced constraints', function(done) {
+        var updateData = {
+          id: 1,
+          type: 'books',
+          links: {
+            author: null
+          }
+        };
+
+        updateReq.body.data = updateData;
+
+        var bookRouteHandler = bookController.update({
+          responder: function(payload) {
+            expect(payload.code).to.equal('409');
+            done();
+          }
+        });
+        bookRouteHandler(_.cloneDeep(updateReq));
+      });
 
       it('must return 409 Conflict when processing a request where the id does not match the endpoint', function(done) {
         updateReq.body.data.id = 2;
@@ -318,9 +492,11 @@ describe('updatingRelationships', function() {
 
   describe('responses', function() {
 
-    describe('204NoContent', function() {
-      it('must return 204 No Content if the update is successful and the attributes remain up to date');
-    });
+    // Endpoints will respond with a 200 on all create requests
+    // Tested above.
+    // describe('204NoContent', function() {
+    //   it('must return 204 No Content if the update is successful and the attributes remain up to date');
+    // });
 
     // API decision to not create the route - endpoints will always support updating
     // describe('403Forbidden', function() {
