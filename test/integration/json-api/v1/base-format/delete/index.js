@@ -1,5 +1,5 @@
 const expect = require('chai').expect;
-// const _ = require('lodash');
+const _ = require('lodash');
 
 const DB = require('../../../../../fixtures/classes/database');
 const bookController = require('../../../../../fixtures/controllers/books');
@@ -13,7 +13,7 @@ describe('deletingResources', function() {
   beforeEach(function() {
     destroyReq = req({
       params: {
-        id: 1
+        id: '1'
       }
     });
     return DB.reset();
@@ -31,7 +31,7 @@ describe('deletingResources', function() {
   });
 
   it('must respond to an unsuccessful request with a JSON object', function(done) {
-    destroyReq.params.id = 9999;
+    destroyReq.params.id = '9999';
     var bookRouteHandler = bookController.destroy({
       responder: function(payload) {
         expect(payload.code).to.be.within(400, 499); // any error
@@ -57,7 +57,36 @@ describe('deletingResources', function() {
   // TODO: Source/DB test: verify rollback on error
   // it('must not allow partial updates');
 
-  it('should delete resources when a DELETE request is made to the resource URL');
+  it('should delete resources when a DELETE request is made to the resource URL', function(done) {
+      var firstRead;
+      var readReq = {
+        headers: {
+          'accept': 'application/vnd.api+json'
+        }
+      };
+      var bookRouteHandler = bookController.destroy({
+        responder: function(payload) {
+
+          bookController.read({
+            responder: function(payload) {
+              var secondRead = payload.data;
+              console.log(secondRead);
+              expect(secondRead.data.length).to.equal(firstRead.data.length - 1);
+              expect(_.pluck(secondRead.data, 'id').indexOf(destroyReq.params.id)).to.equal(-1);
+              done();
+            }
+          })(readReq);
+        }
+      });
+
+      bookController.read({
+        responder: function(payload) {
+          firstRead = payload.data;
+          expect(_.pluck(firstRead.data, 'id').indexOf(destroyReq.params.id)).to.not.equal(-1);
+          bookRouteHandler(destroyReq);
+        }
+      })(readReq);
+  });
 
   describe('responses', function() {
 
