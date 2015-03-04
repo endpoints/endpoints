@@ -21,7 +21,6 @@ const responder = require('./responder');
 module.exports = function (method, source, opts) {
   var defaults = {
     source: source,
-    sourceMethod: method,
     method: opts && opts.method ? opts.method : method,
     payload: payloads[method],
     sourceInterface: sourceInterface[method],
