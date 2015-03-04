@@ -28,7 +28,7 @@ module.exports = function (method, source, opts) {
     typeName: source.typeName(),
     include: [],
     filter: {},
-    //fields: {},
+    fields: {},
     sort: []
   };
   var config = _.defaults({}, opts, defaults);
