@@ -377,7 +377,7 @@ describe('read', function() {
             bookRouteHandler(readReq);
           });
 
-          it('must express object linkages as type and id for to-one relationships', function(done) {
+          it('must express object linkages as type and id for all relationship types', function(done) {
             var bookRouteHandler = bookController.read({
               one:true,
               responder: function(payload) {
@@ -385,26 +385,12 @@ describe('read', function() {
                 expect(payload.code).to.equal('200');
                 expect(links.author).to.have.property('type');
                 expect(links.author).to.have.property('id');
-                done();
-              }
-            });
-            readReq.query = { include: 'author' };
-            bookRouteHandler(readReq);
-          });
-
-          it('must express object linkages as type and ids for to-many relationships', function(done) {
-            // FIXME: This test isn't actually testing what it should
-            var bookRouteHandler = bookController.read({
-              one:true,
-              responder: function(payload) {
-                var links = payload.data.data.links;
-                expect(payload.code).to.equal('200');
                 expect(links.series).to.have.property('type');
                 expect(links.series).to.have.property('id');
                 done();
               }
             });
-            readReq.query = { include: 'series' };
+            readReq.query = { include: 'author,series' };
             bookRouteHandler(readReq);
           });
 

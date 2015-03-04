@@ -20,6 +20,6 @@ describe('bulkExtension', function() {
   });
 
   describe('deletingMultipleResources', function() {
-    it('must require a data member as an object with type and ids or an array of objects each with a type and id');
+    it('must require a data member as an object with type and id or an array of objects each with a type and id');
   });
 });
