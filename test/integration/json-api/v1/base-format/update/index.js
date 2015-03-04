@@ -142,7 +142,7 @@ describe('updatingResources', function() {
         type: 'books',
         title: 'tiddlywinks',
         links: {
-          stores: {type: 'stores', ids: ['1', '2']}
+          stores: {type: 'stores', id: ['1', '2']}
         }
       };
 
@@ -163,7 +163,7 @@ describe('updatingResources', function() {
               expect(secondRead.linked.length).to.equal(2);
               expect(payloadData.title).to.equal(updateData.title);
               expect(payloadData.date_published).to.equal(updateData.date_published);
-              expect(payloadLinks.stores.ids).to.deep.equal(updateLinks.stores.ids);
+              expect(payloadLinks.stores.id).to.deep.equal(updateLinks.stores.id);
               done();
             }
           })(readReq);
@@ -309,7 +309,7 @@ describe('updatingResources', function() {
         id: 1,
         type: 'books',
         links: {
-          stores: {type: 'stores', ids: ['1', '2']}
+          stores: {type: 'stores', id: ['1', '2']}
         }
       };
 
@@ -327,7 +327,7 @@ describe('updatingResources', function() {
               var updateLinks = updateData.links;
 
               expect(secondRead.linked.length).to.equal(2);
-              expect(payloadLinks.stores.ids).to.deep.equal(updateLinks.stores.ids);
+              expect(payloadLinks.stores.id).to.deep.equal(updateLinks.stores.id);
               done();
             }
           })(readReq);
@@ -352,7 +352,7 @@ describe('updatingResources', function() {
         id: 1,
         type: 'books',
         links: {
-          stores: {type: 'stores', ids: []}
+          stores: {type: 'stores', id: []}
         }
       };
 
@@ -370,7 +370,7 @@ describe('updatingResources', function() {
               var updateLinks = updateData.links;
 
               expect(secondRead).to.not.have.property('linked');
-              expect(payloadLinks.stores.ids).to.deep.equal(updateLinks.stores.ids);
+              expect(payloadLinks.stores.id).to.deep.equal(updateLinks.stores.id);
               done();
             }
           })(readReq);

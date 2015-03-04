@@ -6,7 +6,7 @@ exports.addCreate = function (source) {
     // this should be in a transaction but we don't have access to it yet
     return this.forge(params).save(null, {method: 'insert'}).tap(function (model) {
       return bPromise.map(toManyRels, function(rel) {
-        return model.related(rel.name).attach(rel.ids);
+        return model.related(rel.name).attach(rel.id);
       });
     }).then(function(model) {
       return this.forge({id:model.id}).fetch();
@@ -21,7 +21,7 @@ exports.addUpdate = function (source) {
     return this.save(params, {patch: true, method: 'update'}).tap(function (model) {
       return bPromise.map(toManyRels, function(rel) {
         return model.related(rel.name).detach().then(function() {
-          return model.related(rel.name).attach(rel.ids);
+          return model.related(rel.name).attach(rel.id);
         });
       });
     }).then(function(model) {

@@ -36,7 +36,7 @@ describe('link', function () {
     })).to.deep.equal({
       books: {
         type: 'books',
-        ids: booksByAuthorOne
+        id: booksByAuthorOne
       },
       self: '/authors/1'
     });

@@ -29,7 +29,7 @@ module.exports = function(model, params) {
       if (relationType === 'belongsToMany' || relationType === 'hasMany') {
         toManyRels.push({
           name: key,
-          ids: relations[key].ids
+          id: relations[key].id
         });
       }
 

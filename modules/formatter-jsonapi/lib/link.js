@@ -63,9 +63,7 @@ module.exports = function (model, opts) {
 
     if (Array.isArray(related.models) || Array.isArray(related)) {
       // if the related is an array, we have a hasMany relation
-      // and should serialize to an `ids` key rather than the `id`
-      // key
-      link.ids = related.reduce(function (result, model) {
+      link.id = related.reduce(function (result, model) {
         var id = String(model.id);
         // exclude nulls and duplicates, the point of a links
         // entry is to provide linkage to related resources,
@@ -81,7 +79,7 @@ module.exports = function (model, opts) {
         });
       }
     } else {
-      // for singular resources, store the id under `id`
+      // for singular resources
       link.id = String(related.id || null);
       if (exporter) {
         exporter(related, type);
