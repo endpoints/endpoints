@@ -20,7 +20,7 @@ describe('creatingResources', function() {
           links: {
             author: {type: 'authors', id: '1'},
             series: {type: 'series', id: '1'},
-            stores: {type: 'stores', ids: ['1']}
+            stores: {type: 'stores', id: ['1']}
           }
         }
       }
@@ -215,12 +215,12 @@ describe('creatingResources', function() {
                 var createLinks = createReq.body.data.links;
 
                 expect(readResult.linked.length).to.equal(1);
-                expect(readResult.linked[0].id).to.equal(createData.links.stores.ids[0]);
+                expect(readResult.linked[0].id).to.equal(createData.links.stores.id[0]);
                 expect(payloadData.title).to.equal(createData.title);
                 expect(payloadData.date_published).to.equal(createData.date_published);
                 expect(payloadLinks.author.id).to.equal(createLinks.author.id);
                 expect(payloadLinks.series.id).to.equal(createLinks.series.id);
-                expect(payloadLinks.stores.ids).to.deep.equal(createLinks.stores.ids);
+                expect(payloadLinks.stores.id).to.deep.equal(createLinks.stores.id);
                 done();
               }
             })(readReq);

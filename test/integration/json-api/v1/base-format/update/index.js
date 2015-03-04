@@ -142,7 +142,7 @@ describe('updatingResources', function() {
         type: 'books',
         title: 'tiddlywinks',
         links: {
-          stores: {type: 'stores', ids: ['1', '2']}
+          stores: {type: 'stores', id: ['1', '2']}
         }
       };
 
@@ -163,7 +163,7 @@ describe('updatingResources', function() {
               expect(secondRead.linked.length).to.equal(2);
               expect(payloadData.title).to.equal(updateData.title);
               expect(payloadData.date_published).to.equal(updateData.date_published);
-              expect(payloadLinks.stores.ids).to.deep.equal(updateLinks.stores.ids);
+              expect(payloadLinks.stores.id).to.deep.equal(updateLinks.stores.id);
               done();
             }
           })(readReq);
@@ -293,7 +293,7 @@ describe('updatingResources', function() {
   // A server MAY reject an attempt to do a full replacement of a to-many relationship. In such a case, the server MUST reject the entire update, and return a 403 Forbidden response.
   // Note: Since full replacement may be a very dangerous operation, a server may choose to disallow it. A server may reject full replacement if it has not provided the client with the full list of associated objects, and does not want to allow deletion of records the client has not seen.
   describe('updatingResourceToManyRelationships', function() {
-    it('must update homogeneous to-Many relationship with an object with type and ids members under links', function(done) {
+    it('must update homogeneous to-Many relationship with an object with type and id members under links', function(done) {
       var readReq = {
         params: {
           id: 1
@@ -309,7 +309,7 @@ describe('updatingResources', function() {
         id: 1,
         type: 'books',
         links: {
-          stores: {type: 'stores', ids: ['1', '2']}
+          stores: {type: 'stores', id: ['1', '2']}
         }
       };
 
@@ -327,7 +327,7 @@ describe('updatingResources', function() {
               var updateLinks = updateData.links;
 
               expect(secondRead.linked.length).to.equal(2);
-              expect(payloadLinks.stores.ids).to.deep.equal(updateLinks.stores.ids);
+              expect(payloadLinks.stores.id).to.deep.equal(updateLinks.stores.id);
               done();
             }
           })(readReq);
@@ -336,7 +336,7 @@ describe('updatingResources', function() {
       bookRouteHandler(_.cloneDeep(updateReq));
     });
 
-    it('must attempt to remove to-Many relationships with an the ids member of the data object set to []', function(done) {
+    it('must attempt to remove to-Many relationships with the id member of the data object set to []', function(done) {
       var readReq = {
         params: {
           id: 1
@@ -352,7 +352,7 @@ describe('updatingResources', function() {
         id: 1,
         type: 'books',
         links: {
-          stores: {type: 'stores', ids: []}
+          stores: {type: 'stores', id: []}
         }
       };
 
@@ -370,7 +370,7 @@ describe('updatingResources', function() {
               var updateLinks = updateData.links;
 
               expect(secondRead).to.not.have.property('linked');
-              expect(payloadLinks.stores.ids).to.deep.equal(updateLinks.stores.ids);
+              expect(payloadLinks.stores.id).to.deep.equal(updateLinks.stores.id);
               done();
             }
           })(readReq);

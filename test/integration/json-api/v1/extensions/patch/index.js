@@ -31,7 +31,7 @@ describe('patchExtension', function() {
 
       describe('updatingToManyRelationships', function() {
         it('should update to-many relationships in a PATCH operation');
-        it('must require a "value" member be an object that contains type and ids members or an array of objects with type and id members');
+        it('must require a "value" member be an object that contains type and id members or an array of objects with type and id members');
         it('must completely replace every member of a relationship on a "replace" operation OR return 403 Forbidden if not allowed by the server');
       });
     });
