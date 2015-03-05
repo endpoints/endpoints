@@ -11,8 +11,9 @@ module.exports = function (opts) {
   return function (request, response, next) {
     var err;
     var validators = [verifyAccept];
+    var hasBody = Object.keys(request.body).length > 0;
 
-    if (request.body) {
+    if (hasBody) {
       validators = validators.concat([verifyContentType, verifyDataObject]);
     }
 
