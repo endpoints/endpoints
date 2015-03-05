@@ -68,8 +68,10 @@ Source.prototype.create = function (method, params) {
   if (!params) {
     params = {};
   }
-  var destructured = destructureRequest(this.model.forge(), params);
-  return this.model[method](destructured.data, destructured.toManyRels);
+  var self = this;
+  return destructureRequest(this.model.forge(), params).then(function(destructured) {
+    return self.model[method](destructured.data, destructured.toManyRels);
+  });
 };
 
 Source.prototype.read = function (opts) {
@@ -98,8 +100,9 @@ Source.prototype.destroy = function (model, method, params) {
   if (!method) {
     throw new Error('No method provided to update or delete with.');
   }
-  var destructured = destructureRequest(model, params);
-  return model[method](destructured.data, destructured.toManyRels, model.toJSON({shallow: true}));
+  return destructureRequest(model, params).then(function(destructured) {
+    return model[method](destructured.data, destructured.toManyRels, model.toJSON({shallow: true}));
+  });
 };
 
 module.exports = Source;

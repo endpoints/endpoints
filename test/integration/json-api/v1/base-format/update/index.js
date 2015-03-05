@@ -432,7 +432,43 @@ describe('updatingResources', function() {
         bookRouteHandler(updateReq);
       });
 
-      it('must return 404 Not Found when processing a request that references a related resource that does not exist');
+      it('must return 404 Not Found when processing a request that references a to-One related resource that does not exist', function(done) {
+        var updateData = {
+          id: 1,
+          type: 'books',
+          links: {
+            author: {type: 'authors', id: '9999'},
+          }
+        };
+        updateReq.body.data = updateData;
+
+        var bookRouteHandler = bookController.update({
+          responder: function(payload) {
+            expect(payload.code).to.equal('404');
+            done();
+          }
+        });
+        bookRouteHandler(_.cloneDeep(updateReq));
+      });
+
+      it('must return 404 Not Found when processing a request that references a to-Many related resource that does not exist', function(done) {
+        var updateData = {
+          id: 1,
+          type: 'books',
+          links: {
+          stores: {type: 'stores', id: ['9999']}
+          }
+        };
+        updateReq.body.data = updateData;
+
+        var bookRouteHandler = bookController.update({
+          responder: function(payload) {
+            expect(payload.code).to.equal('404');
+            done();
+          }
+        });
+        bookRouteHandler(_.cloneDeep(updateReq));
+      });
     });
 
     describe('409Conflict', function() {
