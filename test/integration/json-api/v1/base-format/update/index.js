@@ -596,8 +596,80 @@ describe('updatingRelationships', function() {
   });
 
   describe('updatingToManyRelationships', function() {
-    it('must respond to PATCH, POST, and DELETE requests to a to-many relationship URL');
-    it('must require a top-level data member containing either an object with type and id members or an array of such objects');
+    // /books/1/stores
+    it('must update relationships with a PATCH request to a to-one relationship URL containing a data object with type and id members  and return 204 No Content on success', function(done) {
+      var readReq = {
+        params: {
+          id: 1
+        },
+        headers: {
+          'accept': 'application/vnd.api+json'
+        },
+        query: {
+          include: 'stores'
+        }
+      };
+
+      updateReq.params.relation = 'stores';
+      updateReq.body.data = {
+        'type': 'stores',
+        'id': ['1', '2']
+      };
+      var bookRouteHandler = bookController.update({
+        responder: function(payload) {
+          expect(payload.code).to.equal('204');
+
+          bookController.read({
+            responder: function(payload) {
+              var payloadLinks = payload.data.data[0].links;
+              expect(payload.data).to.have.property('included');
+              expect(payloadLinks.stores.id).to.deep.equal(updateReq.body.data.id);
+              done();
+            }
+          })(readReq);
+        }
+      });
+      bookRouteHandler(_.cloneDeep(updateReq));
+    });
+
+    it('must remove relationships with a PATCH request to a to-one relationship URL containing a data object with a null value and return 204 No Content on success', function(done) {
+      var readReq = {
+        params: {
+          id: 1
+        },
+        headers: {
+          'accept': 'application/vnd.api+json'
+        },
+        query: {
+          include: 'stores'
+        }
+      };
+
+      updateReq.params.relation = 'stores';
+      updateReq.body.data = {
+        type: 'stores',
+        id: []
+      };
+
+      var bookRouteHandler = bookController.update({
+        responder: function(payload) {
+          expect(payload.code).to.equal('204');
+
+          bookController.read({
+            responder: function(payload) {
+              var payloadLinks = payload.data.data[0].links;
+              expect(payload.data).to.not.have.property('included');
+              expect(payloadLinks.stores.id).to.deep.equal(updateReq.body.data.id);
+              done();
+            }
+          })(readReq);
+        }
+      });
+      bookRouteHandler(_.cloneDeep(updateReq));
+    });
+    it('must respond to POST requests to a to-many relationship URL');
+    it('must respond to DELETE requests to a to-many relationship URL');
+    it('must require a top-level data member containing either an object with type and id members');
     it('must completely replace every member of the relationship on a PATCH request if allowed');
     it('must return an appropriate error if some resources cannot be found or accessed');
     it('must return a 403 Forbidden if complete replacement is not allowed by the server');
