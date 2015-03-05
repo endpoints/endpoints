@@ -47,7 +47,8 @@ const classProps = {
     'author',
     'series',
     'stores',
-    'author.books'
+    'author.books',
+    'stores.books'
   ]
 };
 
