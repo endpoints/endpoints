@@ -5,6 +5,14 @@ module.exports = function(source, opts, request) {
   return source.byId(request.params.id, relation).
     then(throwIfNoModel).
     then(function (model) {
-      return model.related(relation);
+      var result = model.related(relation);
+      if (result.length) {
+        // opts.typeName at the moment is the sourceType NOT the related type.
+        opts.typeName = result.models[0].constructor.typeName;
+      } else {
+        opts.typeName = result.constructor.typeName;
+      }
+      result.sourceOpts = opts;
+      return result;
     });
 };

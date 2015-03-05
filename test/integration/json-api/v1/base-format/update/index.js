@@ -489,8 +489,15 @@ describe('updatingResources', function() {
   });
 });
 
+// Many of these tests should be route tests, but we will test the associated
+// API calls for endpoints.
 describe('updatingRelationships', function() {
-  it('should respond to requests to links it sets as relationship URLs');
+
+  // Let's take as given that to-One relationship URLs work (e.g. /authors/1)
+  // This functionality is part of the standard `read` suite.
+
+  it('should respond to requests to links it sets as to-Many relationship URLs');
+  it('should respond to requests to links it sets as nested relationship URLs');
 
   describe('updatingToOneRelationships', function() {
     it('must respond to PUT request to a to-one relationship URL');
@@ -513,11 +520,9 @@ describe('updatingRelationships', function() {
 
   describe('responses', function() {
 
-    // Endpoints will respond with a 200 on all create requests
-    // Tested above.
-    // describe('204NoContent', function() {
-    //   it('must return 204 No Content if the update is successful and the attributes remain up to date');
-    // });
+    describe('204NoContent', function() {
+      it('must return 204 No Content if the update is successful and the attributes remain up to date');
+    });
 
     // API decision to not create the route - endpoints will always support updating
     // describe('403Forbidden', function() {

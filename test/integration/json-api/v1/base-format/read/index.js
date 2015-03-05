@@ -334,6 +334,36 @@ describe('read', function() {
           bookRouteHandler(readReq);
         });
 
+        it('should return related resources as the response primary data when a to-One string URL is fetched', function(done) {
+          // /books/1/author
+          readReq.params.relation = 'author';
+          var bookRouteHandler = bookController.readRelation({
+            responder: function(payload) {
+              var dataObj = payload.data.data;
+              expect(dataObj.id).to.equal('1');
+              expect(dataObj.type).to.equal('authors');
+              done();
+            }
+          });
+          bookRouteHandler(readReq);
+        });
+
+        it('should return related resources as the response primary data when a to-Many string URL is fetched', function(done) {
+          // /books/1/stores
+          readReq.params.relation = 'stores';
+          var bookRouteHandler = bookController.readRelation({
+            responder: function(payload) {
+              var dataObj = payload.data.data;
+              expect(dataObj.length).to.equal(1);
+              expect(dataObj[0].type).to.equal('stores');
+              done();
+            }
+          });
+          bookRouteHandler(readReq);
+        });
+
+        it('should return related resources as the response primary data when a nested string URL is fetched');
+
         describe('stringURLRelationship', function() {
           // TODO: implement
           it('should not change related URL even when the resource changes');
