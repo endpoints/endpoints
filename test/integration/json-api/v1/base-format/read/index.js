@@ -362,7 +362,31 @@ describe('read', function() {
           bookRouteHandler(readReq);
         });
 
-        it('should return related resources as the response primary data when a nested string URL is fetched');
+        it('should return related resources as the response primary data when a nested string URL through a to-One is fetched', function(done) {
+          // /books/1/author.books
+          readReq.params.relation = 'author.books';
+          var bookRouteHandler = bookController.readRelation({
+            responder: function(payload) {
+              expect(payload.data.data.length).to.equal(4);
+              expect(payload.data.data[0].type).to.equal('books');
+              done();
+            }
+          });
+          bookRouteHandler(readReq);
+        });
+
+        it('should return related resources as the response primary data when a nested string URL through a to-Many is fetched', function(done) {
+          // /books/1/stores.books
+          readReq.params.relation = 'stores.books';
+          var bookRouteHandler = bookController.readRelation({
+            responder: function(payload) {
+              expect(payload.data.data.length).to.equal(11);
+              expect(payload.data.data[0].type).to.equal('books');
+              done();
+            }
+          });
+          bookRouteHandler(readReq);
+        });
 
         describe('stringURLRelationship', function() {
           // TODO: implement
