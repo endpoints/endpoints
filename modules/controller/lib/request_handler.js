@@ -10,8 +10,19 @@ module.exports = function (opts) {
 
   return function (request, response, next) {
     var err;
+    var requestData;
     var validators = [verifyAccept];
     var hasBody = request.body && Object.keys(request.body).length > 0;
+
+    if (opts.method === 'update' && request.params.relation) {
+      requestData = {
+        type: opts.typeName,
+        links: {}
+      };
+      requestData.links[request.params.relation] = request.body.data;
+      request.body.data = requestData;
+      opts.relationOnly = true;
+    }
 
     if (hasBody) {
       validators = validators.concat([verifyContentType, verifyDataObject]);

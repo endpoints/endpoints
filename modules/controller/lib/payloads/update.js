@@ -10,7 +10,7 @@ module.exports = function (errs, data, opts) {
     return errorPayload(errs, 422);
   }
 
-  if (data) {
+  if (data && !opts.relationOnly) {
     return {
       code: '200',
       data: jsonApi(data, opts)

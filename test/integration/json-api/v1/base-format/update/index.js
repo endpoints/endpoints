@@ -529,14 +529,68 @@ describe('updatingResources', function() {
 // API calls for endpoints.
 describe('updatingRelationships', function() {
 
-  // Let's take as given that to-One relationship URLs work (e.g. /authors/1)
-  // This functionality is part of the standard `read` suite.
-
-  it('should respond to requests to links it sets as to-Many relationship URLs');
-  it('should respond to requests to links it sets as nested relationship URLs');
-
   describe('updatingToOneRelationships', function() {
-    it('must respond to PATCH request to a to-one relationship URL');
+    // /books/1/author
+    it('must update relationships with a PATCH request to a to-one relationship URL containing a data object with type and id members  and return 204 No Content on success', function(done) {
+      var readReq = {
+        params: {
+          id: 1
+        },
+        headers: {
+          'accept': 'application/vnd.api+json'
+        }
+      };
+
+      updateReq.params.relation = 'author';
+      updateReq.body.data = {
+        'type': 'authors',
+        'id': '2'
+      };
+      var bookRouteHandler = bookController.update({
+        responder: function(payload) {
+          expect(payload.code).to.equal('204');
+
+          bookController.read({
+            responder: function(payload) {
+              var payloadLinks = payload.data.data[0].links;
+              expect(payloadLinks.author.id).to.equal('2');
+              done();
+            }
+          })(readReq);
+        }
+      });
+      bookRouteHandler(updateReq);
+    });
+
+    it('must remove relationships with a PATCH request to a to-one relationship URL containing a data object with a null value and return 204 No Content on success', function(done) {
+      var readReq = {
+        params: {
+          id: 1
+        },
+        headers: {
+          'accept': 'application/vnd.api+json'
+        }
+      };
+
+      updateReq.params.relation = 'series';
+      updateReq.body.data = null;
+
+      var bookRouteHandler = bookController.update({
+        responder: function(payload) {
+          expect(payload.code).to.equal('204');
+
+          bookController.read({
+            responder: function(payload) {
+              var payloadLinks = payload.data.data[0].links;
+              expect(payloadLinks.series.id).to.equal('null');
+              done();
+            }
+          })(readReq);
+        }
+      });
+      bookRouteHandler(_.cloneDeep(updateReq));
+    });
+
     it('must require a top-level data member containing either an object with type and id members or null');
     it('must return a 204 No Content on a successful PATCH request');
   });
