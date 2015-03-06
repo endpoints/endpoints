@@ -1,3 +1,4 @@
+// FIXME: Possible changes here: https://github.com/json-api/json-api/commit/01ce3454602e394b078303b8853d725b7981c472
 const expect = require('chai').expect;
 const _ = require('lodash');
 

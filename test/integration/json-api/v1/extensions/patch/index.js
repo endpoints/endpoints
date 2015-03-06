@@ -1,3 +1,5 @@
+// FIXME: This has changed: https://github.com/json-api/json-api/commit/663ad0977d9e8786a28be259b12f0a17cb0987da
+// FIXME: More changes: https://github.com/json-api/json-api/commit/01ce3454602e394b078303b8853d725b7981c472
 describe('patchExtension', function() {
   it('should indicate support for the patch extension by including the header Content-Type application/vnd.api+json; ext=patch in every response');
   it('should allow the client to request the patch extension by specifying the header Accept:application/vnd.api+json; ext=patch');

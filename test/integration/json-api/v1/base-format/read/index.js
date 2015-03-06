@@ -7,6 +7,8 @@ const bookController = require('../../../../../fixtures/controllers/books');
 var req = require('../../../../../fixtures/mocks/express_request');
 var readReq;
 
+// FIXME: New Fetch Requirements: https://github.com/json-api/json-api/compare/2bc4a9c0687a...01dcadedbdfa
+// FIXME: Response Changes: https://github.com/json-api/json-api/commit/74d89312280f1b37e32a376a1e7d71ef7aaa7795
 describe('read', function() {
 
   beforeEach(function() {
@@ -268,6 +270,8 @@ describe('read', function() {
           bookRouteHandler(readReq);
         });
 
+        // FIXME: Additional option: https://github.com/json-api/json-api/commit/110cc87bd069d8d2ee590f1b1199af3c9316ee58
+
         // TODO: API TEST
         // it('must respond to a get request to any `self` url with the resource as primary data');
       });
@@ -413,6 +417,7 @@ describe('read', function() {
             bookRouteHandler(readReq);
           });
 
+          // FIXME: https://github.com/json-api/json-api/compare/7f6bc3210798...f4bcd93f4672
           it('must include object linkage to resource objects included in the same compound document', function(done) {
             var bookRouteHandler = bookController.read({
               one:true,

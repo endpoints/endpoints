@@ -1,3 +1,4 @@
+// FIXME: This has changed: https://github.com/json-api/json-api/commit/663ad0977d9e8786a28be259b12f0a17cb0987da
 describe('extensions', function () {
 
   it('must require relevant extensions in the content-type header');
