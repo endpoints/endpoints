@@ -23,7 +23,8 @@ describe('creatingResources', function() {
             stores: {type: 'stores', id: ['1']}
           }
         }
-      }
+      },
+      params: {}
     });
     return DB.reset();
   });
@@ -208,6 +209,8 @@ describe('creatingResources', function() {
             };
             bookController.read({
               responder: function(payload) {
+                // halp
+                console.log(JSON.stringify(payload, false, 2));
                 var readResult = payload.data;
                 var payloadData = readResult.data[0];
                 var payloadLinks = payloadData.links;

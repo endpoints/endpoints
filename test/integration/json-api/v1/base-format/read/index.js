@@ -17,7 +17,9 @@ describe('read', function() {
       // all of this should work without the content-type
       headers: {
         'accept': 'application/vnd.api+json'
-      }
+      },
+      query: {},
+      body: {}
     });
     return DB.reset();
   });
@@ -47,7 +49,9 @@ describe('read', function() {
             }
           });
           bookRouteHandler(req({
-            params: {}
+            params: {},
+            query: {},
+            body: {}
           }));
         });
       });
@@ -86,7 +90,7 @@ describe('read', function() {
             done();
           }
         });
-        bookRouteHandler(readReq);
+        bookRouteHandler({headers:{'accept': 'application/vnd.api+json'}, params: {}, body:{}});
       });
 
       it('must not include any top-level members other than "data," "meta," "links," or "included"', function(done) {
@@ -337,7 +341,7 @@ describe('read', function() {
         it('should return related resources as the response primary data when a to-One string URL is fetched', function(done) {
           // /books/1/author
           readReq.params.relation = 'author';
-          var bookRouteHandler = bookController.readRelation({
+          var bookRouteHandler = bookController.read({
             responder: function(payload) {
               var dataObj = payload.data.data;
               expect(dataObj.id).to.equal('1');
@@ -351,7 +355,7 @@ describe('read', function() {
         it('should return related resources as the response primary data when a to-Many string URL is fetched', function(done) {
           // /books/1/stores
           readReq.params.relation = 'stores';
-          var bookRouteHandler = bookController.readRelation({
+          var bookRouteHandler = bookController.read({
             responder: function(payload) {
               var dataObj = payload.data.data;
               expect(dataObj.length).to.equal(1);
@@ -365,7 +369,7 @@ describe('read', function() {
         it('should return related resources as the response primary data when a nested string URL through a to-One is fetched', function(done) {
           // /books/1/author.books
           readReq.params.relation = 'author.books';
-          var bookRouteHandler = bookController.readRelation({
+          var bookRouteHandler = bookController.read({
             responder: function(payload) {
               expect(payload.data.data.length).to.equal(4);
               expect(payload.data.data[0].type).to.equal('books');
@@ -378,7 +382,7 @@ describe('read', function() {
         it('should return related resources as the response primary data when a nested string URL through a to-Many is fetched', function(done) {
           // /books/1/stores.books
           readReq.params.relation = 'stores.books';
-          var bookRouteHandler = bookController.readRelation({
+          var bookRouteHandler = bookController.read({
             responder: function(payload) {
               expect(payload.data.data.length).to.equal(11);
               expect(payload.data.data[0].type).to.equal('books');
@@ -558,7 +562,7 @@ describe('read', function() {
     });
 
     describe('sparseFieldsets', function() {
-      it('should support returning **only** specific fields in the response on a per-type basis by including a fields[TYPE] parameter', function(done) {
+      it.skip('should support returning **only** specific fields in the response on a per-type basis by including a fields[TYPE] parameter', function(done) {
         var bookRouteHandler = bookController.read({
           responder: function(payload) {
             var dataObj = payload.data.data[0];
@@ -581,7 +585,7 @@ describe('read', function() {
             done();
           }
         });
-        delete readReq.params;
+        readReq.params = {};
         readReq.query = {
           sort: '+title'
         };
@@ -595,7 +599,7 @@ describe('read', function() {
             done();
           }
         });
-        delete readReq.params;
+        readReq.params = {};
         readReq.query = {
           sort: '+author.name'
         };
@@ -606,7 +610,7 @@ describe('read', function() {
         var bookRouteHandler = bookController.read({
           responder: function(payload) {
             expect(payload.data.data[0].title).to.equal('Harry Potter and the Chamber of Secrets');
-
+            readReq.params = {};
             readReq.query = {
               sort: '-date_published,+title'
             };
@@ -619,7 +623,7 @@ describe('read', function() {
             done();
           }
         });
-        delete readReq.params;
+        readReq.params = {};
         readReq.query = {
           sort: '+title,-date_published'
         };
@@ -633,7 +637,7 @@ describe('read', function() {
             done();
           }
         });
-        delete readReq.params;
+        readReq.params = {};
         readReq.query = {
           sort: '-title'
         };
@@ -661,7 +665,7 @@ describe('read', function() {
             done();
           }
         });
-        delete readReq.params;
+        readReq.params = {};
         readReq.query = {
           filter: {
             date_published: '2000-07-08,1937-09-21'
