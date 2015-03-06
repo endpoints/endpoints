@@ -99,21 +99,18 @@ describe('deletingResources', function() {
         });
         bookRouteHandler(destroyReq);
       });
-    });
 
-    // FIXME: No longer required: https://github.com/json-api/json-api/commit/e5021bfb355dc3da498888a4378f8339ef45a531
-    // describe('404NotFound', function() {
-    //   it('must return 404 Not Found when processing a request to delete a resource that does not exist', function(done) {
-    //     destroyReq.params.id = 9999;
-    //     var bookRouteHandler = bookController.destroy({
-    //       responder: function(payload) {
-    //         expect(payload.code).to.equal('404');
-    //         done();
-    //       }
-    //     });
-    //     bookRouteHandler(destroyReq);
-    //   });
-    // });
+      it('must return 204 No Content when processing a request to delete a resource that does not exist', function(done) {
+        destroyReq.params.id = 9999;
+        var bookRouteHandler = bookController.destroy({
+          responder: function(payload) {
+            expect(payload.code).to.equal('204');
+            done();
+          }
+        });
+        bookRouteHandler(destroyReq);
+      });
+    });
 
     // Not testable as written. Each error handling branch should be
     // unit-tested for proper HTTP semantics.
