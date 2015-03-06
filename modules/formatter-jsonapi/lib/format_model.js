@@ -3,11 +3,11 @@ const _ = require('lodash');
 const toOneRelations = require('./to_one_relations');
 const link = require('./link');
 
-module.exports = function formatModel(opts, exporter, model) {
+module.exports = function formatModel(relations, exporter, model) {
   // get the underlying model type
-  var typeName = opts.typeName;
+  var typeName = model.constructor.typeName;
   // get the list of relations we intend to include (sideload)
-  var linkWithInclude = opts.relations || [];
+  var linkWithInclude = relations;
   // get all possible relations for the model
   var allRelations = model.constructor.relations;
   // of all listed relations, determine which are toOne relations

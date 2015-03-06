@@ -56,12 +56,12 @@ module.exports = function (model, opts) {
   // resources to the top level "included" object
   linkWithIncludes.reduce(function (result, relationName) {
     var related = relate(model, relationName);
-    var type = related.type;
+    var type = related.model ? related.model.typeName : related.constructor.typeName;
     var link = {
-      type: related.type
+      type: type
     };
 
-    if (Array.isArray(related.models) || Array.isArray(related)) {
+    if (related.models) {
       // if the related is an array, we have a hasMany relation
       link.id = related.reduce(function (result, model) {
         var id = String(model.id);

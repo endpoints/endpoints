@@ -25,7 +25,6 @@ describe('formatter-jsonapi', function () {
     return DB.reset();
   });
 
-
   it('should accept a model and return an object', function(done) {
     BooksSource.create('create', {
       author_id:1,
@@ -46,7 +45,7 @@ describe('formatter-jsonapi', function () {
   });
 
   it('should accept a single-item collection and return an object', function(done) {
-    opts.one = true;
+    opts.singleResult = true;
     BooksSource.read().then(function(books) {
       var coll = BooksModel.collection([books.at(0)]);
       expect(coll.length).to.equal(1);
