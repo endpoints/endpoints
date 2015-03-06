@@ -1,4 +1,3 @@
-// FIXME: This has changed: https://github.com/json-api/json-api/commit/663ad0977d9e8786a28be259b12f0a17cb0987da
 describe('extensions', function () {
 
   it('must require relevant extensions in the content-type header');
@@ -24,8 +23,8 @@ describe('extensions', function () {
   });
 
   describe('customExtensions', function() {
-    it('should be specified using the ext media type parameter');
-    it('should have its ext media type be prefixed with a unique identifier for the organization');
+    it('should be specified using the supported-ext media type parameter');
+    it('should prefix its supported-ext media type with a unique identifier for the organization');
   });
 
   describe('profiles', function() {
