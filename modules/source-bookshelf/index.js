@@ -5,6 +5,12 @@ const processFilter = require('./lib/process_filter');
 const processSort = require('./lib/process_sort');
 const destructureRequest = require('./lib/destructure_request_data');
 
+// FIXME: decide if this responsibility lives in the source or
+// in the formatter. i think source? this would mean a wholesale
+// refactoring of the jsonapi formatter to work with sources
+// rather than bookshelf models. that might make a lot of sense.
+const relate = require('../formatter-jsonapi/lib/relate');
+
 function Source (opts) {
   if (!opts) {
     opts = {};
@@ -51,6 +57,30 @@ Source.prototype.typeName = function () {
   return this.model.typeName;
 };
 
+// this method should return the models related to a given model.
+// this is to allow requests like /authors/1/books?filter[thing]=x
+// due to deficiencies in bookshelf, we basically wind up querying
+// for this same data twice because we can't build the correct
+// query up front.
+// this will be resolved in a future version of bookshelf
+Source.prototype.related = function (opts, relation, model) {
+  var related = relate(model, relation);
+  var relatedModel, relatedIds;
+  if (related.length) {
+    relatedModel = related.model;
+    relatedIds = related.map(function (m) { return m.id; });
+  } else {
+    relatedModel = related.constructor;
+    relatedIds = related.id;
+  }
+  opts.filter.id = opts.filter.id ? opts.filter.id : relatedIds;
+  // this is some terrible bullshit right here
+  var relatedSource = new this.constructor({
+    model: relatedModel
+  });
+  return relatedSource.read(opts);
+};
+
 // not in love with this new method signature, it differs from the rest a lot.
 Source.prototype.byId = function (id, relations) {
   relations = relations || [];
@@ -79,18 +109,19 @@ Source.prototype.read = function (opts) {
     opts = {};
   }
   var self = this;
-  var model = self.model;
+  var model = this.model;
+
   return model.collection().query(function (qb) {
     qb = processFilter(model, qb, opts.filter);
     qb = processSort(self, qb, opts.sort);
   }).fetch({
-
     // adding this in the queryBuilder changes the qb, but fetch still
     // returns all columns
-    columns: opts.fields ? opts.fields[self.typeName()] : undefined,
+    columns: opts.fields ? opts.fields[this.typeName()] : undefined,
     withRelated: _.intersection(this.relations(), opts.include || [])
   }).then(function (result) {
-    result.sourceOpts = opts;
+    result.relations = opts.include;
+    result.singleResult = opts.filter && opts.filter.id && !Array.isArray(opts.filter.id);
     return result;
   });
 };
