@@ -42,7 +42,7 @@ describe('link', function () {
     });
   });
 
-  it('should call exporter for each linked model', function () {
+  it('should call exporter for each included model', function () {
     var spy = sinon.spy();
     link(authorsModel, {
       linkWithInclude: ['books'],

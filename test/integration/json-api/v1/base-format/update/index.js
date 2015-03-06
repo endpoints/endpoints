@@ -62,8 +62,8 @@ describe('updatingResources', function() {
     bookRouteHandler(updateReq);
   });
 
-  it('must not include any top-level members other than "data," "meta," "links," or "linked"', function(done) {
-    var allowedTopLevel = ['data', 'linked', 'links', 'meta'];
+  it('must not include any top-level members other than "data," "meta," "links," or "included"', function(done) {
+    var allowedTopLevel = ['data', 'included', 'links', 'meta'];
     var bookRouteHandler = bookController.update({
       responder: function(payload) {
         expect(payload.code).to.equal('200');
@@ -160,7 +160,7 @@ describe('updatingResources', function() {
               var payloadLinks = payloadData.links;
               var updateLinks = updateData.links;
 
-              expect(secondRead.linked.length).to.equal(2);
+              expect(secondRead.included.length).to.equal(2);
               expect(payloadData.title).to.equal(updateData.title);
               expect(payloadData.date_published).to.equal(updateData.date_published);
               expect(payloadLinks.stores.id).to.deep.equal(updateLinks.stores.id);
@@ -193,7 +193,7 @@ describe('updatingResources', function() {
               var secondRead = payload.data;
               var secondReadData = secondRead.data[0];
               var firstReadData = firstRead.data[0];
-              expect(secondRead.linked).to.deep.equal(firstRead.linked);
+              expect(secondRead.included).to.deep.equal(firstRead.included);
               expect(secondReadData.title).to.not.equal(firstReadData.title);
               expect(secondReadData.date_published).to.equal(firstReadData.date_published);
               expect(secondReadData.links).to.deep.equal(firstReadData.links);
@@ -326,7 +326,7 @@ describe('updatingResources', function() {
               var payloadLinks = secondRead.data[0].links;
               var updateLinks = updateData.links;
 
-              expect(secondRead.linked.length).to.equal(2);
+              expect(secondRead.included.length).to.equal(2);
               expect(payloadLinks.stores.id).to.deep.equal(updateLinks.stores.id);
               done();
             }
@@ -369,7 +369,7 @@ describe('updatingResources', function() {
               var payloadLinks = secondRead.data[0].links;
               var updateLinks = updateData.links;
 
-              expect(secondRead).to.not.have.property('linked');
+              expect(secondRead).to.not.have.property('included');
               expect(payloadLinks.stores.id).to.deep.equal(updateLinks.stores.id);
               done();
             }

@@ -26,7 +26,7 @@ describe('formatModel', function () {
       title: 'test book',
       date_published: '2015-02-01'
     }).then(function(book) {
-      var seed = {linked:{}};
+      var seed = {included:{}};
       var formatted = formatModel(seed, book, opts);
       var flatBook = book.toJSON();
       expect(seed.data).to.be.an('Array');

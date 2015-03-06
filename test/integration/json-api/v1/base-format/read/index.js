@@ -89,8 +89,8 @@ describe('read', function() {
         bookRouteHandler(readReq);
       });
 
-      it('must not include any top-level members other than "data," "meta," "links," or "linked"', function(done) {
-        var allowedTopLevel = ['data', 'linked', 'links', 'meta'];
+      it('must not include any top-level members other than "data," "meta," "links," or "included"', function(done) {
+        var allowedTopLevel = ['data', 'included', 'links', 'meta'];
         var bookRouteHandler = bookController.read({
           responder: function(payload) {
             expect(payload.code).to.equal('200');
@@ -125,7 +125,7 @@ describe('read', function() {
           bookRouteHandler(readReq);
         });
 
-        it('must include relations as linked resources', function(done) {
+        it('must include relations as included resources', function(done) {
           var bookRouteHandler = bookController.read({
             one:true,
             filters: {
@@ -398,13 +398,13 @@ describe('read', function() {
             var bookRouteHandler = bookController.read({
               one:true,
               responder: function(payload) {
-                var linkedAuthor = payload.data.data.links.author;
+                var includedAuthor = payload.data.data.links.author;
                 var minProp =
-                  linkedAuthor.self ||
-                  linkedAuthor.resource ||
-                  linkedAuthor.meta ||
-                  linkedAuthor.data ||
-                  (linkedAuthor.type && linkedAuthor.id);
+                  includedAuthor.self ||
+                  includedAuthor.resource ||
+                  includedAuthor.meta ||
+                  includedAuthor.data ||
+                  (includedAuthor.type && includedAuthor.id);
                 expect(payload.code).to.equal('200');
                 expect(minProp).to.exist;
                 done();
@@ -417,10 +417,10 @@ describe('read', function() {
             var bookRouteHandler = bookController.read({
               one:true,
               responder: function(payload) {
-                var linkedAuthor = payload.data.data.links.author;
+                var includedAuthor = payload.data.data.links.author;
                 var objectLinkage =
-                  linkedAuthor.data ||
-                  (linkedAuthor.type && linkedAuthor.id);
+                  includedAuthor.data ||
+                  (includedAuthor.type && includedAuthor.id);
 
                 expect(payload.code).to.equal('200');
                 expect(objectLinkage).to.exist;
@@ -455,24 +455,24 @@ describe('read', function() {
     });
 
     describe('compoundDocuments', function() {
-      // An endpoint **MAY** return resources linked to the primary data
+      // An endpoint **MAY** return resources included to the primary data
       // by default.
       //
       // Endpoints handles this by allowing the API implementer to set
       // default includes in the router. Endpoints will not include
-      // linked resources by default.
+      // included resources by default.
       //
-      // An endpoint MAY also support custom inclusion of linked
+      // An endpoint MAY also support custom inclusion of included
       // resources based upon an include request parameter.
-      it('must include linked resources as an array of resource objects in a top level `linked` member', function(done) {
+      it('must include included resources as an array of resource objects in a top level `included` member', function(done) {
         var bookRouteHandler = bookController.read({
           one:true,
           responder: function(payload) {
-            var linkedAuthor = payload.data.data.links.author;
+            var includedAuthor = payload.data.data.links.author;
             expect(payload.code).to.equal('200');
-            expect(payload.data.linked).to.not.have.property('authors');
-            expect(payload.data.linked[0].type).to.equal(linkedAuthor.type);
-            expect(payload.data.linked[0].id).to.equal(linkedAuthor.id);
+            expect(payload.data.included).to.not.have.property('authors');
+            expect(payload.data.included[0].type).to.equal(includedAuthor.type);
+            expect(payload.data.included[0].id).to.equal(includedAuthor.id);
             done();
           }
         });
@@ -484,7 +484,7 @@ describe('read', function() {
         var bookRouteHandler = bookController.read({
           responder: function(payload) {
             expect(payload.code).to.equal('200');
-            expect(payload.data.linked.length).to.equal(2);
+            expect(payload.data.included.length).to.equal(2);
             done();
           }
         });
@@ -497,14 +497,14 @@ describe('read', function() {
       });
     });
 
-    it('must not include other resource objects in the linked section when the client specifies an include parameter', function(done) {
+    it('must not include other resource objects in the included section when the client specifies an include parameter', function(done) {
       var bookRouteHandler = bookController.read({
         one:true,
         include: ['series'],
         responder: function(payload) {
-          var linkedTypes = _.pluck(payload.data.linked, 'type');
+          var includedTypes = _.pluck(payload.data.included, 'type');
           expect(payload.code).to.equal('200');
-          expect(linkedTypes.indexOf('series')).to.equal(-1);
+          expect(includedTypes.indexOf('series')).to.equal(-1);
           done();
         }
       });
@@ -541,7 +541,7 @@ describe('read', function() {
   });
 
   // These tests have been moved above to 'compoundDocuments'
-  // describe('inclusionOfLinkedResources', function() {
+  // describe('inclusionOfincludedResources', function() {
   // });
 
   describe('fetchingResources', function() {

@@ -63,8 +63,8 @@ describe('creatingResources', function() {
     bookRouteHandler(createReq);
   });
 
-  it('must not include any top-level members other than "data," "meta," "links," or "linked"', function(done) {
-    var allowedTopLevel = ['data', 'linked', 'links', 'meta'];
+  it('must not include any top-level members other than "data," "meta," "links," or "included"', function(done) {
+    var allowedTopLevel = ['data', 'included', 'links', 'meta'];
     var bookRouteHandler = bookController.create({
       responder: function(payload) {
         Object.keys(payload.data).forEach(function(key) {
@@ -214,8 +214,8 @@ describe('creatingResources', function() {
                 var createData = createReq.body.data;
                 var createLinks = createReq.body.data.links;
 
-                expect(readResult.linked.length).to.equal(1);
-                expect(readResult.linked[0].id).to.equal(createData.links.stores.id[0]);
+                expect(readResult.included.length).to.equal(1);
+                expect(readResult.included[0].id).to.equal(createData.links.stores.id[0]);
                 expect(payloadData.title).to.equal(createData.title);
                 expect(payloadData.date_published).to.equal(createData.date_published);
                 expect(payloadLinks.author.id).to.equal(createLinks.author.id);

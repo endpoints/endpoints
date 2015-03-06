@@ -53,7 +53,7 @@ module.exports = function (model, opts) {
   }, links);
 
   // Link relations that were explictly included, adding the associated
-  // resources to the top level "linked" object
+  // resources to the top level "included" object
   linkWithIncludes.reduce(function (result, relationName) {
     var related = relate(model, relationName);
     var type = related.type;
