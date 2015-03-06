@@ -7,8 +7,6 @@ const bookController = require('../../../../../fixtures/controllers/books');
 var req = require('../../../../../fixtures/mocks/express_request');
 var readReq;
 
-// FIXME: New Fetch Requirements: https://github.com/json-api/json-api/compare/2bc4a9c0687a...01dcadedbdfa
-// FIXME: Response Changes: https://github.com/json-api/json-api/commit/74d89312280f1b37e32a376a1e7d71ef7aaa7795
 describe('read', function() {
 
   beforeEach(function() {
@@ -568,7 +566,7 @@ describe('read', function() {
   // describe('inclusionOfincludedResources', function() {
   // });
 
-  describe('fetchingResources', function() {
+  describe('fetchingData', function() {
 
     it('must require an ACCEPT header specifying the JSON API media type', function(done) {
       var bookRouteHandler = bookController.read({
@@ -579,6 +577,37 @@ describe('read', function() {
       });
       readReq.headers = { accept: '' };
       bookRouteHandler(readReq);
+    });
+
+    describe('fetchingResources', function() {
+      it('must support fetching resource for URLs provided as a `self` link in the top-level links object');
+      it('must support fetching resource for URLs provided as a `self` link as part of a resource object');
+      it('must support fetching resource for URLs provided as a `resource` link as part of a link object');
+
+      describe('responses', function() {
+        describe('200Ok', function() {
+          it('must respond to a successful request to fetch an individual resource or collection with a 200 OK response');
+          it('must respond to a successful request to fetch a resource collection with an array as the document\'s primary data');
+          it('must respond to a successful request to fetch an individual resource with a resource object or null as the document\'s primary data');
+        });
+        describe('404NotFound', function() {
+          it('must return 404 Not Found when processing a request to fetch a resource that does not exist');
+        });
+      });
+    });
+
+    describe('fetchingRelationships', function() {
+      it('must support fetching relationship data for every relationship URL provided as a self link as part of a link object');
+
+      describe('responses', function() {
+        describe('200Ok', function() {
+          it('must respond to a successful request to fetch a relationship with a 200OK response');
+          it('must have a primary data consisting of null, an object of type and id members, an array');
+        });
+        describe('400NotFound', function() {
+          it('must return 404 Not Found when processing a request to fetch a relationship URL that does not exist');
+        });
+      });
     });
 
     describe('sparseFieldsets', function() {
