@@ -1,4 +1,3 @@
-// FIXME: Possible changes here: https://github.com/json-api/json-api/commit/01ce3454602e394b078303b8853d725b7981c472
 const expect = require('chai').expect;
 const _ = require('lodash');
 
@@ -537,15 +536,15 @@ describe('updatingRelationships', function() {
   it('should respond to requests to links it sets as nested relationship URLs');
 
   describe('updatingToOneRelationships', function() {
-    it('must respond to PUT request to a to-one relationship URL');
+    it('must respond to PATCH request to a to-one relationship URL');
     it('must require a top-level data member containing either an object with type and id members or null');
-    it('must return a 204 No Content on a successful PUT request');
+    it('must return a 204 No Content on a successful PATCH request');
   });
 
   describe('updatingToManyRelationships', function() {
-    it('must respond to PUT, POST, and DELETE requests to a to-many relationship URL');
+    it('must respond to PATCH, POST, and DELETE requests to a to-many relationship URL');
     it('must require a top-level data member containing either an object with type and id members or an array of such objects');
-    it('must completely replace every member of the relationship on a PUT request if allowed');
+    it('must completely replace every member of the relationship on a PATCH request if allowed');
     it('must return an appropriate error if some resources cannot be found or accessed');
     it('must return a 403 Forbidden if complete replacement is not allowed by the server');
     it('must append specified members of a POST request');
