@@ -38,7 +38,7 @@ module.exports = function (model, opts) {
       id: String(id)
     };
     if (id) {
-      link.href = '/' + type + '/' + id;
+      link.resource = '/' + type + '/' + id;
     }
     result[relationName] = link;
     return result;

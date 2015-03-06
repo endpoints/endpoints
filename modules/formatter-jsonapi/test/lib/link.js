@@ -56,7 +56,7 @@ describe('link', function () {
       toOneWithoutInclude: ['author'],
     })).to.deep.equal({
       author: {
-        href: '/authors/1',
+        resource: '/authors/1',
         id: '1',
         type: 'authors'
       },

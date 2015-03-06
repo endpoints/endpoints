@@ -417,7 +417,26 @@ describe('read', function() {
             bookRouteHandler(readReq);
           });
 
-          // FIXME: https://github.com/json-api/json-api/compare/7f6bc3210798...f4bcd93f4672
+          it('must not contain any members outside of self, resource, type, id, meta, or pagination keys in the data object linkage', function(done) {
+            var allowedMembers = ['self', 'resource', 'type', 'id', 'meta'];
+            var bookRouteHandler = bookController.read({
+              one: true,
+              responder: function(payload) {
+                var links = payload.data.data.links;
+                expect(payload.code).to.equal('200');
+                Object.keys(links).forEach(function(key) {
+                  if (_.isPlainObject(links[key])) {
+                    Object.keys(links[key]).forEach(function(key) {
+                      expect(allowedMembers).to.contain(key);
+                    });
+                  }
+                });
+                done();
+              }
+            });
+            bookRouteHandler(readReq);
+          });
+
           it('must include object linkage to resource objects included in the same compound document', function(done) {
             var bookRouteHandler = bookController.read({
               one:true,
