@@ -51,5 +51,11 @@ describe('getParams', function () {
     expect(paramsWithDefault.sort).to.deep.equal(defaultConfig.sort);
   });
 
+  it('should clone the opts object on each run', function () {
+    var params = getParams({}, defaultConfig);
+    params.filter.id = 1;
+    expect(defaultConfig.filter).to.not.equal(params.filter);
+  });
+
 
 });
