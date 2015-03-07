@@ -62,7 +62,8 @@ describe('deletingResources', function() {
       var readReq = {
         headers: {
           'accept': 'application/vnd.api+json'
-        }
+        },
+        params:{}
       };
       var bookRouteHandler = bookController.destroy({
         responder: function(payload) {

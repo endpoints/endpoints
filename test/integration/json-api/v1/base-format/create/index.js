@@ -209,16 +209,14 @@ describe('creatingResources', function() {
             };
             bookController.read({
               responder: function(payload) {
-                // halp
-                console.log(JSON.stringify(payload, false, 2));
                 var readResult = payload.data;
-                var payloadData = readResult.data[0];
+                var payloadData = readResult.data;
                 var payloadLinks = payloadData.links;
                 var createData = createReq.body.data;
-                var createLinks = createReq.body.data.links;
+                var createLinks = createData.links;
 
                 expect(readResult.included.length).to.equal(1);
-                expect(readResult.included[0].id).to.equal(createData.links.stores.id[0]);
+                expect(readResult.included[0].id).to.equal(createLinks.stores.id[0]);
                 expect(payloadData.title).to.equal(createData.title);
                 expect(payloadData.date_published).to.equal(createData.date_published);
                 expect(payloadLinks.author.id).to.equal(createLinks.author.id);
