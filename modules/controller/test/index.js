@@ -43,7 +43,6 @@ describe('Controller', function () {
       require('./lib/source/create');
       require('./lib/source/destroy');
       require('./lib/source/read');
-      require('./lib/source/read_relation');
       require('./lib/source/update');
 
     });
@@ -75,14 +74,6 @@ describe('Controller', function () {
 
     it('should return a request handling function', function () {
       expect(controller.read()).to.be.a('function');
-    });
-
-  });
-
-  describe('#readRelation', function () {
-
-    it('should return a request handling function', function () {
-      expect(controller.readRelation()).to.be.a('function');
     });
 
   });

@@ -47,13 +47,6 @@ describe('validateController', function() {
     expect(result.length).to.equal(0);
   });
 
-  it('should not return an error on the readRelation method even if it is not on the model', function() {
-    var result = validateController('readRelation', source, config);
-    expect(source.model.readRelation).to.be.undefined;
-    expect(source.model.prototype.readRelation).to.be.undefined;
-    expect(result.length).to.equal(0);
-  });
-
   it('should look for the create method on the model', function() {
     var result = validateController('create', source, config);
     expect(source.model.create).to.exist;

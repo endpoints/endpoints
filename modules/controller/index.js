@@ -28,7 +28,6 @@ Controller.method = function (method) {
 
 Controller.prototype.create = Controller.method('create');
 Controller.prototype.read = Controller.method('read');
-Controller.prototype.readRelation = Controller.method('readRelation');
 Controller.prototype.update = Controller.method('update');
 Controller.prototype.destroy = Controller.method('destroy');
 

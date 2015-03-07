@@ -156,7 +156,7 @@ describe('updatingResources', function() {
           bookController.read({
             responder: function(payload) {
               var secondRead = payload.data;
-              var payloadData = secondRead.data[0];
+              var payloadData = secondRead.data;
               var payloadLinks = payloadData.links;
               var updateLinks = updateData.links;
 
@@ -191,8 +191,8 @@ describe('updatingResources', function() {
           bookController.read({
             responder: function(payload) {
               var secondRead = payload.data;
-              var secondReadData = secondRead.data[0];
-              var firstReadData = firstRead.data[0];
+              var secondReadData = secondRead.data;
+              var firstReadData = firstRead.data;
               expect(secondRead.included).to.deep.equal(firstRead.included);
               expect(secondReadData.title).to.not.equal(firstReadData.title);
               expect(secondReadData.date_published).to.equal(firstReadData.date_published);
@@ -240,7 +240,7 @@ describe('updatingResources', function() {
 
           bookController.read({
             responder: function(payload) {
-              var payloadLinks = payload.data.data[0].links;
+              var payloadLinks = payload.data.data.links;
               var updateLinks = updateData.links;
               expect(payloadLinks.author.id).to.equal(updateLinks.author.id);
               expect(payloadLinks.series.id).to.equal(updateLinks.series.id);
@@ -278,7 +278,7 @@ describe('updatingResources', function() {
 
           bookController.read({
             responder: function(payload) {
-              var payloadLinks = payload.data.data[0].links;
+              var payloadLinks = payload.data.data.links;
               // var updateLinks = updateData.links;
               expect(payloadLinks.series.id).to.equal('null');
               done();
@@ -323,7 +323,7 @@ describe('updatingResources', function() {
           bookController.read({
             responder: function(payload) {
               var secondRead = payload.data;
-              var payloadLinks = secondRead.data[0].links;
+              var payloadLinks = secondRead.data.links;
               var updateLinks = updateData.links;
 
               expect(secondRead.included.length).to.equal(2);
@@ -366,7 +366,7 @@ describe('updatingResources', function() {
           bookController.read({
             responder: function(payload) {
               var secondRead = payload.data;
-              var payloadLinks = secondRead.data[0].links;
+              var payloadLinks = secondRead.data.links;
               var updateLinks = updateData.links;
 
               expect(secondRead).to.not.have.property('included');

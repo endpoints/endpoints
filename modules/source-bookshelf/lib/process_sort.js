@@ -3,13 +3,13 @@ const _ = require('lodash');
 // TODO: investigate how to deal with express's query parser
 // converting + into a space.
 function isAscending (key) {
-  return key[0] === '+';
+  return key[0] === '+' || key[0] === ' ';
 }
 
 module.exports = function (source, query, sortBy) {
   var validFields = source.fields();
   return _.chain(sortBy).filter(function (key) {
-    var hasSortDir = key[0] === '+' || key[0] === '-';
+    var hasSortDir = key[0] === ' ' || key[0] === '+' || key[0] === '-';
     var isValidField = _.contains(validFields, key.substring(1));
     return hasSortDir && isValidField;
   }).reduce(function (result, key) {

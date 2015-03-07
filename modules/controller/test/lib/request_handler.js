@@ -26,7 +26,8 @@ describe('requestHandler', function() {
     var req = {
       headers: {
         accept: 'application/vnd.api+json'
-      }
+      },
+      body: {}
     };
 
     requestHandler({
@@ -45,7 +46,7 @@ describe('requestHandler', function() {
       sourceInterface: controllerStub,
       payload: function(err) {return err;},
       responder: responderStub
-    })({headers:{}}, {}, function() {});
+    })({headers:{}, body:{}}, {}, function() {});
 
     expect(responderStub.calledOnce).to.be.true;
     expect(responderStub.getCall(0).args[0]).to.be.instanceof(Error);

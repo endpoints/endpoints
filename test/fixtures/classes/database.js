@@ -5,7 +5,14 @@ const bPromise = require('bluebird');
 const Knex = require('knex')(config);
 const Bookshelf = require('bookshelf')(Knex);
 
-const tables = ['series', 'authors', 'books', 'stores', 'books_stores'];
+const tables = [
+  'series',
+  'authors',
+  'books',
+  'chapters',
+  'stores',
+  'books_stores'
+];
 
 function migrateUntil(stopVersion) {
   return Knex.migrate.rollback(config).spread(function (version, file) {

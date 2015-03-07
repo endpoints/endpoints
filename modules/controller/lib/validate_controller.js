@@ -7,7 +7,7 @@ module.exports = function (method, source, config) {
     sourceHas(source.relations(), config.include, 'relations'),
     sourceHas(source.filters(), Object.keys(config.filter), 'filters'),
     // this is crap
-    (method === 'read' || method === 'readRelation') ? null :
+    (method === 'read') ? null :
       sourceHas(
         method === 'create' ? source.model : source.model.prototype,
         config.method,

@@ -1,22 +1,26 @@
-// Given a Bookshelf model or collection, return all
-// related models for the requested relationName.
+// Given a Bookshelf model or collection, return a related
+// collection or model.
 function getRelated (relationName, input) {
-  var result;
-  if (Array.isArray(input) || Array.isArray(input.models)) {
-    result = input.map(getRelated.bind(null, relationName)).
-      reduce(function (result, node) {
-        return result.concat(node.models);
-      }, []);
-  } else {
-    result = input.related(relationName);
-    result.type = result.relatedData.target.typeName;
+  var collection;
+  if (input.models) {
+    // this is fully ridiculous. when looking for the related thing from
+    // a collection of models, i need a single collection to put them in
+    // and this is the only way to make one.
+    collection = input.model.forge().related(relationName).relatedData.target.collection();
+    // now that i have a collection for the relation we're retreiving,
+    // iterate each model and add its related models to the collection
+    return input.reduce(function (result, model) {
+      var related = model.related(relationName);
+      return result.add(related.models ? related.models : related);
+    }, collection);
   }
-  return result;
+
+  return input.related(relationName);
 }
 
-// Take a Bookshelf model or collection + a single relation
-// string and iterate through it, returning the models in
-// the last relation only.
+// Take a Bookshelf model or collection + dot-notated relation
+// string and iterate through it, returning the model(s) in the
+// last relation only.
 module.exports = function relate (model, relation) {
   // Bookshelf relations can be requested arbitarily deep as
   // dot notated strings. Here, we traverse the relation until

@@ -47,6 +47,8 @@ module.exports = function (opts) {
     sourceInterface(source, opts, request).then(function(data) {
       responder(payload(null, data, opts), request, response, next);
     }).catch(function(err) {
+      // uncomment this to debug stuff
+      //throw err;
       responder(payload(err), request, response, next);
     });
   };

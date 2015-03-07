@@ -9,12 +9,10 @@ module.exports = function (input, opts) {
     // each model that appears in the top level included object needs to be
     // formatted for json-api compliance too. we *could* allow links within
     // links by recursing here but i don't think it is needed... yet?
-    included.push(formatModel({
-      typeName: model.constructor.typeName
-    }, null, model));
+    included.push(formatModel(null, null, model));
   };
   // prepare a formatting method to configure each model
-  var formatter = formatModel.bind(null, opts, exporter);
+  var formatter = formatModel.bind(null, opts.relations, exporter);
   // format every incoming model
   var serialized = input.map ? input.map(formatter) : formatter(input);
   // if we are requesting a single item, return it as an object, not an array

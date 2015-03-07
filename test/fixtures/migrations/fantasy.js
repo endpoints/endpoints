@@ -18,6 +18,12 @@ exports.up = function (knex) {
       t.text('title');
       t.timestamps();
     }).
+    createTable('chapters', function (t) {
+      t.increments('id');
+      t.integer('book_id').notNullable().references('id').inTable('book');
+      t.text('title').notNullable();
+      t.integer('ordering').notNullable();
+    }).
     createTable('stores', function (t) {
       t.increments('id');
       t.text('name').notNullable();
@@ -32,6 +38,7 @@ exports.down = function (knex) {
   return knex.schema.
     dropTable('books_stores').
     dropTable('stores').
+    dropTable('chapters').
     dropTable('books').
     dropTable('authors').
     dropTable('series');
