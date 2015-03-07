@@ -552,7 +552,7 @@ describe('updatingRelationships', function() {
 
           bookController.read({
             responder: function(payload) {
-              var payloadLinks = payload.data.data[0].links;
+              var payloadLinks = payload.data.data.links;
               expect(payloadLinks.author.id).to.equal('2');
               done();
             }
@@ -581,7 +581,7 @@ describe('updatingRelationships', function() {
 
           bookController.read({
             responder: function(payload) {
-              var payloadLinks = payload.data.data[0].links;
+              var payloadLinks = payload.data.data.links;
               expect(payloadLinks.series.id).to.equal('null');
               done();
             }
@@ -621,7 +621,7 @@ describe('updatingRelationships', function() {
 
           bookController.read({
             responder: function(payload) {
-              var payloadLinks = payload.data.data[0].links;
+              var payloadLinks = payload.data.data.links;
               expect(payload.data).to.have.property('included');
               expect(payloadLinks.stores.id).to.deep.equal(updateReq.body.data.id);
               done();
@@ -657,7 +657,7 @@ describe('updatingRelationships', function() {
 
           bookController.read({
             responder: function(payload) {
-              var payloadLinks = payload.data.data[0].links;
+              var payloadLinks = payload.data.data.links;
               expect(payload.data).to.not.have.property('included');
               expect(payloadLinks.stores.id).to.deep.equal(updateReq.body.data.id);
               done();
