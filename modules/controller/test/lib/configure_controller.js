@@ -14,20 +14,12 @@ describe('configureController', function() {
     expect(configureController('read', source).method).to.equal('read');
   });
 
-  it('should set the payload property to a function', function() {
-    expect(configureController('read', source).payload).to.be.a('function');
-  });
-
   it('should set the responder property to a function', function() {
     expect(configureController('read', source).responder).to.be.a('function');
   });
 
   it('should set the typeName property to a string', function() {
     expect(configureController('read', source).typeName).to.be.a('string');
-  });
-
-  it('should set the sourceInterface property to a function', function() {
-    expect(configureController('read', source).sourceInterface).to.be.a('function');
   });
 
   it('should set the include property to a array', function() {

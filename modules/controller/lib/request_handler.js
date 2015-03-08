@@ -2,9 +2,23 @@ const verifyAccept = require('./verify_accept');
 const verifyContentType = require('./verify_content_type');
 const verifyDataObject = require('./verify_data_object');
 
+const payloads = {
+  create: require('./payloads/create'),
+  read: require('./payloads/read'),
+  update: require('./payloads/update'),
+  destroy: require('./payloads/destroy')
+};
+
+const sourceInterfaces = {
+  create: require('./source/create'),
+  read: require('./source/read'),
+  update: require('./source/update'),
+  destroy: require('./source/destroy')
+};
+
 module.exports = function (opts) {
-  var sourceInterface = opts.sourceInterface;
-  var payload = opts.payload;
+  var sourceInterface = sourceInterfaces[opts.method];
+  var payload = payloads[opts.method];
   var responder = opts.responder;
   var source = opts.source;
 
