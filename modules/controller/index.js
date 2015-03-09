@@ -1,8 +1,8 @@
 const _ = require('lodash');
 
-const configureController = require('./lib/configure_controller');
-const validateController = require('./lib/validate_controller');
-const requestHandler = require('./lib/request_handler');
+const configure = require('./lib/configure');
+const validate = require('./lib/validate');
+const process = require('./lib/process');
 
 function Controller(opts) {
   if (!opts) {
@@ -15,14 +15,14 @@ function Controller(opts) {
 }
 
 Controller.method = function (method) {
-  return function (config) {
+  return function (opts) {
     var source = this.source;
-    var controller = configureController(method, source, config);
-    var validationFailures = validateController(method, source, controller);
+    var config = configure(method, opts);
+    var validationFailures = validate(method, source, config);
     if (validationFailures.length) {
       throw new Error(validationFailures.join('\n'));
     }
-    return requestHandler(controller);
+    return process(config, source);
   };
 };
 

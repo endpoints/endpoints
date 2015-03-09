@@ -1,4 +1,5 @@
 const _ = require('lodash');
+const Kapow = require('kapow');
 
 const throwIfModel = require('./lib/throw_if_model');
 const throwIfNoModel = require('./lib/throw_if_no_model');
@@ -7,57 +8,79 @@ const verifyContentType = require('./lib/verify_content_type');
 const verifyDataObject = require('./lib/verify_data_object');
 const splitStringProps = require('./lib/split_string_props');
 
-function Request (request, source, opts) {
+function Request (request, config, source) {
+  var params = request.params = request.params || {};
+  var body = request.body = request.body || {};
+  request.query = request.query || {};
+
   this.request = request;
+  this.config = _.cloneDeep(config);
   this.source = source;
-  this.opts = _.cloneDeep(opts);
-  this.params = request.params || {};
-  this.query = request.query || {};
-  this.body = request.body || {};
+
+  // this used to happen in the configureController step
+  config.typeName = source.typeName();
+
+  var requestData;
+  if (config.method === 'update' && params.relation) {
+    requestData = {
+      type: source.typeName(),
+      links: {}
+    };
+    requestData.links[params.relation] = body.data;
+    body.data = requestData;
+    config.relationOnly = true;
+  }
+}
+
+Request.prototype.validate = function () {
+  var err;
+  var request = this.request;
+  var validators = [verifyAccept];
+
+  if (this.data()) {
+    validators = validators.concat([verifyContentType, verifyDataObject]);
+  }
+  var endpoint = {
+    id: request.params.id,
+    typeName: this.typeName()
+  };
+  for (var validate in validators) {
+    err = validators[validate](request, endpoint);
+    if (err) {
+      break;
+    }
+  }
+  return err;
 };
 
 Request.prototype.data = function () {
-  return this.body.data;
+  return this.request.body.data;
 };
-
-Request.prototype.id = function () {
-  return this.params.id;
-}
 
 Request.prototype.relation = function () {
   return this.params.relation;
 };
 
 Request.prototype.method = function () {
-  return this.opts.method;
+  return this.config.method;
 };
 
-Request.prototype.include = function () {
-  var include = this.query.include;
-  return include ? include.split(',') : this.opts.include;
+Request.prototype.typeName = function () {
+  return this.source.typeName();
 };
 
-Request.prototype.filter = function () {
-  var filter = this.query.filter;
-  return filter ? splitStringProps(filter) : this.opts.filter;
-};
-
-Request.prototype.fields = function () {
-  var filter = this.query.fields;
-  return fields ? splitStringProps(fields) : this.opts.fields;
-};
-
-Request.prototype.sort = function () {
-  var sort = this.query.sort;
-  return sort ? sort.split(',') : this.opts.sort;
-};
-
-Request.prototype.params = function () {
+Request.prototype.query = function () {
+  var query = this.request.query;
+  var config = this.config;
+  var include = query.include;
+  var filter = query.filter;
+  var fields = query.fields;
+  var sort = query.sort;
   return {
-    include: this.include(),
-    filter: this.filter(),
-    fields: this.fields(),
-    sort: this.sort()
+    include: include ? include.split(',') : config.include,
+    filter: filter ? splitStringProps(filter) : config.filter,
+    fields: fields ? splitStringProps(fields) : config.fields,
+    sort: sort ? sort.split(',') : config.sort
   };
 };
 
@@ -70,37 +93,39 @@ Request.prototype.create = function () {
     return source.byId(data.id)
       .then(throwIfModel)
       .then(function() {
-        return source.create(method, request.body.data);
+        return source.create(method, data);
       }
     );
   } else {
-    return source.create(method, request.body.data);
+    return source.create(method, data);
   }
 };
 
 Request.prototype.read = function () {
   var source = this.source;
-  var relation = this.relation();
-  var params = this.params();
-  var id = this.id();
+  var query = this.query();
+
+  var params = this.request.params;
+  var id = params.id;
+  var relation = params.relation;
 
   var findRelated;
   if (relation) {
-    findRelated = source.related.bind(source, params, relation);
+    findRelated = source.related.bind(source, query, relation);
     return source.byId(id, relation).then(throwIfNoModel).then(findRelated);
   }
 
   if (id) {
     // FIXME: this could collide with filter[id]=#
-    params.filter.id = id;
+    query.filter.id = id;
   }
-  return source.read(params);
+  return source.read(query);
 };
 
 Request.prototype.update = function () {
   var source = this.source;
   var method = this.method();
-  var id = this.id();
+  var id = this.request.params.id;
   var data = this.data();
 
   return source.byId(id).
@@ -114,13 +139,12 @@ Request.prototype.update = function () {
       }
       throw e;
     });
-  };
 };
 
 Request.prototype.destroy = function () {
   var method = this.method();
   var source = this.source;
-  var id = this.id();
+  var id = this.request.params.id;
 
   return source.byId(id).then(function (model) {
     if (model) {

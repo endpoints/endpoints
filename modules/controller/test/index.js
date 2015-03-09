@@ -28,10 +28,9 @@ describe('Controller', function () {
 
   describe('lib', function () {
 
-    require('./lib/configure_controller');
-    require('./lib/request_handler');
+    require('./lib/configure');
     require('./lib/source_has');
-    require('./lib/validate_controller');
+    require('./lib/validate');
 
   });
 
