@@ -28,26 +28,10 @@ describe('Controller', function () {
 
   describe('lib', function () {
 
-    describe('source interface', function () {
-
-      require('./lib/source/create');
-      require('./lib/source/destroy');
-      require('./lib/source/read');
-      require('./lib/source/update');
-
-    });
-
     require('./lib/configure_controller');
-    require('./lib/get_params');
     require('./lib/request_handler');
     require('./lib/source_has');
-    require('./lib/split_string_props');
-    require('./lib/throw_if_model');
-    require('./lib/throw_if_no_model');
     require('./lib/validate_controller');
-    require('./lib/verify_accept');
-    require('./lib/verify_content_type');
-    require('./lib/verify_data_object');
 
   });
 
