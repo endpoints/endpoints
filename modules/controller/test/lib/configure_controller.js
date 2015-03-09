@@ -14,10 +14,6 @@ describe('configureController', function() {
     expect(configureController('read', source).method).to.equal('read');
   });
 
-  it('should set the responder property to a function', function() {
-    expect(configureController('read', source).responder).to.be.a('function');
-  });
-
   it('should set the typeName property to a string', function() {
     expect(configureController('read', source).typeName).to.be.a('string');
   });

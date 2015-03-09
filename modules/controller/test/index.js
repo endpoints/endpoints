@@ -28,16 +28,6 @@ describe('Controller', function () {
 
   describe('lib', function () {
 
-    describe('payloads', function () {
-
-      require('./lib/payloads/create');
-      require('./lib/payloads/destroy');
-      require('./lib/payloads/read');
-      require('./lib/payloads/update');
-      require('./lib/payloads/error_payload');
-
-    });
-
     describe('source interface', function () {
 
       require('./lib/source/create');
@@ -50,7 +40,6 @@ describe('Controller', function () {
     require('./lib/configure_controller');
     require('./lib/get_params');
     require('./lib/request_handler');
-    require('./lib/responder');
     require('./lib/source_has');
     require('./lib/split_string_props');
     require('./lib/throw_if_model');

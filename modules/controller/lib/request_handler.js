@@ -1,13 +1,8 @@
+const Response = require('../../response');
+
 const verifyAccept = require('./verify_accept');
 const verifyContentType = require('./verify_content_type');
 const verifyDataObject = require('./verify_data_object');
-
-const payloads = {
-  create: require('./payloads/create'),
-  read: require('./payloads/read'),
-  update: require('./payloads/update'),
-  destroy: require('./payloads/destroy')
-};
 
 const sourceInterfaces = {
   create: require('./source/create'),
@@ -18,8 +13,14 @@ const sourceInterfaces = {
 
 module.exports = function (opts) {
   var sourceInterface = sourceInterfaces[opts.method];
-  var payload = payloads[opts.method];
-  var responder = opts.responder;
+  var method = opts.method;
+
+  var responder = new Response({
+    // allow optionally overriding the response handler
+    // TODO: allow overriding the formatter in controller config too?
+    send: opts.responder
+  });
+
   var source = opts.source;
 
   return function (request, response, next) {
@@ -55,15 +56,17 @@ module.exports = function (opts) {
     }
 
     if (err) {
-      return responder(payload(err), request, response);
+      return responder.send(responder.error(err), request, response);
     }
 
     sourceInterface(source, opts, request).then(function(data) {
-      responder(payload(null, data, opts), request, response, next);
+      var payload = responder[method](data, opts);
+      responder.send(payload, request, response, next);
     }).catch(function(err) {
       // uncomment this to debug stuff
       //throw err;
-      responder(payload(err), request, response, next);
+      var payload = responder.error(err);
+      responder.send(payload, request, response, next);
     });
   };
 };
