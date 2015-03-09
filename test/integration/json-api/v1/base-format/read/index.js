@@ -527,7 +527,6 @@ describe('read', function() {
 
     it('must not include other resource objects in the included section when the client specifies an include parameter', function(done) {
       var bookRouteHandler = bookController.read({
-        one:true,
         include: ['series'],
         responder: function(payload) {
           var includedTypes = _.pluck(payload.data.included, 'type');
