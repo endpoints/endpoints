@@ -1,14 +1,12 @@
 const _ = require('lodash');
 
-module.exports = function (method, source, opts) {
+module.exports = function (method, opts) {
   var defaults = {
-    source: source,
     method: opts && opts.method ? opts.method : method,
-    typeName: source.typeName(),
     include: [],
     filter: {},
     fields: {},
-    sort: []
+    sort: [],
   };
   var config = _.defaults({}, opts, defaults);
 

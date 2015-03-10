@@ -1,4 +1,36 @@
-const expect = require('chai').expect;
+describe('Request', function () {
+
+  describe('lib', function () {
+    require('./lib/split_string_props');
+    require('./lib/throw_if_model');
+    require('./lib/throw_if_no_model');
+    require('./lib/verify_accept');
+    require('./lib/verify_content_type');
+    require('./lib/verify_data_object');
+  });
+
+  describe('#include', function () {
+
+  });
+
+  describe('#filter', function () {
+
+  });
+
+  describe('#fields', function () {
+
+  });
+
+  describe('#sort', function () {
+
+  });
+
+  describe('#params', function () {
+
+  });
+
+});
+/*const expect = require('chai').expect;
 
 const getParams = require('../../lib/get_params');
 
@@ -57,5 +89,5 @@ describe('getParams', function () {
     expect(defaultConfig.filter).to.not.equal(params.filter);
   });
 
-
 });
+*/

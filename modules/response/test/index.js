@@ -1,10 +1,9 @@
 const expect = require('chai').expect;
 
 const Responder = require('../');
-const TestResponder = new Responder({
-  formatter: function (data) {
-    return data;
-  }
+
+const TestResponder = new Responder({}, function (data) {
+  return 'yup';
 });
 
 describe('Responder', function () {
@@ -18,75 +17,32 @@ describe('Responder', function () {
 
   describe('#create', function () {
 
-    it('should return data and code 201', function () {
-      var input = {
-        id: '1',
-        type: 'test'
-      };
-      var opts = {
-        typeName: 'thing'
-      };
-      var output = TestResponder.create(input, opts);
-      expect(output.code).to.equal('201');
-      expect(output.data).to.deep.equal(input);
-      expect(output.headers).to.deep.equal({
-        location: '/' + opts.typeName + '/' + input.id
-      });
+    it('should have the instance\'s formatter partially applied', function () {
+      expect(TestResponder.create({}, {}).data).to.equal('yup');
     });
 
   });
 
   describe('#read', function () {
 
-    it('should return data and code 200', function () {
-      var input = {
-        type: 'test'
-      };
-      var opts = {
-        typeName: 'thing'
-      };
-      var output = TestResponder.read(input, opts);
-      expect(output.code).to.equal('200');
-      expect(output.data).to.deep.equal(input);
-    });
-
-    it('should return data and code 404', function () {
-      var opts = {
-        typeName: 'thing'
-      };
-      var output = TestResponder.read(null, opts);
-      expect(output.code).to.equal('404');
-      // TOOD: test this
-      //expect(output.data).to.equal(null);
+    it('should have the instance\'s formatter partially applied', function () {
+      expect(TestResponder.read({}, {}).data).to.equal('yup');
     });
 
   });
 
   describe('#update', function () {
 
-    it('should return data and code 200', function () {
-      var input = {
-        data: {
-          id: '1',
-          type: 'test'
-        }
-      };
-      var opts = {
-        typeName: 'thing'
-      };
-      var output = TestResponder.read(input, opts);
-      expect(output.code).to.equal('200');
-      expect(output.data).to.deep.equal(input);
+    it('should have the instance\'s formatter partially applied', function () {
+      expect(TestResponder.update({}, {}).data).to.equal('yup');
     });
 
   });
 
   describe('#destroy', function () {
 
-    it('should return data and code 204', function () {
-      var output = TestResponder.destroy({});
-      expect(output.code).to.equal('204');
-      expect(output.data).to.equal(null);
+    it('should have the instance\'s formatter partially applied', function () {
+      expect(TestResponder.destroy({}, {}).data).to.equal(null);
     });
 
   });
