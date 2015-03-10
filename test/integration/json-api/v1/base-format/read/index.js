@@ -272,10 +272,6 @@ describe('read', function() {
           bookRouteHandler(readReq);
         });
 
-        // https://github.com/json-api/json-api/commit/110cc87bd069d8d2ee590f1b1199af3c9316ee58
-        it('may include a string in its links object keyed by "resource"');
-
-
         // TODO: API TEST
         // it('must respond to a get request to any `self` url with the resource as primary data');
       });
