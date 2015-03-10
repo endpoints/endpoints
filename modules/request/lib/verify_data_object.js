@@ -11,7 +11,7 @@ module.exports = function(request, endpoint) {
   }
 
   type = data.type;
-  id = data.id;
+  id = request.params && request.params.id;
 
   if (typeof type !== 'string') {
     err = Kapow(400, 'Primary data must include a type.');
@@ -23,7 +23,7 @@ module.exports = function(request, endpoint) {
     return err;
   }
 
-  if (id && endpoint.id && id !== endpoint.id) {
+  if (id && data.id && id !== data.id) {
     err = Kapow(409, 'Data id does not match endpoint id.');
     return err;
   }

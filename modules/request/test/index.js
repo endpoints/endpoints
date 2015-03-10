@@ -29,6 +29,10 @@ describe('Request', function () {
 
   });
 
+  describe('#validate', function () {
+    require('./validate');
+  });
+
 });
 /*const expect = require('chai').expect;
 

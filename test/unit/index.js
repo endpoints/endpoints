@@ -6,4 +6,5 @@ describe('Endpoints', function () {
   require('../../modules/response/test');
   //require('../../modules/source-memory/test');
   require('../../modules/source-bookshelf/test');
+  require('../../modules/validate-json-schema/test');
 });
