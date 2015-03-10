@@ -25,6 +25,7 @@
     "node": ">= 0.10"
   },
   "scripts": {
+    "docs": "jsdoc ./modules/**/*.js -R ./README.md -P ./package.json -d ./docs",
     "test-unit": "npm run lint && npm run style && istanbul cover _mocha -- -b -R spec test/unit",
     "test-integration": "npm run lint && npm run style && mocha -b -R spec test/integration",
     "test": "npm run lint && npm run style && mocha -b -R spec",
