@@ -1,4 +1,7 @@
 {
+  "plugins": [
+    "jscs-jsdoc"
+  ],
   "disallowMixedSpacesAndTabs": true,
   "disallowSpaceAfterObjectKeys": true,
   "disallowSpaceBeforeBinaryOperators": [
@@ -56,5 +59,17 @@
   "validateQuoteMarks": {
     "escape": true,
     "mark": "'"
+  },
+  "jsDoc": {
+    "checkParamNames": true,
+    "requireParamTypes": true,
+    "checkRedundantParams": true,
+    "checkRedundantReturns": true,
+    "requireReturnTypes": true,
+    "checkTypes": "strictNativeCase",
+    "leadingUnderscoreAccess": true,
+    "checkAnnotations": {
+      "preset": "jsdoc3"
+    }
   }
 }
