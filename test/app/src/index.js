@@ -28,7 +28,7 @@ resources.forEach(function (resource) {
   app.use(Example.endpoint(resource, 'v1'));
 });
 
-app.get('/', function (request, response) {
+app.get('/v1', function (request, response) {
   response.set('Content-Type', 'application/json');
   response.send(JSON.stringify(Example.index(), null, 2));
 });
