@@ -19,7 +19,7 @@ const relate = require('../formatter-jsonapi/lib/relate');
  * @constructor
  * @param {Bookshelf.Model} opts.model - The Bookshelf model.
  *
- * @returns A new instance of Source.
+ * @returns {Source} A new instance of Source.
  */
 function Source (opts) {
   if (!opts) {
@@ -46,7 +46,7 @@ function Source (opts) {
  * A function that returns an array of object ids resultant
  * from the application of a filter(s).
  *
- * @returns An array of object ids.
+ * @returns {Array} An array of object ids.
  */
 
 Source.prototype.filters = function () {
@@ -65,7 +65,7 @@ Source.prototype.filters = function () {
 /**
  * A function that returns the fields on the model.
  *
- * @returns An array of strings of fields on the model.
+ * @returns {Array} An array of strings of fields on the model.
  */
 Source.prototype.fields = function() {
   return this.model.fields || [];
@@ -115,7 +115,7 @@ Source.prototype.typeName = function () {
  * @param {String} relation - The dot notated set of requests.
  * @param {Bookshelf.Model} model - The related model.
  *
- * @returns An object containing an array of related object(s).
+ * @returns {Array} An array of related object(s).
  */
 Source.prototype.related = function (opts, relation, model) {
   var related = relate(model, relation);
@@ -158,6 +158,8 @@ Source.prototype.byId = function (id, relations) {
  *
  * @param {Function} method - If not present, throws an error.
  * @param {Object} params - If not present, defaults to an empty object.
+ *
+ * @returns {Bookshelf.Model} An instance of the new object.
  */
 Source.prototype.create = function (method, params) {
   if (!method) {
@@ -178,7 +180,7 @@ Source.prototype.create = function (method, params) {
  *
  * @param {Object} opts - Contains information from the request object
  *
- * @returns {Promise.Bookshelf.Collection}
+ * @returns {Promise.Bookshelf.Collection} The requested object(s).
  */
 Source.prototype.read = function (opts) {
   if (!opts) {
@@ -209,7 +211,7 @@ Source.prototype.read = function (opts) {
  * @param {Function} method -
  * @param {Object} params -
  *
- * @returns {Promise.Bookshelf.Model}
+ * @returns {Promise.Bookshelf.Model} The updated object.
  */
 Source.prototype.update = function (model, method, params) {
   if (!method) {
@@ -223,6 +225,11 @@ Source.prototype.update = function (model, method, params) {
 /**
  * Deletes an element. Same implementation as update.
  *
+ * @param {Bookshelf.Model} model -
+ * @param {Function} method -
+ * @param {Object} params -
+ *
+ * @returns {Promise.Bookshelf.Model} The deleted object.
  */
 Source.prototype.delete = Source.prototype.delete;
 
