@@ -17,9 +17,7 @@ const relate = require('../formatter-jsonapi/lib/relate');
  * parameter.
  *
  * @constructor
- * @param {Bookshelf.Model} opts.model - The Bookshelf model.
- *
- * @returns {Source} A new instance of Source.
+ * @param {Object} opts - opts.model: The Bookshelf model.
  */
 function Source (opts) {
   if (!opts) {
@@ -113,7 +111,7 @@ Source.prototype.typeName = function () {
  * the books with the ids 2 and 4. This results in 2 full queries of
  * all related books.
  *
- * @param {int|Array} opts.filter - Assigned to relevant id(s) as filters are applied.
+ * @param {Object} opts - opts.filter: Assigned to relevant id(s) as filters are applied.
  * @param {String} relation - The dot notated set of requests.
  * @param {Bookshelf.Model} model - The related model.
  *

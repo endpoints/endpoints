@@ -5,7 +5,7 @@ const formatModel = require('./lib/format_model');
 /**
  * Builds and formats the JSON-api compliant response.
  *
- * @param {} input -
+ * @param {Object} input -
  * @param {Object} opts -
  */
 module.exports = function (input, opts) {
@@ -14,7 +14,7 @@ module.exports = function (input, opts) {
   /**
    * Recieves each model that was explictly sideloaded.
    *
-   * @param {} model - Explicitly sideloaded model.
+   * @param {Object} model - Explicitly sideloaded model.
    */
   var exporter = function (model) {
     // each model that appears in the top level included object needs to be
@@ -26,9 +26,9 @@ module.exports = function (input, opts) {
   /**
    * Prepares a formatting method to configure each model
    *
-   * @param {} null -
-   * @param {} opts.relations -
-   * @param {} exporter -
+   * @param {Object} null - Passing no context to bind.
+   * @param {Array} opts.relations -
+   * @param {Function} exporter -
    */
   var formatter = formatModel.bind(null, opts.relations, exporter);
 

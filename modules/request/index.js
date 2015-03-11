@@ -15,7 +15,6 @@ const splitStringProps = require('./lib/split_string_props');
  * @param {Object} request - The request object from express.
  * @param {Object} config - A object containing customization keys.
  * @param {Source} source - The data source.
- * @returns {Request} A new instance of Request.
  */
 function Request (request, config, source) {
   var params = request.params = request.params || {};
