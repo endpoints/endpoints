@@ -42,19 +42,19 @@ optionally passing extra vars.
 # Provision the box and deploy the current HEAD of master, symlinking it and
 # making it live.
 
-$ deploy/provision.sh
+$ ./deploy/provision.sh
 
 # If the current commit at the HEAD of my-feature was previously deployed, this
 # won't rebuild it. However, it will still be symlinked and made live. If the
 # HEAD has changed since it was last deployed, and that commit hasn't yet been
 # deployed, it will be cloned and built before being symlinked and made live.
 
-$ deploy/deploy.sh commit=my-feature
+$ ./deploy/deploy.sh commit=my-feature
 
 # Regardless of the prior deploy state of commit at the HEAD of the my-feature
 # branch, re-clone and rebuild it before symlinking it and making it live.
 
-$ deploy/deploy.sh commit=my-feature force=true
+$ ./deploy/deploy.sh commit=my-feature force=true
 ```
 
 ### System Requirements to Deploy to Production
