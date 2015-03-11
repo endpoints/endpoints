@@ -233,6 +233,6 @@ Source.prototype.update = function (model, method, params) {
  *
  * @returns {Promise.Bookshelf.Model} The deleted object.
  */
-Source.prototype.delete = Source.prototype.delete;
+Source.prototype.destroy = Source.prototype.update;
 
 module.exports = Source;
