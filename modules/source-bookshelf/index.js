@@ -82,6 +82,7 @@ Source.prototype.relations = function () {
 
 /**
  * A function that returns the typeName of the model.
+ *
  * @returns {String}
  */
 Source.prototype.typeName = function () {
@@ -104,7 +105,8 @@ Source.prototype.typeName = function () {
  *
  * This should be resolved in new version of bookshelf.
  *
- * For example, if one requests all the books related to an author,
+ * @example
+ * If one requests all the books related to an author,
  * but only the ones with ids 2 and 4, one cannot immediately
  * construct that query with bookshelf. In order to accomplish this,
  * one must first request _all_ related books, and then request
@@ -207,9 +209,9 @@ Source.prototype.read = function (opts) {
 /**
  * Updates the attributes of an element.
  *
- * @param {Bookshelf.Model} model -
- * @param {Function} method -
- * @param {Object} params -
+ * @param {Bookshelf.Model} model - The Bookshelf Model
+ * @param {String} method - The name of the method.
+ * @param {Object} params - An object containing the params from the request.
  *
  * @returns {Promise.Bookshelf.Model} The updated object.
  */
@@ -225,9 +227,9 @@ Source.prototype.update = function (model, method, params) {
 /**
  * Deletes an element. Same implementation as update.
  *
- * @param {Bookshelf.Model} model -
- * @param {Function} method -
- * @param {Object} params -
+ * @param {Bookshelf.Model} model - The Bookshelf Model
+ * @param {String} method - The name of the method.
+ * @param {Object} params - An object containing the params from the request.
  *
  * @returns {Promise.Bookshelf.Model} The deleted object.
  */
