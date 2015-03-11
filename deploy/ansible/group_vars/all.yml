@@ -1,0 +1,18 @@
+git_repo: git@github.com:endpoints/endpoints.git
+base_path: /mnt
+site_path: "{{base_path}}/site"
+clone_path: "{{base_path}}/temp"
+public_path: "{{site_path}}/website"
+
+users:
+  - name: tkellen
+    real_name: Tyler Kellen
+    state: present
+    shadow_pass: $1$SLUJWFxu$Zrq6t39fbas7duavaPLKb.
+    groups: sudo
+    shell: /bin/bash
+
+keys:
+  - user: tkellen
+    state: present
+    key: ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDASWvJsFUg1ONxaV64PSaZg9dM5xhml+oeSfetRHMeO+JtzLodFgLu+wc5UED29xYf0I7/jDPaQQFu8gEs7x6A91unjR2mZzpx4du+NrNpwj+TGTNEdf6VmbneKu/RqCxTLXvkga4DJ4uXpUfL97u6sEMZDKr1uDYjH1CXR9yhGmRnsVw0UDIbOUD9rw5ociqMSwlW362XDNJh+yRSeG80cyAYDU0YXopMc8jIzoJ8j6qVdawvnBoVUswGvjRHQbTaKNqp+tyhGKFQGdPzoSubtJ8pt6g7tldkLuxphqQ5/m5q/rb74BU48laGvl5ssigEfY2tuqN9jG35zIVJxo3J tyler@sleekcode.net

@@ -1,0 +1,11 @@
+# All project build tasks go here. These tasks will only be run for the
+# specified commit if the commit hasn't been deployed before or if "force"
+# is true.
+
+- name: install npm modules
+  npm: path="{{clone_path}}"
+
+- name: build production version
+  shell: npm run build
+  args:
+    chdir: "{{clone_path}}"

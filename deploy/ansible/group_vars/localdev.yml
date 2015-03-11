@@ -1,0 +1,5 @@
+# For [appservers] defined in deploy/ansible/inventory/production
+
+env: development
+hostname: endpoints
+fqdn: endpointsjs.loc
