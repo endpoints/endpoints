@@ -55,6 +55,7 @@ const classProps = {
     'firstChapter',
     'series',
     'author',
+    'author.books',
     'stores'
   ]
 };

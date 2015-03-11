@@ -18,7 +18,7 @@ console.log('Server running on, %s:%d', host, port);
 module.exports = app;
 module.exports.baseUrl = 'http://' + host + ':' + port + '/v1';
 
-module.exports.empty = function () {
+module.exports.dropTables = function () {
   return DB.Knex.migrate.rollback(config);
 };
 
