@@ -42,6 +42,7 @@
     "fantasy-database": "^1.1.0",
     "istanbul": "^0.3.6",
     "jscs": "^1.10.0",
+    "jscs-jsdoc": "^0.4.5",
     "jsdoc-toolkit": "0.0.2",
     "jshint": "^2.5.11",
     "knex": "^0.7.3",
