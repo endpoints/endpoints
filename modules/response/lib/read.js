@@ -12,8 +12,7 @@ module.exports = function (formatter, config, data) {
     code: '200',
     data: formatter(data, {
       singleResult: data.singleResult,
-      relations: data.relations,
-      typeName: config.typeName
+      relations: data.relations
     })
   };
 };
