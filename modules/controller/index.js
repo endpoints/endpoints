@@ -10,7 +10,7 @@ const process = require('./lib/process');
  * given data source.
  *
  * @constructor
- * @param {Object#Source} opts.source - A wrapper object for a data source.
+ * @param {Object} opts - opts.source: A wrapper object for a data source.
  */
 function Controller(opts) {
   if (!opts) {
