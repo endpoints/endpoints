@@ -2,8 +2,8 @@
 > put it on the web
 
 Endpoints is deployed to Amazon EC2 using Ansible. Until Ansible supports
-Windows, a Linux or OSX host is required. System requirements are listed
-at the bottom of this document.
+Windows, a Linux or OSX host is required. Further system requirements are
+listed at the bottom of this document.
 
 ## Deploying
 
