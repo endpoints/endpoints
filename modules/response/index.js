@@ -8,7 +8,7 @@ const TYPE = 'application/vnd.api+json';
 
   @constructor
   @param {Object} response - the response object from Express or Hapi
-  @param {Object} formatter - JSON-api or a custom formatter
+  @param {Function} formatter
 */
 function Response (response, formatter) {
   this.response = response;
@@ -36,7 +36,6 @@ Response.method = function (fn) {
   Convenience method for creating a new element
 
   @todo: missing params listing
-
 */
 Response.prototype.create = Response.method(require('./lib/create'));
 

@@ -6,7 +6,7 @@ const formatModel = require('./lib/format_model');
   The role of this module is to take a single model or collection of models
   and convert them into a representation that is json-api compliant.
 
-  @param {Object} input - a bookshelf collection
+  @param {Bookshelf.Model|Bookshelf.Collection} input
   @param {Object} opts -
      singleResult: boolean indicating if result should be singular
                      this is needed because the querying system always

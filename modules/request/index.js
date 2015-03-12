@@ -12,9 +12,9 @@ const splitStringProps = require('./lib/split_string_props');
   Creates a new instance of Request.
 
   @constructor
-  @param {Object} request - The request object..
+  @param {Object} request - The request object.
   @param {Object} config - The config from the controller.
-  @param {Source} adapter - The data adapter (should be adapter).
+  @param {Endpoints.Adapter} adapter
 */
 function Request (request, config, adapter) {
   var params = request.params = request.params || {};
@@ -73,8 +73,7 @@ Request.prototype.validate = function () {
 };
 
 /*
-  A convenience method for accessing the data object in a
-  request body.
+  A convenience method for accessing the data object in a request body.
 
   @returns {Object} An collection or element.
 */
@@ -86,15 +85,14 @@ Request.prototype.data = function () {
   A convenience method for accessing the relation object
   inside the params object on a request.
 
-  @returns {Object} The params.relation on a request object.
+  @returns {Array} The params.relation on a request object.
 */
 Request.prototype.relation = function () {
   return this.params.relation;
 };
 
 /*
-  A convenience method for retrieving the method from the
-  request object.
+  A convenience method for retrieving the method from the request object.
 
   @returns {String} The name of the method (create, read, update, destroy).
 */
@@ -104,17 +102,16 @@ Request.prototype.method = function () {
 
 
 /*
-  A convenience method for accessing the string typeName of a Source model.
+  A convenience method for accessing the typeName of an adapter's model.
 
-  @returns {Source#typeName} The name of the type of the model from the Source.
+  @returns {String} The name of the type of the model.
  */
 Request.prototype.typeName = function () {
   return this.adapter.typeName();
 };
 
 /*
-  A convenience method for accessing the query object
-  on a request.
+  Builds a query object to be passed to Endpoints.Adapter#read.
 
   @returns {Object} The query object on a request.
  */
@@ -134,9 +131,9 @@ Request.prototype.query = function () {
 };
 
 /*
-  Creates a new instance of a bookshelf Model.
+  Creates a new instance of a model.
 
-  @returns {Promise.Bookshelf.Model} Newly created instance of the Model.
+  @returns {Promise(Bookshelf.Model)} Newly created instance of the Model.
 */
 Request.prototype.create = function () {
   var adapter = this.adapter;
@@ -156,9 +153,9 @@ Request.prototype.create = function () {
 };
 
 /*
-  Requests data for one or more elements.
+  Queries the adapter for matching models.
 
-  @returns {Promise.Bookshelf.Model} Requested Bookshelf.Model or Bookshelf.Collection.
+  @returns {Promise(Bookshelf.Model|Bookshelf.Collection)}
 */
 Request.prototype.read = function () {
   var adapter = this.adapter;
@@ -182,9 +179,9 @@ Request.prototype.read = function () {
 };
 
 /*
-  Edits a single element by changing values for one or more attributes.
+  Edits a model.
 
-  @returns {Bookshelf.Model}
+  @returns {Promise(Bookshelf.Model)}
 */
 Request.prototype.update = function () {
   var adapter = this.adapter;
@@ -206,9 +203,9 @@ Request.prototype.update = function () {
 };
 
 /*
-  Deletes an element.
+  Deletes a model.
 
-  @returns {Bookshelf.Model} Newly deleted / empty Bookshelf.Model.
+  @returns {Promise(Bookshelf.Model)}
 */
 Request.prototype.destroy = function () {
   var method = this.method();
