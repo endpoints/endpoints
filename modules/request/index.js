@@ -8,14 +8,14 @@ const verifyContentType = require('./lib/verify_content_type');
 const verifyDataObject = require('./lib/verify_data_object');
 const splitStringProps = require('./lib/split_string_props');
 
-/**
- * Creates a new instance of Request.
- *
- * @constructor
- * @param {Object} request - The request object from express.
- * @param {Object} config - A object containing customization keys.
- * @param {Source} source - The data source.
- */
+/*
+  Creates a new instance of Request.
+
+  @constructor
+  @param {Object} request - The request object..
+  @param {Object} config - The config from the controller.
+  @param {Source} source - The data source (should be adapter).
+*/
 function Request (request, config, source) {
   var params = request.params = request.params || {};
   var body = request.body = request.body || {};
@@ -29,6 +29,9 @@ function Request (request, config, source) {
   this.validators = config.validators;
 
   // this used to happen in the configureController step
+  // TODO: is this even needed? i believe we're only using
+  // it to generate the location header response for creation
+  // which is brittle and invalid anyway.
   config.typeName = source.typeName();
 
   var requestData;
@@ -43,11 +46,11 @@ function Request (request, config, source) {
   }
 }
 
-/**
- * A function that, given a request, validates the request.
- *
- * @returns {object} An object containing errors, if any.
- */
+/*
+  A function that, given a request, validates the request.
+
+  @returns {object} An object containing errors, if any.
+*/
 Request.prototype.validate = function () {
   var err;
   var request = this.request;
@@ -69,51 +72,51 @@ Request.prototype.validate = function () {
   return err;
 };
 
-/**
- * A convenience method for accessing the data object in a
- * request body.
- *
- * @returns {Object} An collection or element.
- */
+/*
+  A convenience method for accessing the data object in a
+  request body.
+
+  @returns {Object} An collection or element.
+*/
 Request.prototype.data = function () {
   return this.request.body.data;
 };
 
-/**
- * A convenience method for accessing the relation object
- * inside the params object on a request.
- *
- * @returns {Object} The params.relation on a request object.
- */
+/*
+  A convenience method for accessing the relation object
+  inside the params object on a request.
+
+  @returns {Object} The params.relation on a request object.
+*/
 Request.prototype.relation = function () {
   return this.params.relation;
 };
 
-/**
- * A convenience method for retrieving the method from the
- * request object.
- *
- * @returns {String} The name of the method (create, read, update, destroy).
- */
+/*
+  A convenience method for retrieving the method from the
+  request object.
+
+  @returns {String} The name of the method (create, read, update, destroy).
+*/
 Request.prototype.method = function () {
   return this.config.method;
 };
 
 
-/**
- * A convenience method for accessing the string typeName of a Source model.
- *
- * @returns {Source#typeName} The name of the type of the model from the Source.
+/*
+  A convenience method for accessing the string typeName of a Source model.
+
+  @returns {Source#typeName} The name of the type of the model from the Source.
  */
 Request.prototype.typeName = function () {
   return this.source.typeName();
 };
 
-/**
- * A convenience method for accessing the query object
- * on a request.
- *
- * @returns {Object} The query object on a request.
+/*
+  A convenience method for accessing the query object
+  on a request.
+
+  @returns {Object} The query object on a request.
  */
 Request.prototype.query = function () {
   var query = this.request.query;
@@ -130,11 +133,11 @@ Request.prototype.query = function () {
   };
 };
 
-/**
- * Creates a new instance of a bookshelf Model.
- *
- * @returns {Promise.Bookshelf.Model} Newly created instance of the Model.
- */
+/*
+  Creates a new instance of a bookshelf Model.
+
+  @returns {Promise.Bookshelf.Model} Newly created instance of the Model.
+*/
 Request.prototype.create = function () {
   var source = this.source;
   var method = this.method();
@@ -152,11 +155,11 @@ Request.prototype.create = function () {
   }
 };
 
-/**
- * Requests data for one or more elements.
- *
- * @returns {Promise.Bookshelf.Model} Requested Bookshelf.Model or Bookshelf.Collection.
- */
+/*
+  Requests data for one or more elements.
+
+  @returns {Promise.Bookshelf.Model} Requested Bookshelf.Model or Bookshelf.Collection.
+*/
 Request.prototype.read = function () {
   var source = this.source;
   var query = this.query();
@@ -178,11 +181,11 @@ Request.prototype.read = function () {
   return source.read(query);
 };
 
-/**
- * Edits a single element by changing values for one or more attributes.
- *
- * @returns {Bookshelf.Model}
- */
+/*
+  Edits a single element by changing values for one or more attributes.
+
+  @returns {Bookshelf.Model}
+*/
 Request.prototype.update = function () {
   var source = this.source;
   var method = this.method();
@@ -202,11 +205,11 @@ Request.prototype.update = function () {
     });
 };
 
-/**
- * Deletes an element.
- *
- * @returns {Bookshelf.Model} Newly deleted / empty Bookshelf.Model.
- */
+/*
+  Deletes an element.
+
+  @returns {Bookshelf.Model} Newly deleted / empty Bookshelf.Model.
+*/
 Request.prototype.destroy = function () {
   var method = this.method();
   var source = this.source;

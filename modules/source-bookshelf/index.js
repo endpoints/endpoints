@@ -11,14 +11,14 @@ const destructureRequest = require('./lib/destructure_request_data');
 // rather than bookshelf models. that might make a lot of sense.
 const relate = require('../formatter-jsonapi/lib/relate');
 
-/**
- * Creates a Source object; a wrapper that allows endpoints to interact
- * with a Bookshelf model, which is taken as a single
- * parameter.
- *
- * @constructor
- * @param {Object} opts - opts.model: The Bookshelf model.
- */
+/*
+  Creates a Source object; a wrapper that allows endpoints to interact
+  with a Bookshelf model, which is taken as a single
+  parameter.
+
+  @constructor
+  @param {Object} opts - opts.model: The Bookshelf model.
+*/
 function Source (opts) {
   if (!opts) {
     opts = {};
@@ -40,12 +40,12 @@ function Source (opts) {
   }
 }
 
-/**
- * A function that returns an array of object ids resultant
- * from the application of a filter(s).
- *
- * @returns {Array} An array of object ids.
- */
+/*
+  A function that returns an array of object ids resultant
+  from the application of a filter(s).
+
+  @returns {Array} An array of object ids.
+*/
 
 Source.prototype.filters = function () {
   var filters = Object.keys(this.model.filters || {});
@@ -60,29 +60,29 @@ Source.prototype.filters = function () {
   return filters;
 };
 
-/**
- * A function that returns the fields on the model.
- *
- * @returns {Array} An array of strings of fields on the model.
+/*
+  A function that returns the fields on the model.
+
+  @returns {Array} An array of strings of fields on the model.
  */
 Source.prototype.fields = function() {
   return this.model.fields || [];
 };
 
-/**
- * A function that returns the relations on the model.
- *
- * @returns {Object} An object containing the model's relations.
+/*
+  A function that returns the relations on the model.
+
+  @returns {Object} An object containing the model's relations.
  */
 Source.prototype.relations = function () {
   return this.model.relations || [];
 };
 
-/**
- * A function that returns the typeName of the model.
- *
- * @returns {String}
- */
+/*
+  A function that returns the typeName of the model.
+
+  @returns {String}
+*/
 Source.prototype.typeName = function () {
   return this.model.typeName;
 };
@@ -94,29 +94,29 @@ Source.prototype.typeName = function () {
 // query up front.
 // this will be resolved in a future version of bookshelf
 
-/**
- * A function that returns the models related to a given model.
- * This allows requests such as /authors/1/books?filter[thing]=x.
- * Currently this functions queries for the same data twice, due
- * to deficiences in bookshelf, which don't allow the correct
- * query to be built up front.
- *
- * This should be resolved in new version of bookshelf.
- *
- * @example
- * If one requests all the books related to an author,
- * but only the ones with ids 2 and 4, one cannot immediately
- * construct that query with bookshelf. In order to accomplish this,
- * one must first request _all_ related books, and then request
- * the books with the ids 2 and 4. This results in 2 full queries of
- * all related books.
- *
- * @param {Object} opts - opts.filter: Assigned to relevant id(s) as filters are applied.
- * @param {String} relation - The dot notated set of requests.
- * @param {Bookshelf.Model} model - The related model.
- *
- * @returns {Array} An array of related object(s).
- */
+/*
+  A function that returns the models related to a given model.
+  This allows requests such as /authors/1/books?filter[thing]=x.
+  Currently this functions queries for the same data twice, due
+  to deficiences in bookshelf, which don't allow the correct
+  query to be built up front.
+
+  This should be resolved in new version of bookshelf.
+
+  @example
+  If one requests all the books related to an author,
+  but only the ones with ids 2 and 4, one cannot immediately
+  construct that query with bookshelf. In order to accomplish this,
+  one must first request _all_ related books, and then request
+  the books with the ids 2 and 4. This results in 2 full queries of
+  all related books.
+
+  @param {Object} opts - opts.filter: Assigned to relevant id(s) as filters are applied.
+  @param {String} relation - The dot notated set of requests.
+  @param {Bookshelf.Model} model - The related model.
+
+  @returns {Array} An array of related object(s).
+*/
 Source.prototype.related = function (opts, relation, model) {
   var related = relate(model, relation);
   var relatedModel, relatedIds;
@@ -135,15 +135,14 @@ Source.prototype.related = function (opts, relation, model) {
   return relatedSource.read(opts);
 };
 
-/**
- * A convenience method to find a single object by id.
- *
- * @param {int} id - Id by which
- * @param {Array} relations - Holds ids of all related objects.
- *
- * @returns {Promise.Object} A single object with the requested id.
- */
-// not in love with this new method signature, it differs from the rest a lot.
+/*
+  A convenience method to find a single object by id.
+
+  @param {int} id - Id by which
+  @param {Array} relations - Holds ids of all related objects.
+
+  @returns {Promise.Object} A single object with the requested id.
+*/
 Source.prototype.byId = function (id, relations) {
   relations = relations || [];
   return this.model.collection().query(function (qb) {
@@ -153,14 +152,14 @@ Source.prototype.byId = function (id, relations) {
   });
 };
 
-/**
- * Creates an object in the database. Returns an instance of the new object.
- *
- * @param {Function} method - If not present, throws an error.
- * @param {Object} params - If not present, defaults to an empty object.
- *
- * @returns {Bookshelf.Model} An instance of the new object.
- */
+/*
+  Creates an object in the database. Returns an instance of the new object.
+
+  @param {Function} method - If not present, throws an error.
+  @param {Object} params - If not present, defaults to an empty object.
+
+  @returns {Bookshelf.Model} An instance of the new object.
+*/
 Source.prototype.create = function (method, params) {
   if (!method) {
     throw new Error('No method provided to create with.');
@@ -174,14 +173,14 @@ Source.prototype.create = function (method, params) {
   });
 };
 
-/**
- * Retrieves an object or collection of objects from the database. Returns
- * retrieved data.
- *
- * @param {Object} opts - Contains information from the request object
- *
- * @returns {Promise.Bookshelf.Collection} The requested object(s).
- */
+/*
+  Retrieves an object or collection of objects from the database. Returns
+  retrieved data.
+
+  @param {Object} opts - Contains information from the request object
+
+  @returns {Promise.Bookshelf.Collection} The requested object(s).
+*/
 Source.prototype.read = function (opts) {
   if (!opts) {
     opts = {};
@@ -204,15 +203,15 @@ Source.prototype.read = function (opts) {
   });
 };
 
-/**
- * Updates the attributes of an element.
- *
- * @param {Bookshelf.Model} model - The Bookshelf Model
- * @param {String} method - The name of the method.
- * @param {Object} params - An object containing the params from the request.
- *
- * @returns {Promise.Bookshelf.Model} The updated object.
- */
+/*
+  Updates the attributes of an element.
+
+  @param {Bookshelf.Model} model - The Bookshelf Model
+  @param {String} method - The name of the method.
+  @param {Object} params - An object containing the params from the request.
+
+  @returns {Promise.Bookshelf.Model} The updated object.
+*/
 Source.prototype.update = function (model, method, params) {
   if (!method) {
     throw new Error('No method provided to update or delete with.');
@@ -222,15 +221,15 @@ Source.prototype.update = function (model, method, params) {
   });
 };
 
-/**
- * Deletes an element. Same implementation as update.
- *
- * @param {Bookshelf.Model} model - The Bookshelf Model
- * @param {String} method - The name of the method.
- * @param {Object} params - An object containing the params from the request.
- *
- * @returns {Promise.Bookshelf.Model} The deleted object.
- */
+/*
+  Deletes an element. Same implementation as update.
+
+  @param {Bookshelf.Model} model - The Bookshelf Model
+  @param {String} method - The name of the method.
+  @param {Object} params - An object containing the params from the request.
+
+  @returns {Promise.Bookshelf.Model} The deleted object.
+*/
 Source.prototype.destroy = Source.prototype.update;
 
 module.exports = Source;
