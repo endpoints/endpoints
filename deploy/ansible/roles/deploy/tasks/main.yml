@@ -12,3 +12,4 @@
 
 - name: link sha-named clone to make it live
   file: path={{site_path}} state=link src={{base_path}}/{{sha.stdout|default(commit)}} force=true
+  notify: restart site

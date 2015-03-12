@@ -7,6 +7,7 @@
     - base
     - configure
     - nginx
+    - services
   handlers:
     - include: handlers/handlers.yml
 

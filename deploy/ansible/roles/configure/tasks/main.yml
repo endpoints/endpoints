@@ -36,3 +36,6 @@
   authorized_key: user={{item.user}} key="{{item.key}}" state={{item.state}}
   with_items: keys
   when: env != 'development'
+
+- name: log file exists
+  file: path={{site_log_file}} state=touch owner={{site_user}} group={{site_group}}

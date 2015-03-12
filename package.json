@@ -30,7 +30,8 @@
     "test-integration": "npm run lint && npm run style && mocha -b -R spec test/integration",
     "test": "npm run lint && npm run style && mocha -b -R spec",
     "style": "jscs modules test",
-    "lint": "jshint index.js modules test"
+    "lint": "jshint index.js modules test",
+    "start": "node website"
   },
   "devDependencies": {
     "bluebird": "^2.9.4",
@@ -42,12 +43,14 @@
     "express-routebuilder": "^2.1.0",
     "fantasy-database": "^1.1.0",
     "istanbul": "^0.3.6",
+    "jade": "^1.9.2",
     "jscs": "^1.10.0",
     "jscs-jsdoc": "^0.4.5",
     "jsdoc-toolkit": "0.0.2",
     "jshint": "^2.5.11",
     "knex": "^0.7.3",
     "lodash": "^3.5.0",
+    "markdown": "^0.5.0",
     "mocha": "^2.1.0",
     "sinon": "^1.12.2",
     "sqlite3": "^3.0.5",

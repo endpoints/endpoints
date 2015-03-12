@@ -1,9 +1,9 @@
 # Generate nginx config files rolling back if any part of the config is invalid.
 
 - name: ensure nginx config files exist
-  shell: touch {{item.directory}}/{{item.file}}
+  shell: touch {{item.directory}}{{item.file}}
   args:
-    creates: "{{item.directory}}/{{item.file}}"
+    creates: "{{item.directory}}{{item.file}}"
   with_items: confs + shared
 
 - name: backup existing nginx config files
@@ -26,7 +26,7 @@
   when: nginx_conf|changed
 
 - name: remove temporary backups if new nginx config files are valid
-  file: path={{item.directory}}/{{item.file}}.backup state=absent
+  file: path={{item.directory}}{{item.file}}.backup state=absent
   with_items: confs + shared
   when: nginx_test_valid|success
 
