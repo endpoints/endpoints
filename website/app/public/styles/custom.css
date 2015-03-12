@@ -20,4 +20,11 @@ pre {
   margin: 0 20px;
 }
 
-.
+.main-nav {
+  text-align: center;
+}
+
+a, a:visited, a:hover, a:active {
+  text-decoration: none;
+  color: #15AD21;
+}
