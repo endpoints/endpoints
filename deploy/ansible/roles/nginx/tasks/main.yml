@@ -13,7 +13,7 @@
   with_items: confs + shared
 
 - name: generate new nginx config files
-  template: src={{item.file}} dest={{item.directory}} backup=yes
+  template: src={{item.file}} dest={{item.directory}} backup=no
   register: nginx_conf
   with_items: confs + shared
   notify: restart nginx
