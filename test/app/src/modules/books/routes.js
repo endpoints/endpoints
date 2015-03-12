@@ -1,6 +1,10 @@
 const controller = require('./controller');
 const schema = require('./schema');
 
+const update = controller.update({
+  validate: schema
+});
+
 module.exports = {
   post: {
     '/': controller.create({
@@ -12,10 +16,9 @@ module.exports = {
     '/:id': controller.read(),
     '/:id/:relation': controller.read()
   },
-  put: {
-    '/:id': controller.update({
-      validate: schema
-    })
+  patch: {
+    '/:id': update,
+    '/:id/:relation': update,
   },
   delete: {
     '/:id': controller.destroy()
