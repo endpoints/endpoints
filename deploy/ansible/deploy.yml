@@ -8,3 +8,5 @@
     force: false
   roles:
     - {role: deploy, when: "env == 'production'"}
+  handlers:
+    - include: handlers/handlers.yml
