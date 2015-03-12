@@ -3,7 +3,7 @@ const jsonApi = require('../formatter-jsonapi');
 const TYPE = 'application/vnd.api+json';
 
 
-/*
+/**
   Creates a new instance of Response.
 
   @constructor
@@ -17,7 +17,7 @@ function Response (response, formatter) {
 
 Response.error = require('./lib/error');
 
-/*
+/**
   Partially applies this.formatter to each method.
 
   @param {Function} fn - The method to which the formatter should be applied.
@@ -32,14 +32,14 @@ Response.method = function (fn) {
   };
 };
 
-/*
+/**
   Convenience method for creating a new element
 
   @todo: missing params listing
 */
 Response.prototype.create = Response.method(require('./lib/create'));
 
-/*
+/**
   Convenience method for retrieving an element or a collection using
   the underlying adapter.
 
@@ -47,7 +47,7 @@ Response.prototype.create = Response.method(require('./lib/create'));
 */
 Response.prototype.read = Response.method(require('./lib/read'));
 
-/*
+/**
   Convenience method for updating one or more attributes on an element
   using the underlying adapter..
 
@@ -55,14 +55,14 @@ Response.prototype.read = Response.method(require('./lib/read'));
  */
 Response.prototype.update = Response.method(require('./lib/update'));
 
-/*
+/**
   Convenience method for deleting an element using the underlying adapter.
 
   @todo: missing params listing
  */
 Response.prototype.destroy = Response.method(require('./lib/destroy'));
 
-/*
+/**
   Formats response for Express framework http response.
 
   @param {Object} payload - Code  data to be returned to the client.
@@ -83,7 +83,7 @@ Response.prototype.express = function (payload) {
   return this.response.set('content-type', TYPE).status(code).send(data);
 };
 
-/*
+/**
   Formats response for hapi framework http response.
 
   @param {Object} payload - Code and data to be returned to client.

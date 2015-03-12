@@ -34,7 +34,7 @@ describe('Request', function () {
   });
 
 });
-/*const expect = require('chai').expect;
+/**const expect = require('chai').expect;
 
 const getParams = require('../../lib/get_params');
 

@@ -1,4 +1,4 @@
-/*
+/**
 * Skeleton V2.0.4
 * Copyright 2014, Dave Gamache
 * www.getskeleton.com
@@ -8,7 +8,7 @@
 */
 
 
-/* Table of contents
+/** Table of contents
 ––––––––––––––––––––––––––––––––––––––––––––––––––
 - Grid
 - Base Styles
@@ -26,7 +26,7 @@
 */
 
 
-/* Grid
+/** Grid
 –––––––––––––––––––––––––––––––––––––––––––––––––– */
 .container {
   position: relative;
@@ -41,14 +41,14 @@
   float: left;
   box-sizing: border-box; }
 
-/* For devices larger than 400px */
+/** For devices larger than 400px */
 @media (min-width: 400px) {
   .container {
     width: 85%;
     padding: 0; }
 }
 
-/* For devices larger than 550px */
+/** For devices larger than 550px */
 @media (min-width: 550px) {
   .container {
     width: 80%; }
@@ -78,7 +78,7 @@
 
   .one-half.column                { width: 48%; }
 
-  /* Offsets */
+  /** Offsets */
   .offset-by-one.column,
   .offset-by-one.columns          { margin-left: 8.66666666667%; }
   .offset-by-two.column,
@@ -113,22 +113,22 @@
 }
 
 
-/* Base Styles
+/** Base Styles
 –––––––––––––––––––––––––––––––––––––––––––––––––– */
-/* NOTE
+/** NOTE
 html is set to 62.5% so that all the REM measurements throughout Skeleton
 are based on 10px sizing. So basically 1.5rem = 15px :) */
 html {
   font-size: 62.5%; }
 body {
-  font-size: 1.5em; /* currently ems cause chrome bug misinterpreting rems on body element */
+  font-size: 1.5em; /** currently ems cause chrome bug misinterpreting rems on body element */
   line-height: 1.6;
   font-weight: 400;
   font-family: "Raleway", "HelveticaNeue", "Helvetica Neue", Helvetica, Arial, sans-serif;
   color: #222; }
 
 
-/* Typography
+/** Typography
 –––––––––––––––––––––––––––––––––––––––––––––––––– */
 h1, h2, h3, h4, h5, h6 {
   margin-top: 0;
@@ -141,7 +141,7 @@ h4 { font-size: 2.4rem; line-height: 1.35; letter-spacing: -.08rem; }
 h5 { font-size: 1.8rem; line-height: 1.5;  letter-spacing: -.05rem; }
 h6 { font-size: 1.5rem; line-height: 1.6;  letter-spacing: 0; }
 
-/* Larger than phablet */
+/** Larger than phablet */
 @media (min-width: 550px) {
   h1 { font-size: 5.0rem; }
   h2 { font-size: 4.2rem; }
@@ -155,7 +155,7 @@ p {
   margin-top: 0; }
 
 
-/* Links
+/** Links
 –––––––––––––––––––––––––––––––––––––––––––––––––– */
 a {
   color: #1EAEDB; }
@@ -163,7 +163,7 @@ a:hover {
   color: #0FA0CE; }
 
 
-/* Buttons
+/** Buttons
 –––––––––––––––––––––––––––––––––––––––––––––––––– */
 .button,
 button,
@@ -223,7 +223,7 @@ input[type="button"].button-primary:focus {
   border-color: #1EAEDB; }
 
 
-/* Forms
+/** Forms
 –––––––––––––––––––––––––––––––––––––––––––––––––– */
 input[type="email"],
 input[type="number"],
@@ -235,13 +235,13 @@ input[type="password"],
 textarea,
 select {
   height: 38px;
-  padding: 6px 10px; /* The 6px vertically centers text on FF, ignored by Webkit */
+  padding: 6px 10px; /** The 6px vertically centers text on FF, ignored by Webkit */
   background-color: #fff;
   border: 1px solid #D1D1D1;
   border-radius: 4px;
   box-shadow: none;
   box-sizing: border-box; }
-/* Removes awkward default styles on some inputs for iOS */
+/** Removes awkward default styles on some inputs for iOS */
 input[type="email"],
 input[type="number"],
 input[type="search"],
@@ -285,7 +285,7 @@ label > .label-body {
   font-weight: normal; }
 
 
-/* Lists
+/** Lists
 –––––––––––––––––––––––––––––––––––––––––––––––––– */
 ul {
   list-style: circle inside; }
@@ -304,7 +304,7 @@ li {
   margin-bottom: 1rem; }
 
 
-/* Code
+/** Code
 –––––––––––––––––––––––––––––––––––––––––––––––––– */
 code {
   padding: .2rem .5rem;
@@ -320,7 +320,7 @@ pre > code {
   white-space: pre; }
 
 
-/* Tables
+/** Tables
 –––––––––––––––––––––––––––––––––––––––––––––––––– */
 th,
 td {
@@ -335,7 +335,7 @@ td:last-child {
   padding-right: 0; }
 
 
-/* Spacing
+/** Spacing
 –––––––––––––––––––––––––––––––––––––––––––––––––– */
 button,
 .button {
@@ -357,7 +357,7 @@ form {
   margin-bottom: 2.5rem; }
 
 
-/* Utilities
+/** Utilities
 –––––––––––––––––––––––––––––––––––––––––––––––––– */
 .u-full-width {
   width: 100%;
@@ -371,8 +371,8 @@ form {
   float: left; }
 
 
-/* Misc
-–––––––––––––––––––––––––––––––––––––––––––––––––– */
+/** Misc
+––––––––––––––––––––––––––––––���––––––––––––––––––– */
 hr {
   margin-top: 3rem;
   margin-bottom: 3.5rem;
@@ -380,10 +380,10 @@ hr {
   border-top: 1px solid #E1E1E1; }
 
 
-/* Clearing
+/** Clearing
 –––––––––––––––––––––––––––––––––––––––––––––––––– */
 
-/* Self Clearing Goodness */
+/** Self Clearing Goodness */
 .container:after,
 .row:after,
 .u-cf {
@@ -392,9 +392,9 @@ hr {
   clear: both; }
 
 
-/* Media Queries
+/** Media Queries
 –––––––––––––––––––––––––––––––––––––––––––––––––– */
-/*
+/**
 Note: The best way to structure the use of media queries is to create the queries
 near the relevant code. For example, if you wanted to change the styles for buttons
 on small devices, paste the mobile query code up in the buttons section and style it
@@ -402,17 +402,17 @@ there.
 */
 
 
-/* Larger than mobile */
+/** Larger than mobile */
 @media (min-width: 400px) {}
 
-/* Larger than phablet (also point when grid becomes active) */
+/** Larger than phablet (also point when grid becomes active) */
 @media (min-width: 550px) {}
 
-/* Larger than tablet */
+/** Larger than tablet */
 @media (min-width: 750px) {}
 
-/* Larger than desktop */
+/** Larger than desktop */
 @media (min-width: 1000px) {}
 
-/* Larger than Desktop HD */
+/** Larger than Desktop HD */
 @media (min-width: 1200px) {}

@@ -1,4 +1,4 @@
-/*const expect = require('chai').expect;
+/**const expect = require('chai').expect;
 const database = require('fantasy-database');
 
 const relate = require('../../lib/relate');

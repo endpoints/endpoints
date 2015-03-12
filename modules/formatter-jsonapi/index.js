@@ -2,7 +2,7 @@ const _ = require('lodash');
 
 const formatModel = require('./lib/format_model');
 
-/*
+/**
   The role of this module is to take a single model or collection of models
   and convert them into a representation that is json-api compliant.
 
@@ -24,7 +24,7 @@ const formatModel = require('./lib/format_model');
 module.exports = function (input, opts) {
   var included = [];
 
-  /*
+  /**
     Recieves each model that was explictly sideloaded
     For example given a request `GET /author/1?include=books`, each book
     related to the author would pass through this method.
@@ -39,25 +39,25 @@ module.exports = function (input, opts) {
     included.push(formatModel(null, null, model));
   };
 
-  /*
+  /**
     @todo formatting?
     This is is a partially applied version of formatModel.
   */
   var formatter = formatModel.bind(null, opts.relations, exporter);
 
-  /*
+  /**
     Formats every incoming model
   */
   var serialized = input.map ? input.map(formatter) : formatter(input);
 
-  /*
+  /**
     If we are requesting a single item, return it as an object, not an array.
   */
   if (opts.singleResult && input.length) {
     serialized = serialized[0];
   }
 
-  /*
+  /**
     Prepare json-api compliant output
   */
   var output = {
@@ -73,7 +73,7 @@ module.exports = function (input, opts) {
     }).value();
   }
 
-  /*
+  /**
    "bam, done."
   */
   return output;

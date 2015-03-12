@@ -11,7 +11,7 @@ const destructureRequest = require('./lib/destructure_request_data');
 // rather than bookshelf models. that might make a lot of sense.
 const relate = require('../formatter-jsonapi/lib/relate');
 
-/*
+/**
   Creates an adapter that allows endpoints to interact with a Bookshelf model.
 
   @constructor
@@ -38,7 +38,7 @@ function Adapter (opts) {
   }
 }
 
-/*
+/**
   An array of filters available on the underlying model. This controls
   which filters will be recognized by a request.
 
@@ -60,7 +60,7 @@ Adapter.prototype.filters = function () {
   return filters;
 };
 
-/*
+/**
   Provides an array of valid fields on the underlying model.
 
   @todo Remove this?
@@ -71,7 +71,7 @@ Adapter.prototype.fields = function() {
   return this.model.fields || [];
 };
 
-/*
+/**
   Provides an array of valid relations on the underlying model. This controls
   which relations can be included in a request.
 
@@ -84,7 +84,7 @@ Adapter.prototype.relations = function () {
   return this.model.relations || [];
 };
 
-/*
+/**
   Provides the type name of the underlying model. This controls the
   value of the `type` property in responses.
 
@@ -95,7 +95,7 @@ Adapter.prototype.typeName = function () {
 };
 
 
-/*
+/**
   Returns the models related to a given model. This allows requests
   such as `GET /authors/1/books?filter[published_after]=2015-01-01`.
 
@@ -114,7 +114,7 @@ Adapter.prototype.typeName = function () {
     relation - A dot notated relation to look up for the provided model.
   @param {Bookshelf.Model} model
 
-  @returns {Promise(Bookshelf.Model|Bookshelf.Collection)} related models.
+  @returns {Promise(Bookshelf.Model)|Promise(Bookshelf.Collection)} related models.
 */
 Adapter.prototype.related = function (opts, relation, model) {
   var related = relate(model, relation);
@@ -134,7 +134,7 @@ Adapter.prototype.related = function (opts, relation, model) {
   return relatedAdapter.read(opts);
 };
 
-/*
+/**
   A convenience method to find a single model by id.
 
   @param {int} id - the id of the model
@@ -151,7 +151,7 @@ Adapter.prototype.byId = function (id, relations) {
   });
 };
 
-/*
+/**
   Creates an object in the database. Returns an instance of the new object.
 
   @param {String} method - The name of the method on the model constructor to use for creation.
@@ -172,7 +172,7 @@ Adapter.prototype.create = function (method, params) {
   });
 };
 
-/*
+/**
   Retrieves a collection of models from the database.
 
   @param {Object} opts - the output of Request#query
@@ -201,7 +201,7 @@ Adapter.prototype.read = function (opts) {
   });
 };
 
-/*
+/**
   Updates a provided model using the provided method.
 
   @param {Bookshelf.Model} model
@@ -219,7 +219,7 @@ Adapter.prototype.update = function (model, method, params) {
   });
 };
 
-/*
+/**
   Deletes a model. Same implementation as update.
 
   @param {Bookshelf.Model} model

@@ -3,7 +3,7 @@ const configure = require('./lib/configure');
 const validate = require('./lib/validate');
 const process = require('./lib/process');
 
-/*
+/**
   Constructor for the Endpoints Controller; Provides methods for generating
   request handling functions that can be used by any node http server.
 
@@ -20,7 +20,7 @@ function Controller(opts) {
   _.extend(this, opts);
 }
 
-/*
+/**
   Used for generating CRUD (create, read, update, destroy) methods.
 
   @param {String} method - The name of the function to be created.
@@ -38,22 +38,22 @@ Controller.method = function (method) {
   };
 };
 
-/*
+/**
   Returns a request handling function customized to handle create requests.
 */
 Controller.prototype.create = Controller.method('create');
 
-/*
+/**
   Returns a request handling function customized to handle read requests.
 */
 Controller.prototype.read = Controller.method('read');
 
-/*
+/**
   Returns a request handling function customized to handle update requests.
 */
 Controller.prototype.update = Controller.method('update');
 
-/*
+/**
   Returns a request handling function customized to handle destroy requests.
 */
 Controller.prototype.destroy = Controller.method('destroy');

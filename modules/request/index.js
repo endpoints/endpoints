@@ -8,7 +8,7 @@ const verifyContentType = require('./lib/verify_content_type');
 const verifyDataObject = require('./lib/verify_data_object');
 const splitStringProps = require('./lib/split_string_props');
 
-/*
+/**
   Creates a new instance of Request.
 
   @constructor
@@ -46,10 +46,10 @@ function Request (request, config, adapter) {
   }
 }
 
-/*
+/**
   A function that, given a request, validates the request.
 
-  @returns {object} An object containing errors, if any.
+  @returns {Object} An object containing errors, if any.
 */
 Request.prototype.validate = function () {
   var err;
@@ -72,7 +72,7 @@ Request.prototype.validate = function () {
   return err;
 };
 
-/*
+/**
   A convenience method for accessing the data object in a request body.
 
   @returns {Object} An collection or element.
@@ -81,7 +81,7 @@ Request.prototype.data = function () {
   return this.request.body.data;
 };
 
-/*
+/**
   A convenience method for accessing the relation object
   inside the params object on a request.
 
@@ -91,7 +91,7 @@ Request.prototype.relation = function () {
   return this.params.relation;
 };
 
-/*
+/**
   A convenience method for retrieving the method from the request object.
 
   @returns {String} The name of the method (create, read, update, destroy).
@@ -101,7 +101,7 @@ Request.prototype.method = function () {
 };
 
 
-/*
+/**
   A convenience method for accessing the typeName of an adapter's model.
 
   @returns {String} The name of the type of the model.
@@ -110,7 +110,7 @@ Request.prototype.typeName = function () {
   return this.adapter.typeName();
 };
 
-/*
+/**
   Builds a query object to be passed to Endpoints.Adapter#read.
 
   @returns {Object} The query object on a request.
@@ -130,7 +130,7 @@ Request.prototype.query = function () {
   };
 };
 
-/*
+/**
   Creates a new instance of a model.
 
   @returns {Promise(Bookshelf.Model)} Newly created instance of the Model.
@@ -152,10 +152,10 @@ Request.prototype.create = function () {
   }
 };
 
-/*
+/**
   Queries the adapter for matching models.
 
-  @returns {Promise(Bookshelf.Model|Bookshelf.Collection)}
+  @returns {Promise(Bookshelf.Model)|Promise(Bookshelf.Collection)}
 */
 Request.prototype.read = function () {
   var adapter = this.adapter;
@@ -178,7 +178,7 @@ Request.prototype.read = function () {
   return adapter.read(query);
 };
 
-/*
+/**
   Edits a model.
 
   @returns {Promise(Bookshelf.Model)}
@@ -202,7 +202,7 @@ Request.prototype.update = function () {
     });
 };
 
-/*
+/**
   Deletes a model.
 
   @returns {Promise(Bookshelf.Model)}

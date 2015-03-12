@@ -1,4 +1,4 @@
-/*const expect = require('chai').expect;
+/**const expect = require('chai').expect;
 
 const BookshelfAdapter = require('../../../adapter-bookshelf');
 const BooksModel = require('../../../../test/fixtures/models/books');
