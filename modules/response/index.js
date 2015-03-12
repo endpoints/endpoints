@@ -42,7 +42,7 @@ Response.prototype.create = Response.method(require('./lib/create'));
 
 /*
   Convenience method for retrieving an element or a collection using
-  the underlying source.
+  the underlying adapter.
 
   @todo: missing params listing
 */
@@ -50,14 +50,14 @@ Response.prototype.read = Response.method(require('./lib/read'));
 
 /*
   Convenience method for updating one or more attributes on an element
-  using the underlying source..
+  using the underlying adapter..
 
   @todo: missing params listing
  */
 Response.prototype.update = Response.method(require('./lib/update'));
 
 /*
-  Convenience method for deleting an element using the underlying source.
+  Convenience method for deleting an element using the underlying adapter.
 
   @todo: missing params listing
  */

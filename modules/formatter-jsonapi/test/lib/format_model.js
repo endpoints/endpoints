@@ -1,8 +1,8 @@
 /*const expect = require('chai').expect;
 
-const BookshelfSource = require('../../../source-bookshelf');
+const BookshelfAdapter = require('../../../adapter-bookshelf');
 const BooksModel = require('../../../../test/fixtures/models/books');
-const BooksSource = new BookshelfSource({
+const Books = new BookshelfAdapter({
   model: BooksModel
 });
 const DB = require('../../../../test/fixtures/classes/database');
@@ -21,7 +21,7 @@ describe('formatModel', function () {
     };
     // We're passing everything through the formatter now. That requires
     // a Bookshelf model.
-    BooksSource.create('create', {
+    Books.create('create', {
       author_id:1,
       title: 'test book',
       date_published: '2015-02-01'

@@ -11,14 +11,14 @@ This library provides methods for generating request handling functions to conne
 
 Create an instance to generate route handlers.
 
-`opts.source` - an instance of `Endpoints.BookshelfSource`.
+`opts.adapter` - an instance of `Endpoints.BookshelfAdapter`.
 
 ```js
 const Endpoints = require('endpoints');
 const model = require('path/to/bookshelf/model');
 
 const Application = new Endpoints.Controller({
-  source: new Endpoints.BookshelfSource({
+  adapter: new Endpoints.BookshelfAdapter({
     model: model
   });
 });
@@ -27,12 +27,12 @@ const Application = new Endpoints.Controller({
 *__Note:__ Bookshelf is currently the only ORM supported by Endpoints, but additional "source" adapters may be written in the future.*
 
 ### #create(opts)
-Returns a json-api compliant, node-style request handling function for the underlying source.
+Returns a json-api compliant, node-style request handling function for the underlying adapter.
 
 `opts.method` - a string specifying an alternate static method (must be defined on underlying model) to call when handling requests.
 
 ### #read(opts)
-Returns a json-api compliant, node-style request handling function for the underlying source.
+Returns a json-api compliant, node-style request handling function for the underlying adapter.
 
 `opts.include` - an array of relations to include by default  
 `opts.filter` - an object whose key/value pairs are used to filter the request  
@@ -40,6 +40,6 @@ Returns a json-api compliant, node-style request handling function for the under
 `opts.pass` - a boolean indicating the contents of the response   should be set to `response.data` and `response.code` and the `next` method should be called, deferring output to the next item in a middleware stack. *__Note:__ this option will likely be replaced with a callback function.*
 
 ### #update(opts), #destroy(opts)
-Returns a json-api compliant, node-style request handling function for the underlying source.
+Returns a json-api compliant, node-style request handling function for the underlying adapter.
 
 `opts.method` - specify an alternate prototype method (must be defined on underlying model) to call when handling requests.

@@ -4,7 +4,6 @@ describe('Endpoints', function () {
   require('../../modules/formatter-jsonapi/test');
   require('../../modules/request/test');
   require('../../modules/response/test');
-  //require('../../modules/source-memory/test');
-  require('../../modules/source-bookshelf/test');
+  require('../../modules/adapter-bookshelf/test');
   require('../../modules/validate-json-schema/test');
 });

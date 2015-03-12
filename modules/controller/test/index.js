@@ -7,7 +7,7 @@ const Controller = require('../');
 
 const source = require('./mocks/source');
 const controller = new Controller({
-  source: source
+  adapter: source
 });
 
 describe('Controller', function () {

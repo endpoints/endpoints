@@ -52,12 +52,12 @@ Application.prototype.manifest = function () {
   return this._endpoints.reduce(function (result, endpoint) {
     var resource = endpoint.resource;
     var controller = resource.controller;
-    var source = controller.source;
+    var adapter = controller.adapter;
     var filters = [];
     var includes = [];
-    if (source) {
-      filters = source.filters();
-      includes = source.relations();
+    if (adapter) {
+      filters = adapter.filters();
+      includes = adapter.relations();
     }
     result.push({
       name: resource.name,

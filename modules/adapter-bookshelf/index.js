@@ -5,20 +5,19 @@ const processFilter = require('./lib/process_filter');
 const processSort = require('./lib/process_sort');
 const destructureRequest = require('./lib/destructure_request_data');
 
-// FIXME: decide if this responsibility lives in the source or
-// in the formatter. i think source? this would mean a wholesale
-// refactoring of the jsonapi formatter to work with sources
+// FIXME: decide if this responsibility lives in the adapter or
+// in the formatter. i think adapter? this would mean a wholesale
+// refactoring of the jsonapi formatter to work with adapters
 // rather than bookshelf models. that might make a lot of sense.
 const relate = require('../formatter-jsonapi/lib/relate');
 
 /*
-  Creates a Source object; a wrapper that allows endpoints to interact
-  with a Bookshelf model.
+  Creates an adapter that allows endpoints to interact with a Bookshelf model.
 
   @constructor
   @param {Object} opts - opts.model: The Bookshelf model.
 */
-function Source (opts) {
+function Adapter (opts) {
   if (!opts) {
     opts = {};
   }
@@ -40,13 +39,16 @@ function Source (opts) {
 }
 
 /*
-  Provides an array of valid filters available on the underlying
-  model.
+  An array of filters available on the underlying model. This controls
+  which filters will be recognized by a request.
+
+  For example, `GET /authors?filter[name]=John` would only filter by name
+  if 'name' was included in the array returned by this function.
 
   @returns {Array} An array of object ids.
 */
 
-Source.prototype.filters = function () {
+Adapter.prototype.filters = function () {
   var filters = Object.keys(this.model.filters || {});
   // TODO: remove this and have the id filter be present by
   // default on all bookshelf models. the alternative to this
@@ -60,11 +62,14 @@ Source.prototype.filters = function () {
 };
 
 /*
-  Provides an array of valid fields on the underlying model.
+  Provides an array of valid fields on the underlying model. This controls
+  which fields will be recognized by a request.
+
+  For example, `GET /authors?fields[authors]=id,name`
 
   @returns {Array} An array of strings of fields on the model.
  */
-Source.prototype.fields = function() {
+Adapter.prototype.fields = function() {
   return this.model.fields || [];
 };
 
@@ -73,7 +78,7 @@ Source.prototype.fields = function() {
 
   @returns {Object} An object containing the model's relations.
  */
-Source.prototype.relations = function () {
+Adapter.prototype.relations = function () {
   return this.model.relations || [];
 };
 
@@ -82,7 +87,7 @@ Source.prototype.relations = function () {
 
   @returns {String}
 */
-Source.prototype.typeName = function () {
+Adapter.prototype.typeName = function () {
   return this.model.typeName;
 };
 
@@ -116,7 +121,7 @@ Source.prototype.typeName = function () {
 
   @returns {Array} An array of related object(s).
 */
-Source.prototype.related = function (opts, relation, model) {
+Adapter.prototype.related = function (opts, relation, model) {
   var related = relate(model, relation);
   var relatedModel, relatedIds;
   if (related.length) {
@@ -128,10 +133,10 @@ Source.prototype.related = function (opts, relation, model) {
   }
   opts.filter.id = opts.filter.id ? opts.filter.id : relatedIds;
   // this is some terrible bullshit right here
-  var relatedSource = new this.constructor({
+  var relatedAdapter = new this.constructor({
     model: relatedModel
   });
-  return relatedSource.read(opts);
+  return relatedAdapter.read(opts);
 };
 
 /*
@@ -142,7 +147,7 @@ Source.prototype.related = function (opts, relation, model) {
 
   @returns {Promise.Object} A single object with the requested id.
 */
-Source.prototype.byId = function (id, relations) {
+Adapter.prototype.byId = function (id, relations) {
   relations = relations || [];
   return this.model.collection().query(function (qb) {
     return qb.where({id:id});
@@ -159,7 +164,7 @@ Source.prototype.byId = function (id, relations) {
 
   @returns {Bookshelf.Model} An instance of the new object.
 */
-Source.prototype.create = function (method, params) {
+Adapter.prototype.create = function (method, params) {
   if (!method) {
     throw new Error('No method provided to create with.');
   }
@@ -180,7 +185,7 @@ Source.prototype.create = function (method, params) {
 
   @returns {Promise.Bookshelf.Collection} The requested object(s).
 */
-Source.prototype.read = function (opts) {
+Adapter.prototype.read = function (opts) {
   if (!opts) {
     opts = {};
   }
@@ -211,7 +216,7 @@ Source.prototype.read = function (opts) {
 
   @returns {Promise.Bookshelf.Model} The updated object.
 */
-Source.prototype.update = function (model, method, params) {
+Adapter.prototype.update = function (model, method, params) {
   if (!method) {
     throw new Error('No method provided to update or delete with.');
   }
@@ -229,6 +234,6 @@ Source.prototype.update = function (model, method, params) {
 
   @returns {Promise.Bookshelf.Model} The deleted object.
 */
-Source.prototype.destroy = Source.prototype.update;
+Adapter.prototype.destroy = Adapter.prototype.update;
 
-module.exports = Source;
+module.exports = Adapter;

@@ -14,17 +14,17 @@ const splitStringProps = require('./lib/split_string_props');
   @constructor
   @param {Object} request - The request object..
   @param {Object} config - The config from the controller.
-  @param {Source} source - The data source (should be adapter).
+  @param {Source} adapter - The data adapter (should be adapter).
 */
-function Request (request, config, source) {
+function Request (request, config, adapter) {
   var params = request.params = request.params || {};
   var body = request.body = request.body || {};
   request.query = request.query || {};
 
   this.request = request;
   this.config = _.cloneDeep(config);
-  this.source = source;
-  this.typeName = source.typeName();
+  this.adapter = adapter;
+  this.typeName = adapter.typeName();
   this.schema = config.schema || {};
   this.validators = config.validators;
 
@@ -32,12 +32,12 @@ function Request (request, config, source) {
   // TODO: is this even needed? i believe we're only using
   // it to generate the location header response for creation
   // which is brittle and invalid anyway.
-  config.typeName = source.typeName();
+  config.typeName = adapter.typeName();
 
   var requestData;
   if (config.method === 'update' && params.relation) {
     requestData = {
-      type: source.typeName(),
+      type: adapter.typeName(),
       links: {}
     };
     requestData.links[params.relation] = body.data;
@@ -109,7 +109,7 @@ Request.prototype.method = function () {
   @returns {Source#typeName} The name of the type of the model from the Source.
  */
 Request.prototype.typeName = function () {
-  return this.source.typeName();
+  return this.adapter.typeName();
 };
 
 /*
@@ -139,19 +139,19 @@ Request.prototype.query = function () {
   @returns {Promise.Bookshelf.Model} Newly created instance of the Model.
 */
 Request.prototype.create = function () {
-  var source = this.source;
+  var adapter = this.adapter;
   var method = this.method();
   var data = this.data();
 
   if (data && data.id) {
-    return source.byId(data.id)
+    return adapter.byId(data.id)
       .then(throwIfModel)
       .then(function() {
-        return source.create(method, data);
+        return adapter.create(method, data);
       }
     );
   } else {
-    return source.create(method, data);
+    return adapter.create(method, data);
   }
 };
 
@@ -161,7 +161,7 @@ Request.prototype.create = function () {
   @returns {Promise.Bookshelf.Model} Requested Bookshelf.Model or Bookshelf.Collection.
 */
 Request.prototype.read = function () {
-  var source = this.source;
+  var adapter = this.adapter;
   var query = this.query();
 
   var params = this.request.params;
@@ -170,15 +170,15 @@ Request.prototype.read = function () {
 
   var findRelated;
   if (relation) {
-    findRelated = source.related.bind(source, query, relation);
-    return source.byId(id, relation).then(throwIfNoModel).then(findRelated);
+    findRelated = adapter.related.bind(adapter, query, relation);
+    return adapter.byId(id, relation).then(throwIfNoModel).then(findRelated);
   }
 
   if (id) {
     // FIXME: this could collide with filter[id]=#
     query.filter.id = id;
   }
-  return source.read(query);
+  return adapter.read(query);
 };
 
 /*
@@ -187,15 +187,15 @@ Request.prototype.read = function () {
   @returns {Bookshelf.Model}
 */
 Request.prototype.update = function () {
-  var source = this.source;
+  var adapter = this.adapter;
   var method = this.method();
   var id = this.request.params.id;
   var data = this.data();
 
-  return source.byId(id).
+  return adapter.byId(id).
     then(throwIfNoModel).
     then(function (model) {
-      return source.update(model, method, data);
+      return adapter.update(model, method, data);
     }).catch(function(e) {
       // This may only work for SQLITE3, but tries to be general
       if (e.message.toLowerCase().indexOf('null') !== -1) {
@@ -212,12 +212,12 @@ Request.prototype.update = function () {
 */
 Request.prototype.destroy = function () {
   var method = this.method();
-  var source = this.source;
+  var adapter = this.adapter;
   var id = this.request.params.id;
 
-  return source.byId(id).then(function (model) {
+  return adapter.byId(id).then(function (model) {
     if (model) {
-      return source.destroy(model, method);
+      return adapter.destroy(model, method);
     }
   });
 };

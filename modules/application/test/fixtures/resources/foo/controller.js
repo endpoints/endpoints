@@ -1,5 +1,5 @@
 module.exports = {
-  source: {
+  adapter: {
     relations: function () {
       return ['bar', 'baz'];
     },

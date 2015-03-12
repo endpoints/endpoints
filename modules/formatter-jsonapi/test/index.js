@@ -1,11 +1,11 @@
 const expect = require('chai').expect;
 
-const BookshelfSource = require('../../source-bookshelf');
-const BooksModel = require('../../../test/fixtures/models/books');
-const BooksSource = new BookshelfSource({
+const BookshelfAdapter = require('../../adapter-bookshelf');
+const BooksModel = require('../../../test/app/src/modules/books/model');
+const Books = new BookshelfAdapter({
   model: BooksModel
 });
-const DB = require('../../../test/fixtures/classes/database');
+const App = require('../../../test/app');
 
 const formatter = require('../');
 
@@ -22,11 +22,11 @@ describe('formatter-jsonapi', function () {
 
   beforeEach(function () {
     opts = {};
-    return DB.reset();
+    return App.reset();
   });
 
   it('should accept a model and return an object', function(done) {
-    BooksSource.create('create', {
+    Books.create('create', {
       author_id:1,
       title: 'test book',
       date_published: '2015-02-01'
@@ -37,7 +37,7 @@ describe('formatter-jsonapi', function () {
   });
 
   it('should accept a collection and return an object', function(done) {
-    BooksSource.read().then(function(books) {
+    Books.read().then(function(books) {
       expect(books).to.have.property('length');
       expect(formatter(books, opts)).to.be.an('object');
       done();
@@ -46,7 +46,7 @@ describe('formatter-jsonapi', function () {
 
   it('should accept a single-item collection and return an object', function(done) {
     opts.singleResult = true;
-    BooksSource.read().then(function(books) {
+    Books.read().then(function(books) {
       var coll = BooksModel.collection([books.at(0)]);
       expect(coll.length).to.equal(1);
       expect(formatter(coll, opts)).to.be.an('object');

@@ -8,13 +8,13 @@ const process = require('./lib/process');
   request handling functions that can be used by any node http server.
 
   @constructor
-  @param {Object} opts - opts.source: An endpoints source adapter
+  @param {Object} opts - opts.adapter: An endpoints source adapter
 */
 function Controller(opts) {
   if (!opts) {
     opts = {};
   }
-  if (!opts.source) {
+  if (!opts.adapter) {
     throw new Error('No source specified.');
   }
   _.extend(this, opts);
@@ -28,7 +28,7 @@ function Controller(opts) {
 */
 Controller.method = function (method) {
   return function (opts) {
-    var source = this.source;
+    var source = this.adapter;
     var config = configure(method, opts);
     var validationFailures = validate(method, source, config);
     if (validationFailures.length) {
