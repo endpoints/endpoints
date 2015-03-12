@@ -20,8 +20,11 @@ describe('formatter-jsonapi', function () {
 
   var opts;
 
-  beforeEach(function () {
+  beforeEach(function() {
     opts = {};
+  });
+
+  before(function () {
     return App.reset();
   });
 
