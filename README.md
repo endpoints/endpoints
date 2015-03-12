@@ -4,7 +4,7 @@
 [![NPM](https://nodei.co/npm/endpoints.png)](https://nodei.co/npm/endpoints/)
 
 # What is it?
-A hypermedia API framework compliant with the [json api](http://jsonapi.org) specification, compatible with any http server that supports express or hapi style request handlers.
+A hypermedia API framework compliant with the [json api](http://jsonapi.org) specification, compatible with any node http server.
 
 *Check out the [example implementation](https://github.com/endpoints/example).*
 

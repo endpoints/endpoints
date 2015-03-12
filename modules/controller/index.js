@@ -3,15 +3,13 @@ const configure = require('./lib/configure');
 const validate = require('./lib/validate');
 const process = require('./lib/process');
 
-/**
- * Constructor for the Endpoints Controller; Provides methods for generating
- * request handling functions to connect HTTP requests to data sources. Takes
- * a single parameter, `opts.source`, contained an endpoints-wrapper around a
- * given data source.
- *
- * @constructor
- * @param {Object} opts - opts.source: A wrapper object for a data source.
- */
+/*
+  Constructor for the Endpoints Controller; Provides methods for generating
+  request handling functions that can be used by any node http server.
+
+  @constructor
+  @param {Object} opts - opts.source: An endpoints source adapter
+*/
 function Controller(opts) {
   if (!opts) {
     opts = {};
@@ -22,11 +20,12 @@ function Controller(opts) {
   _.extend(this, opts);
 }
 
-/**
- * A function for generating CRUD(create, read, update, destroy) methods.
- *
- * @param {string} method - The name of the function to be created.
- */
+/*
+  Used for generating CRUD (create, read, update, destroy) methods.
+
+  @param {String} method - The name of the function to be created.
+  @returns {Function} - function (req, res) { } (node http compatible request handler)
+*/
 Controller.method = function (method) {
   return function (opts) {
     var source = this.source;
@@ -39,24 +38,24 @@ Controller.method = function (method) {
   };
 };
 
-/**
- * A function that creates an object
- */
+/*
+  Returns a request handling function customized to handle create requests.
+*/
 Controller.prototype.create = Controller.method('create');
 
-/**
- * A function that retrieves a given object(s).
- */
+/*
+  Returns a request handling function customized to handle read requests.
+*/
 Controller.prototype.read = Controller.method('read');
 
-/**
- * A function that edits any number of existing fields on an object.
- */
+/*
+  Returns a request handling function customized to handle update requests.
+*/
 Controller.prototype.update = Controller.method('update');
 
-/**
- * A function that deletes a single object.
- */
+/*
+  Returns a request handling function customized to handle destroy requests.
+*/
 Controller.prototype.destroy = Controller.method('destroy');
 
 module.exports = Controller;
