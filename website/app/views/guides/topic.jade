@@ -2,7 +2,10 @@ extends ../layout
 
 block content
   include ../partials/nav-main
-  include ../partials/nav-guides
-  section.chapter
-    .container
-      p!= topic_data
+  .container
+    .row
+      .three.columns
+        include ../partials/nav-guides
+      .nine.columns
+        section.chapter
+          p!= topic_data

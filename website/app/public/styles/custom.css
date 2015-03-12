@@ -28,3 +28,7 @@ a, a:visited, a:hover, a:active {
   text-decoration: none;
   color: #15AD21;
 }
+
+.guides-nav {
+  background-color: #F2F2F3;
+}
