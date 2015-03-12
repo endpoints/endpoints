@@ -16,6 +16,9 @@ function Request (request, config, source) {
   this.request = request;
   this.config = _.cloneDeep(config);
   this.source = source;
+  this.typeName = source.typeName();
+  this.schema = config.schema || {};
+  this.validators = config.validators;
 
   // this used to happen in the configureController step
   config.typeName = source.typeName();
@@ -40,12 +43,12 @@ Request.prototype.validate = function () {
   if (this.data()) {
     validators = validators.concat([verifyContentType, verifyDataObject]);
   }
-  var endpoint = {
-    id: request.params.id,
-    typeName: this.typeName()
-  };
+
+  // does this.validators needs a better name? controllerValidator, userValidators?
+  validators = validators.concat(this.validators);
+
   for (var validate in validators) {
-    err = validators[validate](request, endpoint);
+    err = validators[validate](request, this);
     if (err) {
       break;
     }

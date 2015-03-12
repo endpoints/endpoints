@@ -7,6 +7,8 @@ module.exports = function (method, opts) {
     filter: {},
     fields: {},
     sort: [],
+    schema: {},
+    validators: []
   };
   var config = _.defaults({}, opts, defaults);
 
