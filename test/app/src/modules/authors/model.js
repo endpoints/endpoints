@@ -9,12 +9,6 @@ const instanceProps = {
 
 const classProps = {
   typeName: 'authors',
-  fields: [
-    'id',
-    'name',
-    'date_of_birth',
-    'date_of_death'
-  ],
   createWithRandomBook: function (params) {
     // this should be in a transaction
     return this.create(params).then(function (model) {

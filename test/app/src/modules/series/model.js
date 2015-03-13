@@ -9,10 +9,6 @@ const instanceProps = {
 
 const classProps = {
   typeName: 'series',
-  fields: [
-    'id',
-    'title'
-  ],
   filters: {
     title: function (qb, value) {
       return qb.whereIn('title', value);

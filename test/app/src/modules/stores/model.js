@@ -9,10 +9,6 @@ const instanceProps = {
 
 const classProps = {
   typeName: 'stores',
-  fields: [
-    'id',
-    'name'
-  ],
   filters: {},
   relations: [
     'books',
