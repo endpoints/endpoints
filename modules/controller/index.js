@@ -15,7 +15,7 @@ function Controller(opts) {
     opts = {};
   }
   if (!opts.adapter) {
-    throw new Error('No source specified.');
+    throw new Error('No adapter specified.');
   }
   _.extend(this, opts);
 }
@@ -28,13 +28,13 @@ function Controller(opts) {
 */
 Controller.method = function (method) {
   return function (opts) {
-    var source = this.adapter;
+    var adapter = this.adapter;
     var config = configure(method, opts);
-    var validationFailures = validate(method, source, config);
+    var validationFailures = validate(method, adapter, config);
     if (validationFailures.length) {
       throw new Error(validationFailures.join('\n'));
     }
-    return process(config, source);
+    return process(config, adapter);
   };
 };
 
