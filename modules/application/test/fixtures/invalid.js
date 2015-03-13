@@ -1,3 +1,3 @@
-/** jshint ignore:start */
+/* jshint ignore:start */
 invalid;
-/** jshint ignore:end */
+/* jshint ignore:end */

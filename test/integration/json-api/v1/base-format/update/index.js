@@ -1,12 +1,11 @@
 const expect = require('chai').expect;
-const agent = require('../../../../../agent');
 
-const App = require('../../../../../app');
+const Agent = require('../../../../../app/agent');
+const Fixture = require('../../../../../app/fixture');
 
 describe('updatingResources', function() {
 
   var putData;
-
 
   beforeEach(function() {
     putData = {
@@ -16,11 +15,11 @@ describe('updatingResources', function() {
         title: 'tiddlywinks'
       }
     };
-    return App.reset();
+    return Fixture.reset();
   });
 
   it('must require an ACCEPT header specifying the JSON API media type', function() {
-    return agent.request('PATCH', '/books/1')
+    return Agent.request('PATCH', '/books/1')
       .accept('')
       .send(putData)
       .promise()
@@ -30,7 +29,7 @@ describe('updatingResources', function() {
   });
 
   it('must respond to a successful request with an object', function() {
-    return agent.request('PATCH', '/books/1')
+    return Agent.request('PATCH', '/books/1')
       .send(putData)
       .promise()
       .then(function(res) {
@@ -41,7 +40,7 @@ describe('updatingResources', function() {
 
   it('must respond to an unsuccessful request with a JSON object', function() {
     putData.data.id = 'asdf';
-    return agent.request('PATCH', '/books/1')
+    return Agent.request('PATCH', '/books/1')
       .send(putData)
       .promise()
       .then(function(res) {
@@ -53,7 +52,7 @@ describe('updatingResources', function() {
 
   it('must require a single resource object as primary data', function() {
     putData.data = [putData.data];
-    return agent.request('PATCH', '/books/1')
+    return Agent.request('PATCH', '/books/1')
       .send(putData)
       .promise()
       .then(function(res) {
@@ -63,7 +62,7 @@ describe('updatingResources', function() {
 
   it('must require primary data to have a type member', function() {
     delete putData.data.type;
-    return agent.request('PATCH', '/books/1')
+    return Agent.request('PATCH', '/books/1')
       .send(putData)
       .promise()
       .then(function(res) {
@@ -72,7 +71,7 @@ describe('updatingResources', function() {
   });
 
   it('must require a content-type header of application/vnd.api+json', function() {
-    return agent.request('PATCH', '/books/1')
+    return Agent.request('PATCH', '/books/1')
       .type('json')
       .send(putData)
       .promise()
@@ -86,7 +85,7 @@ describe('updatingResources', function() {
 
   describe('updatingResourceAttributes', function() {
     it('should allow only some attributes to be included in the resource object', function() {
-      return agent.request('PATCH', '/books/1')
+      return Agent.request('PATCH', '/books/1')
         .send(putData)
         .promise()
         .then(function(res) {
@@ -106,18 +105,18 @@ describe('updatingResources', function() {
         }
       };
       var firstRead;
-      return agent.request('GET', '/books/1?include=stores').promise()
+      return Agent.request('GET', '/books/1?include=stores').promise()
         .then(function(res) {
           firstRead = res.body;
 
-          return agent.request('PATCH', '/books/1')
+          return Agent.request('PATCH', '/books/1')
             .send(putData)
             .promise();
         })
         .then(function(res) {
           expect(res.status).to.be.within(200, 299);
           expect(res.body).to.be.a('object');
-          return agent.request('GET', '/books/1?include=stores').promise();
+          return Agent.request('GET', '/books/1?include=stores').promise();
         })
         .then(function(res) {
           var secondRead = res.body;
@@ -135,18 +134,18 @@ describe('updatingResources', function() {
 
     it('must interpret missing fields as their current values', function() {
       var firstRead;
-      return agent.request('GET', '/books/1?include=stores').promise()
+      return Agent.request('GET', '/books/1?include=stores').promise()
         .then(function(res) {
           firstRead = res.body;
 
-          return agent.request('PATCH', '/books/1')
+          return Agent.request('PATCH', '/books/1')
             .send(putData)
             .promise();
         })
         .then(function(res) {
           expect(res.status).to.be.within(200, 299);
           expect(res.body).to.be.a('object');
-          return agent.request('GET', '/books/1?include=stores').promise();
+          return Agent.request('GET', '/books/1?include=stores').promise();
         })
         .then(function(res) {
           var secondRead = res.body;
@@ -165,13 +164,13 @@ describe('updatingResources', function() {
         author: {type: 'authors', id: '2'},
         series: {type: 'series', id: '2'}
       };
-      return agent.request('PATCH', '/books/1')
+      return Agent.request('PATCH', '/books/1')
         .send(putData)
         .promise()
         .then(function(res) {
           expect(res.status).to.be.within(200, 299);
           expect(res.body).to.be.a('object');
-          return agent.request('GET', '/books/1?include=author,series').promise();
+          return Agent.request('GET', '/books/1?include=author,series').promise();
         })
         .then(function(res) {
           var payloadLinks = res.body.data.links;
@@ -183,13 +182,13 @@ describe('updatingResources', function() {
 
     it('must attempt to remove to-One relationship with null', function() {
       putData.data.links = { series: null };
-      return agent.request('PATCH', '/books/1')
+      return Agent.request('PATCH', '/books/1')
         .send(putData)
         .promise()
         .then(function(res) {
           expect(res.status).to.be.within(200, 299);
           expect(res.body).to.be.a('object');
-          return agent.request('GET', '/books/1?include=series').promise();
+          return Agent.request('GET', '/books/1?include=series').promise();
         })
         .then(function(res) {
           var payloadLinks = res.body.data.links;
@@ -206,13 +205,13 @@ describe('updatingResources', function() {
         stores: { type: 'stores', id: ['1', '2'] },
       };
 
-      return agent.request('PATCH', '/books/1')
+      return Agent.request('PATCH', '/books/1')
         .send(putData)
         .promise()
         .then(function(res) {
           expect(res.status).to.be.within(200, 299);
           expect(res.body).to.be.a('object');
-          return agent.request('GET', '/books/1?include=stores').promise();
+          return Agent.request('GET', '/books/1?include=stores').promise();
         })
         .then(function(res) {
           var payloadLinks = res.body.data.links;
@@ -227,13 +226,13 @@ describe('updatingResources', function() {
         stores: { type: 'stores', id: [] },
       };
 
-      return agent.request('PATCH', '/books/1')
+      return Agent.request('PATCH', '/books/1')
         .send(putData)
         .promise()
         .then(function(res) {
           expect(res.status).to.be.within(200, 299);
           expect(res.body).to.be.a('object');
-          return agent.request('GET', '/books/1?include=stores').promise();
+          return Agent.request('GET', '/books/1?include=stores').promise();
         })
         .then(function(res) {
           var payloadLinks = res.body.data.links;
@@ -251,7 +250,7 @@ describe('updatingResources', function() {
 
     describe('204NoContent', function() {
       it('must return 204 No Content on a successful update when attributes remain up-to-date', function() {
-        return agent.request('PATCH', '/stores/1')
+        return Agent.request('PATCH', '/stores/1')
           .send({data: {type: 'stores', id: '1', name: 'Updated Store'}})
           .promise()
           .then(function(res) {
@@ -264,7 +263,7 @@ describe('updatingResources', function() {
 
       // TODO: No idea why this suddenly started returning 204 instead of 200
       it.skip('must return 200 OK if it accepts the update but changes the resource in some way', function(done) {
-        return agent.request('PATCH', '/books/1')
+        return Agent.request('PATCH', '/books/1')
           .send(putData)
           .promise()
           .then(function(res) {
@@ -283,7 +282,7 @@ describe('updatingResources', function() {
     describe('404NotFound', function() {
       it('must return 404 Not Found when processing a request to modify a resource that does not exist', function() {
         putData.data.id = '9999';
-        return agent.request('PATCH', '/books/9999')
+        return Agent.request('PATCH', '/books/9999')
           .send(putData)
           .promise()
           .then(function(res) {
@@ -295,7 +294,7 @@ describe('updatingResources', function() {
         putData.data.links = {
           author: {type: 'authors', id: '9999'},
         };
-        return agent.request('PATCH', '/books/1')
+        return Agent.request('PATCH', '/books/1')
           .send(putData)
           .promise()
           .then(function(res) {
@@ -307,7 +306,7 @@ describe('updatingResources', function() {
         putData.data.links = {
           stores: {type: 'stores', id: ['9999']}
         };
-        return agent.request('PATCH', '/books/1')
+        return Agent.request('PATCH', '/books/1')
           .send(putData)
           .promise()
           .then(function(res) {
@@ -321,7 +320,7 @@ describe('updatingResources', function() {
         putData.data.links = {
           author: null
         };
-        return agent.request('PATCH', '/books/1')
+        return Agent.request('PATCH', '/books/1')
           .send(putData)
           .promise()
           .then(function(res) {
@@ -330,7 +329,7 @@ describe('updatingResources', function() {
       });
 
       it('must return 409 Conflict when processing a request where the id does not match the endpoint', function() {
-        return agent.request('PATCH', '/books/2')
+        return Agent.request('PATCH', '/books/2')
           .send(putData)
           .promise()
           .then(function(res) {
@@ -339,7 +338,7 @@ describe('updatingResources', function() {
       });
 
       it('must return 409 Conflict when processing a request where the type does not match the endpoint', function() {
-        return agent.request('PATCH', '/authors/1')
+        return Agent.request('PATCH', '/authors/1')
           .send(putData)
           .promise()
           .then(function(res) {
@@ -363,12 +362,12 @@ describe('updatingRelationships', function() {
   describe('updatingToOneRelationships', function() {
     // /books/1/author
     it('must update relationships with a PATCH request to a to-one relationship URL containing a data object with type and id members  and return 204 No Content on success', function() {
-      return agent.request('PATCH', '/books/1/author')
+      return Agent.request('PATCH', '/books/1/author')
         .send({ data: { type: 'authors', id: '2' }})
         .promise()
         .then(function(res) {
           expect(res.status).to.equal(204);
-          return agent.request('GET', '/books/1').promise();
+          return Agent.request('GET', '/books/1').promise();
         })
         .then(function(res) {
           var payloadLinks = res.body.data.links;
@@ -377,12 +376,12 @@ describe('updatingRelationships', function() {
     });
 
     it('must remove relationships with a PATCH request to a to-one relationship URL containing a data object with a null value and return 204 No Content on success', function() {
-      return agent.request('PATCH', '/books/1/series')
+      return Agent.request('PATCH', '/books/1/series')
         .send({ data: null })
         .promise()
         .then(function(res) {
           expect(res.status).to.equal(204);
-          return agent.request('GET', '/books/1').promise();
+          return Agent.request('GET', '/books/1').promise();
         })
         .then(function(res) {
           var payloadLinks = res.body.data.links;
@@ -399,12 +398,12 @@ describe('updatingRelationships', function() {
     // /books/1/stores
     it('must update relationships with a PATCH request to a to-many relationship URL containing a data object with type and id members  and return 204 No Content on success', function() {
       var newIds = ['1', '2'];
-      return agent.request('PATCH', '/books/1/stores')
+      return Agent.request('PATCH', '/books/1/stores')
         .send({ data: { type: 'stores', id: newIds }})
         .promise()
         .then(function(res) {
           expect(res.status).to.equal(204);
-          return agent.request('GET', '/books/1?include=stores').promise();
+          return Agent.request('GET', '/books/1?include=stores').promise();
         })
         .then(function(res) {
           var payloadLinks = res.body.data.links;
@@ -415,13 +414,13 @@ describe('updatingRelationships', function() {
 
     it('must remove relationships with a PATCH request to a to-many relationship URL containing a data object with a null value and return 204 No Content on success', function() {
       var newIds = [];
-      return agent.request('PATCH', '/books/1/stores')
+      return Agent.request('PATCH', '/books/1/stores')
         .send({ data: { type: 'stores', id: newIds }})
         .promise()
         .then(function(res) {
           console.log(res);
           expect(res.status).to.equal(204);
-          return agent.request('GET', '/books/1?include=stores').promise();
+          return Agent.request('GET', '/books/1?include=stores').promise();
         })
         .then(function(res) {
           var payloadLinks = res.body.data.links;

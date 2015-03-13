@@ -1,17 +1,17 @@
 const expect = require('chai').expect;
-const agent = require('../../../../../agent');
-
-const App = require('../../../../../app');
 const _ = require('lodash');
+
+const Agent = require('../../../../../app/agent');
+const Fixture = require('../../../../../app/fixture');
 
 describe('deletingResources', function() {
 
   beforeEach(function() {
-    return App.reset();
+    return Fixture.reset();
   });
 
   it('must not require a content-type header of application/vnd.api+json', function() {
-    return agent.request('DELETE', '/chapters/1')
+    return Agent.request('DELETE', '/chapters/1')
       .promise()
       .then(function(res) {
         expect(res.status).to.equal(204);
@@ -19,7 +19,7 @@ describe('deletingResources', function() {
   });
 
   it('must respond to a successful request with an empty body', function() {
-    return agent.request('DELETE', '/chapters/1')
+    return Agent.request('DELETE', '/chapters/1')
       .promise()
       .then(function (res) {
         expect(res.status).to.be.within(200, 299);
@@ -28,7 +28,7 @@ describe('deletingResources', function() {
   });
 
   it('must respond to an unsuccessful request with a JSON object', function() {
-    return agent.request('DELETE', '/chapters/9999')
+    return Agent.request('DELETE', '/chapters/9999')
       .promise()
       .then(function (res) {
         expect(res.body).to.be.an('object');
@@ -41,16 +41,16 @@ describe('deletingResources', function() {
   it('should delete resources when a DELETE request is made to the resource URL', function() {
     var first, second, deleteId;
 
-    return agent.request('GET', '/books')
+    return Agent.request('GET', '/books')
       .promise()
       .then(function(res) {
         first = res;
         expect(res.body.data).to.be.a('array');
         deleteId = res.body.data[0].id;
-        return agent.request('DELETE', '/books/' + deleteId).promise();
+        return Agent.request('DELETE', '/books/' + deleteId).promise();
       })
       .then(function(res) {
-        return agent.request('GET', '/books').promise();
+        return Agent.request('GET', '/books').promise();
       })
       .then(function(res) {
         second = res;
@@ -63,7 +63,7 @@ describe('deletingResources', function() {
 
     describe('204NoContent', function() {
       it('must return 204 No Content on a successful DELETE request', function() {
-        return agent.request('DELETE', '/chapters/1')
+        return Agent.request('DELETE', '/chapters/1')
           .promise()
           .then(function(res) {
             expect(res.status).to.equal(204);
@@ -71,7 +71,7 @@ describe('deletingResources', function() {
       });
 
       it('must return 204 No Content when processing a request to delete a resource that does not exist', function() {
-        return agent.request('DELETE', '/chapters/9999')
+        return Agent.request('DELETE', '/chapters/9999')
           .promise()
           .then(function(res) {
             expect(res.status).to.equal(204);

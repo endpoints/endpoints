@@ -2,12 +2,13 @@ const fs = require('fs');
 const path = require('path');
 
 const express = require('express');
-const Endpoints = require('../../..');
 const bodyParser = require('body-parser');
 const routeBuilder = require('express-routebuilder');
 
 const modulePath = path.join(__dirname, 'modules');
 const resources = fs.readdirSync(modulePath);
+
+const Endpoints = require('../../..');
 
 const app = express();
 

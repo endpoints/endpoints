@@ -5,7 +5,7 @@ const fantasyDatabase = require('fantasy-database');
 
 const link = require('../../lib/link');
 
-const App = require('../../../../test/app');
+const Fixture = require('../../../../test/app/fixture');
 const Books = require('../../../../test/app/src/modules/books/model');
 const Authors = require('../../../../test/app/src/modules/authors/model');
 
@@ -15,7 +15,7 @@ describe('link', function () {
   var booksByAuthorOne = _.chain(fantasyDatabase.books).filter({author_id:1}).pluck('id').map(function(i) {return String(i);}).value();
 
   before(function () {
-    return App.reset().then(function () {
+    return Fixture.reset().then(function () {
       return new Books({id:11}).fetch({
         withRelated: Books.relations
       }).then(function (result) {

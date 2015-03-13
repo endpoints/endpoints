@@ -1,11 +1,12 @@
+const validateJsonSchema = require('../../../../../modules/validate-json-schema');
 const controller = require('./controller');
 const schema = require('./schema');
 
 module.exports = {
   post: {
     '/': controller.create({
-      method: 'createWithRandomBook',
-      validate: schema
+      schema: schema,
+      validators: validateJsonSchema
     })
   },
   get: {
@@ -15,8 +16,10 @@ module.exports = {
   },
   patch: {
     '/:id': controller.update({
-      validate: schema
-    })
+      schema: schema,
+      validators: validateJsonSchema
+    }),
+    '/:id/:relation': controller.update()
   },
   delete: {
     '/:id': controller.destroy()

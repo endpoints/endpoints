@@ -6,7 +6,7 @@ const Books = new BookshelfAdapter({
   model: BooksModel
 });
 const fantasyDatabase = require('fantasy-database');
-const App = require('../../../test/app');
+const Fixture = require('../../../test/app/fixture');
 
 describe('BookshelfAdapter', function () {
 
@@ -15,7 +15,7 @@ describe('BookshelfAdapter', function () {
   });
 
   beforeEach(function () {
-    return App.reset();
+    return Fixture.reset();
   });
 
   describe('constructor', function () {

@@ -1,19 +1,19 @@
 const expect = require('chai').expect;
-const agent = require('../../../../../agent');
 
-const App = require('../../../../../app');
+const Agent = require('../../../../../app/agent');
+const Fixture = require('../../../../../app/fixture');
 
 describe('read', function() {
 
   beforeEach(function() {
-    return App.reset();
+    return Fixture.reset();
   });
 
   describe('documentStructure', function() {
 
     describe('topLevel', function() {
       it('must respond to a successful request with an object', function() {
-        return agent.request('GET', '/books/1')
+        return Agent.request('GET', '/books/1')
           .promise()
           .then(function(res) {
             expect(res.status).to.equal(200);
@@ -26,9 +26,9 @@ describe('read', function() {
       });
 
       it('must respond to an unsuccessful request with a JSON object', function() {
-        return App.dropTables()
+        return Fixture.dropTables()
           .then(function() {
-            return agent.request('GET', '/books/1')
+            return Agent.request('GET', '/books/1')
               .promise();
           })
           .then(function(res) {
@@ -39,7 +39,7 @@ describe('read', function() {
       });
 
       it('must make primary data for multiple records an array', function() {
-        return agent.request('GET', '/books')
+        return Agent.request('GET', '/books')
           .promise()
           .then(function(res) {
             expect(res.status).to.equal(200);
@@ -54,7 +54,7 @@ describe('read', function() {
 
       describe('resourceAttributes', function() {
         it('must not contain a foreign key as an attribute', function() {
-          return agent.request('GET', '/books/1')
+          return Agent.request('GET', '/books/1')
             .promise()
             .then(function(res) {
               var dataObj = res.body.data;
@@ -66,7 +66,7 @@ describe('read', function() {
         });
 
         it('must include relations as included resources', function() {
-          return agent.request('GET', '/books/1')
+          return Agent.request('GET', '/books/1')
             .promise()
             .then(function(res) {
               var dataObj = res.body.data;
@@ -85,7 +85,7 @@ describe('read', function() {
 
       describe('resourceTypes', function() {
         it('must contain a type', function() {
-          return agent.request('GET', '/books/1')
+          return Agent.request('GET', '/books/1')
             .promise()
             .then(function(res) {
               var dataObj = res.body.data;
@@ -100,7 +100,7 @@ describe('read', function() {
 
       describe('resourceIds', function() {
         it('must contain an id', function() {
-          return agent.request('GET', '/books/1')
+          return Agent.request('GET', '/books/1')
             .promise()
             .then(function(res) {
               var dataObj = res.body.data;
@@ -115,7 +115,7 @@ describe('read', function() {
 
       describe('links', function() {
         it('must have an object as the value of any links key', function() {
-          return agent.request('GET', '/books/1')
+          return Agent.request('GET', '/books/1')
             .promise()
             .then(function(res) {
               var dataObj = res.body.data;
@@ -134,7 +134,7 @@ describe('read', function() {
         // keyed by "self", that identifies the resource represented by
         // the resource object.
         it('may include a string in its links object keyed by "self"', function() {
-          return agent.request('GET', '/books/1')
+          return Agent.request('GET', '/books/1')
             .promise()
             .then(function(res) {
               var dataObj = res.body.data;
@@ -148,12 +148,12 @@ describe('read', function() {
 
         // TODO: Fix self urls to be baseUrl aware
         it.skip('must set the value of "self" to a URL that identifies the resource represented by this object', function() {
-          return agent.request('GET', '/books/1')
+          return Agent.request('GET', '/books/1')
             .promise()
             .then(function(res) {
               var dataObj = res.body.data;
               expect(res.status).to.equal(200);
-              expect(dataObj.links.self).to.equal(App.baseUrl + '/books/1');
+              expect(dataObj.links.self).to.equal(Agent.baseUrl + '/books/1');
             });
         });
 
@@ -168,7 +168,7 @@ describe('read', function() {
         // to-many. Relationships can be specified by including a member
         // in a resource's links object.
         it('may contain references to related objects in the links object', function() {
-          return agent.request('GET', '/books/1')
+          return Agent.request('GET', '/books/1')
             .promise()
             .then(function(res) {
               var links = res.body.data.links;
@@ -191,7 +191,7 @@ describe('read', function() {
         // contain numerous records. By default, it returns link objects
         // for to-one references and string URLs for to-many references.
         it('should make to-one references a link object', function() {
-          return agent.request('GET', '/books/1')
+          return Agent.request('GET', '/books/1')
             .promise()
             .then(function(res) {
               var links = res.body.data.links;
@@ -202,7 +202,7 @@ describe('read', function() {
         });
 
         it('should make to-many references a string URL', function() {
-          return agent.request('GET', '/books/1')
+          return Agent.request('GET', '/books/1')
             .promise()
             .then(function(res) {
               var links = res.body.data.links;
@@ -216,7 +216,7 @@ describe('read', function() {
         });
 
         it('should return related resources as the response primary data when a to-One string URL is fetched', function() {
-          return agent.request('GET', '/books/1/author')
+          return Agent.request('GET', '/books/1/author')
             .promise()
             .then(function(res) {
               var dataObj = res.body.data;
@@ -227,7 +227,7 @@ describe('read', function() {
         });
 
         it('should return related resources as the response primary data when a to-Many string URL is fetched', function() {
-          return agent.request('GET', '/books/1/stores')
+          return Agent.request('GET', '/books/1/stores')
             .promise()
             .then(function(res) {
               var dataObj = res.body.data;
@@ -238,7 +238,7 @@ describe('read', function() {
         });
 
         it('should return related resources as the response primary data when a nested string URL through a to-One is fetched', function() {
-          return agent.request('GET', '/books/1/author.books')
+          return Agent.request('GET', '/books/1/author.books')
             .promise()
             .then(function(res) {
               var dataObj = res.body.data;
@@ -249,7 +249,7 @@ describe('read', function() {
         });
 
         it('should return related resources as the response primary data when a nested string URL through a to-Many is fetched', function() {
-          return agent.request('GET', '/books/1/stores.books')
+          return Agent.request('GET', '/books/1/stores.books')
             .promise()
             .then(function(res) {
               var dataObj = res.body.data;
@@ -266,7 +266,7 @@ describe('read', function() {
 
         describe('linkObjectRelationship', function() {
           it('must contain either a "self," "resource," "meta" property or an object linkage via a data object or type and id', function() {
-            return agent.request('GET', '/books/1')
+            return Agent.request('GET', '/books/1')
               .promise()
               .then(function(res) {
                 expect(res.status).to.equal(200);
@@ -283,7 +283,7 @@ describe('read', function() {
           });
 
           it('must include object linkage to resource objects included in the same compound document', function() {
-            return agent.request('GET', '/books/1?include=author')
+            return Agent.request('GET', '/books/1?include=author')
               .promise()
               .then(function(res) {
                 var dataObj = res.body.data;
@@ -298,7 +298,7 @@ describe('read', function() {
           });
 
           it('must express object linkages as type and id for all relationship types', function() {
-            return agent.request('GET', '/books/1?include=author,series')
+            return Agent.request('GET', '/books/1?include=author,series')
               .promise()
               .then(function(res) {
                 var dataObj = res.body.data;
@@ -328,7 +328,7 @@ describe('read', function() {
       // An endpoint MAY also support custom inclusion of included
       // resources based upon an include request parameter.
       it('must include included resources as an array of resource objects in a top level `included` member', function() {
-        return agent.request('GET', '/books/1?include=author')
+        return Agent.request('GET', '/books/1?include=author')
           .promise()
           .then(function(res) {
             var dataObj = res.body.data;
@@ -341,7 +341,7 @@ describe('read', function() {
       });
 
       it('must not include more than one resource object for each type and id pair', function() {
-        return agent.request('GET', '/books?include=author')
+        return Agent.request('GET', '/books?include=author')
           .promise()
           .then(function(res) {
             expect(res.status).to.equal(200);
@@ -367,7 +367,7 @@ describe('read', function() {
     // });
 
     it('must have the identical relationship name as the key in the links section of the parent resource object', function() {
-      return agent.request('GET', '/books/1/?include=author,series,stores,author.books')
+      return Agent.request('GET', '/books/1/?include=author,series,stores,author.books')
         .promise()
         .then(function(res) {
           var linksTypes = Object.keys(res.body.data.links);
@@ -396,7 +396,7 @@ describe('read', function() {
   describe('fetchingData', function() {
 
     it('must require an ACCEPT header specifying the JSON API media type', function() {
-      return agent.request('GET', '/books/1')
+      return Agent.request('GET', '/books/1')
         .accept('')
         .promise()
         .then(function(res) {
@@ -437,7 +437,7 @@ describe('read', function() {
 
     describe('sparseFieldsets', function() {
       it.skip('should support returning **only** specific fields in the response on a per-type basis by including a fields[TYPE] parameter', function() {
-        return agent.request('GET', '/books/?fields=id,title')
+        return Agent.request('GET', '/books/?fields=id,title')
           .promise()
           .then(function(res) {
             var dataObj = res.body[0];
@@ -450,7 +450,7 @@ describe('read', function() {
 
     describe('sorting', function() {
       it('should support requests to sort collections with a sort query parameter', function() {
-        return agent.request('GET', '/books/?sort=+title')
+        return Agent.request('GET', '/books/?sort=+title')
           .promise()
           .then(function(res) {
             expect(res.body.data[0].title).to.equal('Harry Potter and the Chamber of Secrets');
@@ -458,7 +458,7 @@ describe('read', function() {
       });
 
       it.skip('should support sorting by nested relationship attributes', function() {
-        return agent.request('GET', '/books/?sort=+author.name')
+        return Agent.request('GET', '/books/?sort=+author.name')
           .promise()
           .then(function(res) {
             expect(res.body.data[0].title).to.equal('Harry Potter and the Philosopher\'s Stone');
@@ -466,7 +466,7 @@ describe('read', function() {
       });
 
       it('should sort multiple criteria using comma-separated fields in the order specified', function() {
-        return agent.request('GET', '/books/?sort=-date_published,+title')
+        return Agent.request('GET', '/books/?sort=-date_published,+title')
           .promise()
           .then(function(res) {
             expect(res.body.data[0].title).to.equal('Harry Potter and the Deathly Hallows');
@@ -474,7 +474,7 @@ describe('read', function() {
       });
 
       it('must sort ascending or descending based on explicit sort order using "+" or "-"', function() {
-        return agent.request('GET', '/books/?sort=-title')
+        return Agent.request('GET', '/books/?sort=-title')
           .promise()
           .then(function(res) {
             expect(res.body.data[0].title).to.equal('The Two Towers');
@@ -494,7 +494,7 @@ describe('read', function() {
 
     describe('filtering', function() {
       it('must only use the filter query parameter for filtering data', function() {
-        return agent.request('GET', '/books/?filter[date_published]=2000-07-08,1937-09-21')
+        return Agent.request('GET', '/books/?filter[date_published]=2000-07-08,1937-09-21')
           .promise()
           .then(function(res) {
             expect(res.body.data.length).to.equal(2);

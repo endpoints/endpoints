@@ -1,6 +1,8 @@
-const App = require('../app');
 const superagent = require('superagent');
 const bPromise = require('bluebird');
+
+const App = require('../');
+
 const JSONAPIContentType = 'application/vnd.api+json';
 
 superagent.serialize[JSONAPIContentType] = JSON.stringify;
