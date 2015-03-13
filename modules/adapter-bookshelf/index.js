@@ -1,5 +1,6 @@
 const _ = require('lodash');
 
+const bPromise = require('bluebird');
 const baseMethods = require('./lib/base_methods');
 const processFilter = require('./lib/process_filter');
 const processSort = require('./lib/process_sort');
@@ -58,17 +59,6 @@ Adapter.prototype.filters = function () {
     filters.push('id');
   }
   return filters;
-};
-
-/**
-  Provides an array of valid fields on the underlying model.
-
-  @todo Remove this?
-
-  @returns {Array} An array of strings representing valid fields on the model.
- */
-Adapter.prototype.fields = function() {
-  return this.model.fields || [];
 };
 
 /**
@@ -185,19 +175,29 @@ Adapter.prototype.read = function (opts) {
   }
   var self = this;
   var model = this.model;
+  var ready = bPromise.resolve();
 
-  return model.collection().query(function (qb) {
-    qb = processFilter(model, qb, opts.filter);
-    qb = processSort(self, qb, opts.sort);
-  }).fetch({
-    // adding this in the queryBuilder changes the qb, but fetch still
-    // returns all columns
-    columns: opts.fields ? opts.fields[this.typeName()] : undefined,
-    withRelated: _.intersection(this.relations(), opts.include || [])
-  }).then(function (result) {
-    result.relations = opts.include;
-    result.singleResult = opts.filter && opts.filter.id && !Array.isArray(opts.filter.id);
-    return result;
+  // populate the field listing for a table
+  if (!this.columns) {
+    ready = model.query().columnInfo().then(function (info) {
+      self.columns = Object.keys(info);
+    });
+  }
+
+  return ready.then(function () {
+    return model.collection().query(function (qb) {
+      qb = processFilter(model, qb, opts.filter);
+      qb = processSort(self.columns, qb, opts.sort);
+    }).fetch({
+      // adding this in the queryBuilder changes the qb, but fetch still
+      // returns all columns
+      columns: opts.fields ? opts.fields[self.typeName()] : undefined,
+      withRelated: _.intersection(self.relations(), opts.include || [])
+    }).then(function (result) {
+      result.relations = opts.include;
+      result.singleResult = opts.filter && opts.filter.id && !Array.isArray(opts.filter.id);
+      return result;
+    });
   });
 };
 

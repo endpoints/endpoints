@@ -6,8 +6,7 @@ function isAscending (key) {
   return key[0] === '+' || key[0] === ' ';
 }
 
-module.exports = function (source, query, sortBy) {
-  var validFields = source.fields();
+module.exports = function (validFields, query, sortBy) {
   return _.chain(sortBy).filter(function (key) {
     var hasSortDir = key[0] === ' ' || key[0] === '+' || key[0] === '-';
     var isValidField = _.contains(validFields, key.substring(1));
