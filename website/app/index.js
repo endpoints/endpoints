@@ -14,7 +14,7 @@ app.get('/guides', function(req, res){
 
 app.get('/guides/:topic', function(req, res){
   try {
-    var topic_doc = fs.readFileSync('./app/data/guides/' + req.params.topic + '.md', 'utf8');
+    var topic_doc = fs.readFileSync('./website/app/data/guides/' + req.params.topic + '.md', 'utf8');
     var topic_data = markdown.toHTML(topic_doc);
   } catch(e) {
     console.log(e);
@@ -28,7 +28,7 @@ app.get('/tutorial', function(req, res){
 
 app.get('/tutorial/:step', function(req, res){
   try {
-    var step_doc = fs.readFileSync('./app/data/tutorial/' + req.params.step + '.md', 'utf8');
+    var step_doc = fs.readFileSync('./website/app/data/tutorial/' + req.params.step + '.md', 'utf8');
     var step_data = markdown.toHTML(step_doc);
   } catch(e) {
     console.log(e);

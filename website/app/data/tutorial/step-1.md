@@ -3,6 +3,8 @@
 Knex is primarily a SQL query builder for JavaScript. We'll be
 leveraging it to run migrations and seed our database.
 
+[Here is the github diff of what we'll do in this section.](https://github.com/endpoints/tutorial/commit/dad4191fe8c616e6a1a81c224967fd8799c8bd3f)
+
 ### sqlite3 Dependency
 
 We'll be using a sqlite3 database in this tutorial, so we need 
@@ -163,6 +165,8 @@ You'll know it worked when you see the SQL debug output, followed by:
     Ran 1 seed files 
     /home/ag_dubs/Projects/endpoints/tutorial/seeds/fantasy.js 
 
+
+[Review what you've done by reading the diff of the code we wrote in this section.](https://github.com/endpoints/tutorial/commit/dad4191fe8c616e6a1a81c224967fd8799c8bd3f)
 
 Now that we have our database set up and seeded, we're ready to start
 building our modules.
