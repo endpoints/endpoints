@@ -58,6 +58,7 @@
     "superagent": "^0.21.0"
   },
   "dependencies": {
+    "bluebird": "^2.9.14",
     "is-my-json-valid": "^2.9.4",
     "kapow": "^1.0.0",
     "lodash": "^3.1.0"
