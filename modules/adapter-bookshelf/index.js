@@ -229,13 +229,24 @@ Adapter.prototype.read = function (opts, mode) {
   }
 
   return ready.then(function () {
+    var fields = opts.fields && opts.fields[self.typeName()];
+    // this has to be done here because we can't statically analyze
+    // the columns on a table yet.
+    if (fields) {
+      fields = _.intersection(self.columns, fields);
+      // ensure we always select id as the spec requires this to be present
+      if (!_.contains(fields, 'id')) {
+        fields.push('id');
+      }
+    }
+
     return model.collection().query(function (qb) {
       qb = processFilter(model, qb, opts.filter);
       qb = processSort(self.columns, qb, opts.sort);
     }).fetch({
       // adding this in the queryBuilder changes the qb, but fetch still
       // returns all columns
-      columns: opts.fields ? opts.fields[self.typeName()] : undefined,
+      columns: fields,
       withRelated: _.intersection(self.relations(), opts.include || [])
     }).then(function (result) {
       result.relations = opts.include;
