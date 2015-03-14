@@ -4,8 +4,9 @@ Endpoints is built to work on top of a NodeJS based framework; currently
 both Express and Hapi are supported.
 
 In this tutorial, we'll be using endpoints on top of Express to make an
-API for data on fantasy-genre books. Therefore, our first step is to
-scaffold a simple Express application.
+API for data on fantasy-genre books. We'll be building this application
+on a stack of Express, Knex, Bookshelf, and finally endpoints. Therefore, 
+we'll begin by setting up a layered Express application.
 
 [Here is the github diff of what we'll do in this section.](https://github.com/endpoints/tutorial/commit/7249ed4786fe6220ad439bec1bbbb98faec9697b)
 
@@ -26,8 +27,9 @@ your application by typing the following:
 
 When creating an Express application, we can take advantage of the layered
 structure of the web to make our application modular and easier to test.
-By the time we've finished this tutorial, we'll have made 3 separate 
-Express applications, but to start off, we'll stick to 2.
+We'll write 2 `index.js` files each containing an Express application: the
+first will simply start up a web server, and the second will contain the 
+information for our API.
 
 #### Express Server
 
@@ -97,10 +99,10 @@ Make a file called `src/index.js` and enter the following code:
     module.exports = app;
 
 
-This code will create an Express application. It will assign a single route,
-'/', which will respond with the string `"hello Express!"`. We'll export this
-Express application with the line `module.exports = app` so that we can use
-it in the previous application we wrote.
+This code will create another Express application. It will register a single
+route, '/', which will respond with the string `"hello Express!"`. We'll
+export this Express application with the line `module.exports = app` so that
+we can use it in the previous application we wrote.
 
 #### Wiring it together
 

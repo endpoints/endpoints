@@ -1,7 +1,24 @@
 # Step 2 - Hello, Bookshelf!
 
+Up until this point we have set up 2 Express applications, 
+a sqlite3 database and Knex as a way to create tables and 
+fill that database our mock fantasy book data.
+
+Now we need a way to take that data from our database and use
+it in our application. While one could write SQL from scratch,
+generally speaking, one uses an ORM, or Object Relational 
+Mapper, to use data from a SQL database in their application.
+
 Bookshelf is a ORM for Javascript. We'll be using it for just that
-purpose. 
+purpose. In this step, we'll add Bookshelf to our application
+and configure it to work with Knex and our Database. We'll also
+prepare a Base Model class, which we will extend for every model
+in our application.
+
+Endpoints is specifically configured to work with Bookshelf; so
+you'll never have to worry about writing or changing anything. 
+Check out the Endpoints.BookshelfAdapter API docs or guide
+for more information about how that is implemented.
 
 [Here is a diff of the code we'll write in this section.](https://github.com/endpoints/tutorial/commit/548d33af1b876e771b1b9628ed6cb74ccb515f6c)
 
