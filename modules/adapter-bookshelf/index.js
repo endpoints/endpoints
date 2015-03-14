@@ -86,22 +86,55 @@ Adapter.prototype.typeName = function () {
 
 
 /**
-  Returns the models related to a given model. This allows requests
-  such as `GET /authors/1/books?filter[published_after]=2015-01-01`.
+  Returns the model or collection of models related to a given model. This
+  makes it possible to support requests like:
+  GET /chapters/1/book.stores?filter[opened_after]=2015-01-01
 
-  This is currently extremely inefficient.  Here's why:
+  Currently, this is extremely inefficient. Here's why:
 
-  If making a request for all books related to a given author, it is difficult
-  to add additional constraints (such as limiting those to books published after
-  a given date). In order to make this work, the current approach is to get all
-  valid book IDs related to the author, and then query books directly, adding
-  any additional filters. This is incredibly inefficient and will be resolved
-  in a future version of Bookshelf.
+  Bookshelf cannot compose a query like this
+  ```sql
+  SELECT stores.*
+  FROM stores
+  INNER JOIN books_stores ON (books_stores.store_id = stores.id)
+  WHERE books_stores.book_id = (SELECT book_id FROM chapters WHERE id=1);
+  AND stores.opening_date > '2015-01-01'
+  ```
+
+  In order to make this work (for now), the approach is to fetch all of
+  the intermediate tables directly, ultimately winding up with a list of
+  ids which are valid for the final node in the relation string. Then,
+  using this list of IDs, we can further filter the request.
+
+  ```sql
+  SELECT book_id FROM chapter WHERE id = 1;
+  SELECT store_id FROM books_stores WHERE book_id = <book_id>
+  SELECT * FROM stores WHERE id = <store_id> AND opening_date > '2015-01-01'
+  ```
+
+  Note that even if Bookshelf could do the above, it would still have to
+  query for intermediate tables when polymorphic relations were involved.
+  One more reason not to use polymorphic relations.
+
+  @todo investigate this form to see if we can clean up some:
+  ```js
+  this.model.collection().fetch({
+    withRelated: [
+      {
+        'nested.relation': function (qb) {
+          // perform read filtering here
+        }
+      }
+    ]
+  })
+  ```
+
+  This will be resolved in a future version of Bookshelf.
 
   @param {Object}
-    opts - opts.filter: Assigned to relevant id(s) as filters are applied.
+    opts - the result of running RequestHandler#query for the request.
   @param {String}
-    relation - A dot notated relation to look up for the provided model.
+    relation - A dot notated relation to find relative to the provided model.
   @param {Bookshelf.Model} model
 
   @returns {Promise(Bookshelf.Model)|Promise(Bookshelf.Collection)} related models.
@@ -116,11 +149,21 @@ Adapter.prototype.related = function (opts, relation, model) {
     relatedModel = related.constructor;
     relatedIds = related.id;
   }
-  opts.filter.id = opts.filter.id ? opts.filter.id : relatedIds;
+
+  // @todo fix this
+  // currently, the route param :id winds up represented
+  // as filter.id. this can cause collisions when doing
+  // requests like GET /book/1/stores?filter[id]=2
+  // the intent is to limit the stores related to the book to those
+  // with the id one, but the actual impact is that it looks up
+  // book id #2. see RequestHandler#read
+  opts.filter.id = opts.filter.id ?
+    _.intersection(relatedIds, opts.filter.id)
+    : relatedIds;
 
   return new this.constructor({
     model: relatedModel
-  }).read(opts);
+  }).read(opts, 'related');
 };
 
 /**
