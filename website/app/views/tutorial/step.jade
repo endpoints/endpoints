@@ -4,4 +4,8 @@ block content
   include ../partials/nav-main
   section.step
     .container
-      p!= step_data
+      .row
+        .three.columns
+          include ../partials/nav-tuts
+        .nine.columns
+          p!= step_data
