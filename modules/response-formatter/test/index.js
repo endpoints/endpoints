@@ -1,12 +1,12 @@
 const expect = require('chai').expect;
 
-const Responder = require('../');
+const ResponseFormatter = require('../');
 
-const TestResponder = new Responder({}, function (data) {
+const Formatter = new ResponseFormatter(function (data) {
   return 'yup';
 });
 
-describe('Responder', function () {
+describe('ResponseFormatter', function () {
 
   describe('lib', function () {
 
@@ -18,7 +18,7 @@ describe('Responder', function () {
   describe('#create', function () {
 
     it('should have the instance\'s formatter partially applied', function () {
-      expect(TestResponder.create({}, {}).data).to.equal('yup');
+      expect(Formatter.create({}, {}).data).to.equal('yup');
     });
 
   });
@@ -26,7 +26,7 @@ describe('Responder', function () {
   describe('#read', function () {
 
     it('should have the instance\'s formatter partially applied', function () {
-      expect(TestResponder.read({}, {}).data).to.equal('yup');
+      expect(Formatter.read({}, {}).data).to.equal('yup');
     });
 
   });
@@ -34,7 +34,7 @@ describe('Responder', function () {
   describe('#update', function () {
 
     it('should have the instance\'s formatter partially applied', function () {
-      expect(TestResponder.update({}, {}).data).to.equal('yup');
+      expect(Formatter.update({}, {}).data).to.equal('yup');
     });
 
   });
@@ -42,7 +42,7 @@ describe('Responder', function () {
   describe('#destroy', function () {
 
     it('should have the instance\'s formatter partially applied', function () {
-      expect(TestResponder.destroy({}, {}).data).to.equal(null);
+      expect(Formatter.destroy({}, {}).data).to.equal(null);
     });
 
   });

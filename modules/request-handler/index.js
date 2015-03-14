@@ -9,41 +9,23 @@ const verifyDataObject = require('./lib/verify_data_object');
 const splitStringProps = require('./lib/split_string_props');
 
 /**
-  Creates a new instance of Request.
+  Creates a new instance of RequestHandler.
 
   @constructor
-  @param {Object} request - The request object.
-  @param {Object} config - The config from the controller.
   @param {Endpoints.Adapter} adapter
 */
-function Request (request, config, adapter) {
-  var params = request.params = request.params || {};
-  var body = request.body = request.body || {};
-  request.query = request.query || {};
-
-  this.request = request;
-  this.config = _.cloneDeep(config);
+function RequestHandler (config, adapter) {
+  this.config = config;
   this.adapter = adapter;
-  this.typeName = adapter.typeName();
   this.schema = config.schema || {};
   this.validators = config.validators;
+  this.method = config.method;
 
   // this used to happen in the configureController step
   // TODO: is this even needed? i believe we're only using
   // it to generate the location header response for creation
   // which is brittle and invalid anyway.
   config.typeName = adapter.typeName();
-
-  var requestData;
-  if (config.method === 'update' && params.relation) {
-    requestData = {
-      type: adapter.typeName(),
-      links: {}
-    };
-    requestData.links[params.relation] = body.data;
-    body.data = requestData;
-    config.relationOnly = true;
-  }
 }
 
 /**
@@ -51,12 +33,12 @@ function Request (request, config, adapter) {
 
   @returns {Object} An object containing errors, if any.
 */
-Request.prototype.validate = function () {
+RequestHandler.prototype.validate = function (request) {
+
   var err;
-  var request = this.request;
   var validators = [verifyAccept];
 
-  if (this.data()) {
+  if (request.body && request.body.data) {
     validators = validators.concat([verifyContentType, verifyDataObject]);
   }
 
@@ -73,51 +55,16 @@ Request.prototype.validate = function () {
 };
 
 /**
-  A convenience method for accessing the data object in a request body.
-
-  @returns {Object} An collection or element.
-*/
-Request.prototype.data = function () {
-  return this.request.body.data;
-};
-
-/**
-  A convenience method for accessing the relation object
-  inside the params object on a request.
-
-  @returns {Array} The params.relation on a request object.
-*/
-Request.prototype.relation = function () {
-  return this.params.relation;
-};
-
-/**
-  A convenience method for retrieving the method from the request object.
-
-  @returns {String} The name of the method (create, read, update, destroy).
-*/
-Request.prototype.method = function () {
-  return this.config.method;
-};
-
-
-/**
-  A convenience method for accessing the typeName of an adapter's model.
-
-  @returns {String} The name of the type of the model.
- */
-Request.prototype.typeName = function () {
-  return this.adapter.typeName();
-};
-
-/**
   Builds a query object to be passed to Endpoints.Adapter#read.
 
   @returns {Object} The query object on a request.
  */
-Request.prototype.query = function () {
-  var query = this.request.query;
-  var config = this.config;
+RequestHandler.prototype.query = function (request) {
+  // bits down the chain can mutate this config
+  // on a per-request basis, so we need to clone
+  var config = _.cloneDeep(this.config);
+
+  var query = request.query;
   var include = query.include;
   var filter = query.filter;
   var fields = query.fields;
@@ -135,10 +82,10 @@ Request.prototype.query = function () {
 
   @returns {Promise(Bookshelf.Model)} Newly created instance of the Model.
 */
-Request.prototype.create = function () {
+RequestHandler.prototype.create = function (request) {
   var adapter = this.adapter;
-  var method = this.method();
-  var data = this.data();
+  var method = this.method;
+  var data = request.body.data;
 
   if (data && data.id) {
     return adapter.byId(data.id)
@@ -157,11 +104,11 @@ Request.prototype.create = function () {
 
   @returns {Promise(Bookshelf.Model)|Promise(Bookshelf.Collection)}
 */
-Request.prototype.read = function () {
+RequestHandler.prototype.read = function (request) {
   var adapter = this.adapter;
-  var query = this.query();
+  var query = this.query(request);
 
-  var params = this.request.params;
+  var params = request.params;
   var id = params.id;
   var relation = params.relation;
 
@@ -183,11 +130,20 @@ Request.prototype.read = function () {
 
   @returns {Promise(Bookshelf.Model)}
 */
-Request.prototype.update = function () {
+RequestHandler.prototype.update = function (request) {
   var adapter = this.adapter;
-  var method = this.method();
-  var id = this.request.params.id;
-  var data = this.data();
+  var method = this.method;
+  var id = request.params.id;
+  var relation = request.params.relation;
+  var data = request.body.data;
+
+  if (relation) {
+    data = {
+      type: adapter.typeName(),
+      links: {}
+    };
+    data.links[relation] = request.body.data;
+  }
 
   return adapter.byId(id).
     then(throwIfNoModel).
@@ -207,10 +163,10 @@ Request.prototype.update = function () {
 
   @returns {Promise(Bookshelf.Model)}
 */
-Request.prototype.destroy = function () {
-  var method = this.method();
+RequestHandler.prototype.destroy = function (request) {
+  var method = this.method;
   var adapter = this.adapter;
-  var id = this.request.params.id;
+  var id = request.params.id;
 
   return adapter.byId(id).then(function (model) {
     if (model) {
@@ -219,4 +175,4 @@ Request.prototype.destroy = function () {
   });
 };
 
-module.exports = Request;
+module.exports = RequestHandler;

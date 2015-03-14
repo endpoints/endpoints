@@ -5,7 +5,7 @@ const BooksModel = require('../../../../test/fixtures/models/books');
 
 const validateRelation = require('../../lib/validate_relation');
 
-describe.only('validateRelation', function () {
+describe('validateRelation', function () {
   var model;
   before(function () {
     return DB.reset().then(function () {

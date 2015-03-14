@@ -1,11 +1,12 @@
-var Request = require('..');
+const RequestHandler = require('..');
 const expect = require('chai').expect;
 const sinon = require('sinon');
 
 var req = {
   headers: {
     accept: 'application/vnd.api+json'
-  }
+  },
+  body: {}
 };
 var source = {
   typeName: function() {}
@@ -16,10 +17,9 @@ it('it should run user supplied validators', function() {
   var config = {
     validators: [validator]
   };
-  var request = new Request(req, config, source);
+  var request = new RequestHandler(config, source);
 
-
-  expect(request.validate()).to.be.undefined;
+  expect(request.validate(req)).to.be.undefined;
   expect(validator.calledOnce).to.be.true;
 });
 
@@ -32,10 +32,9 @@ it('it should return an error if the custom validator errors', function() {
       };
     }]
   };
-  var request = new Request(req, config, source);
+  var request = new RequestHandler(config, source);
 
-
-  var error = request.validate();
+  var error = request.validate(req);
   expect(error).to.deep.equal({
     message: 'I am an error'
   });

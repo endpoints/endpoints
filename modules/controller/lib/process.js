@@ -1,30 +1,30 @@
-const Request = require('../../request');
-const Response = require('../../response');
+const RequestHandler = require('../../request-handler');
+const ResponseFormatter = require('../../response-formatter');
+const jsonApi = require('../../formatter-jsonapi');
+
+const send = require('./send');
 
 module.exports = function (config, source) {
+  var method = config.method;
   var responder = config.responder;
+  var handler = new RequestHandler(config, source);
+  var formatter = new ResponseFormatter(jsonApi);
 
-  return function (req, res) {
-    var request = new Request(req, config, source);
-    var response = new Response(res);
-    var method = config.method;
-    var server = 'express';
-
-    var processRequest = request[method].bind(request);
-    var formatResponse = response[method].bind(response, config);
-    var sendResponse = responder ? responder: response[server].bind(response);
-
-    var errors = request.validate();
+  return function (request, response) {
+    var server = 'express'; // detect if hapi or express here
+    var handle = handler[method].bind(handler);
+    var format = formatter[method].bind(formatter, config);
+    var sender = responder ? responder : send[server];
+    var respond = sender.bind(null, response);
+    var errors = handler.validate(request);
 
     if (errors) {
-      sendResponse(Response.error(errors));
+      respond(formatter.error(errors));
     } else {
-      processRequest().
-        then(formatResponse).
-        then(sendResponse).
-        catch(function (result) {
-          return sendResponse(Response.error(result));
-        });
+      handle(request).then(format).then(respond).catch(function (err) {
+        //throw err;
+        return respond(formatter.error(err));
+      });
     }
   };
 };

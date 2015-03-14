@@ -1,4 +1,4 @@
-describe('Request', function () {
+describe('RequestHandler', function () {
 
   describe('lib', function () {
     require('./lib/split_string_props');

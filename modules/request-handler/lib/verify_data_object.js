@@ -18,13 +18,23 @@ module.exports = function(request, endpoint) {
     return err;
   }
 
-  if (type !== endpoint.typeName) {
+/*
+  // TODO: fix this. at the moment, if you try to do something like
+  // PATCH /books/1/author, the target type of that request is 'books'
+  // when it should actually be 'authors' this disables type checking
+  // for write operations until this can be resolved.
+  if (!writeRelation && type !== endpoint.typeName) {
     err = Kapow(409, 'Data type does not match endpoint type.');
     return err;
   }
 
+  // TODO: fix this. at the moment, if you try to do something like
+  // PATCH /books/1/author, the target id of that request doesn't match
+  // the actual resource being targetted.
   if (id && data.id && id !== data.id) {
     err = Kapow(409, 'Data id does not match endpoint id.');
     return err;
   }
+
+  */
 };

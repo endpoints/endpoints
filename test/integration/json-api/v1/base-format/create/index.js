@@ -212,7 +212,7 @@ describe('creatingResources', function() {
     //   it('should return 403 Forbidden in response to an unsupported creation request');
     // });
 
-    describe('409Conflict', function() {
+    describe.skip('409Conflict', function() {
       it('must return 409 Conflict when processing a request to create a resource with an existing client-generated ID', function() {
         bookData.id = 1;
         return Agent.request('POST', '/books')

@@ -5,11 +5,15 @@ const Fixture = require('../../../../../app/fixture');
 
 describe('read', function() {
 
-  beforeEach(function() {
+  before(function() {
     return Fixture.reset();
   });
 
   describe('documentStructure', function() {
+
+    beforeEach(function() {
+      return Fixture.reset();
+    });
 
     describe('topLevel', function() {
       it('must respond to a successful request with an object', function() {
@@ -238,13 +242,13 @@ describe('read', function() {
         });
 
         it('should return related resources as the response primary data when a nested string URL through a to-One is fetched', function() {
-          return Agent.request('GET', '/books/1/author.books')
+          return Agent.request('GET', '/chapters/1/book.author')
             .promise()
             .then(function(res) {
               var dataObj = res.body.data;
               expect(res.status).to.equal(200);
-              expect(dataObj.length).to.equal(4);
-              expect(dataObj[0].type).to.equal('books');
+              expect(dataObj.id).to.equal('1');
+              expect(dataObj.type).to.equal('authors');
             });
         });
 
@@ -367,7 +371,7 @@ describe('read', function() {
     // });
 
     it('must have the identical relationship name as the key in the links section of the parent resource object', function() {
-      return Agent.request('GET', '/books/1/?include=author,series,stores,author.books')
+      return Agent.request('GET', '/books/1?include=author,series,stores,author.books')
         .promise()
         .then(function(res) {
           var linksTypes = Object.keys(res.body.data.links);

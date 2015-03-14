@@ -109,7 +109,7 @@ Adapter.prototype.typeName = function () {
 Adapter.prototype.related = function (opts, relation, model) {
   var related = relate(model, relation);
   var relatedModel, relatedIds;
-  if (related.length) {
+  if (related.models) {
     relatedModel = related.model;
     relatedIds = related.map(function (m) { return m.id; });
   } else {
@@ -117,11 +117,10 @@ Adapter.prototype.related = function (opts, relation, model) {
     relatedIds = related.id;
   }
   opts.filter.id = opts.filter.id ? opts.filter.id : relatedIds;
-  // this is some terrible bullshit right here
-  var relatedAdapter = new this.constructor({
+
+  return new this.constructor({
     model: relatedModel
-  });
-  return relatedAdapter.read(opts);
+  }).read(opts);
 };
 
 /**

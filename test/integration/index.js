@@ -1,3 +1,5 @@
-describe('Endpoints Integration', function () {
+process.env.TESTING = true;
+
+describe('Integration', function () {
   require('./json-api');
 });

@@ -18,10 +18,10 @@ describe('Controller', function () {
 
   describe('constructor', function () {
 
-    it('should throw if no source is specified', function () {
+    it('should throw if no adapter is specified', function () {
       expect(function () {
         new Controller();
-      }).to.throw('No source specified.');
+      }).to.throw('No adapter specified.');
     });
 
   });
