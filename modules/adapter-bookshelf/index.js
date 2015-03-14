@@ -84,7 +84,6 @@ Adapter.prototype.typeName = function () {
   return this.model.typeName;
 };
 
-
 /**
   Returns the model or collection of models related to a given model. This
   makes it possible to support requests like:
@@ -211,15 +210,18 @@ Adapter.prototype.create = function (method, params) {
 
   @returns {Promise(Bookshelf.Collection)} Models that match the provided opts.
 */
-Adapter.prototype.read = function (opts) {
+Adapter.prototype.read = function (opts, mode) {
   if (!opts) {
     opts = {};
   }
   var self = this;
   var model = this.model;
   var ready = bPromise.resolve();
+  var singleResult = mode === 'single' ||
+    (mode === 'related' && !Array.isArray(opts.filter.id));
 
-  // populate the field listing for a table
+  // populate the field listing for a table so we know which columns
+  // we can use for sparse fieldsets.
   if (!this.columns) {
     ready = model.query().columnInfo().then(function (info) {
       self.columns = Object.keys(info);
@@ -237,7 +239,7 @@ Adapter.prototype.read = function (opts) {
       withRelated: _.intersection(self.relations(), opts.include || [])
     }).then(function (result) {
       result.relations = opts.include;
-      result.singleResult = opts.filter && opts.filter.id && !Array.isArray(opts.filter.id);
+      result.singleResult = singleResult;
       return result;
     });
   });

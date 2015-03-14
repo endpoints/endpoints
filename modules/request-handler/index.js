@@ -1,3 +1,8 @@
+const COLLECTION_MODE = 'collection';
+const SINGLE_MODE = 'single';
+const RELATION_MODE = 'relation';
+const RELATED_MODE = 'related';
+
 const _ = require('lodash');
 const Kapow = require('kapow');
 
@@ -78,6 +83,35 @@ RequestHandler.prototype.query = function (request) {
 };
 
 /**
+  Determines mode based on what request.params are available.
+
+  @returns {String} the read mode
+*/
+RequestHandler.prototype.mode = function (request) {
+  var hasIdParam = !!request.params.id;
+  var hasRelationParam = !!request.params.relation;
+  var hasRelatedParam = !!request.params.related;
+
+  if (!hasIdParam) {
+    return COLLECTION_MODE;
+  }
+
+  if (!hasRelationParam && !hasRelatedParam) {
+    return SINGLE_MODE;
+  }
+
+  if (hasRelationParam) {
+    return RELATION_MODE;
+  }
+
+  if (hasRelatedParam) {
+    return RELATED_MODE;
+  }
+
+  return Kapow(400, 'Unable to determine mode based on `request.params` keys.');
+};
+
+/**
   Creates a new instance of a model.
 
   @returns {Promise(Bookshelf.Model)} Newly created instance of the Model.
@@ -107,22 +141,28 @@ RequestHandler.prototype.create = function (request) {
 RequestHandler.prototype.read = function (request) {
   var adapter = this.adapter;
   var query = this.query(request);
+  var mode = this.mode(request);
 
   var params = request.params;
   var id = params.id;
-  var relation = params.relation;
 
-  var findRelated;
-  if (relation) {
-    findRelated = adapter.related.bind(adapter, query, relation);
-    return adapter.byId(id, relation).then(throwIfNoModel).then(findRelated);
+  var related, findRelated;
+  if (mode === RELATED_MODE) {
+    related = params.related;
+    findRelated = adapter.related.bind(adapter, query, related);
+    return adapter.byId(id, related).then(throwIfNoModel).then(findRelated);
+  }
+
+  // var relation, findRelation;
+  if (mode === RELATION_MODE) {
+    throw new Error('not implemented');
   }
 
   if (id) {
     // FIXME: this could collide with filter[id]=#
     query.filter.id = id;
   }
-  return adapter.read(query);
+  return adapter.read(query, mode);
 };
 
 /**
