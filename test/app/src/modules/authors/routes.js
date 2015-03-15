@@ -12,7 +12,8 @@ module.exports = {
   get: {
     '/': controller.read(),
     '/:id': controller.read(),
-    '/:id/:relation': controller.read()
+    '/:id/:related': controller.read(),
+    '/:id/links/:relation': controller.read()
   },
   patch: {
     '/:id': controller.update({
