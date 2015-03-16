@@ -161,6 +161,9 @@ describe('read', function() {
             });
         });
 
+        // https://github.com/json-api/json-api/commit/6b18a4685692ae260f0ef1e10522b81725f83219
+        it('may include a string in its links object keyed by "related"');
+
         // TODO: API TEST
         it.skip('must respond to a get request to any `self` url with the resource as primary data');
       });
