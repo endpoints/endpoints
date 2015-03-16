@@ -9,3 +9,6 @@ block content
           include ../partials/nav-tuts
         .nine.columns
           p!= step_data
+          section.tut-nav
+            a.button.u-pull-left(href="/tutorial/#{ step_nun + -1 }") Back    
+            a.button.u-pull-right(href="/tutorial/#{ step_num + 1 }") Next
