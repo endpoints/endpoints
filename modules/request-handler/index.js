@@ -108,7 +108,7 @@ RequestHandler.prototype.mode = function (request) {
     return RELATED_MODE;
   }
 
-  return Kapow(400, 'Unable to determine mode based on `request.params` keys.');
+  throw Kapow(400, 'Unable to determine mode based on `request.params` keys.');
 };
 
 /**
