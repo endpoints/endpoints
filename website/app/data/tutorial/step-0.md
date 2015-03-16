@@ -134,5 +134,3 @@ If it's working correctly, you should see "hello Express!" in your browser at
 
 Now that we have a basic Express application(s!) set up we are ready to start
 building an API with endpoints!
-
-[Next](/tutorial/step-1)
