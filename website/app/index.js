@@ -27,13 +27,14 @@ app.get('/tutorial', function(req, res){
 });
 
 app.get('/tutorial/:step', function(req, res){
+  var step_num = parseInt(req.params.step);
   try {
-    var step_doc = fs.readFileSync('./website/app/data/tutorial/' + req.params.step + '.md', 'utf8');
+    var step_doc = fs.readFileSync('./website/app/data/tutorial/step-' + req.params.step + '.md', 'utf8');
     var step_data = markdown.toHTML(step_doc);
   } catch(e) {
     console.log(e);
   }
-  res.render('tutorial/step', { step_data: step_data });
+  res.render('tutorial/step', { step_data: step_data, step_num: step_num });
 });
 
 app.get('/about', function(req, res){
