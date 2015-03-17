@@ -170,5 +170,3 @@ You'll know it worked when you see the SQL debug output, followed by:
 
 Now that we have our database set up and seeded, we're ready to start
 building our modules.
-
-[Next](/tutorial/step-2)

@@ -11,9 +11,21 @@ methods to our model, and use that to write an endpoint to
 serve json-api compliant author data on our root route in our 
 application.
 
+By the end of this chapter, we'll have written the most minimal
+endpoints application we can, using only the Endpoints.Controller.
+Before moving on to the next section, be sure to take a moment to
+play around with what this very small package is able to allow you
+to do.
+
 [Check out the diff to see what we'll write.](https://github.com/endpoints/tutorial/commit/c7cf197f9c1988b4a4c6f82ee77750119b15ed74)
 
 ### Creating the first Model: Authors
+
+An endpoints application model is simply a Bookshelf Model;
+we don't even need endpoints for this step! Given that we
+created a Base Model class in the last step, we'll require
+that file and extend it with our model specific properties
+and filters.
 
 Create a file `/modules/authors/model.js`:
 
@@ -52,8 +64,10 @@ Create a file `/modules/authors/model.js`:
 
 ### Endpoints dependency
 
-In order to use endpoints, we need to include it as a dependency.
-Type:
+To expose our model to our Express application, we'll use the
+Endpoints.Controller, which mean we now need to use endpoints.
+
+Include endpoints as a dependency by typing:
 
 `npm install endpoints --save`
 
@@ -72,6 +86,9 @@ and edit the endpoints entry to point at the github repository:
 
 ### Endpoints Controller
 
+Now that we have required endpoints, we will create a
+controller for our Authors module.
+
 In our author module directory, create a file called
 `controller.js`:
 
@@ -85,10 +102,17 @@ In our author module directory, create a file called
       })
     });
 
+This file exports a new 
+[Endpoints.Controller](/api/endpoints/0.5.6/Controller.html)
+object, the constructor of which takes a single parameter, our
+`model.js`, wrapped by the Endpoints.Adapter.
+
 
 We can now require this file in our Express application, allowing us
 access to the data from our database using CRUD convenience methods
-as afforded to us by Endpoints.
+as afforded to us by Endpoints. Each of these methods returns a method
+that handles a specific HTTP request via 
+[Endpoints.RequestHandler](/api/endpoints/0.5.6/RequestHandler.html).
 
 
 ### Wiring up our Model and Application Route
@@ -98,7 +122,7 @@ Express application to show the authors we have seeded into our
 database. To do this, we must:
 
 - Require `modules/authors/controller`
-- Replace the request handling callback with a Endpoints.Controller CRUD function
+- Replace the request handling callback with a [Endpoints.Controller](/api/endpoints/0.5.6/Controller.html) CRUD method
     
 Your `src/index.js` should end up looking like this:
     
@@ -145,5 +169,3 @@ data in the browser. Try it out by typing `npm start`. You should see:
 
 
 [Check out the diff to review what we covered in this section.](https://github.com/endpoints/tutorial/commit/c7cf197f9c1988b4a4c6f82ee77750119b15ed74)
-
-[Next](/tutorial/step-4)
