@@ -1,11 +1,11 @@
 describe('extensions', function () {
 
-  it('must require relevant extensions in the content-type header');
+  it('must require relevant extensions in the ext parameter of the content-type header');
 
   // The base JSON API specification MAY be extended to support
   // additional capabilities.
 
-  it('should return supported extensions in the Content-Type header of every response');
+  it('must return supported extensions in the supported-ext parameter of the Content-Type header of every response');
   it('must render supported extensions as a comma-separated list');
 
   // Clients MAY request a particular media type extension by
@@ -13,7 +13,9 @@ describe('extensions', function () {
   // Accept header.
 
   it('must not reject requests with supported media extensions in the Accept header');
-  it('must reject requests with unsupported media extensions in the Accept header with a 415 status');
+  it('must reject requests with unsupported media extensions in the Accept header with a 406 status');
+  it('must reject requests with supported media extensions in the Accept header, but unsupported COntent-Type with a 415 status');
+  it('must not provide extended functionality incompatible with the base spec to clients that do not request it');
 
   describe('officialExtensions', function() {
 

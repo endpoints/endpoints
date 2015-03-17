@@ -221,6 +221,7 @@ describe('updatingResources', function() {
         });
     });
 
+    // FIXME: https://gist.github.com/bobholt/1a5e9103be5fa85a53da#file-rc2-rc3-diff-L1753-L1760
     it('must attempt to remove to-Many relationships with the id member of the data object set to []', function() {
       patchData.data.links = {
         stores: { type: 'stores', id: [] },

@@ -50,18 +50,6 @@ describe('creatingResources', function() {
       });
   });
 
-  it('must not include any top-level members other than "data," "meta," "links," or "included"', function() {
-    var allowedTopLevel = ['data', 'included', 'links', 'meta'];
-    return Agent.request('POST', '/books')
-      .send({ data: bookData })
-      .promise()
-      .then(function(res) {
-        Object.keys(res.body).forEach(function(key) {
-          expect(allowedTopLevel).to.contain(key);
-        });
-      });
-  });
-
   it('must require a content-type header of application/vnd.api+json', function() {
     return Agent.request('POST', '/books')
       .type('application/json')
