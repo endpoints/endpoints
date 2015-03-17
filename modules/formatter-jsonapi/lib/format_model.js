@@ -3,7 +3,12 @@ const _ = require('lodash');
 const toOneRelations = require('./to_one_relations');
 const link = require('./link');
 
-module.exports = function formatModel(relations, exporter, model) {
+module.exports = function formatModel(opts, model) {
+  var topLevelLinks;
+  var exporter = opts && opts.exporter;
+  var mode = opts && opts.mode;
+  var relations = opts && opts.relations;
+
   // get the underlying model type
   var typeName = model.constructor.typeName;
   // get the list of relations we intend to include (sideload)
@@ -14,10 +19,6 @@ module.exports = function formatModel(relations, exporter, model) {
   var toOneRels = toOneRelations(model, allRelations);
   // get the list of relations we have not included
   var linkWithoutInclude = _.difference(allRelations, linkWithInclude);
-  // figure out which toOne relations we have not explictly included
-  var toOneWithoutInclude = _.intersection(linkWithoutInclude, Object.keys(toOneRels));
-  // figure out which toMany relations we have not explictly included
-  var toManyWithoutInclude = _.difference(linkWithoutInclude, toOneWithoutInclude);
   // get a json representation of the model, excluding any related data
   var serialized = model.toJSON({shallow:true});
   // json-api requires id be a string -- shouldn't rely on server
@@ -28,11 +29,14 @@ module.exports = function formatModel(relations, exporter, model) {
   for (var rel in toOneRels) {
     delete serialized[toOneRels[rel]];
   }
-  serialized.links = link(model, {
-    linkWithInclude: linkWithInclude,
-    toManyWithoutInclude: toManyWithoutInclude,
-    toOneWithoutInclude: toOneWithoutInclude,
-    exporter: exporter
-  });
+  if (mode === 'relation') {
+    topLevelLinks = link(model, opts);
+  } else {
+    serialized.links = link(model, {
+      linkWithInclude: linkWithInclude,
+      linkWithoutInclude: linkWithoutInclude,
+      exporter: exporter
+    });
+  }
   return serialized;
 };

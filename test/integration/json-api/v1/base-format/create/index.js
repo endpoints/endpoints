@@ -170,20 +170,19 @@ describe('creatingResources', function() {
             var createData = res.body.data;
             expect(createData.id).to.be.a('string');
 
-            return Agent.request('GET', '/books/' + createData.id + '?include=stores')
+            return Agent.request('GET', '/books/' + createData.id + '?include=author,series,stores')
               .promise()
               .then(function(res) {
                 var readResult = res.body;
                 var payloadData = readResult.data;
                 var payloadLinks = payloadData.links;
 
-                expect(readResult.included.length).to.equal(1);
-                expect(readResult.included[0].id).to.equal(bookData.links.stores.id[0]);
+                expect(readResult.included.length).to.equal(3);
                 expect(payloadData.title).to.equal(bookData.title);
                 expect(payloadData.date_published).to.equal(bookData.date_published);
-                expect(payloadLinks.author.id).to.equal(bookData.links.author.id);
-                expect(payloadLinks.series.id).to.equal(bookData.links.series.id);
-                expect(payloadLinks.stores.id).to.deep.equal(bookData.links.stores.id);
+                expect(payloadLinks.author.linkage.id).to.equal(bookData.links.author.id);
+                expect(payloadLinks.series.linkage.id).to.equal(bookData.links.series.id);
+                expect(payloadLinks.stores.linkage[0].id).to.deep.equal(bookData.links.stores.id[0]);
               });
           });
       });

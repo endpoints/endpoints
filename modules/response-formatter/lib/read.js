@@ -15,7 +15,11 @@ module.exports = function (formatter, config, data) {
     code: '200',
     data: formatter(data, {
       singleResult: data.singleResult,
-      relations: data.relations
+      relations: data.relations,
+      mode: data.mode,
+      baseType: data.baseType,
+      baseId: data.baseId,
+      baseRelation: data.baseRelation
     })
   };
 };

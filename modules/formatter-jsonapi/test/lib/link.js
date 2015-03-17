@@ -31,15 +31,25 @@ describe('link', function () {
   });
 
   it('should generate links object for a model', function () {
-    expect(link(authorsModel, {
-      linkWithInclude: ['books'],
-    })).to.deep.equal({
+    var result = {
       books: {
-        type: 'books',
-        id: booksByAuthorOne
+        self: '/authors/1/links/books',
+        related: '/authors/1/books',
       },
       self: '/authors/1'
-    });
+    };
+
+    result.books.linkage = _.reduce(booksByAuthorOne, function(res, authorId) {
+      res.push({
+        id: authorId,
+        type: 'books'
+      });
+      return res;
+    }, []);
+
+    expect(link(authorsModel, {
+      linkWithInclude: ['books'],
+    })).to.deep.equal(result);
   });
 
   it('should call exporter for each included model', function () {
@@ -53,12 +63,11 @@ describe('link', function () {
 
   it('should generate toOne links entries for a model', function () {
     expect(link(booksModel, {
-      toOneWithoutInclude: ['author'],
+      linkWithoutInclude: ['author'],
     })).to.deep.equal({
       author: {
-        resource: '/authors/1',
-        id: '1',
-        type: 'authors'
+        self: '/books/11/links/author',
+        related: '/books/11/author'
       },
       self: '/books/11'
     });
@@ -66,11 +75,11 @@ describe('link', function () {
 
   it('should handle null toOne link entries for a model', function () {
     expect(link(booksModel, {
-      toOneWithoutInclude: ['series']
+      linkWithoutInclude: ['series']
     })).to.deep.equal({
       series: {
-        id: 'null',
-        type: 'series'
+        self: '/books/11/links/series',
+        related: '/books/11/series'
       },
       self: '/books/11'
     });

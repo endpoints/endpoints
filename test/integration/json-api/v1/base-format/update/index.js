@@ -127,7 +127,8 @@ describe('updatingResources', function() {
           expect(secondRead.included.length).to.equal(2);
           expect(payloadData.title).to.equal(patchData.data.title);
           expect(payloadData.date_published).to.equal(patchData.data.date_published);
-          expect(payloadLinks.stores.id).to.deep.equal(updateLinks.stores.id);
+          expect(payloadLinks.stores.linkage[0].id).to.equal(updateLinks.stores.id[0]);
+          expect(payloadLinks.stores.linkage[1].id).to.equal(updateLinks.stores.id[1]);
 
         });
     });
@@ -175,8 +176,8 @@ describe('updatingResources', function() {
         .then(function(res) {
           var payloadLinks = res.body.data.links;
           var updateLinks = patchData.data.links;
-          expect(payloadLinks.author.id).to.equal(updateLinks.author.id);
-          expect(payloadLinks.series.id).to.equal(updateLinks.series.id);
+          expect(payloadLinks.author.linkage.id).to.equal(updateLinks.author.id);
+          expect(payloadLinks.series.linkage.id).to.equal(updateLinks.series.id);
         });
     });
 
@@ -192,7 +193,7 @@ describe('updatingResources', function() {
         })
         .then(function(res) {
           var payloadLinks = res.body.data.links;
-          expect(payloadLinks.series.id).to.equal('null');
+          expect(payloadLinks.series.linkage).to.equal('null');
         });
     });
   });
@@ -202,7 +203,10 @@ describe('updatingResources', function() {
   describe('updatingResourceToManyRelationships', function() {
     it('must update homogeneous to-Many relationship with an object with type and id members under links', function() {
       patchData.data.links = {
-        stores: { type: 'stores', id: ['1', '2'] },
+        stores: [
+          { type: 'stores', id: '1' },
+          { type: 'stores', id: '2' }
+        ]
       };
 
       return Agent.request('PATCH', '/books/1')
@@ -217,14 +221,15 @@ describe('updatingResources', function() {
           var payloadLinks = res.body.data.links;
           var updateLinks = patchData.data.links;
           expect(res.body.included.length).to.equal(2);
-          expect(payloadLinks.stores.id).to.deep.equal(updateLinks.stores.id);
+          expect(payloadLinks.stores.linkage[0].id).to.equal(updateLinks.stores.id[0]);
+          expect(payloadLinks.stores.linkage[1].id).to.equal(updateLinks.stores.id[1]);
         });
     });
 
     // FIXME: https://gist.github.com/bobholt/1a5e9103be5fa85a53da#file-rc2-rc3-diff-L1753-L1760
     it('must attempt to remove to-Many relationships with the id member of the data object set to []', function() {
       patchData.data.links = {
-        stores: { type: 'stores', id: [] },
+        stores: [],
       };
 
       return Agent.request('PATCH', '/books/1')
@@ -237,9 +242,8 @@ describe('updatingResources', function() {
         })
         .then(function(res) {
           var payloadLinks = res.body.data.links;
-          var updateLinks = patchData.data.links;
           expect(res.body).to.not.have.property('included');
-          expect(payloadLinks.stores.id).to.deep.equal(updateLinks.stores.id);
+          expect(payloadLinks.stores.linkage).to.deep.equal([]);
         });
     });
 
@@ -364,30 +368,30 @@ describe('updatingRelationships', function() {
   describe('updatingToOneRelationships', function() {
     // /books/1/author
     it('must update relationships with a PATCH request to a to-one relationship URL containing a data object with type and id members and return 204 No Content on success', function() {
-      return Agent.request('PATCH', '/books/1/author')
+      return Agent.request('PATCH', '/books/1/links/author')
         .send({ data: { type: 'authors', id: '2' }})
         .promise()
         .then(function(res) {
           expect(res.status).to.equal(204);
-          return Agent.request('GET', '/books/1').promise();
+          return Agent.request('GET', '/books/1?include=author').promise();
         })
         .then(function(res) {
           var payloadLinks = res.body.data.links;
-          expect(payloadLinks.author.id).to.equal('2');
+          expect(payloadLinks.author.linkage.id).to.equal('2');
         });
     });
 
     it('must remove relationships with a PATCH request to a to-one relationship URL containing a data object with a null value and return 204 No Content on success', function() {
-      return Agent.request('PATCH', '/books/1/series')
+      return Agent.request('PATCH', '/books/1/links/series')
         .send({ data: null })
         .promise()
         .then(function(res) {
           expect(res.status).to.equal(204);
-          return Agent.request('GET', '/books/1').promise();
+          return Agent.request('GET', '/books/1?include=series').promise();
         })
         .then(function(res) {
           var payloadLinks = res.body.data.links;
-          expect(payloadLinks.series.id).to.equal('null');
+          expect(payloadLinks.series.linkage).to.equal('null');
         });
     });
 
@@ -400,7 +404,7 @@ describe('updatingRelationships', function() {
     // /books/1/stores
     it('must update relationships with a PATCH request to a to-many relationship URL containing a data object with type and id members  and return 204 No Content on success', function() {
       var newIds = ['1', '2'];
-      return Agent.request('PATCH', '/books/1/stores')
+      return Agent.request('PATCH', '/books/1/links/stores')
         .send({ data: { type: 'stores', id: newIds }})
         .promise()
         .then(function(res) {
@@ -416,7 +420,7 @@ describe('updatingRelationships', function() {
 
     it('must remove relationships with a PATCH request to a to-many relationship URL containing a data object with a null value and return 204 No Content on success', function() {
       var newIds = [];
-      return Agent.request('PATCH', '/books/1/stores')
+      return Agent.request('PATCH', '/books/1/links/stores')
         .send({ data: { type: 'stores', id: newIds }})
         .promise()
         .then(function(res) {
