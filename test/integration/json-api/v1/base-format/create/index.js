@@ -14,7 +14,9 @@ describe('creatingResources', function() {
       links: {
         author: {type: 'authors', id: '1'},
         series: {type: 'series', id: '1'},
-        stores: {type: 'stores', id: ['1']}
+        stores: [
+          {type: 'stores', id: '1'}
+        ]
       }
     };
     return Fixture.reset();
@@ -176,13 +178,12 @@ describe('creatingResources', function() {
                 var readResult = res.body;
                 var payloadData = readResult.data;
                 var payloadLinks = payloadData.links;
-
                 expect(readResult.included.length).to.equal(3);
                 expect(payloadData.title).to.equal(bookData.title);
                 expect(payloadData.date_published).to.equal(bookData.date_published);
                 expect(payloadLinks.author.linkage.id).to.equal(bookData.links.author.id);
                 expect(payloadLinks.series.linkage.id).to.equal(bookData.links.series.id);
-                expect(payloadLinks.stores.linkage[0].id).to.deep.equal(bookData.links.stores.id[0]);
+                expect(payloadLinks.stores.linkage[0].id).to.equal(bookData.links.stores[0].id);
               });
           });
       });

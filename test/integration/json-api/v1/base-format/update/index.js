@@ -101,7 +101,10 @@ describe('updatingResources', function() {
         type: 'books',
         title: 'tiddlywinks',
         links: {
-          stores: {type: 'stores', id: ['1', '2']}
+          stores: [
+            {type: 'stores', id: '1'},
+            {type: 'stores', id: '2'}
+          ]
         }
       };
       var firstRead;
@@ -127,8 +130,8 @@ describe('updatingResources', function() {
           expect(secondRead.included.length).to.equal(2);
           expect(payloadData.title).to.equal(patchData.data.title);
           expect(payloadData.date_published).to.equal(patchData.data.date_published);
-          expect(payloadLinks.stores.linkage[0].id).to.equal(updateLinks.stores.id[0]);
-          expect(payloadLinks.stores.linkage[1].id).to.equal(updateLinks.stores.id[1]);
+          expect(payloadLinks.stores.linkage[0].id).to.equal(updateLinks.stores[0].id);
+          expect(payloadLinks.stores.linkage[1].id).to.equal(updateLinks.stores[1].id);
 
         });
     });
@@ -221,8 +224,8 @@ describe('updatingResources', function() {
           var payloadLinks = res.body.data.links;
           var updateLinks = patchData.data.links;
           expect(res.body.included.length).to.equal(2);
-          expect(payloadLinks.stores.linkage[0].id).to.equal(updateLinks.stores.id[0]);
-          expect(payloadLinks.stores.linkage[1].id).to.equal(updateLinks.stores.id[1]);
+          expect(payloadLinks.stores.linkage[0].id).to.equal(updateLinks.stores[0].id);
+          expect(payloadLinks.stores.linkage[1].id).to.equal(updateLinks.stores[1].id);
         });
     });
 
@@ -309,7 +312,7 @@ describe('updatingResources', function() {
 
       it('must return 404 Not Found when processing a request that references a to-Many related resource that does not exist', function() {
         patchData.data.links = {
-          stores: {type: 'stores', id: ['9999']}
+          stores: [{type: 'stores', id: '9999'}]
         };
         return Agent.request('PATCH', '/books/1')
           .send(patchData)
