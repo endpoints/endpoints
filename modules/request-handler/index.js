@@ -175,6 +175,7 @@ RequestHandler.prototype.update = function (request) {
 
   if (relation) {
     data = {
+      id: id,
       type: adapter.typeName(),
       links: {}
     };
