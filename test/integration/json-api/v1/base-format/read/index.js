@@ -151,13 +151,13 @@ describe('read', function() {
         });
 
         // TODO: Fix self urls to be baseUrl aware
-        it.skip('must set the value of "self" to a URL that identifies the resource represented by this object', function() {
+        it('must set the value of "self" to a URL that identifies the resource represented by this object', function() {
           return Agent.request('GET', '/books/1')
             .promise()
             .then(function(res) {
               var dataObj = res.body.data;
               expect(res.status).to.equal(200);
-              expect(dataObj.links.self).to.equal(Agent.baseUrl + '/books/1');
+              expect(dataObj.links.self).to.equal('/books/1');
             });
         });
 
@@ -166,7 +166,7 @@ describe('read', function() {
         it('may include a "linkage" member whose value represents "resource linkage"');
 
         // TODO: API TEST
-        it.skip('must respond to a get request to any `self` url with the resource as primary data');
+        it('must respond to a get request to any `self` url with the resource as primary data');
       });
 
       describe('resourceRelationships', function() {
@@ -265,7 +265,7 @@ describe('read', function() {
         });
 
         // TODO: implement
-        describe.skip('stringURLRelationship', function() {
+        describe('stringURLRelationship', function() {
           it('should not change related URL even when the resource changes');
         });
 
@@ -381,11 +381,11 @@ describe('read', function() {
     });
 
     // TODO: Meta object not currently used by endpoints
-    describe.skip('metaInformation', function() {
+    describe('metaInformation', function() {
       it('must be an object value');
     });
 
-    describe.skip('topLevelLinks', function() {
+    describe('topLevelLinks', function() {
       it('should not include members other than self, resource, and pagination links if necessary');
     });
   });
@@ -449,11 +449,11 @@ describe('read', function() {
     });
 
     describe('sparseFieldsets', function() {
-      it.skip('should support returning **only** specific fields in the response on a per-type basis by including a fields[TYPE] parameter', function() {
-        return Agent.request('GET', '/books/?fields=id,title')
+      it('should support returning **only** specific fields in the response on a per-type basis by including a fields[TYPE] parameter', function() {
+        return Agent.request('GET', '/books/?fields[books]=id,title')
           .promise()
           .then(function(res) {
-            var dataObj = res.body[0];
+            var dataObj = res.body.data[0];
             expect(dataObj).to.have.property('id');
             expect(dataObj).to.have.property('title');
             expect(dataObj).to.not.have.property('date_published');
@@ -470,6 +470,8 @@ describe('read', function() {
           });
       });
 
+      // TODO: Support sorting by nested relations
+      // https://github.com/endpoints/endpoints/issues/63
       it.skip('should support sorting by nested relationship attributes', function() {
         return Agent.request('GET', '/books/?sort=+author.name')
           .promise()
@@ -496,7 +498,7 @@ describe('read', function() {
     });
 
     // TODO: Pagination
-    describe.skip('pagination', function() {
+    describe('pagination', function() {
       it('should limit the number of resources returned in a response to a subset of the whole set available');
       it('should provide links to traverse a paginated data set');
       it('must put any pagination links on the object that corresponds to a collection');
