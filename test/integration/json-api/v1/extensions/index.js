@@ -7,6 +7,7 @@ describe('extensions', function () {
 
   it('must return supported extensions in the supported-ext parameter of the Content-Type header of every response');
   it('must render supported extensions as a comma-separated list');
+  it('must surround extension names with quotation marks when the media type parameter contains more than one extension name.');
 
   // Clients MAY request a particular media type extension by
   // including its name in the ext media type parameter with the

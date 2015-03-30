@@ -36,7 +36,7 @@ describe('deletingResources', function() {
   });
 
   // TODO: Source/DB test: verify rollback on error
-  it.skip('must not allow partial updates');
+  it('must not allow partial updates');
 
   it('should delete resources when a DELETE request is made to the resource URL', function() {
     var first, second, deleteId;
@@ -81,11 +81,10 @@ describe('deletingResources', function() {
 
     // Not testable as written. Each error handling branch should be
     // unit-tested for proper HTTP semantics.
-
-    describe.skip('otherResponses', function() {
-      it('should use other HTTP codes to represent errors');
-      it('must interpret errors in accordance with HTTP semantics');
-      it('should return error details');
-    });
+    // describe('otherResponses', function() {
+    //   it('should use other HTTP codes to represent errors');
+    //   it('must interpret errors in accordance with HTTP semantics');
+    //   it('should return error details');
+    // });
   });
 });

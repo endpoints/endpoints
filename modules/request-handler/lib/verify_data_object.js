@@ -2,18 +2,28 @@ const _ = require('lodash');
 const Kapow = require('kapow');
 
 module.exports = function(request, endpoint) {
-  var err, type, id;
+  var err, isValidType, id;
   var data = request.body.data;
 
-  if (!_.isPlainObject(data)) {
-    err = Kapow(400, 'Primary data must be a single object.');
+  if (!_.isPlainObject(data) && !_.isArray(data)) {
+    err = Kapow(400, 'Primary data must be a single object or array.');
     return err;
   }
 
-  type = data.type;
+  if (_.isArray(data)) {
+    isValidType = _.reduce(data, function(isValid, resource) {
+      if (!resource.type || typeof resource.type !== 'string') {
+        isValid = false;
+      }
+      return isValid;
+    }, true);
+  } else {
+    isValidType = typeof data.type === 'string';
+  }
+
   id = request.params && request.params.id;
 
-  if (typeof type !== 'string') {
+  if (!isValidType) {
     err = Kapow(400, 'Primary data must include a type.');
     return err;
   }

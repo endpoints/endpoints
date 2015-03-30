@@ -1,3 +1,4 @@
+const _ = require('lodash');
 const bPromise = require('bluebird');
 const Kapow = require('kapow');
 const sanitizeRequestData = require('./sanitize_request_data');
@@ -17,7 +18,7 @@ module.exports = function(model, params) {
       }
 
       var fkey;
-      var relation = relations[key];
+      var relation = relations[key].linkage;
       var relatedData = model.related(key).relatedData;
       var relationType = relatedData.type;
 
@@ -41,19 +42,19 @@ module.exports = function(model, params) {
 
       // toMany relations
       if (relationType === 'belongsToMany' || relationType === 'hasMany') {
-        return bPromise.map(relations[key].id, function(id) {
+        return bPromise.map(relation, function(rel) {
           return relatedData.target.collection().query(function(qb) {
-            return qb.where({id:id});
+            return qb.where({id:rel.id});
           }).fetchOne().then(function(model) {
             if (model === null) {
-              throw Kapow(404, 'Unable to find relation "' + key + '" with id ' + id);
+              throw Kapow(404, 'Unable to find relation "' + key + '" with id ' + rel.id);
             }
             return params;
           });
         }).then(function() {
           toManyRels.push({
             name: key,
-            id: relations[key].id
+            id: _.pluck(relation, 'id')
           });
           return params;
         });

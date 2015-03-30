@@ -147,15 +147,11 @@ RequestHandler.prototype.read = function (request) {
   var id = params.id;
 
   var related, findRelated;
-  if (mode === RELATED_MODE) {
-    related = params.related;
-    findRelated = adapter.related.bind(adapter, query, related);
-    return adapter.byId(id, related).then(throwIfNoModel).then(findRelated);
-  }
 
-  // var relation, findRelation;
-  if (mode === RELATION_MODE) {
-    throw new Error('not implemented');
+  if (mode === RELATED_MODE || mode === RELATION_MODE) {
+    related = params.related || params.relation;
+    findRelated = adapter.related.bind(adapter, query, related, mode);
+    return adapter.byId(id, related).then(throwIfNoModel).then(findRelated);
   }
 
   if (id) {
@@ -179,10 +175,11 @@ RequestHandler.prototype.update = function (request) {
 
   if (relation) {
     data = {
+      id: id,
       type: adapter.typeName(),
       links: {}
     };
-    data.links[relation] = request.body.data;
+    data.links[relation] = {linkage: request.body.data};
   }
 
   return adapter.byId(id).

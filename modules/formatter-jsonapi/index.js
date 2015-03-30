@@ -23,6 +23,7 @@ const formatModel = require('./lib/format_model');
 */
 module.exports = function (input, opts) {
   var included = [];
+  var topLevelLinks;
 
   /**
     Recieves each model that was explictly sideloaded
@@ -31,19 +32,23 @@ module.exports = function (input, opts) {
 
     @param {Object} model - Explicitly sideloaded model.
   */
-  var exporter = function (model) {
+  opts.exporter = function (model) {
     // each model that appears in the top level included object is itself
     // a bookshelf model that needs to be formatted for json-api compliance
     // too. we *could* allow links within links by recursing here but i
     // don't think it is needed... yet?
-    included.push(formatModel(null, null, model));
+    included.push(formatModel(null, model));
+  };
+
+  opts.topLevelLinker = function (links) {
+    topLevelLinks = links;
   };
 
   /**
     @todo formatting?
     This is is a partially applied version of formatModel.
   */
-  var formatter = formatModel.bind(null, opts.relations, exporter);
+  var formatter = formatModel.bind(null, opts);
 
   /**
     Formats every incoming model
@@ -57,12 +62,17 @@ module.exports = function (input, opts) {
     serialized = serialized[0];
   }
 
+
   /**
     Prepare json-api compliant output
   */
   var output = {
     data: serialized
   };
+
+  if (topLevelLinks) {
+    output.links = topLevelLinks;
+  }
 
   // if the exporter was ever called, we should have objects in
   // the included array. since it is possible for the same model

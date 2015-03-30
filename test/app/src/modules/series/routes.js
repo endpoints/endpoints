@@ -20,7 +20,7 @@ module.exports = {
       schema: schema,
       validators: validateJsonSchema
     }),
-    '/:id/:relation': controller.update()
+    '/:id/links/:relation': controller.update()
   },
   delete: {
     '/:id': controller.destroy()

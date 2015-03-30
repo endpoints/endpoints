@@ -138,7 +138,7 @@ Adapter.prototype.typeName = function () {
 
   @returns {Promise(Bookshelf.Model)|Promise(Bookshelf.Collection)} related models.
 */
-Adapter.prototype.related = function (opts, relation, model) {
+Adapter.prototype.related = function (opts, relation, mode, model) {
   var related = relate(model, relation);
   var relatedModel, relatedIds;
   if (related.models) {
@@ -147,6 +147,14 @@ Adapter.prototype.related = function (opts, relation, model) {
   } else {
     relatedModel = related.constructor;
     relatedIds = related.id;
+  }
+
+  if (mode === 'relation') {
+    opts.baseType = this.typeName();
+    opts.baseId = model.id;
+    opts.baseRelation = relation;
+    opts.fields = {};
+    opts.fields[related.constructor.typeName] = ['id', 'type'];
   }
 
   // @todo fix this
@@ -162,7 +170,7 @@ Adapter.prototype.related = function (opts, relation, model) {
 
   return new this.constructor({
     model: relatedModel
-  }).read(opts, 'related');
+  }).read(opts, mode);
 };
 
 /**
@@ -218,7 +226,7 @@ Adapter.prototype.read = function (opts, mode) {
   var model = this.model;
   var ready = bPromise.resolve();
   var singleResult = mode === 'single' ||
-    (mode === 'related' && !Array.isArray(opts.filter.id));
+    ((mode === 'related' || mode === 'relation') && !Array.isArray(opts.filter.id));
 
   // populate the field listing for a table so we know which columns
   // we can use for sparse fieldsets.
@@ -249,8 +257,14 @@ Adapter.prototype.read = function (opts, mode) {
       columns: fields,
       withRelated: _.intersection(self.relations(), opts.include || [])
     }).then(function (result) {
+      // This is a lot of gross in order to pass this data into the
+      // formatter later. Need to formalize this in some other way.
+      result.mode = mode;
       result.relations = opts.include;
       result.singleResult = singleResult;
+      result.baseType = opts.baseType;
+      result.baseId = opts.baseId;
+      result.baseRelation = opts.baseRelation;
       return result;
     });
   });

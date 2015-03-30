@@ -151,13 +151,13 @@ describe('read', function() {
         });
 
         // TODO: Fix self urls to be baseUrl aware
-        it.skip('must set the value of "self" to a URL that identifies the resource represented by this object', function() {
+        it('must set the value of "self" to a URL that identifies the resource represented by this object', function() {
           return Agent.request('GET', '/books/1')
             .promise()
             .then(function(res) {
               var dataObj = res.body.data;
               expect(res.status).to.equal(200);
-              expect(dataObj.links.self).to.equal(Agent.baseUrl + '/books/1');
+              expect(dataObj.links.self).to.equal('/books/1');
             });
         });
 
@@ -166,7 +166,7 @@ describe('read', function() {
         it('may include a "linkage" member whose value represents "resource linkage"');
 
         // TODO: API TEST
-        it.skip('must respond to a get request to any `self` url with the resource as primary data');
+        // it('must respond to a get request to any `self` url with the resource as primary data');
       });
 
       describe('resourceRelationships', function() {
@@ -209,17 +209,14 @@ describe('read', function() {
             });
         });
 
-        it('should make to-many references a string URL', function() {
+        it('should make to-many references a link object', function() {
           return Agent.request('GET', '/books/1')
             .promise()
             .then(function(res) {
               var links = res.body.data.links;
               expect(res.status).to.equal(200);
-              expect(links.stores).to.be.a('String');
-              expect(links['author.books']).to.be.a('String');
-              // using match because we don't do baseUrl yet
-              expect(links.stores).to.match(/\/books\/1\/stores$/);
-              expect(links['author.books']).to.match(/\/books\/1\/author.books$/);
+              expect(links.stores).to.be.an('Object');
+              expect(links['author.books']).to.be.an('Object');
             });
         });
 
@@ -268,12 +265,12 @@ describe('read', function() {
         });
 
         // TODO: implement
-        describe.skip('stringURLRelationship', function() {
+        describe('stringURLRelationship', function() {
           it('should not change related URL even when the resource changes');
         });
 
         describe('linkObjectRelationship', function() {
-          it('must contain either a "self," "resource," "meta" property or an object linkage via a data object or type and id', function() {
+          it('must contain either a "self," "related," "linkage", or "meta" property', function() {
             return Agent.request('GET', '/books/1')
               .promise()
               .then(function(res) {
@@ -282,10 +279,9 @@ describe('read', function() {
                 var includedAuthor = dataObj.links.author;
                 var minProp =
                   includedAuthor.self ||
-                  includedAuthor.resource ||
+                  includedAuthor.related ||
                   includedAuthor.meta ||
-                  includedAuthor.data ||
-                  (includedAuthor.type && includedAuthor.id);
+                  includedAuthor.linkage;
                 expect(minProp).to.exist;
               });
           });
@@ -297,11 +293,8 @@ describe('read', function() {
                 var dataObj = res.body.data;
                 expect(res.status).to.equal(200);
                 var includedAuthor = dataObj.links.author;
-                var objectLinkage =
-                  includedAuthor.data ||
-                  (includedAuthor.type && includedAuthor.id);
 
-                expect(objectLinkage).to.exist;
+                expect(includedAuthor.linkage).to.exist;
               });
           });
 
@@ -312,10 +305,10 @@ describe('read', function() {
                 var dataObj = res.body.data;
                 var links = dataObj.links;
                 expect(res.status).to.equal(200);
-                expect(links.author).to.have.property('type');
-                expect(links.author).to.have.property('id');
-                expect(links.series).to.have.property('type');
-                expect(links.series).to.have.property('id');
+                expect(links.author.linkage).to.have.property('type');
+                expect(links.author.linkage).to.have.property('id');
+                expect(links.series.linkage).to.have.property('type');
+                expect(links.series.linkage).to.have.property('id');
               });
           });
 
@@ -341,10 +334,10 @@ describe('read', function() {
           .then(function(res) {
             var dataObj = res.body.data;
             expect(res.status).to.equal(200);
-            var includedAuthor = dataObj.links.author;
+            var includedAuthorLinkage = dataObj.links.author.linkage;
             expect(res.body.included).to.be.a('array');
-            expect(res.body.included[0].type).to.equal(includedAuthor.type);
-            expect(res.body.included[0].id).to.equal(includedAuthor.id);
+            expect(res.body.included[0].type).to.equal(includedAuthorLinkage.type);
+            expect(res.body.included[0].id).to.equal(includedAuthorLinkage.id);
           });
       });
 
@@ -388,11 +381,11 @@ describe('read', function() {
     });
 
     // TODO: Meta object not currently used by endpoints
-    describe.skip('metaInformation', function() {
+    describe('metaInformation', function() {
       it('must be an object value');
     });
 
-    describe.skip('topLevelLinks', function() {
+    describe('topLevelLinks', function() {
       it('should not include members other than self, resource, and pagination links if necessary');
     });
   });
@@ -412,10 +405,9 @@ describe('read', function() {
         });
     });
 
-    describe.skip('fetchingResources', function() {
-      it('must support fetching resource for URLs provided as a `self` link in the top-level links object');
-      it('must support fetching resource for URLs provided as a `self` link as part of a resource object');
-      it('must support fetching resource for URLs provided as a `resource` link as part of a link object');
+    describe('fetchingResources', function() {
+      it('must support fetching resource for URLs provided as a `self` link in a links object');
+      it('must support fetching resource for URLs provided as a `related` link as part of a link object');
 
       describe('responses', function() {
         describe('200Ok', function() {
@@ -429,8 +421,21 @@ describe('read', function() {
       });
     });
 
-    describe.skip('fetchingRelationships', function() {
-      it('must support fetching relationship data for every relationship URL provided as a self link as part of a link object');
+    describe('fetchingRelationships', function() {
+      it('must support fetching relationship data for every relationship URL provided as a self link as part of a link object', function() {
+        return Agent.request('GET', '/books/1/links/author')
+          .promise()
+          .then(function(res) {
+            var dataObj = res.body.data;
+            var linksObj = res.body.links;
+            expect(res.status).to.equal(200);
+            expect(linksObj.self).to.equal('/books/1/links/author');
+            expect(linksObj.related).to.equal('/books/1/author');
+            expect(dataObj.type).to.equal('authors');
+            expect(dataObj.id).to.equal('1');
+          }
+        );
+      });
 
       describe('responses', function() {
         describe('200Ok', function() {
@@ -444,11 +449,11 @@ describe('read', function() {
     });
 
     describe('sparseFieldsets', function() {
-      it.skip('should support returning **only** specific fields in the response on a per-type basis by including a fields[TYPE] parameter', function() {
-        return Agent.request('GET', '/books/?fields=id,title')
+      it('should support returning **only** specific fields in the response on a per-type basis by including a fields[TYPE] parameter', function() {
+        return Agent.request('GET', '/books/?fields[books]=id,title')
           .promise()
           .then(function(res) {
-            var dataObj = res.body[0];
+            var dataObj = res.body.data[0];
             expect(dataObj).to.have.property('id');
             expect(dataObj).to.have.property('title');
             expect(dataObj).to.not.have.property('date_published');
@@ -465,6 +470,8 @@ describe('read', function() {
           });
       });
 
+      // TODO: Support sorting by nested relations
+      // https://github.com/endpoints/endpoints/issues/63
       it.skip('should support sorting by nested relationship attributes', function() {
         return Agent.request('GET', '/books/?sort=+author.name')
           .promise()
@@ -491,7 +498,7 @@ describe('read', function() {
     });
 
     // TODO: Pagination
-    describe.skip('pagination', function() {
+    describe('pagination', function() {
       it('should limit the number of resources returned in a response to a subset of the whole set available');
       it('should provide links to traverse a paginated data set');
       it('must put any pagination links on the object that corresponds to a collection');
