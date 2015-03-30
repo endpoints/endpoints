@@ -257,6 +257,8 @@ Adapter.prototype.read = function (opts, mode) {
       columns: fields,
       withRelated: _.intersection(self.relations(), opts.include || [])
     }).then(function (result) {
+      // This is a lot of gross in order to pass this data into the
+      // formatter later. Need to formalize this in some other way.
       result.mode = mode;
       result.relations = opts.include;
       result.singleResult = singleResult;

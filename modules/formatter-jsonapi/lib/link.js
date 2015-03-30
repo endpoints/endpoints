@@ -1,3 +1,5 @@
+const _ = require('lodash');
+
 const relate = require('./relate');
 
 module.exports = function (model, opts) {
@@ -58,14 +60,15 @@ module.exports = function (model, opts) {
         // if the related is an array, we have a hasMany relation
         link.linkage = related.reduce(function (result, model) {
           var id = String(model.id);
+          var linkObject = {
+            id: id,
+            type: relatedType
+          };
           // exclude nulls and duplicates, the point of a links
           // entry is to provide linkage to related resources,
           // not a full mapping of the underlying data
-          if (id && result.indexOf(id) === -1) {
-            result.push({
-              id: id,
-              type: relatedType
-            });
+          if (id && !_.findWhere(result, linkObject)) {
+            result.push(linkObject);
           }
           return result;
         }, []);
