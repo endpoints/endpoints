@@ -1,5 +1,5 @@
 // TODO: Implement
-describe.skip('errors', function() {
+describe('errors', function() {
   it('should return error objects that include additional information about problems encountered');
   it('should not return errors with primary data');
   it('should have an id member');

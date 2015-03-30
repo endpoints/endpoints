@@ -101,10 +101,10 @@ describe('updatingResources', function() {
         type: 'books',
         title: 'tiddlywinks',
         links: {
-          stores: [
+          stores: {linkage: [
             {type: 'stores', id: '1'},
             {type: 'stores', id: '2'}
-          ]
+          ]}
         }
       };
       var firstRead;
@@ -130,8 +130,8 @@ describe('updatingResources', function() {
           expect(secondRead.included.length).to.equal(2);
           expect(payloadData.title).to.equal(patchData.data.title);
           expect(payloadData.date_published).to.equal(patchData.data.date_published);
-          expect(payloadLinks.stores.linkage[0].id).to.equal(updateLinks.stores[0].id);
-          expect(payloadLinks.stores.linkage[1].id).to.equal(updateLinks.stores[1].id);
+          expect(payloadLinks.stores.linkage[0].id).to.equal(updateLinks.stores.linkage[0].id);
+          expect(payloadLinks.stores.linkage[1].id).to.equal(updateLinks.stores.linkage[1].id);
 
         });
     });
@@ -162,11 +162,11 @@ describe('updatingResources', function() {
     });
   });
 
-  describe('updatingResourceToOneRelationships', function() {
-    it('must update to-One relationship with an object with type and id under links', function() {
+  describe('updatingResourceRelationships', function() {
+    it('must update to-One relationship with link object with linkage member', function() {
       patchData.data.links = {
-        author: {type: 'authors', id: '2'},
-        series: {type: 'series', id: '2'}
+        author: {linkage: {type: 'authors', id: '2'}},
+        series: {linkage: {type: 'series', id: '2'}}
       };
       return Agent.request('PATCH', '/books/1')
         .send(patchData)
@@ -179,13 +179,13 @@ describe('updatingResources', function() {
         .then(function(res) {
           var payloadLinks = res.body.data.links;
           var updateLinks = patchData.data.links;
-          expect(payloadLinks.author.linkage.id).to.equal(updateLinks.author.id);
-          expect(payloadLinks.series.linkage.id).to.equal(updateLinks.series.id);
+          expect(payloadLinks.author.linkage.id).to.equal(updateLinks.author.linkage.id);
+          expect(payloadLinks.series.linkage.id).to.equal(updateLinks.series.linkage.id);
         });
     });
 
     it('must attempt to remove to-One relationship with null', function() {
-      patchData.data.links = { series: null };
+      patchData.data.links = { series: {linkage: null }};
       return Agent.request('PATCH', '/books/1')
         .send(patchData)
         .promise()
@@ -206,10 +206,10 @@ describe('updatingResources', function() {
   describe('updatingResourceToManyRelationships', function() {
     it('must update homogeneous to-Many relationship with an object with type and id members under links', function() {
       patchData.data.links = {
-        stores: [
+        stores: { linkage: [
           { type: 'stores', id: '1' },
           { type: 'stores', id: '2' }
-        ]
+        ]}
       };
 
       return Agent.request('PATCH', '/books/1')
@@ -224,15 +224,15 @@ describe('updatingResources', function() {
           var payloadLinks = res.body.data.links;
           var updateLinks = patchData.data.links;
           expect(res.body.included.length).to.equal(2);
-          expect(payloadLinks.stores.linkage[0].id).to.equal(updateLinks.stores[0].id);
-          expect(payloadLinks.stores.linkage[1].id).to.equal(updateLinks.stores[1].id);
+          expect(payloadLinks.stores.linkage[0].id).to.equal(updateLinks.stores.linkage[0].id);
+          expect(payloadLinks.stores.linkage[1].id).to.equal(updateLinks.stores.linkage[1].id);
         });
     });
 
     // FIXME: https://gist.github.com/bobholt/1a5e9103be5fa85a53da#file-rc2-rc3-diff-L1753-L1760
     it('must attempt to remove to-Many relationships with the id member of the data object set to []', function() {
       patchData.data.links = {
-        stores: [],
+        stores: {linkage: []},
       };
 
       return Agent.request('PATCH', '/books/1')
@@ -300,7 +300,7 @@ describe('updatingResources', function() {
 
       it('must return 404 Not Found when processing a request that references a to-One related resource that does not exist', function() {
         patchData.data.links = {
-          author: {type: 'authors', id: '9999'},
+          author: {linkage: {type: 'authors', id: '9999'}}
         };
         return Agent.request('PATCH', '/books/1')
           .send(patchData)
@@ -312,7 +312,7 @@ describe('updatingResources', function() {
 
       it('must return 404 Not Found when processing a request that references a to-Many related resource that does not exist', function() {
         patchData.data.links = {
-          stores: [{type: 'stores', id: '9999'}]
+          stores: {linkage: [{type: 'stores', id: '9999'}]}
         };
         return Agent.request('PATCH', '/books/1')
           .send(patchData)
@@ -326,7 +326,7 @@ describe('updatingResources', function() {
     describe('409Conflict', function() {
       it('should return 409 Conflict when processing an update that violates server-enforced constraints', function() {
         patchData.data.links = {
-          author: null
+          author: {linkage: null}
         };
         return Agent.request('PATCH', '/books/1')
           .send(patchData)

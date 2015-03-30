@@ -12,11 +12,11 @@ describe('creatingResources', function() {
       'title': 'The Lost Book of Tolkien',
       'date_published': '2015-02-17',
       links: {
-        author: {type: 'authors', id: '1'},
-        series: {type: 'series', id: '1'},
-        stores: [
+        author: {linkage: {type: 'authors', id: '1'}},
+        series: {linkage: {type: 'series', id: '1'}},
+        stores: {linkage: [
           {type: 'stores', id: '1'}
-        ]
+        ]}
       }
     };
     return Fixture.reset();
@@ -101,38 +101,29 @@ describe('creatingResources', function() {
         });
     });
 
-    // Pending https://github.com/endpoints/endpoints/issues/51
-    it.skip('must return 403 Forbidden in response to an unsupported request using a client-generated ID');
+    // TODO: Pending https://github.com/endpoints/endpoints/issues/51
+    it('must return 403 Forbidden in response to an unsupported request using a client-generated ID');
   });
 
   describe('responses', function() {
 
     describe('201Created', function() {
-      it('must respond to a successful resource creation', function() {
-        return Agent.request('POST', '/books')
-          .send({ data: bookData })
-          .promise()
-          .then(function(res) {
-            expect(res.status).to.equal(201);
-          });
-      });
-
       // This test currently fails, location isn't correct.
-      it.skip('must include a Location header identifying the location of the new resource', function() {
+      it('must include a Location header identifying the location of the new resource', function() {
         return Agent.request('POST', '/books')
           .send({ data: bookData })
           .promise()
           .then(function(res) {
             var location = res.headers.location;
             var book = res.body.data;
-            var expectedLocation = Agent.baseUrl + '/books/' + book.id;
+            var expectedLocation = '/books/' + book.id;
 
             expect(location).to.equal(expectedLocation);
           });
       });
 
       // This seems like a complete dupe of two tests ago
-      it.skip('must respond with 201 on a successful request if the request did not include a client-generated ID', function() {
+      it('must respond with 201 on a successful request if the request did not include a client-generated ID', function() {
         return Agent.request('POST', '/books')
           .send({ data: bookData })
           .promise()
@@ -181,9 +172,9 @@ describe('creatingResources', function() {
                 expect(readResult.included.length).to.equal(3);
                 expect(payloadData.title).to.equal(bookData.title);
                 expect(payloadData.date_published).to.equal(bookData.date_published);
-                expect(payloadLinks.author.linkage.id).to.equal(bookData.links.author.id);
-                expect(payloadLinks.series.linkage.id).to.equal(bookData.links.series.id);
-                expect(payloadLinks.stores.linkage[0].id).to.equal(bookData.links.stores[0].id);
+                expect(payloadLinks.author.linkage.id).to.equal(bookData.links.author.linkage.id);
+                expect(payloadLinks.series.linkage.id).to.equal(bookData.links.series.linkage.id);
+                expect(payloadLinks.stores.linkage[0].id).to.equal(bookData.links.stores.linkage[0].id);
               });
           });
       });

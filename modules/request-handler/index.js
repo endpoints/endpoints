@@ -179,7 +179,7 @@ RequestHandler.prototype.update = function (request) {
       type: adapter.typeName(),
       links: {}
     };
-    data.links[relation] = request.body.data;
+    data.links[relation] = {linkage: request.body.data};
   }
 
   return adapter.byId(id).

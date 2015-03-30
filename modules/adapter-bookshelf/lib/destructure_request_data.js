@@ -18,7 +18,7 @@ module.exports = function(model, params) {
       }
 
       var fkey;
-      var relation = relations[key];
+      var relation = relations[key].linkage;
       var relatedData = model.related(key).relatedData;
       var relationType = relatedData.type;
 
@@ -42,7 +42,7 @@ module.exports = function(model, params) {
 
       // toMany relations
       if (relationType === 'belongsToMany' || relationType === 'hasMany') {
-        return bPromise.map(relations[key], function(rel) {
+        return bPromise.map(relation, function(rel) {
           return relatedData.target.collection().query(function(qb) {
             return qb.where({id:rel.id});
           }).fetchOne().then(function(model) {
@@ -54,7 +54,7 @@ module.exports = function(model, params) {
         }).then(function() {
           toManyRels.push({
             name: key,
-            id: _.pluck(relations[key], 'id')
+            id: _.pluck(relation, 'id')
           });
           return params;
         });

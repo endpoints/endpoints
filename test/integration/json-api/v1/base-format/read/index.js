@@ -166,7 +166,7 @@ describe('read', function() {
         it('may include a "linkage" member whose value represents "resource linkage"');
 
         // TODO: API TEST
-        it('must respond to a get request to any `self` url with the resource as primary data');
+        // it('must respond to a get request to any `self` url with the resource as primary data');
       });
 
       describe('resourceRelationships', function() {
