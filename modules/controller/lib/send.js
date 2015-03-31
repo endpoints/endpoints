@@ -6,7 +6,7 @@ function applyHeaders (response, headers) {
   });
 }
 
-exports.express = function (response, payload) {
+export function express (response, payload) {
   var code = payload.code;
   var data = payload.data;
   var headers = payload.headers;
@@ -14,9 +14,9 @@ exports.express = function (response, payload) {
     applyHeaders(response, payload.headers);
   }
   return response.set('content-type', TYPE).status(code).send(data);
-};
+}
 
-exports.hapi = function (response, payload) {
+export function hapi (response, payload) {
   var code = payload.code;
   var data = payload.data;
   var headers = payload.headers;
@@ -24,4 +24,4 @@ exports.hapi = function (response, payload) {
     applyHeaders(response, payload.headers);
   }
   return response(data).type(TYPE).code(code);
-};
+}

@@ -4,39 +4,43 @@ const validate = require('./lib/validate');
 const process = require('./lib/process');
 
 /**
-  Constructor for the Endpoints Controller; Provides methods for generating
-  request handling functions that can be used by any node http server.
-
-  @constructor
-  @param {Object} opts - opts.adapter: An endpoints source adapter
+  Provides methods for generating request handling functions that can
+  be used by any node http server.
 */
-function Controller(opts) {
-  if (!opts) {
-    opts = {};
-  }
-  if (!opts.adapter) {
-    throw new Error('No adapter specified.');
-  }
-  _.extend(this, opts);
-}
+class Controller {
 
-/**
-  Used for generating CRUD (create, read, update, destroy) methods.
+  /**
+    The constructor.
 
-  @param {String} method - The name of the function to be created.
-  @returns {Function} - function (req, res) { } (node http compatible request handler)
-*/
-Controller.method = function (method) {
-  return function (opts) {
-    var adapter = this.adapter;
-    var config = configure(method, opts);
-    var validationFailures = validate(method, adapter, config);
-    if (validationFailures.length) {
-      throw new Error(validationFailures.join('\n'));
+    @constructs Controller
+    @param {Object} opts - opts.adapter: An endpoints source adapter
+  */
+  constructor (opts={}) {
+    if (!opts.adapter) {
+      throw new Error('No adapter specified.');
     }
-    return process(config, adapter);
-  };
-};
+    _.extend(this, opts);
+  }
+
+  /**
+    Used for generating CRUD (create, read, update, destroy) methods.
+
+    @param {String} method - The name of the function to be created.
+    @returns {Function} - function (req, res) { } (node http compatible request handler)
+  */
+  static method (method) {
+    return function (opts) {
+      var adapter = this.adapter;
+      var config = configure(method, opts);
+      var validationFailures = validate(method, adapter, config);
+      if (validationFailures.length) {
+        throw new Error(validationFailures.join('\n'));
+      }
+      return process(config, adapter);
+    };
+  }
+
+}
 
 /**
   Returns a request handling function customized to handle create requests.

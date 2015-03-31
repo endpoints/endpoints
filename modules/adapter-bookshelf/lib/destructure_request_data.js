@@ -1,9 +1,10 @@
 const _ = require('lodash');
 const bPromise = require('bluebird');
 const Kapow = require('kapow');
+
 const sanitizeRequestData = require('./sanitize_request_data');
 
-module.exports = function(model, params) {
+module.exports = function (model, params) {
   if (!params) {
     return bPromise.resolve({});
   }

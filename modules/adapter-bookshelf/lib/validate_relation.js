@@ -1,6 +1,7 @@
+const _ = require('lodash');
+
 const bPromise = require('bluebird');
 const Kapow = require('kapow');
-const _ = require('lodash');
 
 // this is required because bookshelf doesn't support transactions.
 // as a result, we have to preflight check every single relation

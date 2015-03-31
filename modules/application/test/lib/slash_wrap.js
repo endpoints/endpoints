@@ -2,17 +2,17 @@ const expect = require('chai').expect;
 
 const slashWrap = require('../../lib/slash_wrap');
 
-describe('slashWrap', function () {
+describe('slashWrap', () => {
 
-  it('should ensure a string is wrapped with a single slash', function () {
-    expect(slashWrap()).equals('/');
-    expect(slashWrap('foo')).equals('/foo/');
-    expect(slashWrap('/foo')).equals('/foo/');
-    expect(slashWrap('foo/')).equals('/foo/');
-    expect(slashWrap('/foo/')).equals('/foo/');
-    expect(slashWrap('//foo')).equals('/foo/');
-    expect(slashWrap('foo//')).equals('/foo/');
-    expect(slashWrap('//foo//')).equals('/foo/');
+  it('should ensure a string is wrapped with a single slash', () => {
+    expect(slashWrap()).to.equal('/');
+    expect(slashWrap('foo')).to.equal('/foo/');
+    expect(slashWrap('/foo')).to.equal('/foo/');
+    expect(slashWrap('foo/')).to.equal('/foo/');
+    expect(slashWrap('/foo/')).to.equal('/foo/');
+    expect(slashWrap('//foo')).to.equal('/foo/');
+    expect(slashWrap('foo//')).to.equal('/foo/');
+    expect(slashWrap('//foo//')).to.equal('/foo/');
   });
 
 });

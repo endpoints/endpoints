@@ -1,7 +1,8 @@
-const validateJSONSchema = require('..');
 const expect = require('chai').expect;
 
-describe('ValidateJSONSchema', function () {
+import validateJSONSchema from '../';
+
+describe('ValidateJSONSchema', () => {
   var request = {
     headers: {
       accept: 'application/vnd.api+json'
@@ -13,7 +14,7 @@ describe('ValidateJSONSchema', function () {
   };
 
 
-  it('should return null when there is no schema on the endpoint', function() {
+  it('should return null when there is no schema on the endpoint', () => {
 
     var endpoint = {
       schema: null
@@ -24,7 +25,7 @@ describe('ValidateJSONSchema', function () {
   });
 
 
-  it('should return an array of Kapow objects when there is an error', function() {
+  it('should return an array of Kapow objects when there is an error', () => {
 
     var sortFilterRequiredSchema = {
       properties: {
@@ -49,7 +50,7 @@ describe('ValidateJSONSchema', function () {
     expect(error[0].message).to.be.ok;
   });
 
-  it('should return an error when the `query` schema does not match the request', function() {
+  it('should return an error when the `query` schema does not match the request', () => {
 
     var sortRequiredSchema = {
       properties: {

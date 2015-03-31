@@ -1,3 +1,5 @@
+require('babel/register');
+
 describe('Unit', function () {
   require('../../modules/application/test');
   require('../../modules/controller/test');

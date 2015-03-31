@@ -2,10 +2,7 @@ const _ = require('lodash');
 
 const relate = require('./relate');
 
-module.exports = function (model, opts) {
-  if (!opts) {
-    opts = {};
-  }
+module.exports = function (model, opts={}) {
   var links = {};
   var primaryType = model.constructor.typeName;
   var linkWithoutIncludes = opts.linkWithoutInclude || [];
@@ -18,7 +15,6 @@ module.exports = function (model, opts) {
     links.related = '/' + opts.baseType + '/' + opts.baseId + '/' + opts.baseRelation;
     topLevelLinker(links);
   } else {
-
     // To-one link relations that were not explictly included. For
     // example, a record in a database of employees might look like this:
     // {
@@ -98,7 +94,6 @@ module.exports = function (model, opts) {
     // always add a self-referential link
     links.self = '/' + primaryType + '/' + model.id;
   }
-
 
   return links;
 };

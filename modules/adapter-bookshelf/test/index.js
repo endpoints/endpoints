@@ -1,61 +1,66 @@
+const chai = require('chai');
 const expect = require('chai').expect;
+chai.use(require('chai-as-promised'));
+
+const fantasyDatabase = require('fantasy-database');
 
 const BookshelfAdapter = require('../');
 const BooksModel = require('../../../test/app/src/modules/books/model');
+
+const Fixture = require('../../../test/app/fixture');
+
 const Books = new BookshelfAdapter({
   model: BooksModel
 });
-const fantasyDatabase = require('fantasy-database');
-const Fixture = require('../../../test/app/fixture');
 
-describe('BookshelfAdapter', function () {
+describe('BookshelfAdapter', () => {
 
-  describe('lib', function () {
+  describe('lib', () => {
     require('./lib/sanitize_request_data');
   });
 
-  beforeEach(function () {
+  beforeEach(() => {
     return Fixture.reset();
   });
 
-  describe('constructor', function () {
+  describe('constructor', () => {
 
-    it('should throw if a model isn\'t provided', function () {
-      expect(function () {
+    it('should throw if a model isn\'t provided', () => {
+      expect(() => {
         new BookshelfAdapter();
       }).throws('No bookshelf model specified.');
     });
 
   });
 
-  describe('#filters', function () {
+  describe('#filters', () => {
 
-    it('should return filters for this source', function () {
+    it('should return filters for this source', () => {
       var expected = Object.keys(BooksModel.filters).concat(['id']);
       expect(Books.filters()).to.deep.equal(expected);
     });
 
   });
 
-  describe('#relations', function () {
+  describe('#relations', () => {
 
-    it('should return relations for this source', function () {
+    it('should return relations for this source', () => {
       expect(Books.relations()).to.deep.equal(BooksModel.relations);
     });
 
   });
 
-  describe('#typeName', function () {
+  describe('#typeName', () => {
 
-    it('should return the typeName for this source', function () {
+    it('should return the typeName for this source', () => {
       expect(Books.typeName()).to.deep.equal(BooksModel.typeName);
     });
 
   });
 
-  describe('#byId', function () {
+  describe('#byId', () => {
 
-    it('should find resource on the underlying model by id', function () {
+    it('should find resource on the underlying model by id', () => {
       return Books.byId(1).then(function (book) {
         book = book.toJSON();
         delete book.created_at;
@@ -66,15 +71,15 @@ describe('BookshelfAdapter', function () {
 
   });
 
-  describe('#create', function () {
+  describe('#create', () => {
 
-    it('should throw if no method is provided', function () {
-      expect(function () {
+    it('should throw if no method is provided', () => {
+      expect(() => {
         Books.create();
       }).to.throw(/No method/);
     });
 
-    it('should create resource using the underlying model', function () {
+    it('should create resource using the underlying model', () => {
       return Books.read(null).then(function (allBooks) {
         var totalBooks = allBooks.length;
         return Books.create('create', {
@@ -127,7 +132,7 @@ describe('BookshelfAdapter', function () {
       });
     });
 
-    it('should allow filtering', function () {
+    it('should allow filtering', () => {
       return Books.read({
         filter: { id: 1 }
       }).then(function (books) {
@@ -138,7 +143,7 @@ describe('BookshelfAdapter', function () {
       });
     });
 
-    it('should allow finding with related data', function () {
+    it('should allow finding with related data', () => {
       return Books.read({
         filter: { id: 1 },
         include: ['author']
@@ -155,17 +160,17 @@ describe('BookshelfAdapter', function () {
 
   });
 
-  describe('#update', function () {
+  describe('#update', () => {
 
-    it('should throw if no method is provided', function () {
-      expect(function () {
+    it('should throw if no method is provided', () => {
+      expect(() => {
         Books.update();
       }).to.throw(/No method/);
     });
 
     // check the base method for update
     // why are we returning null if it is different?
-    it.skip('should update resource using the underlying model', function () {
+    it.skip('should update resource using the underlying model', () => {
       var newTitle = 'altered book';
       return Books.byId(1).then(function (bookOne) {
         return Books.update(bookOne, 'update', {
@@ -179,15 +184,15 @@ describe('BookshelfAdapter', function () {
 
   });
 
-  describe('#destroy', function () {
+  describe('#destroy', () => {
 
-    it('should throw if no method is provided', function () {
-      expect(function () {
+    it('should throw if no method is provided', () => {
+      expect(() => {
         Books.destroy();
       }).to.throw(/No method/);
     });
 
-    it('should destroy resource using the underlying model', function () {
+    it('should destroy resource using the underlying model', () => {
       return Books.read({}).then(function (allBooks) {
         var totalBooks = allBooks.length;
         Books.destroy(allBooks.first(), 'destroy').then(function (book) {

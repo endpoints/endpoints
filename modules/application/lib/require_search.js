@@ -30,7 +30,7 @@ module.exports = function (file, searchPaths) {
   }
   if (!result) {
     throw new Error(
-      'Unable to locate "' + file + '" in search paths: ' + searchPaths.join(', ')
+      `Unable to locate "${file}" in search paths: ${searchPaths.join(', ')}`
     );
   }
   return result;

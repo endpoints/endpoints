@@ -2,16 +2,17 @@ const expect = require('chai').expect;
 
 const BookshelfAdapter = require('../../adapter-bookshelf');
 const BooksModel = require('../../../test/app/src/modules/books/model');
-const Books = new BookshelfAdapter({
-  model: BooksModel
-});
 const Fixture = require('../../../test/app/fixture');
 
 const formatter = require('../');
 
-describe('formatter-jsonapi', function () {
+const Books = new BookshelfAdapter({
+  model: BooksModel
+});
 
-  describe('lib', function () {
+describe('formatter-jsonapi', () => {
+
+  describe('lib', () => {
     require('./lib/link');
     require('./lib/relate');
     require('./lib/to_one_relations');
@@ -20,15 +21,15 @@ describe('formatter-jsonapi', function () {
 
   var opts;
 
-  before(function () {
+  before(() => {
     return Fixture.reset();
   });
 
-  beforeEach(function() {
+  beforeEach(() => {
     opts = {};
   });
 
-  it('should accept a model and return an object', function() {
+  it('should accept a model and return an object', () => {
     return Books.create('create', {
       author_id:1,
       title: 'test book',
@@ -38,14 +39,14 @@ describe('formatter-jsonapi', function () {
     });
   });
 
-  it('should accept a collection and return an object', function() {
+  it('should accept a collection and return an object', () => {
     return Books.read().then(function(books) {
       expect(books).to.have.property('length');
       expect(formatter(books, opts)).to.be.an('object');
     });
   });
 
-  it('should accept a single-item collection and return an object', function() {
+  it('should accept a single-item collection and return an object', () => {
     opts.singleResult = true;
     return Books.read().then(function(books) {
       var coll = BooksModel.collection([books.at(0)]);

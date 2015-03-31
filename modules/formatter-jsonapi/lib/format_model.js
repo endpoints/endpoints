@@ -3,7 +3,7 @@ const _ = require('lodash');
 const toOneRelations = require('./to_one_relations');
 const link = require('./link');
 
-module.exports = function formatModel(opts, model) {
+module.exports = function (opts, model) {
   var topLevelLinks;
   var exporter = opts && opts.exporter;
   var mode = opts && opts.mode;

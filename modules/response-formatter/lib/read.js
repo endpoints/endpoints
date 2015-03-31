@@ -1,5 +1,4 @@
 const Kapow = require('kapow');
-
 const error = require('./error');
 
 module.exports = function (formatter, config, data) {

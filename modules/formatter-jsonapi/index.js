@@ -21,7 +21,7 @@ const formatModel = require('./lib/format_model');
   @returns {Object|Array} json-api compliant formatted response
 
 */
-module.exports = function (input, opts) {
+module.exports = function (input, opts={}) {
   var included = [];
   var topLevelLinks;
 

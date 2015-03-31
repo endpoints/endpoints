@@ -1,13 +1,12 @@
 const RequestHandler = require('../../request-handler');
 const ResponseFormatter = require('../../response-formatter');
 const jsonApi = require('../../formatter-jsonapi');
-
 const send = require('./send');
 
 module.exports = function (config, source) {
   var method = config.method;
   var responder = config.responder;
-  var handler = new RequestHandler(config, source);
+  var handler = new RequestHandler(source, config);
   var formatter = new ResponseFormatter(jsonApi);
 
   return function (request, response) {

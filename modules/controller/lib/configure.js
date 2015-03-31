@@ -1,8 +1,8 @@
 const _ = require('lodash');
 
-module.exports = function (method, opts) {
+module.exports = function (method, opts={}) {
   var defaults = {
-    method: opts && opts.method ? opts.method : method,
+    method: opts.method ? opts.method : method,
     include: [],
     filter: {},
     fields: {},

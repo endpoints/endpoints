@@ -7,9 +7,9 @@ const Application = require('../');
 
 var TestApp;
 
-describe('Application', function () {
+describe('Application', () => {
 
-  describe('lib', function () {
+  describe('lib', () => {
 
     require('./lib/parse_options');
     require('./lib/parse_resource');
@@ -19,7 +19,7 @@ describe('Application', function () {
 
   });
 
-  beforeEach(function () {
+  beforeEach(() => {
     TestApp = new Application({
       searchPaths: [
         path.resolve(__dirname, 'fixtures/resources'),
@@ -29,14 +29,14 @@ describe('Application', function () {
     });
   });
 
-  describe('#register', function () {
+  describe('#register', () => {
 
-    it('should register a resource by name', function () {
+    it('should register a resource by name', () => {
       TestApp.register('foo');
       expect(TestApp.resource('foo')).to.exist;
     });
 
-    it('should be able to register a resource with an object', function () {
+    it('should be able to register a resource with an object', () => {
       TestApp.register({
         name: 'foo',
         routes: {}
@@ -44,7 +44,7 @@ describe('Application', function () {
       expect(TestApp.resource('foo')).to.exist;
     });
 
-    it('should be able to register multiple resources at once', function () {
+    it('should be able to register multiple resources at once', () => {
       var resources = ['foo', {name:'bar', routes:{}}];
       TestApp.register(resources);
       resources.forEach(function (resource) {
@@ -55,13 +55,13 @@ describe('Application', function () {
       });
     });
 
-    it('should throw if a resource with the same name is registered twice', function () {
-      var throwMsg = 'Resource "foo" has already been registered.';
+    it('should throw if a resource with the same name is registered twice', () => {
+      var throwMsg = /Resource "foo" registered/;
       TestApp.register('foo');
-      expect(function () {
+      expect(() => {
         TestApp.register('foo');
       }).to.throw(throwMsg);
-      expect(function () {
+      expect(() => {
         TestApp.register({
           name: 'foo',
           routes: {}
@@ -71,29 +71,30 @@ describe('Application', function () {
 
   });
 
-  describe('#resource', function () {
+  describe('#resource', () => {
 
-    it('should throw if the requested resource does not exist', function () {
+    it('should throw if the requested resource does not exist', () => {
       var resourceName = 'not-existing';
-      expect(function () {
+      var throwMsg = /Resource "not-existing" has not/;
+      expect(() => {
         TestApp.resource(resourceName);
-      }).to.throw('Resource ' + resourceName + ' has not been registered.');
+      }).to.throw(throwMsg);
     });
 
-    it('should return a registered resource', function () {
+    it('should return a registered resource', () => {
       TestApp.register('foo');
       expect(TestApp.resource('foo')).to.exist;
     });
 
-    it('should return this for chaining', function () {
+    it('should return this for chaining', () => {
       expect(TestApp.register('foo')).to.equal(TestApp);
     });
 
   });
 
-  describe('#endpoint', function () {
+  describe('#endpoint', () => {
 
-    it('should pass the routes for a resource into routeBuilder', function () {
+    it('should pass the routes for a resource into routeBuilder', () => {
       var fooResource;
       var spy = sinon.spy();
       TestApp.routeBuilder = spy;
@@ -102,7 +103,7 @@ describe('Application', function () {
       expect(spy.calledWith(fooResource.routes, '/' + fooResource.name)).to.be.true;
     });
 
-    it('should accept a prefix for a generated router', function () {
+    it('should accept a prefix for a generated router', () => {
       var fooResource;
       var spy = sinon.spy();
       TestApp.routeBuilder = spy;
@@ -111,16 +112,16 @@ describe('Application', function () {
       expect(spy.calledWith(fooResource.routes, '/prefix/' + fooResource.name)).to.be.true;
     });
 
-    it('should add the resource to the endpoints listing', function () {
+    it('should add the resource to the endpoints listing', () => {
       TestApp.register('foo').endpoint('foo');
       expect(TestApp._endpoints).to.have.length(1);
     });
 
   });
 
-  describe('#manifest', function () {
+  describe('#manifest', () => {
 
-    it('should build a manifest of endpoints', function () {
+    it('should build a manifest of endpoints', () => {
       TestApp.register('foo').endpoint('foo', '/prefix');
       TestApp.register('bar').endpoint('bar');
       TestApp.register('baz').endpoint('baz');
@@ -157,9 +158,9 @@ describe('Application', function () {
 
   });
 
-  describe('#index', function () {
+  describe('#index', () => {
 
-    it('should build a self-documenting index page', function () {
+    it('should build a self-documenting index page', () => {
       TestApp.register('foo').endpoint('foo');
       TestApp.register('bar').endpoint('bar');
       TestApp.register('baz').endpoint('baz');

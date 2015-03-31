@@ -1,32 +1,41 @@
 /**
-  Creates a new instance of ResponseFormatter.
-
-  @constructor
-  @param {Function} formatter
+  Provides methods for formatting create/read/update/delete requests to
+  json-api compliance. This is mostly concerned about status codes, it
+  passes all the formatting work to a provided formatter.
 */
-function ResponseFormatter (formatter) {
-  if (!formatter) {
-    throw new Error('No formatter specified.');
+class ResponseFormatter {
+
+  /**
+    The constructor.
+
+    @constructs ResponseFormatter
+    @param {Function} formatter
+  */
+  constructor (formatter) {
+    if (!formatter) {
+      throw new Error('No formatter specified.');
+    }
+    this.formatter = formatter;
   }
-  this.formatter = formatter;
+
+  /**
+    Partially applies this.formatter to each method.
+
+    @param {Function} fn - The method to which the formatter should be applied.
+  */
+  // partially apply this.formatter to each method
+  // this is pretty stupid.
+  static method (fn) {
+    return function () {
+      var args = Array.prototype.slice.call(arguments);
+      args.unshift(this.formatter);
+      return fn.apply(null, args);
+    };
+  }
+
 }
 
 ResponseFormatter.prototype.error = require('./lib/error');
-
-/**
-  Partially applies this.formatter to each method.
-
-  @param {Function} fn - The method to which the formatter should be applied.
-*/
-// partially apply this.formatter to each method
-// this is pretty stupid.
-ResponseFormatter.method = function (fn) {
-  return function () {
-    var args = Array.prototype.slice.call(arguments);
-    args.unshift(this.formatter);
-    return fn.apply(null, args);
-  };
-};
 
 /**
   Convenience method for creating a new element
@@ -57,6 +66,5 @@ ResponseFormatter.prototype.update = ResponseFormatter.method(require('./lib/upd
   @todo: missing params listing
  */
 ResponseFormatter.prototype.destroy = ResponseFormatter.method(require('./lib/destroy'));
-
 
 module.exports = ResponseFormatter;

@@ -1,5 +1,6 @@
-const validator = require('is-my-json-valid');
 const Kapow = require('kapow');
+
+const validator = require('is-my-json-valid');
 
 function transformErrorFields(input, errors) {
   return errors.map(function(error) {
@@ -8,7 +9,7 @@ function transformErrorFields(input, errors) {
   });
 }
 
-module.exports = function(request, endpoint) {
+module.exports = function (request, endpoint) {
   var err;
   var schema = endpoint.schema || {};
 

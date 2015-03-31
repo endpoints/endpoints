@@ -1,12 +1,11 @@
 const path = require('path');
-
 const expect = require('chai').expect;
 
 const parseResource = require('../../lib/parse_resource');
 
-describe('parseResource', function () {
+describe('parseResource', () => {
 
-  it('should find a routes file in search paths and return a resource object', function () {
+  it('should find a routes file in search paths and return a resource object', () => {
     var searchPaths = [path.join(__dirname, '..', 'fixtures', 'resources')];
     expect(parseResource('foo', searchPaths)).to.deep.equal({
       name: 'foo',
@@ -15,22 +14,22 @@ describe('parseResource', function () {
     });
   });
 
-  it('should throw if a custom resource is defined without a name', function () {
-    expect(function () {
+  it('should throw if a custom resource is defined without a name', () => {
+    expect(() => {
       parseResource();
     }).to.throw('Unable to parse a module without a name.');
-    expect(function () {
+    expect(() => {
       parseResource({});
     }).to.throw('Unable to parse a module without a name.');
   });
 
-  it('should throw if a custom resource is defined without a routes object', function () {
-    expect(function () {
+  it('should throw if a custom resource is defined without a routes object', () => {
+    expect(() => {
       parseResource({name:'test'});
     }).to.throw('Unable to parse a module without a routes object.');
   });
 
-  it('should pass custom module through', function () {
+  it('should pass custom module through', () => {
     var moduleDefinition = {
       name: 'test',
       routes: {

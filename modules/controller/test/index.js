@@ -1,32 +1,31 @@
-const chai = require('chai');
-const expect = chai.expect;
-
-chai.use(require('chai-as-promised'));
+const expect = require('chai').expect;
 
 const Controller = require('../');
 
 const source = require('./mocks/source');
+
 const controller = new Controller({
   adapter: source
 });
 
-describe('Controller', function () {
 
-  it('should be an object', function() {
+describe('Controller', () => {
+
+  it('should be an object', () => {
     expect(controller).to.be.an('object');
   });
 
-  describe('constructor', function () {
+  describe('constructor', () => {
 
-    it('should throw if no adapter is specified', function () {
-      expect(function () {
+    it('should throw if no adapter is specified', () => {
+      expect(() => {
         new Controller();
       }).to.throw('No adapter specified.');
     });
 
   });
 
-  describe('lib', function () {
+  describe('lib', () => {
 
     require('./lib/configure');
     require('./lib/source_has');
@@ -34,33 +33,33 @@ describe('Controller', function () {
 
   });
 
-  describe('#create', function () {
+  describe('#create', () => {
 
-    it('should return a request handling function', function () {
+    it('should return a request handling function', () => {
       expect(controller.create()).to.be.a('function');
     });
 
   });
 
-  describe('#read', function () {
+  describe('#read', () => {
 
-    it('should return a request handling function', function () {
+    it('should return a request handling function', () => {
       expect(controller.read()).to.be.a('function');
     });
 
   });
 
-  describe('#update', function () {
+  describe('#update', () => {
 
-    it('should return a request handling function', function () {
+    it('should return a request handling function', () => {
       expect(controller.update()).to.be.a('function');
     });
 
   });
 
-  describe('#destroy', function () {
+  describe('#destroy', () => {
 
-    it('should return a request handling function', function () {
+    it('should return a request handling function', () => {
       expect(controller.destroy()).to.be.a('function');
     });
 

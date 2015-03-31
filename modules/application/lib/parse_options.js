@@ -1,7 +1,4 @@
-module.exports = function (opts) {
-  if (!opts) {
-    opts = {};
-  }
+module.exports = function (opts={}) {
   if (!opts.routeBuilder) {
     throw new Error('No route builder specified.');
   }
