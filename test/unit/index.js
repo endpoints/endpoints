@@ -1,9 +1,11 @@
+require('babel/register');
+
 describe('Unit', function () {
-  require('../../modules/application/test');
-  require('../../modules/controller/test');
-  require('../../modules/formatter-jsonapi/test');
-  require('../../modules/request-handler/test');
-  require('../../modules/response-formatter/test');
-  require('../../modules/adapter-bookshelf/test');
-  require('../../modules/validate-json-schema/test');
+  require('../../src/application/test');
+  require('../../src/controller/test');
+  require('../../src/formatter-jsonapi/test');
+  require('../../src/request-handler/test');
+  require('../../src/response-formatter/test');
+  require('../../src/adapter-bookshelf/test');
+  require('../../src/validate-json-schema/test');
 });

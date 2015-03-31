@@ -1,5 +1,5 @@
 process.env.TESTING = true;
 
-describe('Integration', function () {
+describe('Integration', () => {
   require('./json-api');
 });
