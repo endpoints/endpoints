@@ -1,4 +1,4 @@
-const Endpoints = require('../../../../../modules');
+const Endpoints = require('../../../../../src');
 const schema = require('./schema');
 
 module.exports = new Endpoints.Controller({

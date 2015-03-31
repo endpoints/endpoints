@@ -1,4 +1,4 @@
-const validateJsonSchema = require('../../../../../modules/validate-json-schema');
+const validateJsonSchema = require('../../../../../src/validate-json-schema');
 const controller = require('./controller');
 const schema = require('./schema');
 

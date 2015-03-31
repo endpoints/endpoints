@@ -10,7 +10,7 @@ const routeBuilder = require('express-routebuilder');
 const modulePath = path.join(__dirname, 'modules');
 const resources = fs.readdirSync(modulePath);
 
-const Endpoints = require('../../../modules');
+const Endpoints = require('../../../src');
 
 const app = express();
 

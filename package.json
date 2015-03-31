@@ -25,14 +25,14 @@
     "node": ">= 0.10"
   },
   "scripts": {
-    "build": "babel modules --remove-comments --loose=all --out-dir es5",
-    "lint": "jshint modules test",
-    "style": "jscs --esnext modules test",
+    "build": "babel src --remove-comments --loose=all --out-dir es5",
+    "lint": "jshint src test",
+    "style": "jscs --esnext src test",
     "test-unit": "npm run lint && npm run style && istanbul cover _mocha -- -b -R spec test/unit",
     "test-integration": "npm run lint && npm run style && mocha -b -R spec test/integration",
     "test": "npm run lint && npm run style && mocha -b -R spec",
     "start": "node website",
-    "build-website": "jsdoc ./modules/***/**.js -R ./README.md -P ./package.json -d ./website/app/public/api"
+    "build-website": "jsdoc ./src/***/**.js -R ./README.md -P ./package.json -d ./website/app/public/api"
   },
   "devDependencies": {
     "babel": "^4.7.16",

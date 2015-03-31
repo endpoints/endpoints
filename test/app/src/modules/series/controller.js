@@ -1,4 +1,4 @@
-const Endpoints = require('../../../../../modules');
+const Endpoints = require('../../../../../src');
 
 module.exports = new Endpoints.Controller({
   adapter: new Endpoints.BookshelfAdapter({
