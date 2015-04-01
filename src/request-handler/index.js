@@ -189,12 +189,33 @@ class RequestHandler {
       data.links[relation] = {linkage: request.body.data};
     }
 
-    return adapter.byId(id).
+    return adapter.byId(id, [relation]).
       then(throwIfNoModel).
       then(function (model) {
+        if (request.method !== 'PATCH') {
+          // FIXME: This will break heterogeneous relations
+          var relationType = data.links[relation].linkage[0].type;
+          var existingRels = model.toJSON()[relation].map(function(rel) {
+            return {
+              id: String(rel.id),
+              type: relationType
+            };
+          });
+
+          if (request.method === 'POST') {
+            data.links[relation].linkage = _.uniq(data.links[relation].linkage.concat(existingRels));
+          }
+
+          if (request.method === 'DELETE') {
+            data.links[relation].linkage = _.reject(existingRels, function(rel) {
+              return _.findWhere(data.links[relation].linkage, rel);
+            });
+          }
+        }
+
         return adapter.update(model, method, data);
       }).catch(function(e) {
-        // This may only work for SQLITE3, but tries to be general
+        // FIXME: This may only work for SQLITE3, but tries to be general
         if (e.message.toLowerCase().indexOf('null') !== -1) {
           Kapow.wrap(e, 409);
         }
