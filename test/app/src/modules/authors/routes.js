@@ -7,7 +7,8 @@ module.exports = {
     '/': controller.create({
       schema: schema,
       validators: validateJsonSchema
-    })
+    }),
+    '/:id/links/:relation': controller.update()
   },
   get: {
     '/': controller.read(),
@@ -23,6 +24,7 @@ module.exports = {
     '/:id/links/:relation': controller.update()
   },
   delete: {
-    '/:id': controller.destroy()
+    '/:id': controller.destroy(),
+    '/:id/links/:relation': controller.update()
   }
 };

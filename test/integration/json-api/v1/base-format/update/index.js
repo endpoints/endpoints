@@ -3,20 +3,20 @@ const expect = require('chai').expect;
 const Agent = require('../../../../../app/agent');
 const Fixture = require('../../../../../app/fixture');
 
+var patchData;
+
+beforeEach(function() {
+  patchData = {
+    data: {
+      type: 'books',
+      id: '1',
+      title: 'tiddlywinks'
+    }
+  };
+  return Fixture.reset();
+});
+
 describe('updatingResources', function() {
-
-  var patchData;
-
-  beforeEach(function() {
-    patchData = {
-      data: {
-        type: 'books',
-        id: '1',
-        title: 'tiddlywinks'
-      }
-    };
-    return Fixture.reset();
-  });
 
   it('must require an ACCEPT header specifying the JSON API media type', function() {
     return Agent.request('PATCH', '/books/1')
@@ -229,7 +229,6 @@ describe('updatingResources', function() {
         });
     });
 
-    // FIXME: https://gist.github.com/bobholt/1a5e9103be5fa85a53da#file-rc2-rc3-diff-L1753-L1760
     it('must attempt to remove to-Many relationships with the id member of the data object set to []', function() {
       patchData.data.links = {
         stores: {linkage: []},
@@ -270,6 +269,8 @@ describe('updatingResources', function() {
     describe('200Ok', function() {
 
       // TODO: No idea why this suddenly started returning 204 instead of 200
+      // ANSWER: the book model was previously augmented to include
+      // timestamps that changed on update, which is what this test is for
       it.skip('must return 200 OK if it accepts the update but changes the resource in some way', function(done) {
         return Agent.request('PATCH', '/books/1')
           .send(patchData)
@@ -277,7 +278,7 @@ describe('updatingResources', function() {
           .then(function(res) {
             expect(res.status).to.equal(200);
             // must include a representation of the updated resource on a 200 OK response
-            // expect(res.body.data.title).to.equal(patchData.data.title);
+            expect(res.body.data.title).to.equal(patchData.data.title);
           });
       });
     });
@@ -336,6 +337,7 @@ describe('updatingResources', function() {
           });
       });
 
+      // FIXME: Re-implement test
       it.skip('must return 409 Conflict when processing a request where the id does not match the endpoint', function() {
         return Agent.request('PATCH', '/books/2')
           .send(patchData)
@@ -345,6 +347,7 @@ describe('updatingResources', function() {
           });
       });
 
+      // FIXME: Re-implement test
       // see request-handler/lib/verify_data_object
       it.skip('must return 409 Conflict when processing a request where the type does not match the endpoint', function() {
         return Agent.request('PATCH', '/authors/1')
@@ -398,12 +401,28 @@ describe('updatingRelationships', function() {
         });
     });
 
-    it('must require a top-level data member containing either an object with type and id members or null');
-    it('must return a 204 No Content on a successful PATCH request');
+    it('must require a top-level data member containing either an object with type and id members or null', function() {
+      return Agent.request('PATCH', '/books/1/links/series')
+        .send({ data: { what: 'a bad request'}})
+        .promise()
+        .then(function(res) {
+          expect(res.status).to.equal(400);
+        });
+    });
   });
 
-  // TODO: Both of these tests seem to be broken for some reason now...
   describe('updatingToManyRelationships', function() {
+    it('must require a top-level data member an array of linkage objects for PATCH requests', function() {
+      return Agent.request('PATCH', '/books/1/links/stores')
+        .send({ data: [
+          { what: 'a bad request' }
+        ]})
+        .promise()
+        .then(function(res) {
+          expect(res.status).to.equal(400);
+        });
+    });
+
     // /books/1/stores
     it('must update relationships with a PATCH request to a to-many relationship URL containing a data object with type and id members  and return 204 No Content on success', function() {
       return Agent.request('PATCH', '/books/1/links/stores')
@@ -427,7 +446,7 @@ describe('updatingRelationships', function() {
     it('must remove relationships with a PATCH request to a to-many relationship URL containing a data object with a null value and return 204 No Content on success', function() {
       var newIds = [];
       return Agent.request('PATCH', '/books/1/links/stores')
-        .send({ data: []})
+        .send({ data: newIds})
         .promise()
         .then(function(res) {
           expect(res.status).to.equal(204);
@@ -439,17 +458,141 @@ describe('updatingRelationships', function() {
           expect(payloadLinks.stores.linkage).to.deep.equal(newIds);
         });
     });
-    it('must respond to POST requests to a to-many relationship URL');
-    it('must respond to DELETE requests to a to-many relationship URL');
-    it('must require a top-level data member containing either an object with type and id members');
-    it('must completely replace every member of the relationship on a PATCH request if allowed');
-    it('must return an appropriate error if some resources cannot be found or accessed');
+
+    it('must completely replace every member of the relationship on a PATCH request if allowed', function() {
+      var newIds = [
+        { type: 'stores', id: '1' }
+      ];
+      return Agent.request('PATCH', '/books/1/links/stores')
+        .send({ data: newIds})
+        .promise()
+        .then(function(res) {
+          expect(res.status).to.equal(204);
+          return Agent.request('GET', '/books/1?include=stores').promise();
+        })
+        .then(function(res) {
+          var payloadLinks = res.body.data.links;
+          expect(res.body).to.have.property('included');
+          expect(payloadLinks.stores.linkage.length).to.equal(1);
+          expect(payloadLinks.stores.linkage[0].id).to.equal('1');
+        });
+    });
+
+    it('must return an appropriate error if some resources cannot be found or accessed', function() {
+      var newIds = [
+        { type: 'stores', id: '3' }
+      ];
+      return Agent.request('PATCH', '/books/1/links/stores')
+        .send({ data: newIds})
+        .promise()
+        .then(function(res) {
+          expect(res.status).to.equal(404);
+        });
+    });
+
+    // TODO: Pending https://github.com/endpoints/endpoints/issues/51
     it('must return a 403 Forbidden if complete replacement is not allowed by the server');
-    it('must append specified members of a POST request');
-    it('must not add existing type and id combinations again');
-    it('must return a 204 No Content if the resource is successfully added or already present');
-    it('must either DELETE members of the relationship or return 403 Forbidden on a DELETE request');
-    it('must return a 204 No Content if the resource is successfully deleted or is already missing');
+
+    it('must require a top-level data member an array of linkage objects for POST requests', function() {
+      return Agent.request('POST', '/books/1/links/stores')
+        .send({ data: [
+          { what: 'a bad request' }
+        ]})
+        .promise()
+        .then(function(res) {
+          expect(res.status).to.equal(400);
+        });
+    });
+
+    it('must append specified members of a POST request and return 204 No Content if the resource is successfully added or already present', function() {
+      var newIds = [
+        { type: 'stores', id: '1' }
+      ];
+      return Agent.request('POST', '/books/1/links/stores')
+        .send({ data: newIds})
+        .promise()
+        .then(function(res) {
+          expect(res.status).to.equal(204);
+          return Agent.request('GET', '/books/1?include=stores').promise();
+        })
+        .then(function(res) {
+          var payloadLinks = res.body.data.links;
+          expect(res.body).to.have.property('included');
+          expect(payloadLinks.stores.linkage.length).to.equal(2);
+          expect(payloadLinks.stores.linkage[0].id).to.equal('1');
+          expect(payloadLinks.stores.linkage[1].id).to.equal('2');
+        });
+    });
+
+    it('must not add existing type and id combinations again in a POST request, but still respond with 204 No Content', function() {
+      var newIds = [
+        { type: 'stores', id: '2' }
+      ];
+      return Agent.request('POST', '/books/1/links/stores')
+        .send({ data: newIds})
+        .promise()
+        .then(function(res) {
+          expect(res.status).to.equal(204);
+          return Agent.request('GET', '/books/1?include=stores').promise();
+        })
+        .then(function(res) {
+          var payloadLinks = res.body.data.links;
+          expect(res.body).to.have.property('included');
+          expect(payloadLinks.stores.linkage.length).to.equal(1);
+          expect(payloadLinks.stores.linkage[0].id).to.equal('2');
+        });
+    });
+
+    it('must require a top-level data member an array of linkage objects for DELETE requests', function() {
+      return Agent.request('DELETE', '/books/1/links/stores')
+        .send({ data: [
+          { what: 'a bad request' }
+        ]})
+        .promise()
+        .then(function(res) {
+          expect(res.status).to.equal(400);
+        });
+    });
+
+    it('must respond 204 No Content to a DELETE request if the relationship is successfully deleted', function() {
+      var newIds = [
+        { type: 'stores', id: '2' }
+      ];
+      return Agent.request('DELETE', '/books/1/links/stores')
+        .send({ data: newIds})
+        .promise()
+        .then(function(res) {
+          expect(res.status).to.equal(204);
+          return Agent.request('GET', '/books/1?include=stores').promise();
+        })
+        .then(function(res) {
+          var payloadLinks = res.body.data.links;
+          expect(res.body).to.not.have.property('included');
+          expect(payloadLinks.stores.linkage).to.deep.equal([]);
+        });
+    });
+
+    it('must respond 204 No Content to a DELETE request if the relationship is already missing', function() {
+      var newIds = [
+        { type: 'stores', id: '1' }
+      ];
+      return Agent.request('DELETE', '/books/1/links/stores')
+        .send({ data: newIds})
+        .promise()
+        .then(function(res) {
+          expect(res.status).to.equal(204);
+          return Agent.request('GET', '/books/1?include=stores').promise();
+        })
+        .then(function(res) {
+          var payloadLinks = res.body.data.links;
+          expect(res.body).to.have.property('included');
+          expect(payloadLinks.stores.linkage.length).to.equal(1);
+          expect(payloadLinks.stores.linkage[0].id).to.equal('2');
+        });
+    });
+
+    // TODO: Pending https://github.com/endpoints/endpoints/issues/51
+    it('must respond 403 Forbidden to a DELETE request if the method is unsupported');
   });
 
   describe('responses', function() {
