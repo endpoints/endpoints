@@ -2,10 +2,12 @@ const expect = require('chai').expect;
 
 const Controller = require('../');
 
-const source = require('./mocks/source');
+const adapter = require('./mocks/adapter');
+const model = require('./mocks/model');
 
 const controller = new Controller({
-  adapter: source
+  adapter: adapter,
+  model: model
 });
 
 
@@ -21,6 +23,52 @@ describe('Controller', () => {
       expect(() => {
         new Controller();
       }).to.throw('No adapter specified.');
+    });
+
+    it('should throw if no model is specified', () => {
+      expect(() => {
+        new Controller({
+          adapter: adapter
+        });
+      }).to.throw('No model specified.');
+    });
+
+  });
+
+  describe('extending', () => {
+
+    it('should be extendable in es5', () => {
+      var adapter = 'adapter';
+      var validators = ['validators'];
+
+      var MyController = Controller.extend({
+        adapter: adapter,
+        validators: validators
+      });
+      var myController = new MyController({
+        model: true
+      });
+      expect(myController.adapter).to.equal(adapter);
+      expect(myController.validators).to.equal(validators);
+    });
+
+    it('should be extendable in es6', () => {
+      var adapter = 'adapter';
+      var validators = ['validators'];
+
+      class MyController extends Controller {
+        get adapter() {
+          return adapter;
+        }
+        get validators() {
+          return validators;
+        }
+      }
+      var myController = new MyController({
+        model: true
+      });
+      expect(myController.adapter).to.equal(adapter);
+      expect(myController.validators).to.equal(validators);
     });
 
   });

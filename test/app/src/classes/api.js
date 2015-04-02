@@ -10,6 +10,8 @@ module.exports = new Endpoints.Application({
   routeBuilder: function (routes, prefix) {
     return routeBuilder(express.Router(), routes, prefix);
   },
-  adapter: Endpoints.BookshelfAdapter,
-  validators: [Endpoints.ValidateJsonSchema]
+  Controller: Endpoints.Controller.extend({
+    adapter: Endpoints.BookshelfAdapter,
+    validators: [Endpoints.ValidateJsonSchema]
+  })
 });
