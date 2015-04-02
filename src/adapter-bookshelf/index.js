@@ -13,13 +13,15 @@ const destructureRequest = require('./lib/destructure_request_data');
 const relate = require('../formatter-jsonapi/lib/relate');
 
 /**
-  Creates an adapter that allows endpoints to interact with a Bookshelf model.
-
-  @constructor
-  @param {Object} opts - opts.model: a bookshelf model.
+  An adapter that allows endpoints to interact with a Bookshelf model.
 */
-class Adapter {
+class BookshelfAdapter {
 
+  /**
+    The constructor.
+    @constructs BookshelfAdapter
+    @param {Object} opts - opts.model: a bookshelf model.
+  */
   constructor (opts={}) {
     var model = opts.model;
     if (!model) {
@@ -307,4 +309,4 @@ class Adapter {
 
 }
 
-module.exports = Adapter;
+module.exports = BookshelfAdapter;
