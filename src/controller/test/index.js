@@ -38,7 +38,7 @@ describe('Controller', () => {
   describe('extending', () => {
 
     it('should be extendable in es5', () => {
-      var adapter = 'adapter';
+      var adapter = require('./mocks/adapter');
       var validators = ['validators'];
 
       var MyController = Controller.extend({
@@ -46,14 +46,14 @@ describe('Controller', () => {
         validators: validators
       });
       var myController = new MyController({
-        model: true
+        model: require('./mocks/model')
       });
       expect(myController.adapter).to.equal(adapter);
       expect(myController.validators).to.equal(validators);
     });
 
     it('should be extendable in es6', () => {
-      var adapter = 'adapter';
+      var adapter = require('./mocks/adapter');
       var validators = ['validators'];
 
       class MyController extends Controller {
@@ -65,7 +65,7 @@ describe('Controller', () => {
         }
       }
       var myController = new MyController({
-        model: true
+        model: require('./mocks/model')
       });
       expect(myController.adapter).to.equal(adapter);
       expect(myController.validators).to.equal(validators);

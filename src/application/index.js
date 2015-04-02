@@ -51,20 +51,11 @@ class Application {
   manifest () {
     return this._endpoints.reduce(function (result, endpoint) {
       var resource = endpoint.resource;
-      var controller = resource.controller;
-      var adapter = controller.adapter;
-      var filters = [];
-      var includes = [];
-      if (adapter) {
-        filters = adapter.filters();
-        includes = adapter.relations();
-      }
-      result.push({
+      var capabilities = resource.controller.capabilities;
+      result.push(_.extend({
         name: resource.name,
-        filters: filters,
-        includes: includes,
         url: endpoint.url
-      });
+      }, capabilities));
       return result;
     }, []);
   }
