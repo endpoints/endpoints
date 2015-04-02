@@ -23,6 +23,17 @@ class Controller {
       throw new Error('No model specified.');
     }
     _.extend(this, opts);
+    this._adapter = new this.adapter({
+      model: this.model
+    });
+  }
+
+  get capabilities() {
+    // TODO: include information about client-generated ids and other stuff?
+    return {
+      filters: this._adapter.filters(),
+      includes: this._adapter.relations()
+    };
   }
 
   /**
@@ -33,15 +44,12 @@ class Controller {
   */
   static method (method) {
     return function (opts) {
-      var adapter = new this.adapter({
-        model: this.model
-      });
       var config = configure(method, opts);
-      var validationFailures = validate(method, adapter, config);
+      var validationFailures = validate(method, this._adapter, config);
       if (validationFailures.length) {
         throw new Error(validationFailures.join('\n'));
       }
-      return process(config, adapter);
+      return process(config, this._adapter);
     };
   }
 
