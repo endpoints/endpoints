@@ -3,7 +3,7 @@ const path = require('path');
 const express = require('express');
 const routeBuilder = require('express-routebuilder');
 
-const Endpoints = require('../../../../');
+const Endpoints = require('../../../../src');
 
 module.exports = new Endpoints.Application({
   searchPaths: [path.join(__dirname, '..', 'modules')],
