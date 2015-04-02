@@ -169,6 +169,8 @@
 
 	"use strict";
 
+        var _inherits = function (subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) subClass.__proto__ = superClass; };
+
 	var _classCallCheck = function (instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } };
 
 	var _ = __webpack_require__(5);
@@ -185,6 +187,9 @@
 	    if (!opts.adapter) {
 	      throw new Error("No adapter specified.");
 	    }
+            if (!opts.model) {
+              throw new Error("No model specified.");
+            }
 	    _.extend(this, opts);
 	  }
 
@@ -200,7 +205,9 @@
 	    return _methodWrapper;
 	  })(function (method) {
 	    return function (opts) {
-	      var adapter = this.adapter;
+              var adapter = new this.adapter({
+                model: this.model
+              });
 	      var config = configure(method, opts);
 	      var validationFailures = validate(method, adapter, config);
 	      if (validationFailures.length) {
@@ -209,6 +216,30 @@
 	      return process(config, adapter);
 	    };
 	  });
+
+          Controller.extend = function extend() {
+            var props = arguments[0] === undefined ? {} : arguments[0];
+
+            var Parent = this;
+            var ExtendedController = (function (_Parent) {
+              function Controller() {
+                _classCallCheck(this, Controller);
+
+                if (_Parent != null) {
+                  _Parent.apply(this, arguments);
+                }
+              }
+
+              _inherits(Controller, _Parent);
+
+              return Controller;
+            })(Parent);
+            ExtendedController.prototype._super = Parent.prototype;
+            for (var prop in props) {
+              ExtendedController.prototype[method] = props[prop];
+            }
+            return ExtendedController;
+          };
 
 	  return Controller;
 	})();
@@ -1187,15 +1218,15 @@
 	  return ResponseFormatter;
 	})();
 
-	ResponseFormatter.prototype.error = __webpack_require__(36);
+        ResponseFormatter.prototype.error = __webpack_require__(37);
 
-	ResponseFormatter.prototype.create = ResponseFormatter.method(__webpack_require__(37));
+        ResponseFormatter.prototype.create = ResponseFormatter.method(__webpack_require__(38));
 
-	ResponseFormatter.prototype.read = ResponseFormatter.method(__webpack_require__(38));
+        ResponseFormatter.prototype.read = ResponseFormatter.method(__webpack_require__(39));
 
-	ResponseFormatter.prototype.update = ResponseFormatter.method(__webpack_require__(39));
+        ResponseFormatter.prototype.update = ResponseFormatter.method(__webpack_require__(40));
 
-	ResponseFormatter.prototype.destroy = ResponseFormatter.method(__webpack_require__(40));
+        ResponseFormatter.prototype.destroy = ResponseFormatter.method(__webpack_require__(41));
 
 	module.exports = ResponseFormatter;
 
@@ -1207,7 +1238,7 @@
 
 	var _ = __webpack_require__(5);
 
-	var formatModel = __webpack_require__(41);
+        var formatModel = __webpack_require__(36);
 
 	module.exports = function (input) {
 	  var opts = arguments[1] === undefined ? {} : arguments[1];
@@ -1394,6 +1425,54 @@
 	"use strict";
 
 	var _ = __webpack_require__(5);
+
+        var toOneRelations = __webpack_require__(42);
+        var link = __webpack_require__(43);
+
+        module.exports = function (opts, model) {
+          var topLevelLinks;
+          var exporter = opts && opts.exporter;
+          var mode = opts && opts.mode;
+          var relations = opts && opts.relations;
+
+          var typeName = model.constructor.typeName;
+
+          var linkWithInclude = relations;
+
+          var allRelations = model.constructor.relations;
+
+          var toOneRels = toOneRelations(model, allRelations);
+
+          var linkWithoutInclude = _.difference(allRelations, linkWithInclude);
+
+          var serialized = model.toJSON({ shallow: true });
+
+          serialized.id = String(serialized.id);
+
+          serialized.type = typeName;
+
+          for (var rel in toOneRels) {
+            delete serialized[toOneRels[rel]];
+          }
+          if (mode === "relation") {
+            topLevelLinks = link(model, opts);
+          } else {
+            serialized.links = link(model, {
+              linkWithInclude: linkWithInclude,
+              linkWithoutInclude: linkWithoutInclude,
+              exporter: exporter
+            });
+          }
+          return serialized;
+        };
+
+/***/ },
+/* 37 */
+/***/ function(module, exports, __webpack_require__) {
+
+        "use strict";
+
+        var _ = __webpack_require__(5);
 	var Kapow = __webpack_require__(7);
 
 	module.exports = function (errs, defaultErr) {
@@ -1437,7 +1516,7 @@
 	};
 
 /***/ },
-/* 37 */
+/* 38 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -1455,13 +1534,13 @@
 	};
 
 /***/ },
-/* 38 */
+/* 39 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
 
 	var Kapow = __webpack_require__(7);
-	var error = __webpack_require__(36);
+        var error = __webpack_require__(37);
 
 	module.exports = function (formatter, config, data) {
 	  if (!data || data.length === 0 && data.singleResult) {
@@ -1482,7 +1561,7 @@
 	};
 
 /***/ },
-/* 39 */
+/* 40 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -1501,7 +1580,7 @@
 	};
 
 /***/ },
-/* 40 */
+/* 41 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -1511,54 +1590,6 @@
 	    code: "204",
 	    data: null
 	  };
-	};
-
-/***/ },
-/* 41 */
-/***/ function(module, exports, __webpack_require__) {
-
-	"use strict";
-
-	var _ = __webpack_require__(5);
-
-	var toOneRelations = __webpack_require__(42);
-	var link = __webpack_require__(43);
-
-	module.exports = function (opts, model) {
-	  var topLevelLinks;
-	  var exporter = opts && opts.exporter;
-	  var mode = opts && opts.mode;
-	  var relations = opts && opts.relations;
-
-	  var typeName = model.constructor.typeName;
-
-	  var linkWithInclude = relations;
-
-	  var allRelations = model.constructor.relations;
-
-	  var toOneRels = toOneRelations(model, allRelations);
-
-	  var linkWithoutInclude = _.difference(allRelations, linkWithInclude);
-
-	  var serialized = model.toJSON({ shallow: true });
-
-	  serialized.id = String(serialized.id);
-
-	  serialized.type = typeName;
-
-	  for (var rel in toOneRels) {
-	    delete serialized[toOneRels[rel]];
-	  }
-	  if (mode === "relation") {
-	    topLevelLinks = link(model, opts);
-	  } else {
-	    serialized.links = link(model, {
-	      linkWithInclude: linkWithInclude,
-	      linkWithoutInclude: linkWithoutInclude,
-	      exporter: exporter
-	    });
-	  }
-	  return serialized;
 	};
 
 /***/ },

@@ -16,8 +16,11 @@ class Controller {
     @param {Object} opts - opts.adapter: An endpoints source adapter
   */
   constructor (opts={}) {
-    if (!opts.adapter) {
+    if (!this.adapter && !opts.adapter) {
       throw new Error('No adapter specified.');
+    }
+    if (!this.model && !opts.model) {
+      throw new Error('No model specified.');
     }
     _.extend(this, opts);
   }
@@ -30,7 +33,9 @@ class Controller {
   */
   static method (method) {
     return function (opts) {
-      var adapter = this.adapter;
+      var adapter = new this.adapter({
+        model: this.model
+      });
       var config = configure(method, opts);
       var validationFailures = validate(method, adapter, config);
       if (validationFailures.length) {
@@ -38,6 +43,14 @@ class Controller {
       }
       return process(config, adapter);
     };
+  }
+
+  static extend (props={}) {
+    class Controller extends this {}
+    for (var prop in props) {
+      Controller.prototype[prop] = props[prop];
+    }
+    return Controller;
   }
 
 }
