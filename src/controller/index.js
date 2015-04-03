@@ -12,7 +12,10 @@ class Controller {
     The constructor.
 
     @constructs Controller
-    @param {Object} opts - opts.adapter: An endpoints source adapter
+    @param {Object} opts - opts.adapter: An endpoints adapter
+    @param {Object} opts - opts.model: A model compatible with the adapter.
+    @param {Object} opts - opts.validators: An array of validating methods.
+    @param {Object} opts - opts.allowClientGeneratedIds: boolean indicating this
   */
   constructor (opts={}) {
     if (!opts.adapter) {
@@ -22,11 +25,6 @@ class Controller {
       throw new Error('No model specified.');
     }
     var config = this.config = _.extend({
-      include: [],
-      filter: {},
-      fields: {},
-      sort: [],
-      schema: {},
       validators: [],
       allowClientGeneratedIds: false
     }, opts);
@@ -37,7 +35,7 @@ class Controller {
   }
 
   get capabilities() {
-    // TODO: include information about client-generated ids and other stuff?
+    // TODO: include this.config?
     return {
       filters: this._adapter.filters(),
       includes: this._adapter.relations()
@@ -52,7 +50,14 @@ class Controller {
   */
   static method (method) {
     return function (opts) {
-      var config = _.extend({method: method}, this.config, opts);
+      var config = _.extend({
+        method: method,
+        include: [],
+        filter: {},
+        fields: {},
+        sort: [],
+        schema: {},
+      }, this.config, opts);
       var validationFailures = validate(method, config, this._adapter);
       if (validationFailures.length) {
         throw new Error(validationFailures.join('\n'));
