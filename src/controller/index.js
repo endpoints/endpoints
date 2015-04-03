@@ -1,7 +1,6 @@
 const _ = require('lodash');
-const configure = require('./lib/configure');
 const validate = require('./lib/validate');
-const process = require('./lib/process');
+const handle = require('./lib/handle');
 
 /**
   Provides methods for generating request handling functions that can
@@ -16,15 +15,24 @@ class Controller {
     @param {Object} opts - opts.adapter: An endpoints source adapter
   */
   constructor (opts={}) {
-    if (!this.adapter && !opts.adapter) {
+    if (!opts.adapter) {
       throw new Error('No adapter specified.');
     }
-    if (!this.model && !opts.model) {
+    if (!opts.model) {
       throw new Error('No model specified.');
     }
-    _.extend(this, opts);
-    this._adapter = new this.adapter({
-      model: this.model
+    var config = this.config = _.extend({
+      include: [],
+      filter: {},
+      fields: {},
+      sort: [],
+      schema: {},
+      validators: [],
+      allowClientGeneratedIds: false
+    }, opts);
+
+    this._adapter = new config.adapter({
+      model: config.model
     });
   }
 
@@ -44,21 +52,21 @@ class Controller {
   */
   static method (method) {
     return function (opts) {
-      var config = configure(method, opts);
-      var validationFailures = validate(method, this._adapter, config);
+      var config = _.extend({method: method}, this.config, opts);
+      var validationFailures = validate(method, config, this._adapter);
       if (validationFailures.length) {
         throw new Error(validationFailures.join('\n'));
       }
-      return process(config, this._adapter);
+      return handle(config, this._adapter);
     };
   }
 
   static extend (props={}) {
-    class Controller extends this {}
-    for (var prop in props) {
-      Controller.prototype[prop] = props[prop];
-    }
-    return Controller;
+    return class Controller extends this {
+      constructor(opts={}) {
+        super(_.extend({}, props, opts));
+      }
+    };
   }
 
 }

@@ -10,7 +10,6 @@ const controller = new Controller({
   model: model
 });
 
-
 describe('Controller', () => {
 
   it('should be an object', () => {
@@ -43,40 +42,22 @@ describe('Controller', () => {
 
       var MyController = Controller.extend({
         adapter: adapter,
-        validators: validators
+        validators: validators,
+        allowClientGeneratedIds: true
       });
       var myController = new MyController({
         model: require('./mocks/model')
       });
-      expect(myController.adapter).to.equal(adapter);
-      expect(myController.validators).to.equal(validators);
-    });
-
-    it('should be extendable in es6', () => {
-      var adapter = require('./mocks/adapter');
-      var validators = ['validators'];
-
-      class MyController extends Controller {
-        get adapter() {
-          return adapter;
-        }
-        get validators() {
-          return validators;
-        }
-      }
-      var myController = new MyController({
-        model: require('./mocks/model')
-      });
-      expect(myController.adapter).to.equal(adapter);
-      expect(myController.validators).to.equal(validators);
+      expect(myController.config.adapter).to.equal(adapter);
+      expect(myController.config.allowClientGeneratedIds).to.be.true;
+      expect(myController.config.validators).to.equal(validators);
     });
 
   });
 
   describe('lib', () => {
 
-    require('./lib/configure');
-    require('./lib/source_has');
+    require('./lib/adapter_has');
     require('./lib/validate');
 
   });
