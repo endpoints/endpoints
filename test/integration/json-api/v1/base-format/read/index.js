@@ -1,3 +1,4 @@
+const _ = require('lodash');
 const expect = require('chai').expect;
 
 const Agent = require('../../../../../app/agent');
@@ -5,18 +6,14 @@ const Fixture = require('../../../../../app/fixture');
 
 describe('read', function() {
 
-  before(function() {
+  beforeEach(function() {
     return Fixture.reset();
   });
 
   describe('documentStructure', function() {
 
-    beforeEach(function() {
-      return Fixture.reset();
-    });
-
     describe('topLevel', function() {
-      it('must respond to a successful request with an object', function() {
+      it('must respond to a successful request with an object and respond with 200 OK', function() {
         return Agent.request('GET', '/books/1')
           .promise()
           .then(function(res) {
@@ -42,7 +39,7 @@ describe('read', function() {
           });
       });
 
-      it('must make primary data for multiple records an array', function() {
+      it('must make primary data for multiple records an array and respond with 200 OK', function() {
         return Agent.request('GET', '/books')
           .promise()
           .then(function(res) {
@@ -150,7 +147,6 @@ describe('read', function() {
             });
         });
 
-        // TODO: Fix self urls to be baseUrl aware
         it('must set the value of "self" to a URL that identifies the resource represented by this object', function() {
           return Agent.request('GET', '/books/1')
             .promise()
@@ -161,12 +157,6 @@ describe('read', function() {
             });
         });
 
-        // https://github.com/json-api/json-api/commit/6b18a4685692ae260f0ef1e10522b81725f83219
-        it('may include a related resource URL in its links object keyed by "related"');
-        it('may include a "linkage" member whose value represents "resource linkage"');
-
-        // TODO: API TEST
-        // it('must respond to a get request to any `self` url with the resource as primary data');
       });
 
       describe('resourceRelationships', function() {
@@ -185,6 +175,27 @@ describe('read', function() {
               expect(links).to.have.property('series');
               expect(links).to.have.property('stores');
               expect(links).to.have.property('author.books');
+            });
+        });
+
+        // https://github.com/json-api/json-api/commit/6b18a4685692ae260f0ef1e10522b81725f83219
+        it('may include a related resource URL in its links object keyed by "related"', function() {
+          return Agent.request('GET', '/books/1')
+            .promise()
+            .then(function(res) {
+              var dataObj = res.body.data;
+              expect(res.status).to.equal(200);
+              expect(dataObj.links.chapters).to.have.property('related');
+            });
+        });
+
+        it('may include a "linkage" member whose value represents "resource linkage"', function() {
+          return Agent.request('GET', '/books/1?include=author')
+            .promise()
+            .then(function(res) {
+              var dataObj = res.body.data;
+              expect(res.status).to.equal(200);
+              expect(dataObj.links.author).to.have.property('linkage');
             });
         });
 
@@ -266,7 +277,7 @@ describe('read', function() {
 
         // TODO: implement
         describe('stringURLRelationship', function() {
-          it('should not change related URL even when the resource changes');
+          it('must not change related URL even when the resource changes');
         });
 
         describe('linkObjectRelationship', function() {
@@ -351,21 +362,16 @@ describe('read', function() {
       });
     });
 
-    // TODO: not sure how to port this -- going to need to reconfigure the App somehow...
-
-    // it('must not include other resource objects in the included section when the client specifies an include parameter', function(done) {
-    //   var bookRouteHandler = bookController.read({
-    //     include: ['series'],
-    //     responder: function(payload) {
-    //       var includedTypes = _.pluck(payload.data.included, 'type');
-    //       expect(payload.code).to.equal('200');
-    //       expect(includedTypes.indexOf('series')).to.equal(-1);
-    //       done();
-    //     }
-    //   });
-    //   readReq.query = { include: 'author' };
-    //   bookRouteHandler(readReq);
-    // });
+    it('must not include other resource objects in the included section when the client specifies an include parameter', function() {
+      return Agent.request('GET', '/books/1?include=series')
+        .promise()
+        .then(function(res) {
+          expect(res.status).to.equal(200);
+          var includedTypes = _.pluck(res.body.included, 'type');
+          expect(includedTypes.indexOf('series')).to.equal(0);
+          expect(includedTypes.length).to.equal(1);
+        });
+    });
 
     it('must have the identical relationship name as the key in the links section of the parent resource object', function() {
       return Agent.request('GET', '/books/1?include=author,series,stores,author.books')
@@ -406,23 +412,73 @@ describe('read', function() {
     });
 
     describe('fetchingResources', function() {
-      it('must support fetching resource for URLs provided as a `self` link in a links object');
-      it('must support fetching resource for URLs provided as a `related` link as part of a link object');
+      it('must support fetching resource for URLs provided as a `self` link in a links object', function() {
+        return Agent.request('GET', '/books/1')
+          .promise()
+          .then(function(res) {
+            var links = res.body.data.links;
+            expect(res.status).to.equal(200);
+            return Agent.request('GET', links.chapters.self).promise();
+          })
+          .then(function(res) {
+            expect(res.status).to.equal(200);
+            expect(res.body.data.length).to.equal(22);
+            expect(res.body.data[0]).to.have.property('id');
+            expect(res.body.data[0]).to.have.property('type');
+            expect(res.body.data[0]).to.not.have.property('title');
+            expect(res.body.data[0]).to.not.have.property('ordering');
+          });
+      });
+
+      it('must support fetching resource for URLs provided as a `related` link as part of a link object', function() {
+        return Agent.request('GET', '/books/1')
+          .promise()
+          .then(function(res) {
+            var links = res.body.data.links;
+            expect(res.status).to.equal(200);
+            return Agent.request('GET', links.chapters.related).promise();
+          })
+          .then(function(res) {
+            expect(res.status).to.equal(200);
+            expect(res.body.data.length).to.equal(22);
+            expect(res.body.data[0]).to.have.property('id');
+            expect(res.body.data[0]).to.have.property('type');
+            expect(res.body.data[0]).to.have.property('title');
+            expect(res.body.data[0]).to.have.property('ordering');
+          });
+      });
 
       describe('responses', function() {
         describe('200Ok', function() {
-          it('must respond to a successful request to fetch an individual resource or collection with a 200 OK response');
-          it('must respond to a successful request to fetch a resource collection with an array as the document\'s primary data');
-          it('must respond to a successful request to fetch an individual resource with a resource object or null as the document\'s primary data');
+          // TESTED ABOVE under "Top Level"
+          // it('must respond to a successful request to fetch an individual resource or collection with a 200 OK response');
+          // it('must respond to a successful request to fetch a resource collection with an array as the document\'s primary data');
+          it('must respond to a request to fetch a resource that does not exist with null as the document\'s primary data', function() {
+            return Agent.request('GET', '/books/11/series')
+              .promise()
+              .then(function(res) {
+                expect(res.status).to.equal(200);
+                expect(res.body)
+                  .to.have.property('data')
+                    .that.is.null;
+              });
+          });
         });
+
         describe('404NotFound', function() {
-          it('must return 404 Not Found when processing a request to fetch a resource that does not exist');
+          it('must return 404 Not Found when processing a request to fetch a resource that does not exist', function() {
+            return Agent.request('GET', '/books/9999')
+              .promise()
+              .then(function(res) {
+                expect(res.status).to.equal(404);
+              });
+          });
         });
       });
     });
 
     describe('fetchingRelationships', function() {
-      it('must support fetching relationship data for every relationship URL provided as a self link as part of a link object', function() {
+      it('must support fetching relationship data for every relationship URL provided as a self link as part of a link object with 200 OK', function() {
         return Agent.request('GET', '/books/1/links/author')
           .promise()
           .then(function(res) {
@@ -439,11 +495,20 @@ describe('read', function() {
 
       describe('responses', function() {
         describe('200Ok', function() {
-          it('must respond to a successful request to fetch a relationship with a 200OK response');
-          it('must have a primary data consisting of null, an object of type and id members, an array');
+          // TESTED ABOVE
+          // it('must respond to a successful request to fetch a relationship with a 200OK response');
+          // it('must have a primary data consisting of null, an object of type and id members, an array');
         });
-        describe('400NotFound', function() {
-          it('must return 404 Not Found when processing a request to fetch a relationship URL that does not exist');
+
+        describe('404NotFound', function() {
+          it('must return 404 Not Found when processing a request to fetch a relationship URL that does not exist', function() {
+            return Agent.request('GET', '/books/1/links/bees')
+              .promise()
+              .then(function(res) {
+                expect(res.status).to.equal(404);
+              }
+            );
+          });
         });
       });
     });
