@@ -5,6 +5,7 @@ describe('RequestHandler', function () {
     require('./lib/throw_if_model');
     require('./lib/throw_if_no_model');
     require('./lib/verify_accept');
+    require('./lib/verify_client_generated_id');
     require('./lib/verify_content_type');
     require('./lib/verify_data_object');
   });

@@ -12,6 +12,7 @@ const verifyAccept = require('./lib/verify_accept');
 const verifyContentType = require('./lib/verify_content_type');
 const verifyDataObject = require('./lib/verify_data_object');
 const splitStringProps = require('./lib/split_string_props');
+const verifyClientGeneratedId = require('./lib/verify_client_generated_id');
 
 /**
   Provides methods for pulling out json-api relevant data from
@@ -29,8 +30,6 @@ class RequestHandler {
   constructor (adapter, config={}) {
     this.config = config;
     this.adapter = adapter;
-    this.schema = config.schema || {};
-    this.validators = config.validators;
     this.method = config.method;
 
     // this used to happen in the configureController step
@@ -51,11 +50,24 @@ class RequestHandler {
     var validators = [verifyAccept];
 
     if (request.body && request.body.data) {
-      validators = validators.concat([verifyContentType, verifyDataObject]);
+      var clientIdCheck =
+        request.method === 'POST' &&
+        // posting to a relation endpoint is for appending
+        // relationships and and such is allowed (must have, really)
+        // ids
+        this.mode(request) !== RELATION_MODE &&
+        !this.config.allowClientGeneratedIds;
+      if (clientIdCheck) {
+        validators.push(verifyClientGeneratedId);
+      }
+      validators = validators.concat([
+        verifyContentType,
+        verifyDataObject
+      ]);
     }
 
     // does this.validators needs a better name? controllerValidator, userValidators?
-    validators = validators.concat(this.validators);
+    validators = validators.concat(this.config.validators);
 
     for (var validate in validators) {
       err = validators[validate](request, this);
