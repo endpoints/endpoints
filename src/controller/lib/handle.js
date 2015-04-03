@@ -3,10 +3,10 @@ const ResponseFormatter = require('../../response-formatter');
 const jsonApi = require('../../formatter-jsonapi');
 const send = require('./send');
 
-module.exports = function (config, source) {
+module.exports = function (config, adapter) {
   var method = config.method;
   var responder = config.responder;
-  var handler = new RequestHandler(source, config);
+  var handler = new RequestHandler(adapter, config);
   var formatter = new ResponseFormatter(jsonApi);
 
   return function (request, response) {

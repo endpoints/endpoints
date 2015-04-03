@@ -1,15 +1,15 @@
 const _ = require('lodash');
 
-const sourceHas = require('./source_has');
+const adapterHas = require('./adapter_has');
 
-module.exports = function (method, source, config) {
+module.exports = function (method, config, adapter) {
   return _.compose(_.flatten, _.compact)([
-    sourceHas(source.relations(), config.include, 'relations'),
-    sourceHas(source.filters(), Object.keys(config.filter), 'filters'),
+    adapterHas(adapter.relations(), config.include, 'relations'),
+    adapterHas(adapter.filters(), Object.keys(config.filter), 'filters'),
     // this is crap
     (method === 'read') ? null :
-      sourceHas(
-        method === 'create' ? source.model : source.model.prototype,
+      adapterHas(
+        method === 'create' ? adapter.model : adapter.model.prototype,
         config.method,
         'method'
       )

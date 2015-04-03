@@ -86,23 +86,29 @@ describe('creatingResources', function() {
 
   describe('clientGeneratedIds', function() {
     it('may accept a client-generated ID along with a request to create a resource', function() {
-      bookData.id = 9999;
+      return Agent.request('POST', '/stores')
+        .send({
+          data: {
+            id: 9999,
+            type: 'stores',
+            name: 'user generated id store'
+          }
+        })
+        .promise()
+        .then(function(res) {
+          expect(res.status).to.equal(201);
+        });
+    });
 
+    it('must return 403 Forbidden in response to an unsupported request using a client-generated ID', function () {
+      bookData.id = 9999;
       return Agent.request('POST', '/books')
         .send({ data: bookData })
         .promise()
         .then(function(res) {
-          expect(res.status).to.equal(201);
-
-          var data = res.body.data;
-          expect(data.id).to.equal(String(bookData.id));
-          expect(data.date_published).to.equal(bookData.date_published);
-          expect(data.title).to.equal(bookData.title);
+          expect(res.status).to.equal(403);
         });
     });
-
-    // TODO: Pending https://github.com/endpoints/endpoints/issues/51
-    it('must return 403 Forbidden in response to an unsupported request using a client-generated ID');
   });
 
   describe('responses', function() {
