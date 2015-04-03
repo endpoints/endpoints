@@ -58,8 +58,8 @@ module.exports = function (input, opts={}) {
   /**
     If we are requesting a single item, return it as an object, not an array.
   */
-  if (opts.singleResult && input.length) {
-    serialized = serialized[0];
+  if (opts.singleResult && _.isArray(serialized)) {
+    serialized = input.length ? serialized[0] : null;
   }
 
 

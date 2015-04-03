@@ -5,6 +5,7 @@ const baseMethods = require('./lib/base_methods');
 const processFilter = require('./lib/process_filter');
 const processSort = require('./lib/process_sort');
 const destructureRequest = require('./lib/destructure_request_data');
+const Kapow = require('kapow');
 
 // FIXME: decide if this responsibility lives in the adapter or
 // in the formatter. i think adapter? this would mean a wholesale
@@ -155,7 +156,7 @@ class BookshelfAdapter {
       opts.baseId = model.id;
       opts.baseRelation = relation;
       opts.fields = {};
-      opts.fields[related.constructor.typeName] = ['id', 'type'];
+      opts.fields[relatedModel.typeName] = ['id', 'type'];
     }
 
     // @todo fix this
@@ -182,12 +183,14 @@ class BookshelfAdapter {
 
     @returns {Promise(Bookshelf.Model)} A model and its related models.
   */
-  byId (id, relations) {
-    relations = relations || [];
+  byId (id, relations=[]) {
     return this.model.collection().query(function (qb) {
       return qb.where({id:id});
     }).fetchOne({
       withRelated: relations
+    }).catch(TypeError, function(e) {
+      // A TypeError here most likely signifies bad relations passed into withRelated
+      throw Kapow(404, 'Unable to find relations');
     });
   }
 

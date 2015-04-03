@@ -114,27 +114,17 @@ describe('creatingResources', function() {
   describe('responses', function() {
 
     describe('201Created', function() {
-      // This test currently fails, location isn't correct.
-      it('must include a Location header identifying the location of the new resource', function() {
-        return Agent.request('POST', '/books')
-          .send({ data: bookData })
-          .promise()
-          .then(function(res) {
-            var location = res.headers.location;
-            var book = res.body.data;
-            var expectedLocation = '/books/' + book.id;
-
-            expect(location).to.equal(expectedLocation);
-          });
-      });
-
-      // This seems like a complete dupe of two tests ago
-      it('must respond with 201 on a successful request if the request did not include a client-generated ID', function() {
+      it('must respond with 201 and  include a Location header identifying the location of the new resource', function() {
         return Agent.request('POST', '/books')
           .send({ data: bookData })
           .promise()
           .then(function(res) {
             expect(res.status).to.equal(201);
+            var location = res.headers.location;
+            var book = res.body.data;
+            var expectedLocation = '/books/' + book.id;
+
+            expect(location).to.equal(expectedLocation);
           });
       });
 

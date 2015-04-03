@@ -2,11 +2,7 @@ const Kapow = require('kapow');
 const error = require('./error');
 
 module.exports = function (formatter, config, data) {
-
-  // @todo handle relations correctly
-  // GET /book/11/series should not throw resource not found
-  // it should show it as null
-  if (!data || data.length === 0 && data.singleResult) {
+  if ((!data || data.length === 0 && data.singleResult) && data.mode !== 'related') {
     return error(Kapow(404, 'Resource not found.'));
   }
 
