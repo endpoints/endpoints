@@ -591,8 +591,8 @@ describe('updatingRelationships', function() {
         });
     });
 
-    // TODO: Pending https://github.com/endpoints/endpoints/issues/51
-    it('must respond 403 Forbidden to a DELETE request if the method is unsupported');
+    // Endpoints will always support DELETING Relationships
+    // it('must respond 403 Forbidden to a DELETE request if the method is unsupported');
   });
 
   describe('responses', function() {
