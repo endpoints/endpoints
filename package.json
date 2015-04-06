@@ -43,7 +43,7 @@
     "esperanto": "^0.6.24",
     "express": "^4.12.2",
     "express-routebuilder": "^2.1.0",
-    "fantasy-database": "^1.1.0",
+    "fantasy-database": "endpoints/fantasy-database#master",
     "istanbul": "^0.3.6",
     "jade": "^1.9.2",
     "jscs": "^1.10.0",
