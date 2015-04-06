@@ -490,8 +490,17 @@ describe('updatingRelationships', function() {
         });
     });
 
-    // TODO: Pending https://github.com/endpoints/endpoints/issues/51
-    it('must return a 403 Forbidden if complete replacement is not allowed by the server');
+    it('must return a 403 Forbidden if complete replacement is not allowed by the server', function() {
+      var newIds = [
+        { type: 'books', id: '1' }
+      ];
+      return Agent.request('PATCH', '/stores/2/links/books')
+        .send({ data: newIds})
+        .promise()
+        .then(function(res) {
+          expect(res.status).to.equal(403);
+        });
+    });
 
     it('must require a top-level data member an array of linkage objects for POST requests', function() {
       return Agent.request('POST', '/books/1/links/stores')
@@ -591,7 +600,7 @@ describe('updatingRelationships', function() {
         });
     });
 
-    // Endpoints will always support DELETING Relationships
+    // API decision to not create the route - endpoints will always support deleting relationships
     // it('must respond 403 Forbidden to a DELETE request if the method is unsupported');
   });
 
