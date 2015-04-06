@@ -13,6 +13,7 @@ const verifyContentType = require('./lib/verify_content_type');
 const verifyDataObject = require('./lib/verify_data_object');
 const splitStringProps = require('./lib/split_string_props');
 const verifyClientGeneratedId = require('./lib/verify_client_generated_id');
+const verifyFullReplacement = require('./lib/verify_full_replacement');
 
 /**
   Provides methods for pulling out json-api relevant data from
@@ -57,8 +58,17 @@ class RequestHandler {
         // ids
         this.mode(request) !== RELATION_MODE &&
         !this.config.allowClientGeneratedIds;
+
+      // this applies for both "base" and relation endpoints
+      var fullReplacementCheck =
+        request.method === 'PATCH' &&
+        !this.config.allowToManyFullReplacement;
+
       if (clientIdCheck) {
         validators.push(verifyClientGeneratedId);
+      }
+      if (fullReplacementCheck) {
+        validators.push(verifyFullReplacement);
       }
       validators = validators.concat([
         verifyContentType,

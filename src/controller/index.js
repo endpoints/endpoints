@@ -26,7 +26,8 @@ class Controller {
     }
     var config = this.config = _.extend({
       validators: [],
-      allowClientGeneratedIds: false
+      allowClientGeneratedIds: false,
+      allowToManyFullReplacement: true
     }, opts);
 
     this._adapter = new config.adapter({

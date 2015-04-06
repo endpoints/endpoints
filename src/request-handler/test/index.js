@@ -8,6 +8,7 @@ describe('RequestHandler', function () {
     require('./lib/verify_client_generated_id');
     require('./lib/verify_content_type');
     require('./lib/verify_data_object');
+    require('./lib/verify_full_replacement');
   });
 
   describe('#include', function () {
