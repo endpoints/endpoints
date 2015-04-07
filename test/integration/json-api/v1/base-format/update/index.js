@@ -268,10 +268,7 @@ describe('updatingResources', function() {
 
     describe('200Ok', function() {
 
-      // TODO: No idea why this suddenly started returning 204 instead of 200
-      // ANSWER: the book model was previously augmented to include
-      // timestamps that changed on update, which is what this test is for
-      it.skip('must return 200 OK if it accepts the update but changes the resource in some way', function(done) {
+      it('must return 200 OK if it accepts the update but changes the resource in some way', function() {
         return Agent.request('PATCH', '/books/1')
           .send(patchData)
           .promise()

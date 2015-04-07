@@ -203,6 +203,7 @@ class RequestHandler {
     var data = request.body.data;
 
     if (relation) {
+      this.config.relationOnly = true;
       data = {
         id: id,
         type: adapter.typeName(),

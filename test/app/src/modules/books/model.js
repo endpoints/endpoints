@@ -2,6 +2,7 @@ const BaseModel = require('../../classes/base_model');
 
 const instanceProps = {
   tableName: 'books',
+  hasTimestamps: true,
   author: function () {
     return this.belongsTo(require('../authors/model'));
   },
