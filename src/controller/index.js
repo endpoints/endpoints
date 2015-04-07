@@ -68,11 +68,14 @@ class Controller {
   }
 
   static extend (props={}) {
-    return class Controller extends this {
+    // FIXME: once jsdoc supports class expression nodes
+    // the following line can be `return class Controller extends this {`
+    class ExtendedController extends this {
       constructor(opts={}) {
         super(_.extend({}, props, opts));
       }
     };
+    return ExtendedController;
   }
 
 }
