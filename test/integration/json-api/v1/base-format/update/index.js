@@ -603,9 +603,10 @@ describe('updatingRelationships', function() {
 
   describe('responses', function() {
 
-    describe('204NoContent', function() {
-      it('must return 204 No Content if the update is successful and the attributes remain up to date');
-    });
+    // Tested above
+    // describe('204NoContent', function() {
+    //   it('must return 204 No Content if the update is successful and the attributes remain up to date');
+    // });
 
     // API decision to not create the route - endpoints will always support updating
     // describe('403Forbidden', function() {
