@@ -43,6 +43,7 @@ class RequestHandler {
   /**
     A function that, given a request, validates the request.
 
+    @param {Object} request - A request object.
     @returns {Object} An object containing errors, if any.
   */
   validate (request) {
@@ -91,6 +92,7 @@ class RequestHandler {
   /**
     Builds a query object to be passed to Endpoints.Adapter#read.
 
+    @param {Object} request - A request object.
     @returns {Object} The query object on a request.
    */
   query (request) {
@@ -114,6 +116,7 @@ class RequestHandler {
   /**
     Determines mode based on what request.params are available.
 
+    @param {Object} request - A request object.
     @returns {String} the read mode
   */
   mode (request) {
@@ -143,6 +146,7 @@ class RequestHandler {
   /**
     Creates a new instance of a model.
 
+    @param {Object} request - A request object.
     @returns {Promise(Bookshelf.Model)} Newly created instance of the Model.
   */
   create (request) {
@@ -165,6 +169,7 @@ class RequestHandler {
   /**
     Queries the adapter for matching models.
 
+    @param {Object} request - A request object.
     @returns {Promise(Bookshelf.Model)|Promise(Bookshelf.Collection)}
   */
   read (request) {
@@ -193,6 +198,7 @@ class RequestHandler {
   /**
     Edits a model.
 
+    @param {Object} request - A request object.
     @returns {Promise(Bookshelf.Model)}
   */
   update (request) {
@@ -249,6 +255,7 @@ class RequestHandler {
   /**
     Deletes a model.
 
+    @param {Object} request - A request object.
     @returns {Promise(Bookshelf.Model)}
   */
   destroy (request) {
