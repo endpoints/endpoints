@@ -136,6 +136,8 @@ class BookshelfAdapter {
       opts - the result of running RequestHandler#query for the request.
     @param {String}
       relation - A dot notated relation to find relative to the provided model.
+    @param {String}
+      mode - collection/single/related/relation
     @param {Bookshelf.Model} model
 
     @returns {Promise(Bookshelf.Model)|Promise(Bookshelf.Collection)} related models.
@@ -219,8 +221,8 @@ class BookshelfAdapter {
     Retrieves a collection of models from the database.
 
     @param {Object} opts - the output of Request#query
-    @param {String} mode -
-      determines whether the result is single. either "single" or "related/relation".
+    @param {String}
+      mode - single/collection/related/relation
 
     @returns {Promise(Bookshelf.Collection)} Models that match the provided opts.
   */
