@@ -63,8 +63,8 @@ class Application {
   index () {
     return this.manifest().reduce(function (result, resource) {
       var definition = resource.url;
-      var includes = resource.includes;
-      var filters = resource.filters;
+      var includes = resource.includes || [];
+      var filters = resource.filters || {};
       if (includes.length) {
         definition += `?include={${includes.join(',')}}`;
       }
