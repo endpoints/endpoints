@@ -219,6 +219,8 @@ class BookshelfAdapter {
     Retrieves a collection of models from the database.
 
     @param {Object} opts - the output of Request#query
+    @param {String} mode -
+      determines whether the result is single. either "single" or "related/relation".
 
     @returns {Promise(Bookshelf.Collection)} Models that match the provided opts.
   */
