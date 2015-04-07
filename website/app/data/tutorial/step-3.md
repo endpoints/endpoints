@@ -1,4 +1,5 @@
-# Step 3: Hello, Endpoints!
+#
+Step 3: Hello, Endpoints!
 
 So far we have set up 2 Express applications, configured a
 sqlite3 database and Knex, written and run migrations, written
@@ -169,3 +170,11 @@ data in the browser. Try it out by typing `npm start`. You should see:
 
 
 [Check out the diff to review what we covered in this section.](https://github.com/endpoints/tutorial/commit/c7cf197f9c1988b4a4c6f82ee77750119b15ed74)
+
+Given what we've done here, one could use the Express API to build out a
+full CRUD application for the authors resource. It's a bit of work, but if
+you should take a minute here to play around. What we've built thus far is
+the smallest implementation of the endpoints stack- moving forward, we'll
+integrate [express-routebuilder](https://github.com/tkellen/js-express-routebuilder)
+and [Express.Application](/api/endpoints/0.5.6/Application.html) to make
+our application even simpler and more automated as we build out our routes.
