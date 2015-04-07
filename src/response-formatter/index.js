@@ -22,6 +22,7 @@ class ResponseFormatter {
     Partially applies this.formatter to each method.
 
     @param {Function} fn - The method to which the formatter should be applied.
+    @returns {Function} - The originally passed function, with the formatter as an argument.
   */
   // partially apply this.formatter to each method
   // this is pretty stupid.
@@ -40,7 +41,10 @@ ResponseFormatter.prototype.error = require('./lib/error');
 /**
   Convenience method for creating a new element
 
-  @todo: missing params listing
+  @param {Function} formatter - a module for converting data to comply with a specific standard.
+  @param {Bookshelf.Model|Bookshelf.Collection} data
+  @param {Object} config - options to pass to the formatter
+  @returns {Object} - http status code and appropriately formatted data.
 */
 ResponseFormatter.prototype.create = ResponseFormatter.method(require('./lib/create'));
 
@@ -48,22 +52,31 @@ ResponseFormatter.prototype.create = ResponseFormatter.method(require('./lib/cre
   Convenience method for retrieving an element or a collection using
   the underlying adapter.
 
-  @todo: missing params listing
+  @param {Function} formatter - a module for converting data to comply with a specific standard.
+  @param {Bookshelf.Model|Bookshelf.Collection} data
+  @param {Object} config - options to pass to the formatter
+  @returns {Object} - http status code and appropriately formatted data.
 */
 ResponseFormatter.prototype.read = ResponseFormatter.method(require('./lib/read'));
 
 /**
   Convenience method for updating one or more attributes on an element
-  using the underlying adapter..
+  using the underlying adapter.
 
-  @todo: missing params listing
+  @param {Function} formatter - a module for converting data to comply with a specific standard.
+  @param {Bookshelf.Model} data
+  @param {Object} config - options to pass to the formatter
+  @returns {Object} - http status code and appropriately formatted data.
  */
 ResponseFormatter.prototype.update = ResponseFormatter.method(require('./lib/update'));
 
 /**
   Convenience method for deleting an element using the underlying adapter.
 
-  @todo: missing params listing
+  @param {Function} formatter - a module for converting data to comply with a specific standard.
+  @param {Bookshelf.Model|Bookshelf.Collection} data
+  @param {Object} config - options to pass to the formatter
+  @returns {Object} - http status code and appropriately formatted data.
  */
 ResponseFormatter.prototype.destroy = ResponseFormatter.method(require('./lib/destroy'));
 
