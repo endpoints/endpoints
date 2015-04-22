@@ -13,7 +13,7 @@ describe('splitStringProps', function () {
     };
     var output = {
       id: ['1', '2'],
-      date_published: ['2015-03-03'],
+      date_published: '2015-03-03',
       title: ['a', 'b']
     };
     expect(splitStringProps(input)).to.deep.equal(output);
