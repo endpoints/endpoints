@@ -146,8 +146,8 @@ describe('Application', function () {
       TestApp.register('bar').endpoint('bar');
       TestApp.register('baz').endpoint('baz');
       expect(TestApp.index()).to.deep.equal({
-        foo: '/foo?include={bar,baz}&{id,qux}',
-        bar: '/bar?{id,qux}',
+        foo: '/foo?include={bar,baz}&filter[{id,qux}]',
+        bar: '/bar?filter[{id,qux}]',
         baz: '/baz'
       });
     });

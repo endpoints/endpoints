@@ -23,7 +23,7 @@ var Application = (function () {
     }
 
     resource.toString = function () {
-      return resource.toString();
+      return _resource.toString();
     };
 
     return resource;
@@ -85,7 +85,7 @@ var Application = (function () {
       }
       if (filters.length) {
         definition += definition === resource.url ? '?' : '&';
-        definition += '{' + filters.join(',') + '}';
+        definition += 'filter[{' + filters.join(',') + '}]';
       }
       result[resource.name] = definition;
       return result;

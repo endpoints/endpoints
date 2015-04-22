@@ -60,7 +60,7 @@ var Controller = (function () {
     }
 
     method.toString = function () {
-      return method.toString();
+      return _method.toString();
     };
 
     return method;

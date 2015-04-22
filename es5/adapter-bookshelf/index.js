@@ -65,7 +65,7 @@ var BookshelfAdapter = (function () {
     }
 
     filters.toString = function () {
-      return filters.toString();
+      return _filters.toString();
     };
 
     return filters;
@@ -156,7 +156,7 @@ var BookshelfAdapter = (function () {
     }
 
     related.toString = function () {
-      return related.toString();
+      return _related.toString();
     };
 
     return related;

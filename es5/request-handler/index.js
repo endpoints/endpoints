@@ -60,7 +60,7 @@ var RequestHandler = (function () {
     }
 
     validate.toString = function () {
-      return validate.toString();
+      return _validate.toString();
     };
 
     return validate;
@@ -111,7 +111,7 @@ var RequestHandler = (function () {
     }
 
     query.toString = function () {
-      return query.toString();
+      return _query.toString();
     };
 
     return query;

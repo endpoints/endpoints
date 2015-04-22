@@ -70,7 +70,7 @@ class Application {
       }
       if (filters.length) {
         definition += definition === resource.url ? '?' : '&';
-        definition += `{${filters.join(',')}}`;
+        definition += `filter[{${filters.join(',')}}]`;
       }
       result[resource.name] = definition;
       return result;
