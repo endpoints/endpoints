@@ -1,6 +1,8 @@
-const expect = require('chai').expect;
+import {expect} from 'chai';
 
-const create = require('../../lib/create').bind(null, function (data) {
+import creator from '../../lib/create';
+
+const create = creator.bind(null, function (data) {
   return data;
 });
 

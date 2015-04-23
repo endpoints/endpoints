@@ -1,3 +1,3 @@
-module.exports = function (input) {
+export default function (input) {
   return `/${input || ''}/`.replace(/\/\/+/g, '/');
-};
+}

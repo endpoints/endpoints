@@ -1,4 +1,4 @@
-const _ = require('lodash');
+import _ from 'lodash';
 
 // TODO: investigate how to deal with express's query parser
 // converting + into a space.
@@ -6,7 +6,7 @@ function isAscending (key) {
   return key[0] === '+' || key[0] === ' ';
 }
 
-module.exports = function (validFields, query, sortBy) {
+export default function (validFields, query, sortBy) {
   return _.chain(sortBy).filter(function (key) {
     var hasSortDir = key[0] === ' ' || key[0] === '+' || key[0] === '-';
     var isValidField = _.contains(validFields, key.substring(1));
@@ -16,4 +16,4 @@ module.exports = function (validFields, query, sortBy) {
     var dir =  isAscending(key) ? 'ASC' : 'DESC';
     return column ? result.orderBy(column, dir) : result;
   }, query).value();
-};
+}

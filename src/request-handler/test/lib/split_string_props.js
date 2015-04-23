@@ -1,6 +1,6 @@
-const expect = require('chai').expect;
+import {expect} from 'chai';
 
-const splitStringProps = require('../../lib/split_string_props');
+import splitStringProps from '../../lib/split_string_props';
 
 describe('splitStringProps', function() {
   it('should turn comma-separated object props into an array of strings', function() {

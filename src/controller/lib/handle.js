@@ -1,9 +1,9 @@
-const RequestHandler = require('../../request-handler');
-const ResponseFormatter = require('../../response-formatter');
-const jsonApi = require('../../formatter-jsonapi');
-const send = require('./send');
+import RequestHandler from '../../request-handler';
+import ResponseFormatter from '../../response-formatter';
+import jsonApi from '../../formatter-jsonapi';
+import * as send from './send';
 
-module.exports = function (config, adapter) {
+export default function (config, adapter) {
   var method = config.method;
   var responder = config.responder;
   var handler = new RequestHandler(adapter, config);
@@ -26,4 +26,4 @@ module.exports = function (config, adapter) {
       });
     }
   };
-};
+}

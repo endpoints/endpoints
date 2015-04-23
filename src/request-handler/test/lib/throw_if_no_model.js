@@ -1,6 +1,6 @@
-const expect = require('chai').expect;
+import {expect} from 'chai';
 
-const throwIfNoModel = require('../../lib/throw_if_no_model');
+import throwIfNoModel from '../../lib/throw_if_no_model';
 
 describe('throwIfNoModel', function() {
   it('should throw if not passed an argument', function() {

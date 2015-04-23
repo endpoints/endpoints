@@ -1,4 +1,4 @@
-module.exports = function (opts={}) {
+export default function (opts={}) {
   if (!opts.routeBuilder) {
     throw new Error('No route builder specified.');
   }
@@ -8,4 +8,4 @@ module.exports = function (opts={}) {
     opts.searchPaths = [opts.searchPaths];
   }
   return opts;
-};
+}

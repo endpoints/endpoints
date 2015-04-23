@@ -36,9 +36,9 @@ describe('RequestHandler', function () {
   });
 
 });
-/**const expect = require('chai').expect;
+/**import {expect} from 'chai';
 
-const getParams = require('../../lib/get_params');
+import getParams from '../../lib/get_params';
 
 describe('getParams', function () {
 

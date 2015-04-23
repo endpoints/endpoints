@@ -1,14 +1,14 @@
-const _ = require('lodash');
+import _ from 'lodash';
 
-const bPromise = require('bluebird');
-const Kapow = require('kapow');
+import bPromise from 'bluebird';
+import Kapow from 'kapow';
 
 // this is required because bookshelf doesn't support transactions.
 // as a result, we have to preflight check every single relation
 // id to ensure it actually exists before we try to insert anything.
 // this is mad inefficient, but that's okay, a future version of
 // bookshelf will resolve this madness.
-module.exports = bPromise.method(function (model, relationName, id) {
+export default bPromise.method(function (model, relationName, id) {
   var toMany = _.isArray(id);
   var relation = model.related(relationName);
   if (!relation) {

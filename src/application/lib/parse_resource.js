@@ -1,9 +1,9 @@
-const path = require('path');
+import path from 'path';
 
-const requireSearch = require('./require_search');
-const requireSilent = require('./require_silent');
+import requireSearch from './require_search';
+import requireSilent from './require_silent';
 
-module.exports = function (name, searchPaths) {
+export default function (name, searchPaths) {
   var routeModulePath, moduleBasePath;
   if (typeof name === 'string') {
     routeModulePath = requireSearch(path.join(name, 'routes'), searchPaths);
@@ -24,4 +24,4 @@ module.exports = function (name, searchPaths) {
     throw new Error('Unable to parse a module without a routes object.');
   }
   return name;
-};
+}

@@ -1,6 +1,6 @@
-const _ = require('lodash');
+import _ from 'lodash';
 
-const formatModel = require('./lib/format_model');
+import formatModel from './lib/format_model';
 
 /**
   The role of this module is to take a single model or collection of models
@@ -21,7 +21,7 @@ const formatModel = require('./lib/format_model');
   @returns {Object|Array} json-api compliant formatted response
 
 */
-module.exports = function (input, opts={}) {
+export default function (input, opts={}) {
   var included = [];
   var topLevelLinks;
 
@@ -87,4 +87,4 @@ module.exports = function (input, opts={}) {
    "bam, done."
   */
   return output;
-};
+}

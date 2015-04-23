@@ -1,4 +1,4 @@
-module.exports = function (formatter, config, data) {
+export default function (formatter, config, data) {
   if (data && !config.relationOnly) {
     return {
       code: '200',
@@ -9,4 +9,4 @@ module.exports = function (formatter, config, data) {
     code: '204',
     data: null
   };
-};
+}

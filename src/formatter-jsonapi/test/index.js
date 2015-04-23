@@ -1,10 +1,10 @@
-const expect = require('chai').expect;
+import {expect} from 'chai';
 
-const BookshelfAdapter = require('../../adapter-bookshelf');
-const BooksModel = require('../../../test/app/src/modules/books/model');
-const Fixture = require('../../../test/app/fixture');
+import BookshelfAdapter from '../../adapter-bookshelf';
+import BooksModel from '../../../test/app/src/modules/books/model';
+import Fixture from '../../../test/app/fixture';
 
-const formatter = require('../');
+import formatter from '../';
 
 const Books = new BookshelfAdapter({
   model: BooksModel

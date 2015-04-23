@@ -1,7 +1,7 @@
-const Kapow = require('kapow');
+import Kapow from 'kapow';
 const EXPECTED_TYPE = 'application/vnd.api+json';
 
-module.exports = function(request) {
+export default function(request) {
   var err;
 
   var contentType = request.headers['content-type'];
@@ -16,4 +16,4 @@ module.exports = function(request) {
   }
 
   return err;
-};
+}

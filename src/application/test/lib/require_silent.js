@@ -1,6 +1,6 @@
-const path = require('path');
-const expect = require('chai').expect;
-const requireSilent = require('../../lib/require_silent');
+import path from 'path';
+import {expect} from 'chai';
+import requireSilent from '../../lib/require_silent';
 
 describe('requireSilent', () => {
 

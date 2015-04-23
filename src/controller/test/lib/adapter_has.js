@@ -1,6 +1,6 @@
-const expect = require('chai').expect;
+import {expect} from 'chai';
 
-const adapterHas = require('../../lib/adapter_has');
+import adapterHas from '../../lib/adapter_has';
 
 describe('adapterHas', () => {
   it('should return undefined if there "request" argument', () => {

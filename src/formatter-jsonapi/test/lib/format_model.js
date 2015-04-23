@@ -1,13 +1,13 @@
-/**const expect = require('chai').expect;
+/**import {expect} from 'chai';
 
-const BookshelfAdapter = require('../../../adapter-bookshelf');
-const BooksModel = require('../../../../test/fixtures/models/books');
+import BookshelfAdapter from '../../../adapter-bookshelf';
+import BooksModel from '../../../../test/fixtures/models/books';
+import DB from '../../../../test/fixtures/classes/database';
+import formatModel from '../../lib/format_model';
+
 const Books = new BookshelfAdapter({
   model: BooksModel
 });
-const DB = require('../../../../test/fixtures/classes/database');
-
-const formatModel = require('../../lib/format_model');
 
 describe('formatModel', function () {
 

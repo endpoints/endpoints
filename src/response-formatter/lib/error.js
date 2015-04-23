@@ -1,7 +1,7 @@
-const _ = require('lodash');
-const Kapow = require('kapow');
+import _ from 'lodash';
+import Kapow from 'kapow';
 
-module.exports = function (errs, defaultErr) {
+export default function (errs, defaultErr) {
   var resp;
 
   defaultErr = defaultErr || 400;
@@ -39,4 +39,4 @@ module.exports = function (errs, defaultErr) {
   }, '');
 
   return resp;
-};
+}

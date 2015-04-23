@@ -1,4 +1,4 @@
-const bluebird = require('bluebird');
+import bluebird from 'bluebird';
 
 function Adapter(opts) {
   this.model = opts.model;
@@ -24,4 +24,4 @@ Adapter.prototype.relations = function () {
   return ['relation'];
 };
 
-module.exports = Adapter;
+export default Adapter;

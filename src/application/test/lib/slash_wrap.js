@@ -1,6 +1,6 @@
-const expect = require('chai').expect;
+import {expect} from 'chai';
 
-const slashWrap = require('../../lib/slash_wrap');
+import slashWrap from '../../lib/slash_wrap';
 
 describe('slashWrap', () => {
 

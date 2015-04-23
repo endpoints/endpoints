@@ -1,9 +1,9 @@
-const expect = require('chai').expect;
+import {expect} from 'chai';
 
-const Controller = require('../');
+import Controller from '../';
 
-const adapter = require('./mocks/adapter');
-const model = require('./mocks/model');
+import adapter from './mocks/adapter';
+import model from './mocks/model';
 
 const controller = new Controller({
   adapter: adapter,

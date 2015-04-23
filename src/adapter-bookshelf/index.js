@@ -1,17 +1,17 @@
-const _ = require('lodash');
+import _ from 'lodash';
 
-const bPromise = require('bluebird');
-const baseMethods = require('./lib/base_methods');
-const processFilter = require('./lib/process_filter');
-const processSort = require('./lib/process_sort');
-const destructureRequest = require('./lib/destructure_request_data');
-const Kapow = require('kapow');
+import bPromise from 'bluebird';
+import {create, update} from './lib/base_methods';
+import processFilter from './lib/process_filter';
+import processSort from './lib/process_sort';
+import destructureRequest from './lib/destructure_request_data';
+import Kapow from 'kapow';
 
 // FIXME: decide if this responsibility lives in the adapter or
 // in the formatter. i think adapter? this would mean a wholesale
 // refactoring of the jsonapi formatter to work with adapters
 // rather than bookshelf models. that might make a lot of sense.
-const relate = require('../formatter-jsonapi/lib/relate');
+import relate from '../formatter-jsonapi/lib/relate';
 
 /**
   An adapter that allows endpoints to interact with a Bookshelf model.
@@ -34,10 +34,10 @@ class BookshelfAdapter {
     // like this should exist in bookshelf or another higher order library
     // natively.
     if (!model.create) {
-      baseMethods.addCreate(this);
+      model.create = create;
     }
     if (!model.prototype.update) {
-      baseMethods.addUpdate(this);
+      model.prototype.update = update;
     }
   }
 
@@ -312,4 +312,4 @@ class BookshelfAdapter {
 
 }
 
-module.exports = BookshelfAdapter;
+export default BookshelfAdapter;

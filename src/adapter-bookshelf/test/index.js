@@ -1,13 +1,14 @@
-const chai = require('chai');
-const expect = require('chai').expect;
-chai.use(require('chai-as-promised'));
+import chai from 'chai';
+import {expect} from 'chai';
+import chaiAsPromised from 'chai-as-promised';
 
-const fantasyDatabase = require('fantasy-database');
+chai.use(chaiAsPromised);
 
-const BookshelfAdapter = require('../');
-const BooksModel = require('../../../test/app/src/modules/books/model');
+import fantasyDatabase from 'fantasy-database';
 
-const Fixture = require('../../../test/app/fixture');
+import BookshelfAdapter from '../';
+import BooksModel from '../../../test/app/src/modules/books/model';
+import Fixture from '../../../test/app/fixture';
 
 const Books = new BookshelfAdapter({
   model: BooksModel

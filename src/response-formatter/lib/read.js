@@ -1,7 +1,8 @@
-const Kapow = require('kapow');
-const error = require('./error');
+import Kapow from 'kapow';
 
-module.exports = function (formatter, config, data) {
+import error from './error';
+
+export default function (formatter, config, data) {
   if ((!data || data.length === 0 && data.singleResult) && data.mode !== 'related') {
     return error(Kapow(404, 'Resource not found.'));
   }
@@ -17,4 +18,4 @@ module.exports = function (formatter, config, data) {
       baseRelation: data.baseRelation
     })
   };
-};
+}

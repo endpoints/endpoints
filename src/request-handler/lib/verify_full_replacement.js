@@ -1,7 +1,7 @@
-const _ = require('lodash');
-const Kapow = require('kapow');
+import _ from 'lodash';
+import Kapow from 'kapow';
 
-module.exports = function(request, endpoint) {
+export default function(request, endpoint) {
   var err;
   var data = request.body.data;
   var mode = endpoint.mode(request);
@@ -28,4 +28,4 @@ module.exports = function(request, endpoint) {
   }
 
   return err ? Kapow(403, 'Full replacement of to-Many relations is not allowed.') : null;
-};
+}

@@ -1,7 +1,7 @@
-const _ = require('lodash');
-const Kapow = require('kapow');
+import _ from 'lodash';
+import Kapow from 'kapow';
 
-module.exports = function(request, endpoint) {
+export default function(request, endpoint) {
   var err, isValidType, id;
   var data = request.body.data;
 
@@ -47,4 +47,4 @@ module.exports = function(request, endpoint) {
   }
 
   */
-};
+}

@@ -1,13 +1,13 @@
-const sinon = require('sinon');
-const expect = require('chai').expect;
-const _ = require('lodash');
-const fantasyDatabase = require('fantasy-database');
+import sinon from 'sinon';
+import {expect} from 'chai';
+import _ from 'lodash';
+import fantasyDatabase from 'fantasy-database';
 
-const link = require('../../lib/link');
+import link from '../../lib/link';
 
-const Fixture = require('../../../../test/app/fixture');
-const Books = require('../../../../test/app/src/modules/books/model');
-const Authors = require('../../../../test/app/src/modules/authors/model');
+import Fixture from '../../../../test/app/fixture';
+import Books from '../../../../test/app/src/modules/books/model';
+import Authors from '../../../../test/app/src/modules/authors/model';
 
 describe('link', function () {
 

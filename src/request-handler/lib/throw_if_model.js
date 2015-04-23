@@ -1,8 +1,8 @@
-const Kapow = require('kapow');
+import Kapow from 'kapow';
 
-module.exports = function(model) {
+export default function(model) {
   if (model) {
     throw Kapow(409, 'Model with this ID already exists');
   }
   return model;
-};
+}

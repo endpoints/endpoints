@@ -1,9 +1,9 @@
-const expect = require('chai').expect;
+import {expect} from 'chai';
 
-const toOneRelations = require('../../lib/to_one_relations');
+import toOneRelations from '../../lib/to_one_relations';
 
-const Fixture = require('../../../../test/app/fixture');
-const Books = require('../../../../test/app/src/modules/books/model');
+import Fixture from '../../../../test/app/fixture';
+import Books from '../../../../test/app/src/modules/books/model';
 
 describe('toOneRelations', () => {
 

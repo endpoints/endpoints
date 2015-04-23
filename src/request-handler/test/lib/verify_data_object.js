@@ -1,6 +1,6 @@
-const expect = require('chai').expect;
+import {expect} from 'chai';
 
-const verifyDataObject = require('../../lib/verify_data_object');
+import verifyDataObject from '../../lib/verify_data_object';
 
 describe('verifyDataObject', function() {
 

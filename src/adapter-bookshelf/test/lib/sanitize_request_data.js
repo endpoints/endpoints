@@ -1,6 +1,6 @@
-const expect = require('chai').expect;
+import {expect} from 'chai';
 
-const sanitizeRequestData = require('../../lib/sanitize_request_data');
+import sanitizeRequestData from '../../lib/sanitize_request_data';
 
 describe('sanitizeRequestData', () => {
 

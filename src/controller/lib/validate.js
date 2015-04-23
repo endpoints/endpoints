@@ -1,8 +1,8 @@
-const _ = require('lodash');
+import _ from 'lodash';
 
-const adapterHas = require('./adapter_has');
+import adapterHas from './adapter_has';
 
-module.exports = function (method, config, adapter) {
+export default function (method, config, adapter) {
   return _.compose(_.flatten, _.compact)([
     adapterHas(adapter.relations(), config.include, 'relations'),
     adapterHas(adapter.filters(), Object.keys(config.filter), 'filters'),
@@ -14,4 +14,4 @@ module.exports = function (method, config, adapter) {
         'method'
       )
   ]);
-};
+}

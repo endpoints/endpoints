@@ -1,7 +1,7 @@
-/**const expect = require('chai').expect;
-const sinon = require('sinon');
+/**import {expect} from 'chai';
+import sinon from 'sinon';
 
-const send = require('../../lib/send');
+import send from '../../lib/send';
 
 describe('send', function () {
 

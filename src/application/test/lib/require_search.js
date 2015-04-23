@@ -1,7 +1,7 @@
-const path = require('path');
-const expect = require('chai').expect;
+import path from 'path';
+import {expect} from 'chai';
 
-const requireSearch = require('../../lib/require_search');
+import requireSearch from '../../lib/require_search';
 
 describe('requireSearch', () => {
   var searchPaths = [path.join(__dirname, '..', 'fixtures'), path.resolve()];

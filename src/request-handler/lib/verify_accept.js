@@ -1,7 +1,7 @@
-const Kapow = require('kapow');
+import Kapow from 'kapow';
 const EXPECTED_ACCEPT = 'application/vnd.api+json';
 
-module.exports = function(request) {
+export default function(request) {
   var err;
 
   var headers = request.headers;
@@ -18,4 +18,4 @@ module.exports = function(request) {
   }
 
   return err;
-};
+}

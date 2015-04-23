@@ -1,9 +1,9 @@
-const expect = require('chai').expect;
+import {expect} from 'chai';
 
-const DB = require('../../../../test/fixtures/classes/database');
-const BooksModel = require('../../../../test/fixtures/models/books');
+import DB from '../../../../test/fixtures/classes/database';
+import BooksModel from '../../../../test/fixtures/models/books';
 
-const validateRelation = require('../../lib/validate_relation');
+import validateRelation from '../../lib/validate_relation';
 
 describe('validateRelation', () => {
   var model;

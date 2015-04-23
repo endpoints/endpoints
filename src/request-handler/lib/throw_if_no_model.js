@@ -1,6 +1,6 @@
-const Kapow = require('kapow');
+import Kapow from 'kapow';
 
-module.exports = function(model) {
+export default function(model) {
   if (!model) {
     throw Kapow(404, 'Unable to locate model.');
   }
@@ -20,4 +20,4 @@ module.exports = function(model) {
   }
 
   return model;
-};
+}

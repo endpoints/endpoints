@@ -1,9 +1,9 @@
-const path = require('path');
+import path from 'path';
 
-const sinon = require('sinon');
-const expect = require('chai').expect;
+import sinon from 'sinon';
+import {expect} from 'chai';
 
-const Application = require('../');
+import Application from '../';
 
 var TestApp;
 

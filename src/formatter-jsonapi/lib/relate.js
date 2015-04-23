@@ -21,7 +21,7 @@ function getRelated (relationName, input) {
 // Take a Bookshelf model or collection + dot-notated relation
 // string and iterate through it, returning the model(s) in the
 // last relation only.
-module.exports = function (model, relation) {
+export default function (model, relation) {
   // Bookshelf relations can be requested arbitarily deep as
   // dot notated strings. Here, we traverse the relation until
   // we reach the final node. The models in this node are then
@@ -30,4 +30,4 @@ module.exports = function (model, relation) {
   return relationSegments.reduce(function (source, segment) {
     return getRelated(segment, source);
   }, model);
-};
+}
