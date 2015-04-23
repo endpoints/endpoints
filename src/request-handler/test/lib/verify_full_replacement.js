@@ -1,6 +1,6 @@
-const expect = require('chai').expect;
+import {expect} from 'chai';
 
-const verifyFullReplacement = require('../../lib/verify_full_replacement');
+import verifyFullReplacement from '../../lib/verify_full_replacement';
 
 describe('verifyFullReplacement', function() {
 

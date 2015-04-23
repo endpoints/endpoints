@@ -1,10 +1,10 @@
-const _ = require('lodash');
-const bPromise = require('bluebird');
-const Kapow = require('kapow');
+import _ from 'lodash';
+import bPromise from 'bluebird';
+import Kapow from 'kapow';
 
-const sanitizeRequestData = require('./sanitize_request_data');
+import sanitizeRequestData from './sanitize_request_data';
 
-module.exports = function (model, params) {
+export default function (model, params) {
   if (!params) {
     return bPromise.resolve({});
   }
@@ -73,4 +73,4 @@ module.exports = function (model, params) {
     toManyRels: toManyRels
   });
 
-};
+}

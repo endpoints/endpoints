@@ -1,6 +1,6 @@
-const expect = require('chai').expect;
+import {expect} from 'chai';
 
-const ResponseFormatter = require('../');
+import ResponseFormatter from '../';
 
 const Formatter = new ResponseFormatter(function (data) {
   return 'yup';

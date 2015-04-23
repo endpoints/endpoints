@@ -1,4 +1,4 @@
-module.exports = function (formatter, config, data) {
+export default function (formatter, config, data) {
   return {
     code: '201',
     data: formatter(data, {
@@ -8,4 +8,4 @@ module.exports = function (formatter, config, data) {
       location: '/' + config.typeName + '/' + data.id
     }
   };
-};
+}

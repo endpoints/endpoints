@@ -1,6 +1,8 @@
-const expect = require('chai').expect;
+import {expect} from 'chai';
 
-const destroy = require('../../lib/destroy').bind(null, function (data) {
+import destroyer from '../../lib/destroy';
+
+const destroy = destroyer.bind(null, function (data) {
   return data;
 });
 

@@ -1,8 +1,8 @@
-const path = require('path');
+import path from 'path';
 
-const requireSilent = require('./require_silent');
+import requireSilent from './require_silent';
 
-module.exports = function (file, searchPaths) {
+export default function (file, searchPaths) {
   if (!searchPaths) {
     throw new Error('No searchPaths specified.');
   }
@@ -34,4 +34,4 @@ module.exports = function (file, searchPaths) {
     );
   }
   return result;
-};
+}

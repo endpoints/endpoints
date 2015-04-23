@@ -1,6 +1,6 @@
-const expect = require('chai').expect;
+import {expect} from 'chai';
 
-const verifyClientGeneratedId = require('../../lib/verify_client_generated_id');
+import verifyClientGeneratedId from '../../lib/verify_client_generated_id';
 
 describe('verifyClientGeneratedId', function() {
 

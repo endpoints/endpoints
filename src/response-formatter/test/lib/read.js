@@ -1,6 +1,8 @@
-const expect = require('chai').expect;
+import {expect} from 'chai';
 
-const read = require('../../lib/read').bind(null, function (data) {
+import reader from '../../lib/read';
+
+const read = reader.bind(null, function (data) {
   return data;
 });
 

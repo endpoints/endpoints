@@ -1,9 +1,9 @@
-const _ = require('lodash');
+import _ from 'lodash';
 
-const toOneRelations = require('./to_one_relations');
-const link = require('./link');
+import toOneRelations from './to_one_relations';
+import link from './link';
 
-module.exports = function (opts, model) {
+export default function (opts, model) {
   var topLevelLinks;
   var exporter = opts && opts.exporter;
   var mode = opts && opts.mode;
@@ -39,4 +39,4 @@ module.exports = function (opts, model) {
     });
   }
   return serialized;
-};
+}

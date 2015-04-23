@@ -1,8 +1,8 @@
-const expect = require('chai').expect;
-const _ = require('lodash');
+import {expect} from 'chai';
+import _ from 'lodash';
 
-const Agent = require('../../../../../app/agent');
-const Fixture = require('../../../../../app/fixture');
+import Agent from '../../../../../app/agent';
+import Fixture from '../../../../../app/fixture';
 
 describe('deletingResources', function() {
 

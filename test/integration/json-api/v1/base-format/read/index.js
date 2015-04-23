@@ -1,8 +1,8 @@
-const _ = require('lodash');
-const expect = require('chai').expect;
+import _ from 'lodash';
+import {expect} from 'chai';
 
-const Agent = require('../../../../../app/agent');
-const Fixture = require('../../../../../app/fixture');
+import Agent from '../../../../../app/agent';
+import Fixture from '../../../../../app/fixture';
 
 describe('read', function() {
 

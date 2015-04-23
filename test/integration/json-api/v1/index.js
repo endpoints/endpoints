@@ -1,7 +1,7 @@
-const expect = require('chai').expect;
+import {expect} from 'chai';
 
-const Agent = require('../../../app/agent');
-const Fixture = require('../../../app/fixture');
+import Agent from '../../../app/agent';
+import Fixture from '../../../app/fixture';
 
 beforeEach(function() {
   return Fixture.reset();

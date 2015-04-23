@@ -1,6 +1,8 @@
-const expect = require('chai').expect;
+import {expect} from 'chai';
 
-const update = require('../../lib/update').bind(null, function (data) {
+import updater from '../../lib/update';
+
+const update = updater.bind(null, function (data) {
   return data;
 });
 

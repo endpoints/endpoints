@@ -1,8 +1,8 @@
-const _ = require('lodash');
+import _ from 'lodash';
 
-const parseOptions = require('./lib/parse_options');
-const parseResource = require('./lib/parse_resource');
-const slashWrap = require('./lib/slash_wrap');
+import parseOptions from './lib/parse_options';
+import parseResource from './lib/parse_resource';
+import slashWrap from './lib/slash_wrap';
 
 class Application {
 
@@ -79,4 +79,4 @@ class Application {
 
 }
 
-module.exports = Application;
+export default Application;

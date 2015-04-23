@@ -3,17 +3,17 @@ const SINGLE_MODE = 'single';
 const RELATION_MODE = 'relation';
 const RELATED_MODE = 'related';
 
-const _ = require('lodash');
-const Kapow = require('kapow');
+import _ from 'lodash';
+import Kapow from 'kapow';
 
-const throwIfModel = require('./lib/throw_if_model');
-const throwIfNoModel = require('./lib/throw_if_no_model');
-const verifyAccept = require('./lib/verify_accept');
-const verifyContentType = require('./lib/verify_content_type');
-const verifyDataObject = require('./lib/verify_data_object');
-const splitStringProps = require('./lib/split_string_props');
-const verifyClientGeneratedId = require('./lib/verify_client_generated_id');
-const verifyFullReplacement = require('./lib/verify_full_replacement');
+import throwIfModel from './lib/throw_if_model';
+import throwIfNoModel from './lib/throw_if_no_model';
+import verifyAccept from './lib/verify_accept';
+import verifyContentType from './lib/verify_content_type';
+import verifyDataObject from './lib/verify_data_object';
+import splitStringProps from './lib/split_string_props';
+import verifyClientGeneratedId from './lib/verify_client_generated_id';
+import verifyFullReplacement from './lib/verify_full_replacement';
 
 /**
   Provides methods for pulling out json-api relevant data from
@@ -265,4 +265,4 @@ class RequestHandler {
 
 }
 
-module.exports = RequestHandler;
+export default RequestHandler;

@@ -1,6 +1,6 @@
-const expect = require('chai').expect;
+import {expect} from 'chai';
 
-const parseOptions = require('../../lib/parse_options');
+import parseOptions from '../../lib/parse_options';
 
 describe('parseOptions', () => {
 

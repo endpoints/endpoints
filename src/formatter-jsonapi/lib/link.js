@@ -1,8 +1,8 @@
-const _ = require('lodash');
+import _ from 'lodash';
 
-const relate = require('./relate');
+import relate from './relate';
 
-module.exports = function (model, opts={}) {
+export default function (model, opts={}) {
   var links = {};
   var primaryType = model.constructor.typeName;
   var linkWithoutIncludes = opts.linkWithoutInclude || [];
@@ -96,4 +96,4 @@ module.exports = function (model, opts={}) {
   }
 
   return links;
-};
+}

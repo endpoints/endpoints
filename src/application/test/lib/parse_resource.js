@@ -1,7 +1,7 @@
-const path = require('path');
-const expect = require('chai').expect;
+import path from 'path';
+import {expect} from 'chai';
 
-const parseResource = require('../../lib/parse_resource');
+import parseResource from '../../lib/parse_resource';
 
 describe('parseResource', () => {
 

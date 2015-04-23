@@ -1,10 +1,10 @@
-const _ = require('lodash');
+import _ from 'lodash';
 
 const idFilter = function (qb, value) {
   return qb.whereIn('id', value);
 };
 
-module.exports = function (model, query, filterBy) {
+export default function (model, query, filterBy) {
   var filters = model.filters;
   return _.transform(filterBy, function (result, value, key) {
     var filter = filters[key];
@@ -13,4 +13,4 @@ module.exports = function (model, query, filterBy) {
     }
     return filter ? filter.call(filters, result, value) : result;
   }, query);
-};
+}

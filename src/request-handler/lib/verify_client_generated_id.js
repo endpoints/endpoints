@@ -1,7 +1,7 @@
-const _ = require('lodash');
-const Kapow = require('kapow');
+import _ from 'lodash';
+import Kapow from 'kapow';
 
-module.exports = function(request) {
+export default function(request) {
   var err;
   var data = request.body.data;
 
@@ -12,4 +12,4 @@ module.exports = function(request) {
   }
 
   return err  ? Kapow(403, 'Client generated IDs are not enabled.') : null;
-};
+}

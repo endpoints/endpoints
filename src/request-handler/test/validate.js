@@ -1,7 +1,7 @@
-const expect = require('chai').expect;
-const sinon = require('sinon');
+import {expect} from 'chai';
+import sinon from 'sinon';
 
-const RequestHandler = require('..');
+import RequestHandler from '../';
 
 var req = {
   headers: {

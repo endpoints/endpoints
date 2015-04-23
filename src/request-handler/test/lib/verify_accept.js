@@ -1,6 +1,6 @@
-const expect = require('chai').expect;
+import {expect} from 'chai';
 
-const verifyAccept = require('../../lib/verify_accept');
+import verifyAccept from '../../lib/verify_accept';
 
 describe('verifyAccept', function() {
 

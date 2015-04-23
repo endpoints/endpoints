@@ -1,4 +1,4 @@
-module.exports = function (model, relations) {
+export default function (model, relations) {
   if (!Array.isArray(relations)) {
     return {};
   }
@@ -25,4 +25,4 @@ module.exports = function (model, relations) {
     }
     return result;
   }, {});
-};
+}

@@ -1,7 +1,7 @@
-const Kapow = require('kapow');
-const expect = require('chai').expect;
+import Kapow from 'kapow';
+import {expect} from 'chai';
 
-const error = require('../../lib/error');
+import error from '../../lib/error';
 
 describe('error', function () {
 

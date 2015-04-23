@@ -1,6 +1,6 @@
-const expect = require('chai').expect;
+import {expect} from 'chai';
 
-const verifyContentType = require('../../lib/verify_content_type');
+import verifyContentType from '../../lib/verify_content_type';
 
 describe('verifyContentType', function() {
 

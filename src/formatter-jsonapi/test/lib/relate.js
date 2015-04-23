@@ -1,12 +1,12 @@
-/**const expect = require('chai').expect;
-const database = require('fantasy-database');
+/**import {expect} from 'chai';
+import database from 'fantasy-database';
 
-const relate = require('../../lib/relate');
+import relate from '../../lib/relate';
 
-const DB = require('../../../../test/fixtures/classes/database');
-const Stores = require('../../../../test/fixtures/models/stores');
-const Authors = require('../../../../test/fixtures/models/stores');
-const Books = require('../../../../test/fixtures/models/books');
+import DB from '../../../../test/fixtures/classes/database';
+import Stores from '../../../../test/fixtures/models/stores';
+import Authors from '../../../../test/fixtures/models/stores';
+import Books from '../../../../test/fixtures/models/books';
 
 function removePivot (input) {
   var serialized = input.toJSON({shallow:true});

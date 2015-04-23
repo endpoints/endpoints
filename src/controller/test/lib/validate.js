@@ -1,12 +1,11 @@
-const expect = require('chai').expect;
+import {expect} from 'chai';
 
-const Adapter = require('../mocks/adapter');
+import Adapter from '../mocks/adapter';
+import validate from '../../lib/validate';
 
 const adapter = new Adapter({
   model: require('../mocks/model')
 });
-
-const validate = require('../../lib/validate');
 
 describe('validate', () => {
   var config;

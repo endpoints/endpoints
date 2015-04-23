@@ -1,6 +1,6 @@
-const _ = require('lodash');
-const validate = require('./lib/validate');
-const handle = require('./lib/handle');
+import _ from 'lodash';
+import validate from './lib/validate';
+import handle from './lib/handle';
 
 /**
   Provides methods for generating request handling functions that can
@@ -97,4 +97,4 @@ Controller.prototype.update = Controller.method('update');
 */
 Controller.prototype.destroy = Controller.method('destroy');
 
-module.exports = Controller;
+export default Controller;

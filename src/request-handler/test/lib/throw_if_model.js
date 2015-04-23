@@ -1,6 +1,6 @@
-const expect = require('chai').expect;
+import {expect} from 'chai';
 
-const throwIfModel = require('../../lib/throw_if_model');
+import throwIfModel from '../../lib/throw_if_model';
 
 describe('throwIfModel', function() {
   it('should throw if passed an argument', function() {
