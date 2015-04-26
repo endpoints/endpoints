@@ -159,6 +159,15 @@ describe('BookshelfAdapter', () => {
       });
     });
 
+    it('should return the filtered includes as "relations"', () => {
+      return Books.read({
+        filter: { id: 1 },
+        include: ['author', 'notarelation']
+      }).then(function (books) {
+        expect(books.relations).to.deep.equal(['author']);
+      });
+    });
+
   });
 
   describe('#update', () => {

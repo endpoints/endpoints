@@ -170,6 +170,15 @@ describe('BookshelfAdapter', function () {
         })).to.deep.equal(_fantasyDatabase2['default'].authors[0]);
       });
     });
+
+    it('should return the filtered includes as "relations"', function () {
+      return Books.read({
+        filter: { id: 1 },
+        include: ['author', 'notarelation']
+      }).then(function (books) {
+        _chai.expect(books.relations).to.deep.equal(['author']);
+      });
+    });
   });
 
   describe('#update', function () {

@@ -293,6 +293,7 @@ var BookshelfAdapter = (function () {
           fields.push('id');
         }
       }
+      var includes = _import2['default'].intersection(self.relations(), opts.include || []);
 
       return model.collection().query(function (qb) {
         qb = _processFilter2['default'](model, qb, opts.filter);
@@ -301,12 +302,12 @@ var BookshelfAdapter = (function () {
         // adding this in the queryBuilder changes the qb, but fetch still
         // returns all columns
         columns: fields,
-        withRelated: _import2['default'].intersection(self.relations(), opts.include || [])
+        withRelated: includes
       }).then(function (result) {
         // This is a lot of gross in order to pass this data into the
         // formatter later. Need to formalize this in some other way.
         result.mode = mode;
-        result.relations = opts.include;
+        result.relations = includes;
         result.singleResult = singleResult;
         result.baseType = opts.baseType;
         result.baseId = opts.baseId;
