@@ -10,14 +10,12 @@ site_port: 8080
 site_log_file: /var/log/site
 
 users:
-  - name: tkellen
-    real_name: Tyler Kellen
+  - name: ag_dubs
+    real_name: Ashley Williams
     state: present
-    shadow_pass: $1$SLUJWFxu$Zrq6t39fbas7duavaPLKb.
+    shadow_pass: $1$poopsalo$leTBLi1qiudh69.gIeaF/0
     groups: sudo
     shell: /bin/bash
-
-keys:
-  - user: tkellen
-    state: present
-    key: ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDASWvJsFUg1ONxaV64PSaZg9dM5xhml+oeSfetRHMeO+JtzLodFgLu+wc5UED29xYf0I7/jDPaQQFu8gEs7x6A91unjR2mZzpx4du+NrNpwj+TGTNEdf6VmbneKu/RqCxTLXvkga4DJ4uXpUfL97u6sEMZDKr1uDYjH1CXR9yhGmRnsVw0UDIbOUD9rw5ociqMSwlW362XDNJh+yRSeG80cyAYDU0YXopMc8jIzoJ8j6qVdawvnBoVUswGvjRHQbTaKNqp+tyhGKFQGdPzoSubtJ8pt6g7tldkLuxphqQ5/m5q/rb74BU48laGvl5ssigEfY2tuqN9jG35zIVJxo3J tyler@sleekcode.net
+    keys:
+      - state: present
+        key: ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDn6RKYQrau3fOgzcIumuQcxvpfs6xrueXv+r5Es/yowPpub9UcLaeJWHSgapv70+jdj3Z4molXvyeDifu6G5hE/89bJTkIJ8eFYGryRpJmwT7hnnJHSgZWJu62zcLbVGhGoNwTP1d4ah8rBgvd5rt4MZobLZa2MiTteLU9krDVUJuPMjLFN9kyjwWRPFt9F+HY3JltOJbg2kyJZBpijy9idxDs++AJ37IJiXlbykn7gylR9JWoTaagGXkPZPtGQ4r9gF9mAUsSqU1JTaLG3HpXVrxgCQEWbAbRDs7z7GJ1mqN0h6/XVwyQpBvgBVk8VJRlZ+Wll9a80+Q/NH5qau8v ashley@bocoup.com

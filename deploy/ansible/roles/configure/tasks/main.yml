@@ -27,15 +27,19 @@
 - name: disallow challenge response authentication
   lineinfile: dest=/etc/ssh/sshd_config regexp="/^ChallengeResponseAuthentication/" line="ChallengeResponseAuthentication no"
 
-- name: add all users
-  user: name={{item.name}} state={{item.state}} groups={{item.groups}} password={{item.shadow_pass}} shell={{item.shell | default("/bin/bash") }} force=yes
-  with_items: users
-  when: env != 'development'
-
-- name: add all users keys
-  authorized_key: user={{item.user}} key="{{item.key}}" state={{item.state}}
-  with_items: keys
-  when: env != 'development'
-
 - name: log file exists
   file: path={{site_log_file}} state=touch owner={{site_user}} group={{site_group}}
+
+- name: sync all users
+  user: name={{item.name}} state={{item.state}} groups={{item.groups}} password={{item.shadow_pass}} shell={{item.shell | default("/bin/bash") }} force=yes
+  with_items: users
+
+- name: sync all users keys
+  authorized_key: user={{item.0.name}} key="{{item.1.key}}" state={{item.1.state}}
+  with_subelements:
+    - users
+    - keys
+
+- name: ensure absent users' home directories are removed
+  file: path=/home/{{item.name}} state={{ (item.state == 'present') | ternary('directory', 'absent')}}
+  with_items: users
