@@ -14,7 +14,7 @@ export default function(request) {
   );
 
   if (!isValidAccept && !isBrowser) {
-    err = Kapow(406, 'Content-Type must be "' + EXPECTED_ACCEPT + '"');
+    err = Kapow(406, '"Accept" header must include "' + EXPECTED_ACCEPT + '"');
   }
 
   return err;
