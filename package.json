@@ -27,7 +27,7 @@
   "scripts": {
     "build": "babel src --remove-comments --loose=all --out-dir es5",
     "lint": "jshint src test",
-    "style": "jscs --esnext src test",
+    "style": "jscs src test",
     "test-unit": "npm run lint && npm run style && istanbul cover _mocha -- -b -R spec test/unit",
     "test-integration": "npm run lint && npm run style && mocha -b -R spec test/integration",
     "test": "npm run lint && npm run style && mocha -b -R spec",
