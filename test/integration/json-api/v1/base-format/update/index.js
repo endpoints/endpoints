@@ -196,7 +196,7 @@ describe('updatingResources', function() {
         })
         .then(function(res) {
           var payloadLinks = res.body.data.links;
-          expect(payloadLinks.series.linkage).to.equal('null');
+          expect(payloadLinks.series.linkage).to.equal(null);
         });
     });
   });
@@ -394,7 +394,7 @@ describe('updatingRelationships', function() {
         })
         .then(function(res) {
           var payloadLinks = res.body.data.links;
-          expect(payloadLinks.series.linkage).to.equal('null');
+          expect(payloadLinks.series.linkage).to.equal(null);
         });
     });
 
