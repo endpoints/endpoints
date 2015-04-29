@@ -81,7 +81,7 @@ export default function (model, opts={}) {
             id: String(related.id)
           };
         } else {
-          link.linkage = 'null';
+          link.linkage = null;
         }
         if (exporter) {
           exporter(related);
