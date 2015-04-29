@@ -1,20 +1,22 @@
 'use strict';
 
-var _interopRequireWildcard = function (obj) { return obj && obj.__esModule ? obj : { 'default': obj }; };
+var _interopRequireWildcard = function (obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (typeof obj === 'object' && obj !== null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj['default'] = obj; return newObj; } };
+
+var _interopRequireDefault = function (obj) { return obj && obj.__esModule ? obj : { 'default': obj }; };
 
 exports.__esModule = true;
 
 var _RequestHandler = require('../../request-handler');
 
-var _RequestHandler2 = _interopRequireWildcard(_RequestHandler);
+var _RequestHandler2 = _interopRequireDefault(_RequestHandler);
 
 var _ResponseFormatter = require('../../response-formatter');
 
-var _ResponseFormatter2 = _interopRequireWildcard(_ResponseFormatter);
+var _ResponseFormatter2 = _interopRequireDefault(_ResponseFormatter);
 
 var _jsonApi = require('../../formatter-jsonapi');
 
-var _jsonApi2 = _interopRequireWildcard(_jsonApi);
+var _jsonApi2 = _interopRequireDefault(_jsonApi);
 
 var _import = require('./send');
 

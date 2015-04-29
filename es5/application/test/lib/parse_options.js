@@ -1,12 +1,12 @@
 'use strict';
 
-var _interopRequireWildcard = function (obj) { return obj && obj.__esModule ? obj : { 'default': obj }; };
+var _interopRequireDefault = function (obj) { return obj && obj.__esModule ? obj : { 'default': obj }; };
 
 var _expect = require('chai');
 
 var _parseOptions = require('../../lib/parse_options');
 
-var _parseOptions2 = _interopRequireWildcard(_parseOptions);
+var _parseOptions2 = _interopRequireDefault(_parseOptions);
 
 describe('parseOptions', function () {
 

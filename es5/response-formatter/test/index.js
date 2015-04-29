@@ -1,12 +1,12 @@
 'use strict';
 
-var _interopRequireWildcard = function (obj) { return obj && obj.__esModule ? obj : { 'default': obj }; };
+var _interopRequireDefault = function (obj) { return obj && obj.__esModule ? obj : { 'default': obj }; };
 
 var _expect = require('chai');
 
 var _ResponseFormatter = require('../');
 
-var _ResponseFormatter2 = _interopRequireWildcard(_ResponseFormatter);
+var _ResponseFormatter2 = _interopRequireDefault(_ResponseFormatter);
 
 var Formatter = new _ResponseFormatter2['default'](function (data) {
   return 'yup';

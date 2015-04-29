@@ -1,12 +1,12 @@
 'use strict';
 
-var _interopRequireWildcard = function (obj) { return obj && obj.__esModule ? obj : { 'default': obj }; };
+var _interopRequireDefault = function (obj) { return obj && obj.__esModule ? obj : { 'default': obj }; };
 
 var _expect = require('chai');
 
 var _verifyDataObject = require('../../lib/verify_data_object');
 
-var _verifyDataObject2 = _interopRequireWildcard(_verifyDataObject);
+var _verifyDataObject2 = _interopRequireDefault(_verifyDataObject);
 
 describe('verifyDataObject', function () {
 

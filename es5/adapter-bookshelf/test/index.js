@@ -1,30 +1,30 @@
 'use strict';
 
-var _interopRequireWildcard = function (obj) { return obj && obj.__esModule ? obj : { 'default': obj }; };
+var _interopRequireDefault = function (obj) { return obj && obj.__esModule ? obj : { 'default': obj }; };
 
 var _chai = require('chai');
 
-var _chai2 = _interopRequireWildcard(_chai);
+var _chai2 = _interopRequireDefault(_chai);
 
 var _chaiAsPromised = require('chai-as-promised');
 
-var _chaiAsPromised2 = _interopRequireWildcard(_chaiAsPromised);
+var _chaiAsPromised2 = _interopRequireDefault(_chaiAsPromised);
 
 var _fantasyDatabase = require('fantasy-database');
 
-var _fantasyDatabase2 = _interopRequireWildcard(_fantasyDatabase);
+var _fantasyDatabase2 = _interopRequireDefault(_fantasyDatabase);
 
 var _BookshelfAdapter = require('../');
 
-var _BookshelfAdapter2 = _interopRequireWildcard(_BookshelfAdapter);
+var _BookshelfAdapter2 = _interopRequireDefault(_BookshelfAdapter);
 
 var _BooksModel = require('../../../test/app/src/modules/books/model');
 
-var _BooksModel2 = _interopRequireWildcard(_BooksModel);
+var _BooksModel2 = _interopRequireDefault(_BooksModel);
 
 var _Fixture = require('../../../test/app/fixture');
 
-var _Fixture2 = _interopRequireWildcard(_Fixture);
+var _Fixture2 = _interopRequireDefault(_Fixture);
 
 _chai2['default'].use(_chaiAsPromised2['default']);
 

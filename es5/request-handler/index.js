@@ -1,6 +1,6 @@
 'use strict';
 
-var _interopRequireWildcard = function (obj) { return obj && obj.__esModule ? obj : { 'default': obj }; };
+var _interopRequireDefault = function (obj) { return obj && obj.__esModule ? obj : { 'default': obj }; };
 
 var _classCallCheck = function (instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } };
 
@@ -8,43 +8,43 @@ exports.__esModule = true;
 
 var _import = require('lodash');
 
-var _import2 = _interopRequireWildcard(_import);
+var _import2 = _interopRequireDefault(_import);
 
 var _Kapow = require('kapow');
 
-var _Kapow2 = _interopRequireWildcard(_Kapow);
+var _Kapow2 = _interopRequireDefault(_Kapow);
 
 var _throwIfModel = require('./lib/throw_if_model');
 
-var _throwIfModel2 = _interopRequireWildcard(_throwIfModel);
+var _throwIfModel2 = _interopRequireDefault(_throwIfModel);
 
 var _throwIfNoModel = require('./lib/throw_if_no_model');
 
-var _throwIfNoModel2 = _interopRequireWildcard(_throwIfNoModel);
+var _throwIfNoModel2 = _interopRequireDefault(_throwIfNoModel);
 
 var _verifyAccept = require('./lib/verify_accept');
 
-var _verifyAccept2 = _interopRequireWildcard(_verifyAccept);
+var _verifyAccept2 = _interopRequireDefault(_verifyAccept);
 
 var _verifyContentType = require('./lib/verify_content_type');
 
-var _verifyContentType2 = _interopRequireWildcard(_verifyContentType);
+var _verifyContentType2 = _interopRequireDefault(_verifyContentType);
 
 var _verifyDataObject = require('./lib/verify_data_object');
 
-var _verifyDataObject2 = _interopRequireWildcard(_verifyDataObject);
+var _verifyDataObject2 = _interopRequireDefault(_verifyDataObject);
 
 var _splitStringProps = require('./lib/split_string_props');
 
-var _splitStringProps2 = _interopRequireWildcard(_splitStringProps);
+var _splitStringProps2 = _interopRequireDefault(_splitStringProps);
 
 var _verifyClientGeneratedId = require('./lib/verify_client_generated_id');
 
-var _verifyClientGeneratedId2 = _interopRequireWildcard(_verifyClientGeneratedId);
+var _verifyClientGeneratedId2 = _interopRequireDefault(_verifyClientGeneratedId);
 
 var _verifyFullReplacement = require('./lib/verify_full_replacement');
 
-var _verifyFullReplacement2 = _interopRequireWildcard(_verifyFullReplacement);
+var _verifyFullReplacement2 = _interopRequireDefault(_verifyFullReplacement);
 
 var COLLECTION_MODE = 'collection';
 var SINGLE_MODE = 'single';

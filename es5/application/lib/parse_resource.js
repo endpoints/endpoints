@@ -1,20 +1,20 @@
 'use strict';
 
-var _interopRequireWildcard = function (obj) { return obj && obj.__esModule ? obj : { 'default': obj }; };
+var _interopRequireDefault = function (obj) { return obj && obj.__esModule ? obj : { 'default': obj }; };
 
 exports.__esModule = true;
 
 var _path = require('path');
 
-var _path2 = _interopRequireWildcard(_path);
+var _path2 = _interopRequireDefault(_path);
 
 var _requireSearch = require('./require_search');
 
-var _requireSearch2 = _interopRequireWildcard(_requireSearch);
+var _requireSearch2 = _interopRequireDefault(_requireSearch);
 
 var _requireSilent = require('./require_silent');
 
-var _requireSilent2 = _interopRequireWildcard(_requireSilent);
+var _requireSilent2 = _interopRequireDefault(_requireSilent);
 
 exports['default'] = function (name, searchPaths) {
   var routeModulePath, moduleBasePath;

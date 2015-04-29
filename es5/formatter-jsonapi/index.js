@@ -1,16 +1,16 @@
 'use strict';
 
-var _interopRequireWildcard = function (obj) { return obj && obj.__esModule ? obj : { 'default': obj }; };
+var _interopRequireDefault = function (obj) { return obj && obj.__esModule ? obj : { 'default': obj }; };
 
 exports.__esModule = true;
 
 var _import = require('lodash');
 
-var _import2 = _interopRequireWildcard(_import);
+var _import2 = _interopRequireDefault(_import);
 
 var _formatModel = require('./lib/format_model');
 
-var _formatModel2 = _interopRequireWildcard(_formatModel);
+var _formatModel2 = _interopRequireDefault(_formatModel);
 
 /**
   The role of this module is to take a single model or collection of models

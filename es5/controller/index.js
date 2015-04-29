@@ -1,6 +1,6 @@
 'use strict';
 
-var _interopRequireWildcard = function (obj) { return obj && obj.__esModule ? obj : { 'default': obj }; };
+var _interopRequireDefault = function (obj) { return obj && obj.__esModule ? obj : { 'default': obj }; };
 
 var _inherits = function (subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) subClass.__proto__ = superClass; };
 
@@ -12,15 +12,15 @@ exports.__esModule = true;
 
 var _import = require('lodash');
 
-var _import2 = _interopRequireWildcard(_import);
+var _import2 = _interopRequireDefault(_import);
 
 var _validate = require('./lib/validate');
 
-var _validate2 = _interopRequireWildcard(_validate);
+var _validate2 = _interopRequireDefault(_validate);
 
 var _handle = require('./lib/handle');
 
-var _handle2 = _interopRequireWildcard(_handle);
+var _handle2 = _interopRequireDefault(_handle);
 
 /**
   Provides methods for generating request handling functions that can

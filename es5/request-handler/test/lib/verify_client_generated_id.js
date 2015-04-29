@@ -1,12 +1,12 @@
 'use strict';
 
-var _interopRequireWildcard = function (obj) { return obj && obj.__esModule ? obj : { 'default': obj }; };
+var _interopRequireDefault = function (obj) { return obj && obj.__esModule ? obj : { 'default': obj }; };
 
 var _expect = require('chai');
 
 var _verifyClientGeneratedId = require('../../lib/verify_client_generated_id');
 
-var _verifyClientGeneratedId2 = _interopRequireWildcard(_verifyClientGeneratedId);
+var _verifyClientGeneratedId2 = _interopRequireDefault(_verifyClientGeneratedId);
 
 describe('verifyClientGeneratedId', function () {
 

@@ -1,20 +1,20 @@
 'use strict';
 
-var _interopRequireWildcard = function (obj) { return obj && obj.__esModule ? obj : { 'default': obj }; };
+var _interopRequireDefault = function (obj) { return obj && obj.__esModule ? obj : { 'default': obj }; };
 
 exports.__esModule = true;
 
 var _import = require('lodash');
 
-var _import2 = _interopRequireWildcard(_import);
+var _import2 = _interopRequireDefault(_import);
 
 var _toOneRelations = require('./to_one_relations');
 
-var _toOneRelations2 = _interopRequireWildcard(_toOneRelations);
+var _toOneRelations2 = _interopRequireDefault(_toOneRelations);
 
 var _link = require('./link');
 
-var _link2 = _interopRequireWildcard(_link);
+var _link2 = _interopRequireDefault(_link);
 
 exports['default'] = function (opts, model) {
   var topLevelLinks;

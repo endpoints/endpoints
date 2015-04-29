@@ -1,12 +1,12 @@
 'use strict';
 
-var _interopRequireWildcard = function (obj) { return obj && obj.__esModule ? obj : { 'default': obj }; };
+var _interopRequireDefault = function (obj) { return obj && obj.__esModule ? obj : { 'default': obj }; };
 
 var _expect = require('chai');
 
 var _creator = require('../../lib/create');
 
-var _creator2 = _interopRequireWildcard(_creator);
+var _creator2 = _interopRequireDefault(_creator);
 
 var create = _creator2['default'].bind(null, function (data) {
   return data;

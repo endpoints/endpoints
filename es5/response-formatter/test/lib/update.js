@@ -1,12 +1,12 @@
 'use strict';
 
-var _interopRequireWildcard = function (obj) { return obj && obj.__esModule ? obj : { 'default': obj }; };
+var _interopRequireDefault = function (obj) { return obj && obj.__esModule ? obj : { 'default': obj }; };
 
 var _expect = require('chai');
 
 var _updater = require('../../lib/update');
 
-var _updater2 = _interopRequireWildcard(_updater);
+var _updater2 = _interopRequireDefault(_updater);
 
 var update = _updater2['default'].bind(null, function (data) {
   return data;

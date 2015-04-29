@@ -1,20 +1,20 @@
 'use strict';
 
-var _interopRequireWildcard = function (obj) { return obj && obj.__esModule ? obj : { 'default': obj }; };
+var _interopRequireDefault = function (obj) { return obj && obj.__esModule ? obj : { 'default': obj }; };
 
 var _expect = require('chai');
 
 var _Controller = require('../');
 
-var _Controller2 = _interopRequireWildcard(_Controller);
+var _Controller2 = _interopRequireDefault(_Controller);
 
 var _adapter = require('./mocks/adapter');
 
-var _adapter2 = _interopRequireWildcard(_adapter);
+var _adapter2 = _interopRequireDefault(_adapter);
 
 var _model = require('./mocks/model');
 
-var _model2 = _interopRequireWildcard(_model);
+var _model2 = _interopRequireDefault(_model);
 
 var controller = new _Controller2['default']({
   adapter: _adapter2['default'],

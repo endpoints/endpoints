@@ -1,16 +1,16 @@
 'use strict';
 
-var _interopRequireWildcard = function (obj) { return obj && obj.__esModule ? obj : { 'default': obj }; };
+var _interopRequireDefault = function (obj) { return obj && obj.__esModule ? obj : { 'default': obj }; };
 
 exports.__esModule = true;
 
 var _import = require('lodash');
 
-var _import2 = _interopRequireWildcard(_import);
+var _import2 = _interopRequireDefault(_import);
 
 var _Kapow = require('kapow');
 
-var _Kapow2 = _interopRequireWildcard(_Kapow);
+var _Kapow2 = _interopRequireDefault(_Kapow);
 
 exports['default'] = function (request, endpoint) {
   var err;

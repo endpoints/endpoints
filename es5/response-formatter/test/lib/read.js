@@ -1,12 +1,12 @@
 'use strict';
 
-var _interopRequireWildcard = function (obj) { return obj && obj.__esModule ? obj : { 'default': obj }; };
+var _interopRequireDefault = function (obj) { return obj && obj.__esModule ? obj : { 'default': obj }; };
 
 var _expect = require('chai');
 
 var _reader = require('../../lib/read');
 
-var _reader2 = _interopRequireWildcard(_reader);
+var _reader2 = _interopRequireDefault(_reader);
 
 var read = _reader2['default'].bind(null, function (data) {
   return data;

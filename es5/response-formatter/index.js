@@ -1,6 +1,6 @@
 'use strict';
 
-var _interopRequireWildcard = function (obj) { return obj && obj.__esModule ? obj : { 'default': obj }; };
+var _interopRequireDefault = function (obj) { return obj && obj.__esModule ? obj : { 'default': obj }; };
 
 var _classCallCheck = function (instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } };
 
@@ -8,23 +8,23 @@ exports.__esModule = true;
 
 var _error = require('./lib/error');
 
-var _error2 = _interopRequireWildcard(_error);
+var _error2 = _interopRequireDefault(_error);
 
 var _create = require('./lib/create');
 
-var _create2 = _interopRequireWildcard(_create);
+var _create2 = _interopRequireDefault(_create);
 
 var _read = require('./lib/read');
 
-var _read2 = _interopRequireWildcard(_read);
+var _read2 = _interopRequireDefault(_read);
 
 var _update = require('./lib/update');
 
-var _update2 = _interopRequireWildcard(_update);
+var _update2 = _interopRequireDefault(_update);
 
 var _destroy = require('./lib/destroy');
 
-var _destroy2 = _interopRequireWildcard(_destroy);
+var _destroy2 = _interopRequireDefault(_destroy);
 
 /**
   Provides methods for formatting create/read/update/delete requests to

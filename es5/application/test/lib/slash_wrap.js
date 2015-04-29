@@ -1,12 +1,12 @@
 'use strict';
 
-var _interopRequireWildcard = function (obj) { return obj && obj.__esModule ? obj : { 'default': obj }; };
+var _interopRequireDefault = function (obj) { return obj && obj.__esModule ? obj : { 'default': obj }; };
 
 var _expect = require('chai');
 
 var _slashWrap = require('../../lib/slash_wrap');
 
-var _slashWrap2 = _interopRequireWildcard(_slashWrap);
+var _slashWrap2 = _interopRequireDefault(_slashWrap);
 
 describe('slashWrap', function () {
 

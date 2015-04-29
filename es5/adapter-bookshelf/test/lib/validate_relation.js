@@ -1,20 +1,20 @@
 'use strict';
 
-var _interopRequireWildcard = function (obj) { return obj && obj.__esModule ? obj : { 'default': obj }; };
+var _interopRequireDefault = function (obj) { return obj && obj.__esModule ? obj : { 'default': obj }; };
 
 var _expect = require('chai');
 
 var _DB = require('../../../../test/fixtures/classes/database');
 
-var _DB2 = _interopRequireWildcard(_DB);
+var _DB2 = _interopRequireDefault(_DB);
 
 var _BooksModel = require('../../../../test/fixtures/models/books');
 
-var _BooksModel2 = _interopRequireWildcard(_BooksModel);
+var _BooksModel2 = _interopRequireDefault(_BooksModel);
 
 var _validateRelation = require('../../lib/validate_relation');
 
-var _validateRelation2 = _interopRequireWildcard(_validateRelation);
+var _validateRelation2 = _interopRequireDefault(_validateRelation);
 
 describe('validateRelation', function () {
   var model;

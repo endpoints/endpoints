@@ -1,36 +1,36 @@
 'use strict';
 
-var _interopRequireWildcard = function (obj) { return obj && obj.__esModule ? obj : { 'default': obj }; };
+var _interopRequireDefault = function (obj) { return obj && obj.__esModule ? obj : { 'default': obj }; };
 
 var _sinon = require('sinon');
 
-var _sinon2 = _interopRequireWildcard(_sinon);
+var _sinon2 = _interopRequireDefault(_sinon);
 
 var _expect = require('chai');
 
 var _import = require('lodash');
 
-var _import2 = _interopRequireWildcard(_import);
+var _import2 = _interopRequireDefault(_import);
 
 var _fantasyDatabase = require('fantasy-database');
 
-var _fantasyDatabase2 = _interopRequireWildcard(_fantasyDatabase);
+var _fantasyDatabase2 = _interopRequireDefault(_fantasyDatabase);
 
 var _link = require('../../lib/link');
 
-var _link2 = _interopRequireWildcard(_link);
+var _link2 = _interopRequireDefault(_link);
 
 var _Fixture = require('../../../../test/app/fixture');
 
-var _Fixture2 = _interopRequireWildcard(_Fixture);
+var _Fixture2 = _interopRequireDefault(_Fixture);
 
 var _Books = require('../../../../test/app/src/modules/books/model');
 
-var _Books2 = _interopRequireWildcard(_Books);
+var _Books2 = _interopRequireDefault(_Books);
 
 var _Authors = require('../../../../test/app/src/modules/authors/model');
 
-var _Authors2 = _interopRequireWildcard(_Authors);
+var _Authors2 = _interopRequireDefault(_Authors);
 
 describe('link', function () {
 

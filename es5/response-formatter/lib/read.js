@@ -1,16 +1,16 @@
 'use strict';
 
-var _interopRequireWildcard = function (obj) { return obj && obj.__esModule ? obj : { 'default': obj }; };
+var _interopRequireDefault = function (obj) { return obj && obj.__esModule ? obj : { 'default': obj }; };
 
 exports.__esModule = true;
 
 var _Kapow = require('kapow');
 
-var _Kapow2 = _interopRequireWildcard(_Kapow);
+var _Kapow2 = _interopRequireDefault(_Kapow);
 
 var _error = require('./error');
 
-var _error2 = _interopRequireWildcard(_error);
+var _error2 = _interopRequireDefault(_error);
 
 exports['default'] = function (formatter, config, data) {
   if ((!data || data.length === 0 && data.singleResult) && data.mode !== 'related') {

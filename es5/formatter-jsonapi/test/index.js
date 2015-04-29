@@ -1,24 +1,24 @@
 'use strict';
 
-var _interopRequireWildcard = function (obj) { return obj && obj.__esModule ? obj : { 'default': obj }; };
+var _interopRequireDefault = function (obj) { return obj && obj.__esModule ? obj : { 'default': obj }; };
 
 var _expect = require('chai');
 
 var _BookshelfAdapter = require('../../adapter-bookshelf');
 
-var _BookshelfAdapter2 = _interopRequireWildcard(_BookshelfAdapter);
+var _BookshelfAdapter2 = _interopRequireDefault(_BookshelfAdapter);
 
 var _BooksModel = require('../../../test/app/src/modules/books/model');
 
-var _BooksModel2 = _interopRequireWildcard(_BooksModel);
+var _BooksModel2 = _interopRequireDefault(_BooksModel);
 
 var _Fixture = require('../../../test/app/fixture');
 
-var _Fixture2 = _interopRequireWildcard(_Fixture);
+var _Fixture2 = _interopRequireDefault(_Fixture);
 
 var _formatter = require('../');
 
-var _formatter2 = _interopRequireWildcard(_formatter);
+var _formatter2 = _interopRequireDefault(_formatter);
 
 var Books = new _BookshelfAdapter2['default']({
   model: _BooksModel2['default']

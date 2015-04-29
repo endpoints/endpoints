@@ -1,12 +1,12 @@
 'use strict';
 
-var _interopRequireWildcard = function (obj) { return obj && obj.__esModule ? obj : { 'default': obj }; };
+var _interopRequireDefault = function (obj) { return obj && obj.__esModule ? obj : { 'default': obj }; };
 
 var _expect = require('chai');
 
 var _throwIfModel = require('../../lib/throw_if_model');
 
-var _throwIfModel2 = _interopRequireWildcard(_throwIfModel);
+var _throwIfModel2 = _interopRequireDefault(_throwIfModel);
 
 describe('throwIfModel', function () {
   it('should throw if passed an argument', function () {

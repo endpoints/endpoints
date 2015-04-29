@@ -1,16 +1,16 @@
 'use strict';
 
-var _interopRequireWildcard = function (obj) { return obj && obj.__esModule ? obj : { 'default': obj }; };
+var _interopRequireDefault = function (obj) { return obj && obj.__esModule ? obj : { 'default': obj }; };
 
 exports.__esModule = true;
 
 var _import = require('lodash');
 
-var _import2 = _interopRequireWildcard(_import);
+var _import2 = _interopRequireDefault(_import);
 
 var _relate = require('./relate');
 
-var _relate2 = _interopRequireWildcard(_relate);
+var _relate2 = _interopRequireDefault(_relate);
 
 exports['default'] = function (model) {
   var opts = arguments[1] === undefined ? {} : arguments[1];
@@ -93,7 +93,7 @@ exports['default'] = function (model) {
             id: String(related.id)
           };
         } else {
-          link.linkage = 'null';
+          link.linkage = null;
         }
         if (exporter) {
           exporter(related);

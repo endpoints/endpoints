@@ -1,12 +1,12 @@
 'use strict';
 
-var _interopRequireWildcard = function (obj) { return obj && obj.__esModule ? obj : { 'default': obj }; };
+var _interopRequireDefault = function (obj) { return obj && obj.__esModule ? obj : { 'default': obj }; };
 
 var _expect = require('chai');
 
 var _throwIfNoModel = require('../../lib/throw_if_no_model');
 
-var _throwIfNoModel2 = _interopRequireWildcard(_throwIfNoModel);
+var _throwIfNoModel2 = _interopRequireDefault(_throwIfNoModel);
 
 describe('throwIfNoModel', function () {
   it('should throw if not passed an argument', function () {

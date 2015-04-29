@@ -1,6 +1,6 @@
 'use strict';
 
-var _interopRequireWildcard = function (obj) { return obj && obj.__esModule ? obj : { 'default': obj }; };
+var _interopRequireDefault = function (obj) { return obj && obj.__esModule ? obj : { 'default': obj }; };
 
 var _classCallCheck = function (instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } };
 
@@ -8,29 +8,29 @@ exports.__esModule = true;
 
 var _import = require('lodash');
 
-var _import2 = _interopRequireWildcard(_import);
+var _import2 = _interopRequireDefault(_import);
 
 var _bPromise = require('bluebird');
 
-var _bPromise2 = _interopRequireWildcard(_bPromise);
+var _bPromise2 = _interopRequireDefault(_bPromise);
 
 var _create$update = require('./lib/base_methods');
 
 var _processFilter = require('./lib/process_filter');
 
-var _processFilter2 = _interopRequireWildcard(_processFilter);
+var _processFilter2 = _interopRequireDefault(_processFilter);
 
 var _processSort = require('./lib/process_sort');
 
-var _processSort2 = _interopRequireWildcard(_processSort);
+var _processSort2 = _interopRequireDefault(_processSort);
 
 var _destructureRequest = require('./lib/destructure_request_data');
 
-var _destructureRequest2 = _interopRequireWildcard(_destructureRequest);
+var _destructureRequest2 = _interopRequireDefault(_destructureRequest);
 
 var _Kapow = require('kapow');
 
-var _Kapow2 = _interopRequireWildcard(_Kapow);
+var _Kapow2 = _interopRequireDefault(_Kapow);
 
 // FIXME: decide if this responsibility lives in the adapter or
 // in the formatter. i think adapter? this would mean a wholesale
@@ -39,7 +39,7 @@ var _Kapow2 = _interopRequireWildcard(_Kapow);
 
 var _relate = require('../formatter-jsonapi/lib/relate');
 
-var _relate2 = _interopRequireWildcard(_relate);
+var _relate2 = _interopRequireDefault(_relate);
 
 /**
   An adapter that allows endpoints to interact with a Bookshelf model.

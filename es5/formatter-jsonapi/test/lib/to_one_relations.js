@@ -1,20 +1,20 @@
 'use strict';
 
-var _interopRequireWildcard = function (obj) { return obj && obj.__esModule ? obj : { 'default': obj }; };
+var _interopRequireDefault = function (obj) { return obj && obj.__esModule ? obj : { 'default': obj }; };
 
 var _expect = require('chai');
 
 var _toOneRelations = require('../../lib/to_one_relations');
 
-var _toOneRelations2 = _interopRequireWildcard(_toOneRelations);
+var _toOneRelations2 = _interopRequireDefault(_toOneRelations);
 
 var _Fixture = require('../../../../test/app/fixture');
 
-var _Fixture2 = _interopRequireWildcard(_Fixture);
+var _Fixture2 = _interopRequireDefault(_Fixture);
 
 var _Books = require('../../../../test/app/src/modules/books/model');
 
-var _Books2 = _interopRequireWildcard(_Books);
+var _Books2 = _interopRequireDefault(_Books);
 
 describe('toOneRelations', function () {
 

@@ -1,6 +1,6 @@
 'use strict';
 
-var _interopRequireWildcard = function (obj) { return obj && obj.__esModule ? obj : { 'default': obj }; };
+var _interopRequireDefault = function (obj) { return obj && obj.__esModule ? obj : { 'default': obj }; };
 
 exports.__esModule = true;
 exports.create = create;
@@ -8,11 +8,11 @@ exports.update = update;
 
 var _import = require('lodash');
 
-var _import2 = _interopRequireWildcard(_import);
+var _import2 = _interopRequireDefault(_import);
 
 var _bPromise = require('bluebird');
 
-var _bPromise2 = _interopRequireWildcard(_bPromise);
+var _bPromise2 = _interopRequireDefault(_bPromise);
 
 function create(params, toManyRels) {
   // this should be in a transaction but we don't have access to it yet

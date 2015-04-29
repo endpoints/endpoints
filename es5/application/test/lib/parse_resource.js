@@ -1,16 +1,16 @@
 'use strict';
 
-var _interopRequireWildcard = function (obj) { return obj && obj.__esModule ? obj : { 'default': obj }; };
+var _interopRequireDefault = function (obj) { return obj && obj.__esModule ? obj : { 'default': obj }; };
 
 var _path = require('path');
 
-var _path2 = _interopRequireWildcard(_path);
+var _path2 = _interopRequireDefault(_path);
 
 var _expect = require('chai');
 
 var _parseResource = require('../../lib/parse_resource');
 
-var _parseResource2 = _interopRequireWildcard(_parseResource);
+var _parseResource2 = _interopRequireDefault(_parseResource);
 
 describe('parseResource', function () {
 

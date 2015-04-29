@@ -1,6 +1,6 @@
 'use strict';
 
-var _interopRequireWildcard = function (obj) { return obj && obj.__esModule ? obj : { 'default': obj }; };
+var _interopRequireDefault = function (obj) { return obj && obj.__esModule ? obj : { 'default': obj }; };
 
 var _classCallCheck = function (instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } };
 
@@ -8,19 +8,19 @@ exports.__esModule = true;
 
 var _import = require('lodash');
 
-var _import2 = _interopRequireWildcard(_import);
+var _import2 = _interopRequireDefault(_import);
 
 var _parseOptions = require('./lib/parse_options');
 
-var _parseOptions2 = _interopRequireWildcard(_parseOptions);
+var _parseOptions2 = _interopRequireDefault(_parseOptions);
 
 var _parseResource = require('./lib/parse_resource');
 
-var _parseResource2 = _interopRequireWildcard(_parseResource);
+var _parseResource2 = _interopRequireDefault(_parseResource);
 
 var _slashWrap = require('./lib/slash_wrap');
 
-var _slashWrap2 = _interopRequireWildcard(_slashWrap);
+var _slashWrap2 = _interopRequireDefault(_slashWrap);
 
 var Application = (function () {
   function Application(opts) {

@@ -1,16 +1,16 @@
 'use strict';
 
-var _interopRequireWildcard = function (obj) { return obj && obj.__esModule ? obj : { 'default': obj }; };
+var _interopRequireDefault = function (obj) { return obj && obj.__esModule ? obj : { 'default': obj }; };
 
 exports.__esModule = true;
 
 var _import = require('lodash');
 
-var _import2 = _interopRequireWildcard(_import);
+var _import2 = _interopRequireDefault(_import);
 
 var _adapterHas = require('./adapter_has');
 
-var _adapterHas2 = _interopRequireWildcard(_adapterHas);
+var _adapterHas2 = _interopRequireDefault(_adapterHas);
 
 exports['default'] = function (method, config, adapter) {
   return _import2['default'].compose(_import2['default'].flatten, _import2['default'].compact)([_adapterHas2['default'](adapter.relations(), config.include, 'relations'), _adapterHas2['default'](adapter.filters(), Object.keys(config.filter), 'filters'),

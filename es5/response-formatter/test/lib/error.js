@@ -1,16 +1,16 @@
 'use strict';
 
-var _interopRequireWildcard = function (obj) { return obj && obj.__esModule ? obj : { 'default': obj }; };
+var _interopRequireDefault = function (obj) { return obj && obj.__esModule ? obj : { 'default': obj }; };
 
 var _Kapow = require('kapow');
 
-var _Kapow2 = _interopRequireWildcard(_Kapow);
+var _Kapow2 = _interopRequireDefault(_Kapow);
 
 var _expect = require('chai');
 
 var _error = require('../../lib/error');
 
-var _error2 = _interopRequireWildcard(_error);
+var _error2 = _interopRequireDefault(_error);
 
 describe('error', function () {
 

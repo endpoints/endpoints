@@ -1,12 +1,12 @@
 'use strict';
 
-var _interopRequireWildcard = function (obj) { return obj && obj.__esModule ? obj : { 'default': obj }; };
+var _interopRequireDefault = function (obj) { return obj && obj.__esModule ? obj : { 'default': obj }; };
 
 var _expect = require('chai');
 
 var _sanitizeRequestData = require('../../lib/sanitize_request_data');
 
-var _sanitizeRequestData2 = _interopRequireWildcard(_sanitizeRequestData);
+var _sanitizeRequestData2 = _interopRequireDefault(_sanitizeRequestData);
 
 describe('sanitizeRequestData', function () {
 
