@@ -56,7 +56,6 @@
   "requireSpacesInFunctionExpression": {
     "beforeOpeningCurlyBrace": true
   },
-  "safeContextKeyword": ["self"],
   "validateQuoteMarks": {
     "escape": true,
     "mark": "'"
@@ -67,7 +66,7 @@
     "checkRedundantParams": true,
     "checkRedundantReturns": true,
     "requireReturnTypes": true,
-    "checkTypes": "strictNativeCase",
+    "checkTypes": "capitalizedNativeCase",
     "leadingUnderscoreAccess": true,
     "checkAnnotations": {
       "preset": "jsdoc3"
