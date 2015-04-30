@@ -1,215 +1,219 @@
-import chai from 'chai';
+import path from 'path';
 import {expect} from 'chai';
-import chaiAsPromised from 'chai-as-promised';
 
-chai.use(chaiAsPromised);
-
+import knex from 'knex';
+import bookshelf from 'bookshelf';
 import fantasyDatabase from 'fantasy-database';
 
-import BookshelfAdapter from '../';
-import BooksModel from '../../../test/app/src/modules/books/model';
-import Fixture from '../../../test/app/fixture';
+import BookshelfStore from '../';
 
-const Books = new BookshelfAdapter({
-  model: BooksModel
+const Bookshelf = bookshelf(knex({
+  client: 'sqlite3',
+  debug: false,
+  connection: {
+    filename: path.join(
+      path.dirname(require.resolve('fantasy-database')),
+      'fantasy.db'
+    )
+  }
+}));
+
+const Author = Bookshelf.Model.extend({
+  tableName: 'authors',
+  books: function () {
+    return this.hasMany(Book);
+  }
+}, {
+  relations: [
+    'books',
+    'books.chapters',
+    'books.stores'
+  ]
 });
 
-describe('BookshelfAdapter', () => {
+const Book = Bookshelf.Model.extend({
+  tableName: 'books',
+  author: function () {
+    return this.belongsTo(Author);
+  },
+  chapters: function () {
+    return this.hasMany(Chapter);
+  },
+  stores: function () {
+    return this.belongsToMany(Store);
+  }
+}, {
+  relations: [
+    'author',
+    'chapters',
+    'stores'
+  ]
+});
 
-  describe('lib', () => {
-    require('./lib/sanitize_request_data');
-  });
+const Chapter = Bookshelf.Model.extend({
+  tableName: 'chapters',
+  book: function () {
+    return this.belongsTo(Book);
+  },
+}, {
+  relations: [
+    'book'
+  ]
+});
 
-  beforeEach(() => {
-    return Fixture.reset();
-  });
+const Store = Bookshelf.Model.extend({
+  tableName: 'stores',
+  books: function () {
+    return this.belongsToMany(Book);
+  }
+}, {
+  typeName: 'STORES',
+  relations: [
+    'books',
+    'books.author'
+  ]
+});
 
-  describe('constructor', () => {
+describe('JsonApiBookshelf', function () {
 
-    it('should throw if a model isn\'t provided', () => {
-      expect(() => {
-        new BookshelfAdapter();
-      }).throws('No bookshelf model specified.');
+  describe('::allRelations', function () {
+
+    it('should be able to find the valid relations from a model class', function () {
+      expect(BookshelfStore.allRelations(Book)).to.equal(Book.relations);
+    });
+
+    it('should be able to find the valid relations from a model instance', function () {
+      expect(BookshelfStore.allRelations(new Book())).to.equal(Book.relations);
+
     });
 
   });
 
-  describe('#filters', () => {
+  describe('::id', function () {
 
-    it('should return filters for this source', () => {
-      var expected = Object.keys(BooksModel.filters).concat(['id']);
-      expect(Books.filters()).to.deep.equal(expected);
+    it('should return the id attribute of a model', function () {
+      const id = 1100;
+      expect(BookshelfStore.id(new Book({id:id}))).to.equal(id);
     });
 
   });
 
-  describe('#relations', () => {
+  describe('::isMany', function () {
 
-    it('should return relations for this source', () => {
-      expect(Books.relations()).to.deep.equal(BooksModel.relations);
+    it('should be able to differentiate between a bookshelf collection and model', function () {
+      expect(BookshelfStore.isMany(new Book())).to.be.false;
+      expect(BookshelfStore.isMany(Book.collection())).to.be.true;
+
+    });
+  });
+
+  describe('::modelsFromCollection', function () {
+
+    it('should be able to return just the models from a collection', function () {
+      var book = new Book({id:1});
+      var Books = Book.collection().add(book);
+      expect(BookshelfStore.modelsFromCollection(Books)).to.deep.equal([book]);
     });
 
   });
 
-  describe('#typeName', () => {
+  describe('::related', function () {
 
-    it('should return the typeName for this source', () => {
-      expect(Books.typeName()).to.deep.equal(BooksModel.typeName);
-    });
-
-  });
-
-  describe('#byId', () => {
-
-    it('should find resource on the underlying model by id', () => {
-      return Books.byId(1).then(function (book) {
-        book = book.toJSON();
-        delete book.created_at;
-        delete book.updated_at;
-        expect(book).to.deep.equal(fantasyDatabase.books[0]);
-      });
-    });
-
-  });
-
-  describe('#create', () => {
-
-    it('should throw if no method is provided', () => {
-      expect(() => {
-        Books.create();
-      }).to.throw(/No method/);
-    });
-
-    it('should create resource using the underlying model', () => {
-      return Books.read(null).then(function (allBooks) {
-        var totalBooks = allBooks.length;
-        return Books.create('create', {
-          author_id:1,
-          title: 'test book',
-          date_published: '2015-02-01'
-        }).then(function (book) {
-          expect(book).to.be.an.instanceof(BooksModel);
-          return Books.read(null).then(function (allBooksPlusNew) {
-            expect(totalBooks + 1).to.equal(allBooksPlusNew.length);
-          });
+    it('should return a single model related to another model', function () {
+      return Book.forge({id:1}).fetch({withRelated:['author']}).then(function (book) {
+        return Author.forge({id:book.get('author_id')}).fetch().then(function (author) {
+          expect(BookshelfStore.related(book, 'author').toJSON()).to.deep.equal(author.toJSON());
         });
       });
     });
 
-    it('should create with an id specified', function() {
-      return Books.read(null).then(function (allBooks) {
-        var totalBooks = allBooks.length;
-        return Books.create('create', {
-          id: 9999,
-          author_id:1,
-          title: 'test book',
-          date_published: '2015-02-01'
-        }).then(function (book) {
-          expect(book).to.be.an.instanceof(BooksModel);
-          expect(book.id).to.equal(9999);
-          return Books.read(null).then(function (allBooksPlusNew) {
-            expect(totalBooks + 1).to.equal(allBooksPlusNew.length);
-          });
+    it('should return a collection of models related to a single model', function () {
+      return Author.forge({id:1}).fetch({withRelated:['books']}).then(function (author) {
+        return Book.collection().query(function (qb) {
+          return qb.where({author_id:1});
+        }).fetch().then(function (books) {
+          expect(BookshelfStore.related(author, 'books').toJSON()).to.deep.equal(books.toJSON());
         });
       });
     });
 
-    it('should throw if trying to create with an existing id', function() {
-      return expect(Books.create('create', {
+    it('should return a collection of models related to a collection of models', function () {
+      return Book.collection().fetch({withRelated:['author']}).then(function (books) {
+        return Author.collection().fetch().then(function (authors) {
+          expect(BookshelfStore.related(books, 'author').toJSON()).to.deep.equal(authors.toJSON());
+        });
+      });
+    });
+
+    it('should return a collection of models from a nested relation on a single model', function () {
+      return Author.forge({id:1}).fetch({withRelated:['books.chapters']}).then(function (author) {
+        return Book.collection().query(function (qb) {
+          return qb.where({author_id:1});
+        }).fetch({withRelated:['chapters']}).then(function (books) {
+          const relatedChapters = books.reduce(function (result, book) {
+            return result.add(book.related('chapters').models);
+          }, Chapter.collection());
+          expect(BookshelfStore.related(author, 'books.chapters').toJSON()).to.deep.equal(relatedChapters.toJSON());
+        });
+      });
+    });
+
+    it('should return a collection of models from a nested relation on a collection of models', function () {
+      return Author.collection().fetch({withRelated:['books.chapters']}).then(function (authors) {
+        return Book.collection().fetch({withRelated:['chapters']}).then(function (books) {
+          const relatedChapters = books.reduce(function (result, book) {
+            return result.add(book.related('chapters').models);
+          }, Chapter.collection());
+          expect(BookshelfStore.related(authors, 'books.chapters').pluck('id').sort()).to.deep.equal(relatedChapters.pluck('id').sort());
+        });
+      });
+    });
+
+  });
+
+  describe('::toOneRelations', function () {
+
+    it('should return an object representing toOne relations, keyed by the relation name with values being the column the relation is stored on', function () {
+      expect(BookshelfStore.toOneRelations(new Book())).to.deep.equal({author:'author_id'});
+    });
+
+  });
+
+  describe('::type', function () {
+
+    it('should be able to find the type name from a model class', function () {
+      expect(BookshelfStore.type(Book)).to.equal('books');
+    });
+
+    it('should be able to find the type name from a model instance', function () {
+      expect(BookshelfStore.type(new Book())).to.equal('books');
+    });
+
+    it('should prefer the static method typeName', function () {
+      expect(BookshelfStore.type(Store)).to.equal('STORES');
+      expect(BookshelfStore.type(new Store())).to.equal('STORES');
+    });
+
+  });
+
+  describe('::serialize', function () {
+
+    it('should serialize the model to a JSON object excluding relations', function () {
+      return Author.forge({id:1}).fetch({withRelated:['books']}).then(function (author) {
+        expect(BookshelfStore.serialize(author)).to.deep.equal(fantasyDatabase.authors[0]);
+      });
+    });
+
+  });
+
+  describe('::read', function () {
+
+    it('should resolve with invalid relations removed', function () {
+      return BookshelfStore.read(Book, {
         id: 1,
-        author_id:1,
-        title: 'test book',
-        date_published: '2015-02-01'
-      })).to.be.rejectedWith(/SQLITE_CONSTRAINT: UNIQUE/);
-    });
-
-  });
-
-  describe('#read', function (done) {
-    it('should find data using the underlying model', function (done) {
-      return Books.read({}).then(function (books) {
-        expect(books.length).to.equal(fantasyDatabase.books.length);
-        done();
-      });
-    });
-
-    it('should allow filtering', () => {
-      return Books.read({
-        filter: { id: 1 }
-      }).then(function (books) {
-        var firstBook = books.first().toJSON();
-        delete firstBook.created_at;
-        delete firstBook.updated_at;
-        expect(firstBook).to.deep.equal(fantasyDatabase.books[0]);
-      });
-    });
-
-    it('should allow finding with related data', () => {
-      return Books.read({
-        filter: { id: 1 },
-        include: ['author']
-      }).then(function (books) {
-        var firstBook = books.first().toJSON({shallow: true});
-        delete firstBook.created_at;
-        delete firstBook.updated_at;
-        expect(firstBook).to.deep.equal(fantasyDatabase.books[0]);
-        expect(books.first().related('author').toJSON({
-          shallow: true
-        })).to.deep.equal(fantasyDatabase.authors[0]);
-      });
-    });
-
-    it('should return the filtered includes as "relations"', () => {
-      return Books.read({
-        filter: { id: 1 },
         include: ['author', 'notarelation']
-      }).then(function (books) {
-        expect(books.relations).to.deep.equal(['author']);
-      });
-    });
-
-  });
-
-  describe('#update', () => {
-
-    it('should throw if no method is provided', () => {
-      expect(() => {
-        Books.update();
-      }).to.throw(/No method/);
-    });
-
-    // check the base method for update
-    // why are we returning null if it is different?
-    it.skip('should update resource using the underlying model', () => {
-      var newTitle = 'altered book';
-      return Books.byId(1).then(function (bookOne) {
-        return Books.update(bookOne, 'update', {
-          title: 'altered book'
-        }).then(function (data) {
-          expect(data).to.be.an('object');
-          expect(data.get('title')).to.equal(newTitle);
-        });
-      });
-    });
-
-  });
-
-  describe('#destroy', () => {
-
-    it('should throw if no method is provided', () => {
-      expect(() => {
-        Books.destroy();
-      }).to.throw(/No method/);
-    });
-
-    it('should destroy resource using the underlying model', () => {
-      return Books.read({}).then(function (allBooks) {
-        var totalBooks = allBooks.length;
-        Books.destroy(allBooks.first(), 'destroy').then(function (book) {
-          return Books.read(null, {}).then(function (allBooksMinusOne) {
-            expect(totalBooks - 1).to.equal(allBooksMinusOne.length);
-          });
-        });
+      }).then(function (book) {
+        expect(book.relations).to.deep.equal(['author']);
       });
     });
 

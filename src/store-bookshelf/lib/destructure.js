@@ -1,8 +1,15 @@
+// FIXME: this needs to be destructured to support other api formats, or
+// be moved wholesale into the request handler.
+
 import _ from 'lodash';
 import bPromise from 'bluebird';
 import Kapow from 'kapow';
 
-import sanitizeRequestData from './sanitize_request_data';
+function sanitize (data) {
+  delete data.type;
+  delete data.links;
+  return data;
+}
 
 export default function (model, params) {
   if (!params) {
@@ -62,14 +69,14 @@ export default function (model, params) {
       }
     }, params).then(function(params) {
       return {
-        data: sanitizeRequestData(params),
+        data: sanitize(params),
         toManyRels: toManyRels
       };
     });
   }
 
   return bPromise.resolve({
-    data: sanitizeRequestData(params),
+    data: sanitize(params),
     toManyRels: toManyRels
   });
 
