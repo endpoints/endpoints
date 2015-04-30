@@ -26,18 +26,22 @@ class RequestHandler {
     The constructor.
 
     @constructs RequestHandler
-    @param {Endpoints.Adapter} adapter
+    @param {Endpoints.Store.*} store
   */
-  constructor (adapter, config={}) {
+  constructor (config={}) {
     this.config = config;
-    this.adapter = adapter;
-    this.method = config.method;
+  }
 
-    // this used to happen in the configureController step
-    // TODO: is this even needed? i believe we're only using
-    // it to generate the location header response for creation
-    // which is brittle and invalid anyway.
-    config.typeName = adapter.typeName();
+  get method() {
+    return this.config.method;
+  }
+
+  get store() {
+    return this.config.store;
+  }
+
+  get model() {
+    return this.config.model;
   }
 
   /**
@@ -96,13 +100,8 @@ class RequestHandler {
   query (request) {
     // bits down the chain can mutate this config
     // on a per-request basis, so we need to clone
-    var config = _.cloneDeep(this.config);
-
-    var query = request.query;
-    var include = query.include;
-    var filter = query.filter;
-    var fields = query.fields;
-    var sort = query.sort;
+    const config = _.cloneDeep(_.omit(this.config, ['store', 'model']));
+    const {include, filter, fields, sort} = request.query;
     return {
       include: include ? include.split(',') : config.include,
       filter: filter ? splitStringProps(filter) : config.filter,
@@ -117,9 +116,9 @@ class RequestHandler {
     @returns {String} the read mode
   */
   mode (request) {
-    var hasIdParam = !!request.params.id;
-    var hasRelationParam = !!request.params.relation;
-    var hasRelatedParam = !!request.params.related;
+    const hasIdParam = !!request.params.id;
+    const hasRelationParam = !!request.params.relation;
+    const hasRelatedParam = !!request.params.related;
 
     if (!hasIdParam) {
       return COLLECTION_MODE;
@@ -146,48 +145,52 @@ class RequestHandler {
     @returns {Promise(Bookshelf.Model)} Newly created instance of the Model.
   */
   create (request) {
-    var adapter = this.adapter;
-    var method = this.method;
-    var data = request.body.data;
-
+    const {store, method, model} = this;
+    const data = request.body.data;
     if (data && data.id) {
-      return adapter.byId(data.id)
+      return store.byId(model, data.id)
         .then(throwIfModel)
         .then(function() {
-          return adapter.create(method, data);
+          return store.create(model, method, data);
         }
       );
     } else {
-      return adapter.create(method, data);
+      return store.create(model, method, data);
     }
   }
 
   /**
-    Queries the adapter for matching models.
+    Queries the store for matching models.
 
     @returns {Promise(Bookshelf.Model)|Promise(Bookshelf.Collection)}
   */
   read (request) {
-    var adapter = this.adapter;
-    var query = this.query(request);
-    var mode = this.mode(request);
-
-    var params = request.params;
-    var id = params.id;
-
-    var related, findRelated;
-
-    if (mode === RELATED_MODE || mode === RELATION_MODE) {
-      related = params.related || params.relation;
-      findRelated = adapter.related.bind(adapter, query, related, mode);
-      return adapter.byId(id, related).then(throwIfNoModel).then(findRelated);
-    }
-
+    const {store, model} = this;
+    const query = this.query(request);
+    const params = request.params;
+    const id = params.id;
     if (id) {
       // FIXME: this could collide with filter[id]=#
       query.filter.id = id;
+      query.singleResult = true;
     }
-    return adapter.read(query, mode);
+    return store.read(model, query);
+  }
+
+  readRelated (request) {
+    const {store, model} = this;
+    const id = request.params.id;
+    const relation = request.params.related;
+    const query = this.query(request);
+    return store.readRelated(model, id, relation, query);
+  }
+
+  readRelation (request) {
+    const {store, model} = this;
+    const id = request.params.id;
+    const relation = request.params.relation;
+    const query = this.query(request);
+    return store.readRelation(model, id, relation, query);
   }
 
   /**
@@ -196,23 +199,23 @@ class RequestHandler {
     @returns {Promise(Bookshelf.Model)}
   */
   update (request) {
-    var adapter = this.adapter;
-    var method = this.method;
-    var id = request.params.id;
-    var relation = request.params.relation;
+    const {store, method, model} = this;
+    const id = request.params.id;
+    const relation = request.params.relation;
+
     var data = request.body.data;
 
     if (relation) {
       this.config.relationOnly = true;
       data = {
         id: id,
-        type: adapter.typeName(),
+        type: store.type(model),
         links: {}
       };
       data.links[relation] = {linkage: request.body.data};
     }
 
-    return adapter.byId(id, [relation]).
+    return store.byId(model, id, [relation]).
       then(throwIfNoModel).
       then(function (model) {
         if (request.method !== 'PATCH') {
@@ -236,7 +239,7 @@ class RequestHandler {
           }
         }
 
-        return adapter.update(model, method, data);
+        return store.update(model, method, data);
       }).catch(function(e) {
         // FIXME: This may only work for SQLITE3, but tries to be general
         if (e.message.toLowerCase().indexOf('null') !== -1) {
@@ -252,13 +255,12 @@ class RequestHandler {
     @returns {Promise(Bookshelf.Model)}
   */
   destroy (request) {
-    var method = this.method;
-    var adapter = this.adapter;
-    var id = request.params.id;
+    const {method, store, model} = this;
+    const id = request.params.id;
 
-    return adapter.byId(id).then(function (model) {
+    return store.byId(model, id).then(function (model) {
       if (model) {
-        return adapter.destroy(model, method);
+        return store.destroy(model, method);
       }
     });
   }
