@@ -1,76 +1,110 @@
-import error from './lib/error';
-import create from './lib/create';
-import read from './lib/read';
-import update from './lib/update';
-import destroy from './lib/destroy';
+import _ from 'lodash';
+import Kapow from 'kapow';
 
-/**
-  Provides methods for formatting create/read/update/delete requests to
-  json-api compliance. This is mostly concerned about status codes, it
-  passes all the formatting work to a provided formatter.
-*/
-class ResponseFormatter {
+class PayloadHandler {
 
-  /**
-    The constructor.
-
-    @constructs ResponseFormatter
-    @param {Function} formatter
-  */
-  constructor (formatter) {
-    if (!formatter) {
-      throw new Error('No formatter specified.');
-    }
+  constructor(formatter) {
     this.formatter = formatter;
   }
 
-  /**
-    Partially applies this.formatter to each method.
-
-    @param {Function} fn - The method to which the formatter should be applied.
-  */
-  // partially apply this.formatter to each method
-  // this is pretty stupid.
-  static method (fn) {
-    return function () {
-      var args = Array.prototype.slice.call(arguments);
-      args.unshift(this.formatter);
-      return fn.apply(null, args);
+  create (config, data) {
+    return {
+      code: '201',
+      data: this.formatter.process(data, {
+        singleResult: true
+      }),
+      headers: {
+        location: this.formatter.selfUrl(data)
+      }
     };
+  }
+
+  read (config, data) {
+    if ((!data || data.length === 0 && data.singleResult) && data.mode !== 'related') {
+      return this.error(Kapow(404, 'Resource not found.'));
+    }
+
+    return {
+      code: '200',
+      data: this.formatter.process(data, {
+        singleResult: data.singleResult,
+        relations: data.relations,
+        mode: data.mode,
+        baseType: data.baseType,
+        baseId: data.baseId,
+        baseRelation: data.baseRelation
+      })
+    };
+  }
+
+  readRelated (config, data) {
+    return this.read(config, data);
+  }
+
+  readRelation (config, data) {
+    return this.read(config, data);
+  }
+
+  update (config, data) {
+    if (data && !config.relationOnly) {
+      return {
+        code: '200',
+        data: this.formatter.process(data, config)
+      };
+    }
+    return {
+      code: '204',
+      data: null
+    };
+  }
+
+  destroy () {
+    return {
+      code: '204',
+      data: null
+    };
+  }
+
+  error (errs, defaultErr) {
+    var resp;
+
+    defaultErr = defaultErr || 400;
+    errs = errs || [Kapow(defaultErr)];
+
+    if (!Array.isArray(errs)) {
+      errs = [errs];
+    }
+
+    resp = _.transform(errs, function(result, err) {
+      if (!err.httpStatus) {
+        err = Kapow.wrap(err, defaultErr);
+      }
+
+      var httpStatus = err.httpStatus;
+
+      result.code[httpStatus] = result.code[httpStatus] ? result.code[httpStatus] + 1 : 1;
+
+      result.data.errors.push({
+        title: err.title,
+        detail: err.message
+      });
+    }, {
+      code: {},
+      data: {
+        errors: []
+      }
+    });
+
+    resp.code = _.reduce(resp.code, function(result, n, key) {
+      if (!result || n > resp.code[result]) {
+        return key;
+      }
+      return result;
+    }, '');
+
+    return resp;
   }
 
 }
 
-ResponseFormatter.prototype.error = error;
-
-/**
-  Convenience method for creating a new element
-
-  @todo: missing params listing
-*/
-ResponseFormatter.prototype.create = ResponseFormatter.method(create);
-
-/**
-  Convenience method for retrieving an element or a collection using
-  the underlying adapter.
-
-  @todo: missing params listing
-*/
-ResponseFormatter.prototype.read = ResponseFormatter.method(read);
-
-/**
-  Convenience method for updating one or more attributes on an element
-  using the underlying adapter..
-
-  @todo: missing params listing
- */
-ResponseFormatter.prototype.update = ResponseFormatter.method(update);
-
-/**
-  Convenience method for deleting an element using the underlying adapter.
-
-  @todo: missing params listing
- */
-ResponseFormatter.prototype.destroy = ResponseFormatter.method(destroy);
-
-export default ResponseFormatter;
+export default PayloadHandler;
