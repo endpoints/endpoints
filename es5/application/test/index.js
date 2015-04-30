@@ -1,20 +1,20 @@
 'use strict';
 
-var _interopRequireDefault = function (obj) { return obj && obj.__esModule ? obj : { 'default': obj }; };
+var _interopRequireWildcard = function (obj) { return obj && obj.__esModule ? obj : { 'default': obj }; };
 
 var _path = require('path');
 
-var _path2 = _interopRequireDefault(_path);
+var _path2 = _interopRequireWildcard(_path);
 
 var _sinon = require('sinon');
 
-var _sinon2 = _interopRequireDefault(_sinon);
+var _sinon2 = _interopRequireWildcard(_sinon);
 
 var _expect = require('chai');
 
 var _Application = require('../');
 
-var _Application2 = _interopRequireDefault(_Application);
+var _Application2 = _interopRequireWildcard(_Application);
 
 var TestApp;
 

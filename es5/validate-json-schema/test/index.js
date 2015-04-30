@@ -1,12 +1,12 @@
 'use strict';
 
-var _interopRequireDefault = function (obj) { return obj && obj.__esModule ? obj : { 'default': obj }; };
+var _interopRequireWildcard = function (obj) { return obj && obj.__esModule ? obj : { 'default': obj }; };
 
 var _expect = require('chai');
 
 var _validateJSONSchema = require('../');
 
-var _validateJSONSchema2 = _interopRequireDefault(_validateJSONSchema);
+var _validateJSONSchema2 = _interopRequireWildcard(_validateJSONSchema);
 
 describe('ValidateJSONSchema', function () {
   var request = {

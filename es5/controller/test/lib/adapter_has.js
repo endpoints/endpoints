@@ -1,12 +1,12 @@
 'use strict';
 
-var _interopRequireDefault = function (obj) { return obj && obj.__esModule ? obj : { 'default': obj }; };
+var _interopRequireWildcard = function (obj) { return obj && obj.__esModule ? obj : { 'default': obj }; };
 
 var _expect = require('chai');
 
 var _adapterHas = require('../../lib/adapter_has');
 
-var _adapterHas2 = _interopRequireDefault(_adapterHas);
+var _adapterHas2 = _interopRequireWildcard(_adapterHas);
 
 describe('adapterHas', function () {
   it('should return undefined if there "request" argument', function () {

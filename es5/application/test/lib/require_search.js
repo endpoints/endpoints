@@ -1,16 +1,16 @@
 'use strict';
 
-var _interopRequireDefault = function (obj) { return obj && obj.__esModule ? obj : { 'default': obj }; };
+var _interopRequireWildcard = function (obj) { return obj && obj.__esModule ? obj : { 'default': obj }; };
 
 var _path = require('path');
 
-var _path2 = _interopRequireDefault(_path);
+var _path2 = _interopRequireWildcard(_path);
 
 var _expect = require('chai');
 
 var _requireSearch = require('../../lib/require_search');
 
-var _requireSearch2 = _interopRequireDefault(_requireSearch);
+var _requireSearch2 = _interopRequireWildcard(_requireSearch);
 
 describe('requireSearch', function () {
   var searchPaths = [_path2['default'].join(__dirname, '..', 'fixtures'), _path2['default'].resolve()];

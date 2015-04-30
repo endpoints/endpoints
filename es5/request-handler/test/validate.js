@@ -1,16 +1,16 @@
 'use strict';
 
-var _interopRequireDefault = function (obj) { return obj && obj.__esModule ? obj : { 'default': obj }; };
+var _interopRequireWildcard = function (obj) { return obj && obj.__esModule ? obj : { 'default': obj }; };
 
 var _expect = require('chai');
 
 var _sinon = require('sinon');
 
-var _sinon2 = _interopRequireDefault(_sinon);
+var _sinon2 = _interopRequireWildcard(_sinon);
 
 var _RequestHandler = require('../');
 
-var _RequestHandler2 = _interopRequireDefault(_RequestHandler);
+var _RequestHandler2 = _interopRequireWildcard(_RequestHandler);
 
 var req = {
   headers: {

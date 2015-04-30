@@ -1,12 +1,12 @@
 'use strict';
 
-var _interopRequireDefault = function (obj) { return obj && obj.__esModule ? obj : { 'default': obj }; };
+var _interopRequireWildcard = function (obj) { return obj && obj.__esModule ? obj : { 'default': obj }; };
 
 var _expect = require('chai');
 
 var _verifyContentType = require('../../lib/verify_content_type');
 
-var _verifyContentType2 = _interopRequireDefault(_verifyContentType);
+var _verifyContentType2 = _interopRequireWildcard(_verifyContentType);
 
 describe('verifyContentType', function () {
 

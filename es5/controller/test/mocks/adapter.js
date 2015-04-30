@@ -1,12 +1,12 @@
 'use strict';
 
-var _interopRequireDefault = function (obj) { return obj && obj.__esModule ? obj : { 'default': obj }; };
+var _interopRequireWildcard = function (obj) { return obj && obj.__esModule ? obj : { 'default': obj }; };
 
 exports.__esModule = true;
 
 var _bluebird = require('bluebird');
 
-var _bluebird2 = _interopRequireDefault(_bluebird);
+var _bluebird2 = _interopRequireWildcard(_bluebird);
 
 function Adapter(opts) {
   this.model = opts.model;

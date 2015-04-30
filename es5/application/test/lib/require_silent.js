@@ -1,16 +1,16 @@
 'use strict';
 
-var _interopRequireDefault = function (obj) { return obj && obj.__esModule ? obj : { 'default': obj }; };
+var _interopRequireWildcard = function (obj) { return obj && obj.__esModule ? obj : { 'default': obj }; };
 
 var _path = require('path');
 
-var _path2 = _interopRequireDefault(_path);
+var _path2 = _interopRequireWildcard(_path);
 
 var _expect = require('chai');
 
 var _requireSilent = require('../../lib/require_silent');
 
-var _requireSilent2 = _interopRequireDefault(_requireSilent);
+var _requireSilent2 = _interopRequireWildcard(_requireSilent);
 
 describe('requireSilent', function () {
 

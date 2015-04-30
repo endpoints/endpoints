@@ -1,16 +1,16 @@
 'use strict';
 
-var _interopRequireDefault = function (obj) { return obj && obj.__esModule ? obj : { 'default': obj }; };
+var _interopRequireWildcard = function (obj) { return obj && obj.__esModule ? obj : { 'default': obj }; };
 
 var _expect = require('chai');
 
 var _Adapter = require('../mocks/adapter');
 
-var _Adapter2 = _interopRequireDefault(_Adapter);
+var _Adapter2 = _interopRequireWildcard(_Adapter);
 
 var _validate = require('../../lib/validate');
 
-var _validate2 = _interopRequireDefault(_validate);
+var _validate2 = _interopRequireWildcard(_validate);
 
 var adapter = new _Adapter2['default']({
   model: require('../mocks/model')

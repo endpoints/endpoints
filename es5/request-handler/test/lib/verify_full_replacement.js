@@ -1,12 +1,12 @@
 'use strict';
 
-var _interopRequireDefault = function (obj) { return obj && obj.__esModule ? obj : { 'default': obj }; };
+var _interopRequireWildcard = function (obj) { return obj && obj.__esModule ? obj : { 'default': obj }; };
 
 var _expect = require('chai');
 
 var _verifyFullReplacement = require('../../lib/verify_full_replacement');
 
-var _verifyFullReplacement2 = _interopRequireDefault(_verifyFullReplacement);
+var _verifyFullReplacement2 = _interopRequireWildcard(_verifyFullReplacement);
 
 describe('verifyFullReplacement', function () {
 
