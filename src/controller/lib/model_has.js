@@ -4,8 +4,8 @@ function error (type, key) {
   return `Model does not have ${type}: ${key}.`;
 }
 
-export default function (available, requested, type) {
-  var message = error.bind(null, type);
+module.exports = function (available, requested, type) {
+  const message = error.bind(null, type);
   if (!requested) {
     return;
   }
@@ -13,4 +13,4 @@ export default function (available, requested, type) {
     return _.difference(requested, available).map(message);
   }
   return available[requested] ? null : message(requested);
-}
+};

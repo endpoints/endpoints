@@ -1,29 +1,30 @@
 import RequestHandler from '../../request-handler';
-import ResponseFormatter from '../../response-formatter';
-import jsonApi from '../../formatter-jsonapi';
+import PayloadHandler from '../../payload-handler';
 import * as send from './send';
 
-export default function (config, adapter) {
-  var method = config.method;
-  var responder = config.responder;
-  var handler = new RequestHandler(adapter, config);
-  var formatter = new ResponseFormatter(jsonApi);
+module.exports = function (config) {
+  const {method, responder, format, store} = config;
+  const requestHandler = new RequestHandler(config);
+  const payloadHandler = new PayloadHandler(
+    new format({store: store})
+  );
 
   return function (request, response) {
-    var server = 'express'; // detect if hapi or express here
-    var handle = handler[method].bind(handler);
-    var format = formatter[method].bind(formatter, config);
-    var sender = responder ? responder : send[server];
-    var respond = sender.bind(null, response);
-    var errors = handler.validate(request);
+    const server = 'express'; // detect if hapi or express here
+    const process = requestHandler[method].bind(requestHandler);
+    const format = payloadHandler[method].bind(payloadHandler, config);
+    const respond = (responder ? responder : send[server]).bind(null, response);
+    const errors = requestHandler.validate(request);
 
     if (errors) {
-      respond(formatter.error(errors));
+      respond(payloadHandler.error(errors));
     } else {
-      handle(request).then(format).then(respond).catch(function (err) {
-        //throw err;
-        return respond(formatter.error(err));
-      });
+      process(request)
+        .then(format)
+        .then(respond)
+        .catch(function (err) {
+          return respond(payloadHandler.error(err));
+        });
     }
   };
-}
+};

@@ -1,17 +1,20 @@
 import _ from 'lodash';
 
-import adapterHas from './adapter_has';
+import modelHas from './model_has';
 
-export default function (method, config, adapter) {
+module.exports = function (method, config) {
+  const {model, store} = config;
   return _.compose(_.flatten, _.compact)([
-    adapterHas(adapter.relations(), config.include, 'relations'),
-    adapterHas(adapter.filters(), Object.keys(config.filter), 'filters'),
+    modelHas(store.allRelations(model), config.include, 'relations'),
+    modelHas(Object.keys(store.filters(model)), Object.keys(config.filter), 'filters')
+/*
     // this is crap
     (method === 'read') ? null :
-      adapterHas(
-        method === 'create' ? adapter.model : adapter.model.prototype,
+      modelHas(
+        method === 'create' ? model : model.prototype,
         config.method,
         'method'
       )
+*/
   ]);
-}
+};
