@@ -1,4 +1,17 @@
-exports.Application = require('./application');
-exports.Controller = require('./controller');
-exports.BookshelfAdapter = require('./adapter-bookshelf');
-exports.ValidateJsonSchema = require('./validate-json-schema');
+import Application from './application';
+import Controller from './controller';
+import BookshelfStore from './store-bookshelf';
+import JsonApiFormat from './format-jsonapi';
+import ValidateJsonSchema from './validate-json-schema';
+
+export default {
+  Application,
+  Controller,
+  Store: {
+    bookshelf: BookshelfStore
+  },
+  Format: {
+    jsonapi: JsonApiFormat
+  },
+  ValidateJsonSchema
+};

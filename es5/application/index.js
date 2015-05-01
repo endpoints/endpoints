@@ -1,10 +1,10 @@
 'use strict';
 
+exports.__esModule = true;
+
 var _interopRequireDefault = function (obj) { return obj && obj.__esModule ? obj : { 'default': obj }; };
 
 var _classCallCheck = function (instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } };
-
-exports.__esModule = true;
 
 var _import = require('lodash');
 
@@ -31,23 +31,13 @@ var Application = (function () {
     _import2['default'].extend(this, _parseOptions2['default'](opts));
   }
 
-  Application.prototype.resource = (function (_resource) {
-    function resource(_x) {
-      return _resource.apply(this, arguments);
-    }
-
-    resource.toString = function () {
-      return _resource.toString();
-    };
-
-    return resource;
-  })(function (name) {
+  Application.prototype.resource = function resource(name) {
     var resource = this._resources[name];
     if (!resource) {
       throw new Error('Resource "' + name + '" has not been registered.');
     }
     return resource;
-  });
+  };
 
   Application.prototype.register = function register(input) {
     if (Array.isArray(input)) {

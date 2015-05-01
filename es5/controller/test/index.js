@@ -1,56 +1,48 @@
-'use strict';
+"use strict";
 
-var _interopRequireDefault = function (obj) { return obj && obj.__esModule ? obj : { 'default': obj }; };
+/*import {expect} from 'chai';
 
-var _expect = require('chai');
+import Controller from '../';
 
-var _Controller = require('../');
+import adapter from './mocks/adapter';
+import model from './mocks/model';
 
-var _Controller2 = _interopRequireDefault(_Controller);
-
-var _adapter = require('./mocks/adapter');
-
-var _adapter2 = _interopRequireDefault(_adapter);
-
-var _model = require('./mocks/model');
-
-var _model2 = _interopRequireDefault(_model);
-
-var controller = new _Controller2['default']({
-  adapter: _adapter2['default'],
-  model: _model2['default']
+const controller = new Controller({
+  adapter: adapter,
+  model: model
 });
 
-describe('Controller', function () {
+describe('Controller', () => {
 
-  it('should be an object', function () {
-    _expect.expect(controller).to.be.an('object');
+  it('should be an object', () => {
+    expect(controller).to.be.an('object');
   });
 
-  describe('constructor', function () {
+  describe('constructor', () => {
 
-    it('should throw if no adapter is specified', function () {
-      _expect.expect(function () {
-        new _Controller2['default']();
-      }).to['throw']('No adapter specified.');
+    it('should throw if no adapter is specified', () => {
+      expect(() => {
+        new Controller();
+      }).to.throw('No adapter specified.');
     });
 
-    it('should throw if no model is specified', function () {
-      _expect.expect(function () {
-        new _Controller2['default']({
-          adapter: _adapter2['default']
+    it('should throw if no model is specified', () => {
+      expect(() => {
+        new Controller({
+          adapter: adapter
         });
-      }).to['throw']('No model specified.');
+      }).to.throw('No model specified.');
     });
+
   });
 
-  describe('extending', function () {
+  describe('extending', () => {
 
-    it('should be extendable in es5', function () {
+    it('should be extendable in es5', () => {
       var adapter = require('./mocks/adapter');
       var validators = ['validators'];
 
-      var MyController = _Controller2['default'].extend({
+      var MyController = Controller.extend({
         adapter: adapter,
         validators: validators,
         allowClientGeneratedIds: true
@@ -58,43 +50,51 @@ describe('Controller', function () {
       var myController = new MyController({
         model: require('./mocks/model')
       });
-      _expect.expect(myController.config.adapter).to.equal(adapter);
-      _expect.expect(myController.config.allowClientGeneratedIds).to.be['true'];
-      _expect.expect(myController.config.validators).to.equal(validators);
+      expect(myController.config.adapter).to.equal(adapter);
+      expect(myController.config.allowClientGeneratedIds).to.be.true;
+      expect(myController.config.validators).to.equal(validators);
     });
+
   });
 
-  describe('lib', function () {
+  describe('lib', () => {
 
     require('./lib/adapter_has');
     require('./lib/validate');
+
   });
 
-  describe('#create', function () {
+  describe('#create', () => {
 
-    it('should return a request handling function', function () {
-      _expect.expect(controller.create()).to.be.a('function');
+    it('should return a request handling function', () => {
+      expect(controller.create()).to.be.a('function');
     });
+
   });
 
-  describe('#read', function () {
+  describe('#read', () => {
 
-    it('should return a request handling function', function () {
-      _expect.expect(controller.read()).to.be.a('function');
+    it('should return a request handling function', () => {
+      expect(controller.read()).to.be.a('function');
     });
+
   });
 
-  describe('#update', function () {
+  describe('#update', () => {
 
-    it('should return a request handling function', function () {
-      _expect.expect(controller.update()).to.be.a('function');
+    it('should return a request handling function', () => {
+      expect(controller.update()).to.be.a('function');
     });
+
   });
 
-  describe('#destroy', function () {
+  describe('#destroy', () => {
 
-    it('should return a request handling function', function () {
-      _expect.expect(controller.destroy()).to.be.a('function');
+    it('should return a request handling function', () => {
+      expect(controller.destroy()).to.be.a('function');
     });
+
   });
+
 });
+*/

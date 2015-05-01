@@ -1,50 +1,43 @@
 'use strict';
 
-var _interopRequireWildcard = function (obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (typeof obj === 'object' && obj !== null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj['default'] = obj; return newObj; } };
+var _interopRequireWildcard = function (obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj['default'] = obj; return newObj; } };
 
 var _interopRequireDefault = function (obj) { return obj && obj.__esModule ? obj : { 'default': obj }; };
-
-exports.__esModule = true;
 
 var _RequestHandler = require('../../request-handler');
 
 var _RequestHandler2 = _interopRequireDefault(_RequestHandler);
 
-var _ResponseFormatter = require('../../response-formatter');
+var _PayloadHandler = require('../../payload-handler');
 
-var _ResponseFormatter2 = _interopRequireDefault(_ResponseFormatter);
-
-var _jsonApi = require('../../formatter-jsonapi');
-
-var _jsonApi2 = _interopRequireDefault(_jsonApi);
+var _PayloadHandler2 = _interopRequireDefault(_PayloadHandler);
 
 var _import = require('./send');
 
 var send = _interopRequireWildcard(_import);
 
-exports['default'] = function (config, adapter) {
+module.exports = function (config) {
   var method = config.method;
   var responder = config.responder;
-  var handler = new _RequestHandler2['default'](adapter, config);
-  var formatter = new _ResponseFormatter2['default'](_jsonApi2['default']);
+  var format = config.format;
+  var store = config.store;
+
+  var requestHandler = new _RequestHandler2['default'](config);
+  var payloadHandler = new _PayloadHandler2['default'](new format({ store: store }));
 
   return function (request, response) {
     var server = 'express'; // detect if hapi or express here
-    var handle = handler[method].bind(handler);
-    var format = formatter[method].bind(formatter, config);
-    var sender = responder ? responder : send[server];
-    var respond = sender.bind(null, response);
-    var errors = handler.validate(request);
+    var process = requestHandler[method].bind(requestHandler);
+    var format = payloadHandler[method].bind(payloadHandler, config);
+    var respond = (responder ? responder : send[server]).bind(null, response);
+    var errors = requestHandler.validate(request);
 
     if (errors) {
-      respond(formatter.error(errors));
+      respond(payloadHandler.error(errors));
     } else {
-      handle(request).then(format).then(respond)['catch'](function (err) {
-        //throw err;
-        return respond(formatter.error(err));
+      process(request).then(format).then(respond)['catch'](function (err) {
+        return respond(payloadHandler.error(err));
       });
     }
   };
 };
-
-module.exports = exports['default'];

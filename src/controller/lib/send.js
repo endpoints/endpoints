@@ -7,9 +7,9 @@ function applyHeaders (response, headers) {
 }
 
 export function express (response, payload) {
-  var code = payload.code;
-  var data = payload.data;
-  var headers = payload.headers;
+  const code = payload.code;
+  const data = payload.data;
+  const headers = payload.headers;
   if (headers) {
     applyHeaders(response, payload.headers);
   }
@@ -17,9 +17,9 @@ export function express (response, payload) {
 }
 
 export function hapi (response, payload) {
-  var code = payload.code;
-  var data = payload.data;
-  var headers = payload.headers;
+  const code = payload.code;
+  const data = payload.data;
+  const headers = payload.headers;
   if (headers) {
     applyHeaders(response, payload.headers);
   }
