@@ -15,4 +15,4 @@ This project is currently under heavy development. If you wish to use this in a 
 At the time of this writing, performance is **not** a concern of this project.
 
 ## Architecture
-TBD
+Documentation forthcoming.
