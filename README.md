@@ -1,4 +1,4 @@
-# endpoints [![Build Status](https://secure.travis-ci.org/endpoints/endpoints.png)](http://travis-ci.org/endpoints/endpoints)
+# endpoints [![Build Status](https://secure.travis-ci.org/endpoints/endpoints.png)](http://travis-ci.org/endpoints/endpoints) [![Code Climate](https://codeclimate.com/github/endpoints/endpoints/badges/gpa.svg)](https://codeclimate.com/github/endpoints/endpoints)
 
 [![NPM](https://nodei.co/npm/endpoints.png)](https://nodei.co/npm/endpoints/)
 
