@@ -9,6 +9,7 @@ describe('singleSlashJoin', () => {
 
   it('should return an leading / for an array of empty strings', () => {
     expect(singleSlashJoin(['', ''])).to.equal('/');
+    expect(singleSlashJoin([undefined])).to.equal('/');
   });
 
   it('should have no leading or trailing slashes', () => {
@@ -37,6 +38,10 @@ describe('singleSlashJoin', () => {
     expect(singleSlashJoin(['foo/', '', '/bar'])).to.equal('/foo/bar');
     expect(singleSlashJoin(['foo//', '', '/bar'])).to.equal('/foo/bar');
     expect(singleSlashJoin(['foo//', '', '//bar'])).to.equal('/foo/bar');
+  });
+
+  it('should not add slashes for undefined fields', () => {
+    expect(singleSlashJoin(['foo', undefined, 'bar'])).to.equal('/foo/bar');
   });
 
 });

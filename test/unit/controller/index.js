@@ -1,15 +1,3 @@
-/*import {expect} from 'chai';
-
-import Controller from '../';
-
-import adapter from './mocks/adapter';
-import model from './mocks/model';
-
-const controller = new Controller({
-  adapter: adapter,
-  model: model
-});
-
 describe('Controller', () => {
 
   describe('lib', () => {
@@ -18,6 +6,9 @@ describe('Controller', () => {
 
   });
 
+});
+
+/*
   it('should be an object', () => {
     expect(controller).to.be.an('object');
   });
@@ -100,5 +91,16 @@ describe('Controller', () => {
 
   });
 
+});
+import {expect} from 'chai';
+
+import Controller from '../';
+
+import adapter from './mocks/adapter';
+import model from './mocks/model';
+
+const controller = new Controller({
+  adapter: adapter,
+  model: model
 });
 */

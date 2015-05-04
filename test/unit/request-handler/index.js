@@ -1,6 +1,6 @@
 import {expect} from 'chai';
 import sinon from 'sinon';
-import RequestHandler from '../../src/request-handler';
+import RequestHandler from '../../../src/request-handler';
 
 var req = {
   headers: {
@@ -15,14 +15,14 @@ var source = {
 describe('RequestHandler', function () {
 
   describe('lib', function () {
-    require('../../src/request-handler/lib/split_string_props');
-    require('../../src/request-handler/lib/throw_if_model');
-    require('../../src/request-handler/lib/throw_if_no_model');
-    require('../../src/request-handler/lib/verify_accept');
-    require('../../src/request-handler/lib/verify_client_generated_id');
-    require('../../src/request-handler/lib/verify_content_type');
-    require('../../src/request-handler/lib/verify_data_object');
-    require('../../src/request-handler/lib/verify_full_replacement');
+    require('../../../src/request-handler/lib/split_string_props');
+    require('../../../src/request-handler/lib/throw_if_model');
+    require('../../../src/request-handler/lib/throw_if_no_model');
+    require('../../../src/request-handler/lib/verify_accept');
+    require('../../../src/request-handler/lib/verify_client_generated_id');
+    require('../../../src/request-handler/lib/verify_content_type');
+    require('../../../src/request-handler/lib/verify_data_object');
+    require('../../../src/request-handler/lib/verify_full_replacement');
   });
 
   describe('#include', function () {
@@ -45,6 +45,9 @@ describe('RequestHandler', function () {
 
   });
 
+});
+/**import {expect} from 'chai';
+/*
   describe('#validate', function () {
 
     it('it should run user supplied validators', () => {
@@ -76,10 +79,6 @@ describe('RequestHandler', function () {
     });
 
   });
-
-});
-/**import {expect} from 'chai';
-
 import getParams from '../../lib/get_params';
 
 describe('getParams', function () {
@@ -136,6 +135,6 @@ describe('getParams', function () {
     params.filter.id = 1;
     expect(defaultConfig.filter).to.not.equal(params.filter);
   });
-
+*?
 });
 */
