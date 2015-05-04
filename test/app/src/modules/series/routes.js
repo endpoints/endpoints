@@ -2,7 +2,7 @@ const validateJsonSchema = require('../../../../../src/validate-json-schema');
 const controller = require('./controller');
 const schema = require('./schema');
 
-module.exports = {
+exports.map = {
   post: {
     '/': controller.create({
       schema: schema,

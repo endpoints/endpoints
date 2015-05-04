@@ -9,7 +9,7 @@ beforeEach(function() {
 
 describe('v1', function () {
   it('must ignore request object members not recognized by the specification', function() {
-    return Agent.request('PATCH', '/books/1')
+    return Agent.request('PATCH', '/v1/books/1')
       .send({
         data: {
           type: 'books',
@@ -30,7 +30,7 @@ describe('v1', function () {
   // TODO: unit test to ensure to-Many relationships always represented as arrays
   // http://jsonapi.org/format/#document-structure-top-level
   it('must represent a logical collection of resources as an array, even if it only contains one item', function() {
-    return Agent.request('GET', '/books/?filter[date_published]=1954-07-29')
+    return Agent.request('GET', '/v1/books/?filter[date_published]=1954-07-29')
       .promise()
       .then(function(res) {
         expect(res.status).to.equal(200);

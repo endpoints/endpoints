@@ -1,6 +1,7 @@
 import _ from 'lodash';
 import validate from './lib/validate';
 import handle from './lib/handle';
+import singleSlashJoin from './lib/single_slash_join';
 
 /**
   Provides methods for generating request handling functions that can
@@ -20,27 +21,35 @@ class Controller {
     The constructor.
 
     @constructs Controller
-    @param {Object} opts - opts.format: An endpoints format adapter.
-    @param {Object} opts - opts.store: An endpoints store adapter.
-    @param {Object} opts - opts.model: A model compatible with the store adapter.
-    @param {Object} opts - opts.validators: An array of validating methods.
-    @param {Object} opts - opts.allowClientGeneratedIds: boolean indicating this
+    @param {Object} config - config.format: An endpoints format adapter.
+    @param {Object} config - config.store: An endpoints store adapter.
+    @param {Object} config - config.baseUrl: A base url for link generation.
+    @param {Object} config - config.basePath: A base path for link generation.
+    @param {Object} config - config.model: A model compatible with the store adapter.
+    @param {Object} config - config.validators: An array of validating methods.
+    @param {Object} config - opts.allowClientGeneratedIds: boolean indicating this
   */
-  constructor (opts={}) {
-    if (!opts.format) {
+  constructor (config={}) {
+    if (!config.format) {
       throw new Error('No format specified.');
     }
-    if (!opts.store) {
+    if (!config.store) {
       throw new Error('No store specified.');
     }
-    if (!opts.model) {
+    if (!config.model) {
       throw new Error('No model specified.');
+    }
+    if (!config.baseUrl) {
+      throw new Error('No baseUrl specified for URL generation.');
+    }
+    if (!config.basePath) {
+      throw new Error('No basePath specified for URL generation.');
     }
     this.config = _.extend({
       validators: [],
       allowClientGeneratedIds: false,
-      allowToManyFullReplacement: true
-    }, opts);
+      allowToManyFullReplacement: true,
+    }, config);
   }
 
   get capabilities() {
@@ -50,6 +59,18 @@ class Controller {
       filters: store.filters(model),
       includes: store.allRelations(model),
     };
+  }
+
+  get baseUrl() {
+    return this.config.baseUrl;
+  }
+
+  get basePath() {
+    return this.config.basePath;
+  }
+
+  get url() {
+    return singleSlashJoin([this.baseUrl, this.basePath]);
   }
 
   /**
@@ -72,7 +93,8 @@ class Controller {
     if (validationFailures.length) {
       throw new Error(validationFailures.join('\n'));
     }
-    return handle(config);
+    // TODO: fix this gross passing of the url
+    return handle(config, this.url);
   }
 
   create (opts) {

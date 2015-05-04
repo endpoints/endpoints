@@ -2,11 +2,14 @@ import RequestHandler from '../../request-handler';
 import PayloadHandler from '../../payload-handler';
 import * as send from './send';
 
-module.exports = function (config) {
+module.exports = function (config, baseUrl) {
   const {method, responder, format, store} = config;
   const requestHandler = new RequestHandler(config);
   const payloadHandler = new PayloadHandler(
-    new format({store: store})
+    new format({
+      store: store,
+      baseUrl: baseUrl
+    })
   );
 
   return function (request, response) {

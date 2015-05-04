@@ -1,6 +1,4 @@
-require('babel/register');
-
-describe('Endpoints', function () {
+describe('Endpoints', () => {
   require('./unit');
   require('./integration');
 });

@@ -2,7 +2,6 @@ import _ from 'lodash';
 
 import parseOptions from './lib/parse_options';
 import parseResource from './lib/parse_resource';
-import slashWrap from './lib/slash_wrap';
 
 class Application {
 
@@ -13,7 +12,7 @@ class Application {
   }
 
   resource (name) {
-    var resource = this._resources[name];
+    const resource = this._resources[name];
     if (!resource) {
       throw new Error(`Resource "${name}" has not been registered.`);
     }
@@ -25,9 +24,8 @@ class Application {
       input.forEach(this.register.bind(this));
       return this;
     }
-
-    var resource = parseResource(input, this.searchPaths);
-    var resourceName = resource.name;
+    const resource = parseResource(input, this.searchPaths);
+    const resourceName = resource.name;
     if (this._resources[resourceName]) {
       throw new Error(`Resource "${resourceName}" registered twice`);
     }
@@ -35,10 +33,11 @@ class Application {
     return this;
   }
 
-  endpoint (resourceName, prefix) {
-    var resource = this.resource(resourceName);
-    var url = slashWrap(prefix) + resourceName;
-    var output = this.routeBuilder(resource.routes, url);
+  endpoint (resourceName) {
+    const resource = this.resource(resourceName);
+    const routes = resource.routes.map;
+    const url = resource.controller.url;
+    const output = this.routeBuilder(routes, url);
     this._endpoints.push({
       name: resourceName,
       url: url,
@@ -50,8 +49,8 @@ class Application {
 
   manifest () {
     return this._endpoints.reduce(function (result, endpoint) {
-      var resource = endpoint.resource;
-      var capabilities = resource.controller.capabilities;
+      const resource = endpoint.resource;
+      const capabilities = resource.controller.capabilities;
       result.push(_.extend({
         name: resource.name,
         url: endpoint.url
@@ -62,9 +61,9 @@ class Application {
 
   index () {
     return this.manifest().reduce(function (result, resource) {
-      var definition = resource.url;
-      var includes = resource.includes || [];
-      var filters = resource.filters || {};
+      let definition = resource.url;
+      const includes = resource.includes || [];
+      const filters = resource.filters || {};
       if (includes.length) {
         definition += `?include={${includes.join(',')}}`;
       }

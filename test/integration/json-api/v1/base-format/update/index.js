@@ -19,7 +19,7 @@ beforeEach(function() {
 describe('updatingResources', function() {
 
   it('must require an ACCEPT header specifying the JSON API media type', function() {
-    return Agent.request('PATCH', '/books/1')
+    return Agent.request('PATCH', '/v1/books/1')
       .accept('')
       .send(patchData)
       .promise()
@@ -29,7 +29,7 @@ describe('updatingResources', function() {
   });
 
   it('must respond to a successful request with an object', function() {
-    return Agent.request('PATCH', '/books/1')
+    return Agent.request('PATCH', '/v1/books/1')
       .send(patchData)
       .promise()
       .then(function(res) {
@@ -40,7 +40,7 @@ describe('updatingResources', function() {
 
   it('must respond to an unsuccessful request with a JSON object', function() {
     patchData.data.id = 'asdf';
-    return Agent.request('PATCH', '/books/1')
+    return Agent.request('PATCH', '/v1/books/1')
       .send(patchData)
       .promise()
       .then(function(res) {
@@ -52,7 +52,7 @@ describe('updatingResources', function() {
 
   it('must require a single resource object as primary data', function() {
     patchData.data = [patchData.data];
-    return Agent.request('PATCH', '/books/1')
+    return Agent.request('PATCH', '/v1/books/1')
       .send(patchData)
       .promise()
       .then(function(res) {
@@ -62,7 +62,7 @@ describe('updatingResources', function() {
 
   it('must require primary data to have a type member', function() {
     delete patchData.data.type;
-    return Agent.request('PATCH', '/books/1')
+    return Agent.request('PATCH', '/v1/books/1')
       .send(patchData)
       .promise()
       .then(function(res) {
@@ -71,7 +71,7 @@ describe('updatingResources', function() {
   });
 
   it('must require a content-type header of application/vnd.api+json', function() {
-    return Agent.request('PATCH', '/books/1')
+    return Agent.request('PATCH', '/v1/books/1')
       .type('json')
       .send(patchData)
       .promise()
@@ -85,7 +85,7 @@ describe('updatingResources', function() {
 
   describe('updatingResourceAttributes', function() {
     it('should allow only some attributes to be included in the resource object', function() {
-      return Agent.request('PATCH', '/books/1')
+      return Agent.request('PATCH', '/v1/books/1')
         .send(patchData)
         .promise()
         .then(function(res) {
@@ -108,18 +108,18 @@ describe('updatingResources', function() {
         }
       };
       var firstRead;
-      return Agent.request('GET', '/books/1?include=stores').promise()
+      return Agent.request('GET', '/v1/books/1?include=stores').promise()
         .then(function(res) {
           firstRead = res.body;
 
-          return Agent.request('PATCH', '/books/1')
+          return Agent.request('PATCH', '/v1/books/1')
             .send(patchData)
             .promise();
         })
         .then(function(res) {
           expect(res.status).to.be.within(200, 299);
           expect(res.body).to.be.a('object');
-          return Agent.request('GET', '/books/1?include=stores').promise();
+          return Agent.request('GET', '/v1/books/1?include=stores').promise();
         })
         .then(function(res) {
           var secondRead = res.body;
@@ -138,18 +138,18 @@ describe('updatingResources', function() {
 
     it('must interpret missing fields as their current values', function() {
       var firstRead;
-      return Agent.request('GET', '/books/1?include=stores').promise()
+      return Agent.request('GET', '/v1/books/1?include=stores').promise()
         .then(function(res) {
           firstRead = res.body;
 
-          return Agent.request('PATCH', '/books/1')
+          return Agent.request('PATCH', '/v1/books/1')
             .send(patchData)
             .promise();
         })
         .then(function(res) {
           expect(res.status).to.be.within(200, 299);
           expect(res.body).to.be.a('object');
-          return Agent.request('GET', '/books/1?include=stores').promise();
+          return Agent.request('GET', '/v1/books/1?include=stores').promise();
         })
         .then(function(res) {
           var secondRead = res.body;
@@ -168,13 +168,13 @@ describe('updatingResources', function() {
         author: {linkage: {type: 'authors', id: '2'}},
         series: {linkage: {type: 'series', id: '2'}}
       };
-      return Agent.request('PATCH', '/books/1')
+      return Agent.request('PATCH', '/v1/books/1')
         .send(patchData)
         .promise()
         .then(function(res) {
           expect(res.status).to.be.within(200, 299);
           expect(res.body).to.be.a('object');
-          return Agent.request('GET', '/books/1?include=author,series').promise();
+          return Agent.request('GET', '/v1/books/1?include=author,series').promise();
         })
         .then(function(res) {
           var payloadLinks = res.body.data.links;
@@ -186,13 +186,13 @@ describe('updatingResources', function() {
 
     it('must attempt to remove to-One relationship with null', function() {
       patchData.data.links = { series: {linkage: null }};
-      return Agent.request('PATCH', '/books/1')
+      return Agent.request('PATCH', '/v1/books/1')
         .send(patchData)
         .promise()
         .then(function(res) {
           expect(res.status).to.be.within(200, 299);
           expect(res.body).to.be.a('object');
-          return Agent.request('GET', '/books/1?include=series').promise();
+          return Agent.request('GET', '/v1/books/1?include=series').promise();
         })
         .then(function(res) {
           var payloadLinks = res.body.data.links;
@@ -212,13 +212,13 @@ describe('updatingResources', function() {
         ]}
       };
 
-      return Agent.request('PATCH', '/books/1')
+      return Agent.request('PATCH', '/v1/books/1')
         .send(patchData)
         .promise()
         .then(function(res) {
           expect(res.status).to.be.within(200, 299);
           expect(res.body).to.be.a('object');
-          return Agent.request('GET', '/books/1?include=stores').promise();
+          return Agent.request('GET', '/v1/books/1?include=stores').promise();
         })
         .then(function(res) {
           var payloadLinks = res.body.data.links;
@@ -234,13 +234,13 @@ describe('updatingResources', function() {
         stores: {linkage: []},
       };
 
-      return Agent.request('PATCH', '/books/1')
+      return Agent.request('PATCH', '/v1/books/1')
         .send(patchData)
         .promise()
         .then(function(res) {
           expect(res.status).to.be.within(200, 299);
           expect(res.body).to.be.a('object');
-          return Agent.request('GET', '/books/1?include=stores').promise();
+          return Agent.request('GET', '/v1/books/1?include=stores').promise();
         })
         .then(function(res) {
           var payloadLinks = res.body.data.links;
@@ -257,7 +257,7 @@ describe('updatingResources', function() {
 
     describe('204NoContent', function() {
       it('must return 204 No Content on a successful update when attributes remain up-to-date', function() {
-        return Agent.request('PATCH', '/stores/1')
+        return Agent.request('PATCH', '/v1/stores/1')
           .send({data: {type: 'stores', id: '1', name: 'Updated Store'}})
           .promise()
           .then(function(res) {
@@ -269,7 +269,7 @@ describe('updatingResources', function() {
     describe('200Ok', function() {
 
       it('must return 200 OK if it accepts the update but changes the resource in some way', function() {
-        return Agent.request('PATCH', '/books/1')
+        return Agent.request('PATCH', '/v1/books/1')
           .send(patchData)
           .promise()
           .then(function(res) {
@@ -288,7 +288,7 @@ describe('updatingResources', function() {
     describe('404NotFound', function() {
       it('must return 404 Not Found when processing a request to modify a resource that does not exist', function() {
         patchData.data.id = '9999';
-        return Agent.request('PATCH', '/books/9999')
+        return Agent.request('PATCH', '/v1/books/9999')
           .send(patchData)
           .promise()
           .then(function(res) {
@@ -300,7 +300,7 @@ describe('updatingResources', function() {
         patchData.data.links = {
           author: {linkage: {type: 'authors', id: '9999'}}
         };
-        return Agent.request('PATCH', '/books/1')
+        return Agent.request('PATCH', '/v1/books/1')
           .send(patchData)
           .promise()
           .then(function(res) {
@@ -312,7 +312,7 @@ describe('updatingResources', function() {
         patchData.data.links = {
           stores: {linkage: [{type: 'stores', id: '9999'}]}
         };
-        return Agent.request('PATCH', '/books/1')
+        return Agent.request('PATCH', '/v1/books/1')
           .send(patchData)
           .promise()
           .then(function(res) {
@@ -326,7 +326,7 @@ describe('updatingResources', function() {
         patchData.data.links = {
           author: {linkage: null}
         };
-        return Agent.request('PATCH', '/books/1')
+        return Agent.request('PATCH', '/v1/books/1')
           .send(patchData)
           .promise()
           .then(function(res) {
@@ -336,7 +336,7 @@ describe('updatingResources', function() {
 
       // FIXME: Re-implement test
       it.skip('must return 409 Conflict when processing a request where the id does not match the endpoint', function() {
-        return Agent.request('PATCH', '/books/2')
+        return Agent.request('PATCH', '/v1/books/2')
           .send(patchData)
           .promise()
           .then(function(res) {
@@ -347,7 +347,7 @@ describe('updatingResources', function() {
       // FIXME: Re-implement test
       // see request-handler/lib/verify_data_object
       it.skip('must return 409 Conflict when processing a request where the type does not match the endpoint', function() {
-        return Agent.request('PATCH', '/authors/1')
+        return Agent.request('PATCH', '/v1/authors/1')
           .send(patchData)
           .promise()
           .then(function(res) {
@@ -371,12 +371,12 @@ describe('updatingRelationships', function() {
   describe('updatingToOneRelationships', function() {
     // /books/1/author
     it('must update relationships with a PATCH request to a to-one relationship URL containing a data object with type and id members and return 204 No Content on success', function() {
-      return Agent.request('PATCH', '/books/1/links/author')
+      return Agent.request('PATCH', '/v1/books/1/links/author')
         .send({ data: { type: 'authors', id: '2' }})
         .promise()
         .then(function(res) {
           expect(res.status).to.equal(204);
-          return Agent.request('GET', '/books/1?include=author').promise();
+          return Agent.request('GET', '/v1/books/1?include=author').promise();
         })
         .then(function(res) {
           var payloadLinks = res.body.data.links;
@@ -385,12 +385,12 @@ describe('updatingRelationships', function() {
     });
 
     it('must remove relationships with a PATCH request to a to-one relationship URL containing a data object with a null value and return 204 No Content on success', function() {
-      return Agent.request('PATCH', '/books/1/links/series')
+      return Agent.request('PATCH', '/v1/books/1/links/series')
         .send({ data: null })
         .promise()
         .then(function(res) {
           expect(res.status).to.equal(204);
-          return Agent.request('GET', '/books/1?include=series').promise();
+          return Agent.request('GET', '/v1/books/1?include=series').promise();
         })
         .then(function(res) {
           var payloadLinks = res.body.data.links;
@@ -399,7 +399,7 @@ describe('updatingRelationships', function() {
     });
 
     it('must require a top-level data member containing either an object with type and id members or null', function() {
-      return Agent.request('PATCH', '/books/1/links/series')
+      return Agent.request('PATCH', '/v1/books/1/links/series')
         .send({ data: { what: 'a bad request'}})
         .promise()
         .then(function(res) {
@@ -410,7 +410,7 @@ describe('updatingRelationships', function() {
 
   describe('updatingToManyRelationships', function() {
     it('must require a top-level data member an array of linkage objects for PATCH requests', function() {
-      return Agent.request('PATCH', '/books/1/links/stores')
+      return Agent.request('PATCH', '/v1/books/1/links/stores')
         .send({ data: [
           { what: 'a bad request' }
         ]})
@@ -422,7 +422,7 @@ describe('updatingRelationships', function() {
 
     // /books/1/stores
     it('must update relationships with a PATCH request to a to-many relationship URL containing a data object with type and id members  and return 204 No Content on success', function() {
-      return Agent.request('PATCH', '/books/1/links/stores')
+      return Agent.request('PATCH', '/v1/books/1/links/stores')
         .send({ data: [
           { type: 'stores', id: '1' },
           { type: 'stores', id: '2' }
@@ -430,7 +430,7 @@ describe('updatingRelationships', function() {
         .promise()
         .then(function(res) {
           expect(res.status).to.equal(204);
-          return Agent.request('GET', '/books/1?include=stores').promise();
+          return Agent.request('GET', '/v1/books/1?include=stores').promise();
         })
         .then(function(res) {
           var payloadLinks = res.body.data.links;
@@ -442,12 +442,12 @@ describe('updatingRelationships', function() {
 
     it('must remove relationships with a PATCH request to a to-many relationship URL containing a data object with a null value and return 204 No Content on success', function() {
       var newIds = [];
-      return Agent.request('PATCH', '/books/1/links/stores')
+      return Agent.request('PATCH', '/v1/books/1/links/stores')
         .send({ data: newIds})
         .promise()
         .then(function(res) {
           expect(res.status).to.equal(204);
-          return Agent.request('GET', '/books/1?include=stores').promise();
+          return Agent.request('GET', '/v1/books/1?include=stores').promise();
         })
         .then(function(res) {
           var payloadLinks = res.body.data.links;
@@ -460,12 +460,12 @@ describe('updatingRelationships', function() {
       var newIds = [
         { type: 'stores', id: '1' }
       ];
-      return Agent.request('PATCH', '/books/1/links/stores')
+      return Agent.request('PATCH', '/v1/books/1/links/stores')
         .send({ data: newIds})
         .promise()
         .then(function(res) {
           expect(res.status).to.equal(204);
-          return Agent.request('GET', '/books/1?include=stores').promise();
+          return Agent.request('GET', '/v1/books/1?include=stores').promise();
         })
         .then(function(res) {
           var payloadLinks = res.body.data.links;
@@ -479,7 +479,7 @@ describe('updatingRelationships', function() {
       var newIds = [
         { type: 'stores', id: '3' }
       ];
-      return Agent.request('PATCH', '/books/1/links/stores')
+      return Agent.request('PATCH', '/v1/books/1/links/stores')
         .send({ data: newIds})
         .promise()
         .then(function(res) {
@@ -491,7 +491,7 @@ describe('updatingRelationships', function() {
       var newIds = [
         { type: 'books', id: '1' }
       ];
-      return Agent.request('PATCH', '/stores/2/links/books')
+      return Agent.request('PATCH', '/v1/stores/2/links/books')
         .send({ data: newIds})
         .promise()
         .then(function(res) {
@@ -500,7 +500,7 @@ describe('updatingRelationships', function() {
     });
 
     it('must require a top-level data member an array of linkage objects for POST requests', function() {
-      return Agent.request('POST', '/books/1/links/stores')
+      return Agent.request('POST', '/v1/books/1/links/stores')
         .send({ data: [
           { what: 'a bad request' }
         ]})
@@ -514,12 +514,12 @@ describe('updatingRelationships', function() {
       var newIds = [
         { type: 'stores', id: '1' }
       ];
-      return Agent.request('POST', '/books/1/links/stores')
+      return Agent.request('POST', '/v1/books/1/links/stores')
         .send({ data: newIds})
         .promise()
         .then(function(res) {
           expect(res.status).to.equal(204);
-          return Agent.request('GET', '/books/1?include=stores').promise();
+          return Agent.request('GET', '/v1/books/1?include=stores').promise();
         })
         .then(function(res) {
           var payloadLinks = res.body.data.links;
@@ -534,12 +534,12 @@ describe('updatingRelationships', function() {
       var newIds = [
         { type: 'stores', id: '2' }
       ];
-      return Agent.request('POST', '/books/1/links/stores')
+      return Agent.request('POST', '/v1/books/1/links/stores')
         .send({ data: newIds})
         .promise()
         .then(function(res) {
           expect(res.status).to.equal(204);
-          return Agent.request('GET', '/books/1?include=stores').promise();
+          return Agent.request('GET', '/v1/books/1?include=stores').promise();
         })
         .then(function(res) {
           var payloadLinks = res.body.data.links;
@@ -550,7 +550,7 @@ describe('updatingRelationships', function() {
     });
 
     it('must require a top-level data member an array of linkage objects for DELETE requests', function() {
-      return Agent.request('DELETE', '/books/1/links/stores')
+      return Agent.request('DELETE', '/v1/books/1/links/stores')
         .send({ data: [
           { what: 'a bad request' }
         ]})
@@ -564,12 +564,12 @@ describe('updatingRelationships', function() {
       var newIds = [
         { type: 'stores', id: '2' }
       ];
-      return Agent.request('DELETE', '/books/1/links/stores')
+      return Agent.request('DELETE', '/v1/books/1/links/stores')
         .send({ data: newIds})
         .promise()
         .then(function(res) {
           expect(res.status).to.equal(204);
-          return Agent.request('GET', '/books/1?include=stores').promise();
+          return Agent.request('GET', '/v1/books/1?include=stores').promise();
         })
         .then(function(res) {
           var payloadLinks = res.body.data.links;
@@ -582,12 +582,12 @@ describe('updatingRelationships', function() {
       var newIds = [
         { type: 'stores', id: '1' }
       ];
-      return Agent.request('DELETE', '/books/1/links/stores')
+      return Agent.request('DELETE', '/v1/books/1/links/stores')
         .send({ data: newIds})
         .promise()
         .then(function(res) {
           expect(res.status).to.equal(204);
-          return Agent.request('GET', '/books/1?include=stores').promise();
+          return Agent.request('GET', '/v1/books/1?include=stores').promise();
         })
         .then(function(res) {
           var payloadLinks = res.body.data.links;

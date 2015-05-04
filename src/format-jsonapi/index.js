@@ -26,8 +26,7 @@ class JsonApiFormat {
    * @return {String}
    */
   selfUrl (model) {
-    const store = this.store;
-    return `${this.baseUrl}/${store.type(model)}/${store.id(model)}`;
+    return `${this.baseUrl}/${this.store.id(model)}`;
   }
 
   /**
@@ -37,8 +36,7 @@ class JsonApiFormat {
    * @return {String}
    */
   relatedUrl (model, relation) {
-    const store = this.store;
-    return `/${store.type(model)}/${store.id(model)}/${relation}`;
+    return `${this.baseUrl}/${this.store.id(model)}/${relation}`;
   }
 
   /**
@@ -48,8 +46,7 @@ class JsonApiFormat {
    * @return {String}
    */
   relationUrl (model, relation) {
-    const store = this.store;
-    return `/${store.type(model)}/${store.id(model)}/links/${relation}`;
+    return `${this.baseUrl}/${this.store.id(model)}/links/${relation}`;
   }
 
   /**

@@ -20,7 +20,7 @@ app.use(bodyParser.json({
 
 resources.forEach(function (resource) {
   API.register(resource);
-  app.use(API.endpoint(resource, 'v1'));
+  app.use(API.endpoint(resource));
 });
 
 app.get('/v1', function (request, response) {

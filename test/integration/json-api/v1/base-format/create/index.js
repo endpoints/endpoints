@@ -23,7 +23,7 @@ describe('creatingResources', function() {
   });
 
   it('must require an ACCEPT header specifying the JSON API media type', function() {
-    return Agent.request('POST', '/books')
+    return Agent.request('POST', '/v1/books')
       .accept('')
       .promise()
       .then(function(res) {
@@ -32,7 +32,7 @@ describe('creatingResources', function() {
   });
 
   it('must respond to a successful request with an object', function() {
-    return Agent.request('POST', '/books')
+    return Agent.request('POST', '/v1/books')
       .send({ data: bookData })
       .promise()
       .then(function(res) {
@@ -42,7 +42,7 @@ describe('creatingResources', function() {
   });
 
   it('must respond to an unsuccessful request with a JSON object containing a collection keyed by "errors" in the top level', function() {
-    return Agent.request('POST', '/books')
+    return Agent.request('POST', '/v1/books')
       .send({})
       .promise()
       .then(function(res) {
@@ -53,7 +53,7 @@ describe('creatingResources', function() {
   });
 
   it('must require a content-type header of application/vnd.api+json', function() {
-    return Agent.request('POST', '/books')
+    return Agent.request('POST', '/v1/books')
       .type('application/json')
       .send({ data: bookData })
       .promise()
@@ -66,7 +66,7 @@ describe('creatingResources', function() {
   // it('must not allow partial updates');
 
   it('must require a single resource object as primary data', function() {
-    return Agent.request('POST', '/books')
+    return Agent.request('POST', '/v1/books')
       .send({ data: [bookData] })
       .promise()
       .then(function(res) {
@@ -76,7 +76,7 @@ describe('creatingResources', function() {
 
   it('must require primary data to have a type member', function() {
     delete bookData.type;
-    return Agent.request('POST', '/books')
+    return Agent.request('POST', '/v1/books')
       .send({ data: bookData })
       .promise()
       .then(function(res) {
@@ -86,7 +86,7 @@ describe('creatingResources', function() {
 
   describe('clientGeneratedIds', function() {
     it('may accept a client-generated ID along with a request to create a resource', function() {
-      return Agent.request('POST', '/stores')
+      return Agent.request('POST', '/v1/stores')
         .send({
           data: {
             id: 9999,
@@ -102,7 +102,7 @@ describe('creatingResources', function() {
 
     it('must return 403 Forbidden in response to an unsupported request using a client-generated ID', function () {
       bookData.id = 9999;
-      return Agent.request('POST', '/books')
+      return Agent.request('POST', '/v1/books')
         .send({ data: bookData })
         .promise()
         .then(function(res) {
@@ -115,21 +115,21 @@ describe('creatingResources', function() {
 
     describe('201Created', function() {
       it('must respond with 201 and  include a Location header identifying the location of the new resource', function() {
-        return Agent.request('POST', '/books')
+        return Agent.request('POST', '/v1/books')
           .send({ data: bookData })
           .promise()
           .then(function(res) {
             expect(res.status).to.equal(201);
             var location = res.headers.location;
             var book = res.body.data;
-            var expectedLocation = '/books/' + book.id;
+            var expectedLocation = '/v1/books/' + book.id;
 
             expect(location).to.equal(expectedLocation);
           });
       });
 
       it('must include a document containing the primary resource created', function() {
-        return Agent.request('POST', '/books')
+        return Agent.request('POST', '/v1/books')
           .send({ data: bookData })
           .promise()
           .then(function(res) {
@@ -142,7 +142,7 @@ describe('creatingResources', function() {
       });
 
       it('must make the self link and Location header the same', function() {
-        return Agent.request('POST', '/books')
+        return Agent.request('POST', '/v1/books')
           .send({ data: bookData })
           .promise()
           .then(function(res) {
@@ -151,7 +151,7 @@ describe('creatingResources', function() {
       });
 
       it('must add all relations', function() {
-        return Agent.request('POST', '/books')
+        return Agent.request('POST', '/v1/books')
           .send({ data: bookData })
           .promise()
           .then(function(res) {
@@ -159,7 +159,7 @@ describe('creatingResources', function() {
             var createData = res.body.data;
             expect(createData.id).to.be.a('string');
 
-            return Agent.request('GET', '/books/' + createData.id + '?include=author,series,stores')
+            return Agent.request('GET', '/v1/books/' + createData.id + '?include=author,series,stores')
               .promise()
               .then(function(res) {
                 var readResult = res.body;
@@ -190,7 +190,7 @@ describe('creatingResources', function() {
     describe.skip('409Conflict', function() {
       it('must return 409 Conflict when processing a request to create a resource with an existing client-generated ID', function() {
         bookData.id = 1;
-        return Agent.request('POST', '/books')
+        return Agent.request('POST', '/v1/books')
           .send({ data: bookData })
           .promise()
           .then(function(res) {
@@ -200,7 +200,7 @@ describe('creatingResources', function() {
 
       it('must return 409 Conflict when processing a request where the type does not match the endpoint', function() {
         bookData.type = 'authors';
-        return Agent.request('POST', '/books')
+        return Agent.request('POST', '/v1/books')
           .send({ data: bookData })
           .promise()
           .then(function(res) {

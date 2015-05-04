@@ -10,7 +10,7 @@ app.listen(port, host);
 console.log('Server running on, %s:%d', host, port);
 
 module.exports = app;
-module.exports.baseUrl = 'http://' + host + ':' + port + '/v1';
+module.exports.baseUrl = 'http://' + host + ':' + port;
 
 if (!process.env.TESTING) {
   require('./fixture').reset();
