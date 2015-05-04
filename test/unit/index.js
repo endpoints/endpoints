@@ -1,11 +1,9 @@
-require('babel/register');
-
 describe('Unit', function () {
-  require('../../src/application/test');
-  //require('../../src/controller/test');
-  //require('../../src/format-jsonapi/test');
-  //require('../../src/payload-handler/test');
-  //require('../../src/request-handler/test');
-  //require('../../src/store-bookshelf/test');
-  require('../../src/validate-json-schema/test');
+  require('./application');
+  //require('./controller/test');
+  //require('./payload-handler/test');
+  //require('./request-handler/test');
+  //require('./store-bookshelf/test');
+  //require('./format-jsonapi/test');
+  //require('./validate-json-schema/test');
 });
