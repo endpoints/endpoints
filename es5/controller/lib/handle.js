@@ -16,14 +16,17 @@ var _import = require('./send');
 
 var send = _interopRequireWildcard(_import);
 
-module.exports = function (config) {
+module.exports = function (config, baseUrl) {
   var method = config.method;
   var responder = config.responder;
   var format = config.format;
   var store = config.store;
 
   var requestHandler = new _RequestHandler2['default'](config);
-  var payloadHandler = new _PayloadHandler2['default'](new format({ store: store }));
+  var payloadHandler = new _PayloadHandler2['default'](new format({
+    store: store,
+    baseUrl: baseUrl
+  }));
 
   return function (request, response) {
     var server = 'express'; // detect if hapi or express here

@@ -18,10 +18,6 @@ var _parseResource = require('./lib/parse_resource');
 
 var _parseResource2 = _interopRequireDefault(_parseResource);
 
-var _slashWrap = require('./lib/slash_wrap');
-
-var _slashWrap2 = _interopRequireDefault(_slashWrap);
-
 var Application = (function () {
   function Application(opts) {
     _classCallCheck(this, Application);
@@ -44,7 +40,6 @@ var Application = (function () {
       input.forEach(this.register.bind(this));
       return this;
     }
-
     var resource = _parseResource2['default'](input, this.searchPaths);
     var resourceName = resource.name;
     if (this._resources[resourceName]) {
@@ -54,10 +49,11 @@ var Application = (function () {
     return this;
   };
 
-  Application.prototype.endpoint = function endpoint(resourceName, prefix) {
+  Application.prototype.endpoint = function endpoint(resourceName) {
     var resource = this.resource(resourceName);
-    var url = _slashWrap2['default'](prefix) + resourceName;
-    var output = this.routeBuilder(resource.routes, url);
+    var routes = resource.routes.map;
+    var url = resource.controller.url;
+    var output = this.routeBuilder(routes, url);
     this._endpoints.push({
       name: resourceName,
       url: url,

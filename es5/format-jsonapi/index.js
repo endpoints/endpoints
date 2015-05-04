@@ -39,8 +39,7 @@ var JsonApiFormat = (function () {
    */
 
   JsonApiFormat.prototype.selfUrl = function selfUrl(model) {
-    var store = this.store;
-    return '' + this.baseUrl + '/' + store.type(model) + '/' + store.id(model);
+    return '' + this.baseUrl + '/' + this.store.id(model);
   };
 
   /**
@@ -51,8 +50,7 @@ var JsonApiFormat = (function () {
    */
 
   JsonApiFormat.prototype.relatedUrl = function relatedUrl(model, relation) {
-    var store = this.store;
-    return '/' + store.type(model) + '/' + store.id(model) + '/' + relation;
+    return '' + this.baseUrl + '/' + this.store.id(model) + '/' + relation;
   };
 
   /**
@@ -63,8 +61,7 @@ var JsonApiFormat = (function () {
    */
 
   JsonApiFormat.prototype.relationUrl = function relationUrl(model, relation) {
-    var store = this.store;
-    return '/' + store.type(model) + '/' + store.id(model) + '/links/' + relation;
+    return '' + this.baseUrl + '/' + this.store.id(model) + '/links/' + relation;
   };
 
   /**

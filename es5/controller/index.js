@@ -22,6 +22,10 @@ var _handle = require('./lib/handle');
 
 var _handle2 = _interopRequireDefault(_handle);
 
+var _singleSlashJoin = require('./lib/single_slash_join');
+
+var _singleSlashJoin2 = _interopRequireDefault(_singleSlashJoin);
+
 /**
   Provides methods for generating request handling functions that can
   be used by any node http server.
@@ -32,32 +36,39 @@ var Controller = (function () {
   /**
     The constructor.
      @constructs Controller
-    @param {Object} opts - opts.format: An endpoints format adapter.
-    @param {Object} opts - opts.store: An endpoints store adapter.
-    @param {Object} opts - opts.model: A model compatible with the store adapter.
-    @param {Object} opts - opts.validators: An array of validating methods.
-    @param {Object} opts - opts.allowClientGeneratedIds: boolean indicating this
+    @param {Object} config - config.format: An endpoints format adapter.
+    @param {Object} config - config.store: An endpoints store adapter.
+    @param {Object} config - config.baseUrl: A base url for link generation.
+    @param {Object} config - config.basePath: A base path for link generation.
+    @param {Object} config - config.model: A model compatible with the store adapter.
+    @param {Object} config - config.validators: An array of validating methods.
+    @param {Object} config - opts.allowClientGeneratedIds: boolean indicating this
   */
 
   function Controller() {
-    var opts = arguments[0] === undefined ? {} : arguments[0];
+    var config = arguments[0] === undefined ? {} : arguments[0];
 
     _classCallCheck(this, Controller);
 
-    if (!opts.format) {
+    if (!config.format) {
       throw new Error('No format specified.');
     }
-    if (!opts.store) {
+    if (!config.store) {
       throw new Error('No store specified.');
     }
-    if (!opts.model) {
+    if (!config.model) {
       throw new Error('No model specified.');
+    }
+    if (!config.baseUrl) {
+      throw new Error('No baseUrl specified for URL generation.');
+    }
+    if (!config.basePath) {
+      throw new Error('No basePath specified for URL generation.');
     }
     this.config = _import2['default'].extend({
       validators: [],
       allowClientGeneratedIds: false,
-      allowToManyFullReplacement: true
-    }, opts);
+      allowToManyFullReplacement: true }, config);
   }
 
   Controller.extend = function extend() {
@@ -97,7 +108,8 @@ var Controller = (function () {
     if (validationFailures.length) {
       throw new Error(validationFailures.join('\n'));
     }
-    return _handle2['default'](config);
+    // TODO: fix this gross passing of the url
+    return _handle2['default'](config, this.url);
   };
 
   Controller.prototype.create = function create(opts) {
@@ -135,6 +147,21 @@ var Controller = (function () {
       return {
         filters: store.filters(model),
         includes: store.allRelations(model) };
+    }
+  }, {
+    key: 'baseUrl',
+    get: function () {
+      return this.config.baseUrl;
+    }
+  }, {
+    key: 'basePath',
+    get: function () {
+      return this.config.basePath;
+    }
+  }, {
+    key: 'url',
+    get: function () {
+      return _singleSlashJoin2['default']([this.baseUrl, this.basePath]);
     }
   }]);
 
