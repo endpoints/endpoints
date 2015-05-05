@@ -15,4 +15,4 @@ This project is currently under heavy development. If you wish to use this in a 
 At the time of this writing, performance is **not** a concern of this project.
 
 ## Architecture
-Documentation forthcoming.
+Please see [the wiki](https://github.com/endpoints/endpoints/wiki).
