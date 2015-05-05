@@ -1,4 +1,4 @@
-import {expect} from 'chai';
+/*import {expect} from 'chai';
 import sinon from 'sinon';
 import RequestHandler from '../../../src/request-handler';
 
@@ -11,7 +11,7 @@ var req = {
 var source = {
   typeName: function() {}
 };
-
+*/
 describe('RequestHandler', function () {
 
   describe('lib', function () {
