@@ -2,6 +2,7 @@ import _ from 'lodash';
 import bPromise from 'bluebird';
 import destructure from './destructure';
 import serialize from './serialize';
+import transact from './_transact';
 
 /**
  * Updates a model.
@@ -22,30 +23,43 @@ export default function update (model, method, params) {
     model.constructor.prototype.update = baseUpdate;
   }
   return destructure(model, params).then(function(destructured) {
-    return model[method](
-      destructured.data,
-      destructured.toManyRels,
-      serialize(model)
-    );
+    return transact(model, function (transaction) {
+      return model[method](
+        transaction,
+        destructured.attributes,
+        destructured.relations,
+        serialize(model)
+      );
+    });
   });
 }
 
 // FIXME: the stuff below is gross. upstream to bookshelf... or something.
 
-function baseUpdate (params, toManyRels, previous) {
-  const clientState = _.extend(previous, params);
-  return this.save(params, {patch: true, method: 'update'}).tap(function (model) {
-    return bPromise.map(toManyRels, function(rel) {
-      return model.related(rel.name).detach().then(function() {
-        return model.related(rel.name).attach(rel.id);
+function baseUpdate (transaction, attributes, relations, previous) {
+  const clientState = _.extend(previous, attributes);
+    return this.save(attributes, {
+      patch: true,
+      method: 'update',
+      transacting: transaction
+    })
+    .tap(function (model) {
+      return bPromise.map(relations, function(rel) {
+        return model.related(rel.name).detach(undefined, {
+          transacting: transaction
+        }).then(function() {
+          return model.related(rel.name).attach(rel.id, {
+            transacting: transaction
+          });
+        });
       });
+    })
+    .then(function(model) {
+      // Bookshelf .previousAttributes() doesn't work
+      // See: https://github.com/tgriesser/bookshelf/issues/326#issuecomment-76637186
+      if (_.isEqual(model.toJSON({shallow: true}), clientState)) {
+        return null;
+      }
+      return model;
     });
-  }).then(function(model) {
-    // Bookshelf .previousAttributes() doesn't work
-    // See: https://github.com/tgriesser/bookshelf/issues/326#issuecomment-76637186
-    if (_.isEqual(model.toJSON({shallow: true}), clientState)) {
-      return null;
-    }
-    return model;
-  });
 }

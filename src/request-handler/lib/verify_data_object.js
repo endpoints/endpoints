@@ -5,9 +5,14 @@ export default function(request, endpoint) {
   var err, isValidType, id;
   var data = request.body.data;
 
-  if (!_.isPlainObject(data) && !_.isArray(data)) {
-    err = Kapow(400, 'Primary data must be a single object or array.');
-    return err;
+  // this is such horrible, horrible bullshit
+  var method = endpoint.config.method;
+
+  if (method === 'create') {
+    if (!_.isPlainObject(data)) {
+      err = Kapow(400, 'Primary data must be a single object or array.');
+      return err;
+    }
   }
 
   if (_.isArray(data)) {

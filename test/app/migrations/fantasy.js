@@ -20,7 +20,7 @@ exports.up = function (knex) {
     }).
     createTable('chapters', function (t) {
       t.increments('id');
-      t.integer('book_id').notNullable().references('id').inTable('book');
+      t.integer('book_id').notNullable().references('id').inTable('books');
       t.text('title').notNullable();
       t.integer('ordering').notNullable();
     }).

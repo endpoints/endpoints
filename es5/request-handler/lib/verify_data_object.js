@@ -16,9 +16,14 @@ exports['default'] = function (request, endpoint) {
   var err, isValidType, id;
   var data = request.body.data;
 
-  if (!_lodash2['default'].isPlainObject(data) && !_lodash2['default'].isArray(data)) {
-    err = _kapow2['default'](400, 'Primary data must be a single object or array.');
-    return err;
+  // this is such horrible, horrible bullshit
+  var method = endpoint.config.method;
+
+  if (method === 'create') {
+    if (!_lodash2['default'].isPlainObject(data)) {
+      err = _kapow2['default'](400, 'Primary data must be a single object or array.');
+      return err;
+    }
   }
 
   if (_lodash2['default'].isArray(data)) {

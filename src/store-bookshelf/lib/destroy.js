@@ -15,8 +15,8 @@ export default function destroy (model, method, params) {
   }
   return destructure(model, params).then(function(destructured) {
     return model[method](
-      destructured.data,
-      destructured.toManyRels,
+      destructured.attributes,
+      destructured.relations,
       serialize(model)
     );
   });

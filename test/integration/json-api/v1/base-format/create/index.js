@@ -8,9 +8,11 @@ describe('creatingResources', function() {
 
   beforeEach(function() {
     bookData = {
-      'type': 'books',
-      'title': 'The Lost Book of Tolkien',
-      'date_published': '2015-02-17',
+      type: 'books',
+      attributes: {
+        title: 'The Lost Book of Tolkien',
+        date_published: '2015-02-17'
+      },
       links: {
         author: {linkage: {type: 'authors', id: '1'}},
         series: {linkage: {type: 'series', id: '1'}},
@@ -91,7 +93,9 @@ describe('creatingResources', function() {
           data: {
             id: 9999,
             type: 'stores',
-            name: 'user generated id store'
+            attributes: {
+              name: 'user generated id store'
+            }
           }
         })
         .promise()
@@ -114,7 +118,7 @@ describe('creatingResources', function() {
   describe('responses', function() {
 
     describe('201Created', function() {
-      it('must respond with 201 and  include a Location header identifying the location of the new resource', function() {
+      it('must respond with 201 and include a Location header identifying the location of the new resource', function() {
         return Agent.request('POST', '/v1/books')
           .send({ data: bookData })
           .promise()
@@ -166,8 +170,8 @@ describe('creatingResources', function() {
                 var payloadData = readResult.data;
                 var payloadLinks = payloadData.links;
                 expect(readResult.included.length).to.equal(3);
-                expect(payloadData.title).to.equal(bookData.title);
-                expect(payloadData.date_published).to.equal(bookData.date_published);
+                expect(payloadData.attributes.title).to.equal(bookData.attributes.title);
+                expect(payloadData.attributes.date_published).to.equal(bookData.attributes.date_published);
                 expect(payloadLinks.author.linkage.id).to.equal(bookData.links.author.linkage.id);
                 expect(payloadLinks.series.linkage.id).to.equal(bookData.links.series.linkage.id);
                 expect(payloadLinks.stores.linkage[0].id).to.equal(bookData.links.stores.linkage[0].id);

@@ -14,7 +14,9 @@ describe('v1', function () {
         data: {
           type: 'books',
           id: '1',
-          title: 'tiddlywinks'
+          attributes: {
+            title: 'tiddlywinks'
+          }
         },
         notData: {
           what: 'a bad piece of data this is'

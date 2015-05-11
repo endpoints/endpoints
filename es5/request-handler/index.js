@@ -276,12 +276,6 @@ var RequestHandler = (function () {
       }
 
       return store.update(model, method, data);
-    })['catch'](function (e) {
-      // FIXME: This may only work for SQLITE3, but tries to be general
-      if (e.message.toLowerCase().indexOf('null') !== -1) {
-        _kapow2['default'].wrap(e, 409);
-      }
-      throw e;
     });
   };
 

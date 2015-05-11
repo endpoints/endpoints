@@ -39,6 +39,7 @@ module.exports = function (config, baseUrl) {
       respond(payloadHandler.error(errors));
     } else {
       process(request).then(format).then(respond)['catch'](function (err) {
+        //throw err;
         return respond(payloadHandler.error(err));
       });
     }

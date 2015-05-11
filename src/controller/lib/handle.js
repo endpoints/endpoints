@@ -26,6 +26,7 @@ module.exports = function (config, baseUrl) {
         .then(format)
         .then(respond)
         .catch(function (err) {
+          //throw err;
           return respond(payloadHandler.error(err));
         });
     }
