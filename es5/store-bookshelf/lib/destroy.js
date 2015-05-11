@@ -2,8 +2,6 @@
 
 exports.__esModule = true;
 
-var _interopRequireDefault = function (obj) { return obj && obj.__esModule ? obj : { 'default': obj }; };
-
 /**
  * Deletes a model. Same implementation as update.
  *
@@ -13,6 +11,8 @@ var _interopRequireDefault = function (obj) { return obj && obj.__esModule ? obj
  * @return {Promise.Bookshelf.Model} The deleted model.
  */
 exports['default'] = destroy;
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
 
 var _serialize = require('./serialize');
 

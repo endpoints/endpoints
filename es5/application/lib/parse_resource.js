@@ -2,29 +2,29 @@
 
 exports.__esModule = true;
 
-var _interopRequireDefault = function (obj) { return obj && obj.__esModule ? obj : { 'default': obj }; };
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
 
 var _path = require('path');
 
 var _path2 = _interopRequireDefault(_path);
 
-var _requireSearch = require('./require_search');
+var _require_search = require('./require_search');
 
-var _requireSearch2 = _interopRequireDefault(_requireSearch);
+var _require_search2 = _interopRequireDefault(_require_search);
 
-var _requireSilent = require('./require_silent');
+var _require_silent = require('./require_silent');
 
-var _requireSilent2 = _interopRequireDefault(_requireSilent);
+var _require_silent2 = _interopRequireDefault(_require_silent);
 
 exports['default'] = function (name, searchPaths) {
   var routeModulePath, moduleBasePath;
   if (typeof name === 'string') {
-    routeModulePath = _requireSearch2['default'](_path2['default'].join(name, 'routes'), searchPaths);
+    routeModulePath = _require_search2['default'](_path2['default'].join(name, 'routes'), searchPaths);
     moduleBasePath = _path2['default'].dirname(routeModulePath);
     return {
       name: name,
       routes: require(routeModulePath),
-      controller: _requireSilent2['default'](_path2['default'].join(moduleBasePath, 'controller'))
+      controller: _require_silent2['default'](_path2['default'].join(moduleBasePath, 'controller'))
     };
   }
   if (!name) {

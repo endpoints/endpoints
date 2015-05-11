@@ -2,20 +2,20 @@
 
 exports.__esModule = true;
 
-var _interopRequireDefault = function (obj) { return obj && obj.__esModule ? obj : { 'default': obj }; };
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
 
-var _Kapow = require('kapow');
+var _kapow = require('kapow');
 
-var _Kapow2 = _interopRequireDefault(_Kapow);
+var _kapow2 = _interopRequireDefault(_kapow);
 
-var _validator = require('is-my-json-valid');
+var _isMyJsonValid = require('is-my-json-valid');
 
-var _validator2 = _interopRequireDefault(_validator);
+var _isMyJsonValid2 = _interopRequireDefault(_isMyJsonValid);
 
 function transformErrorFields(input, errors) {
   return errors.map(function (error) {
     var field = error.field.replace(/^data/, input);
-    return _Kapow2['default'](400, field + ' ' + error.message, error);
+    return _kapow2['default'](400, field + ' ' + error.message, error);
   });
 }
 
@@ -24,7 +24,7 @@ exports['default'] = function (request, endpoint) {
   var schema = endpoint.schema || {};
 
   for (var prop in schema) {
-    var validate = _validator2['default'](schema[prop] || {});
+    var validate = _isMyJsonValid2['default'](schema[prop] || {});
     if (!validate(request[prop])) {
       err = transformErrorFields(prop, validate.errors);
       break;

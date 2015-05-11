@@ -2,15 +2,15 @@
 
 exports.__esModule = true;
 
-var _interopRequireDefault = function (obj) { return obj && obj.__esModule ? obj : { 'default': obj }; };
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
 
-var _import = require('lodash');
+var _lodash = require('lodash');
 
-var _import2 = _interopRequireDefault(_import);
+var _lodash2 = _interopRequireDefault(_lodash);
 
-var _Kapow = require('kapow');
+var _kapow = require('kapow');
 
-var _Kapow2 = _interopRequireDefault(_Kapow);
+var _kapow2 = _interopRequireDefault(_kapow);
 
 exports['default'] = function (request, endpoint) {
   var err;
@@ -19,7 +19,7 @@ exports['default'] = function (request, endpoint) {
 
   function hasToManyLinkage(object) {
     var has = false;
-    _import2['default'].forIn(object.links, function (val, key) {
+    _lodash2['default'].forIn(object.links, function (val, key) {
       if (Array.isArray(val.linkage)) {
         has = true;
       }
@@ -31,14 +31,14 @@ exports['default'] = function (request, endpoint) {
   if (mode === 'relation') {
     err = Array.isArray(data);
   } else if (Array.isArray(data)) {
-    err = _import2['default'].reduce(data, function (result, resource) {
+    err = _lodash2['default'].reduce(data, function (result, resource) {
       return result || hasToManyLinkage(resource);
     }, false);
   } else {
     err = hasToManyLinkage(data);
   }
 
-  return err ? _Kapow2['default'](403, 'Full replacement of to-Many relations is not allowed.') : null;
+  return err ? _kapow2['default'](403, 'Full replacement of to-Many relations is not allowed.') : null;
 };
 
 module.exports = exports['default'];

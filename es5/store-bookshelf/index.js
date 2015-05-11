@@ -2,88 +2,88 @@
 
 exports.__esModule = true;
 
-var _interopRequireDefault = function (obj) { return obj && obj.__esModule ? obj : { 'default': obj }; };
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
 
 // reading
 
-var _byId = require('./lib/by_id');
+var _libBy_id = require('./lib/by_id');
 
-var _byId2 = _interopRequireDefault(_byId);
+var _libBy_id2 = _interopRequireDefault(_libBy_id);
 
-var _allRelations = require('./lib/all_relations');
+var _libAll_relations = require('./lib/all_relations');
 
-var _allRelations2 = _interopRequireDefault(_allRelations);
+var _libAll_relations2 = _interopRequireDefault(_libAll_relations);
 
-var _id = require('./lib/id');
+var _libId = require('./lib/id');
 
-var _id2 = _interopRequireDefault(_id);
+var _libId2 = _interopRequireDefault(_libId);
 
-var _isMany = require('./lib/is_many');
+var _libIs_many = require('./lib/is_many');
 
-var _isMany2 = _interopRequireDefault(_isMany);
+var _libIs_many2 = _interopRequireDefault(_libIs_many);
 
-var _modelsFromCollection = require('./lib/models_from_collection');
+var _libModels_from_collection = require('./lib/models_from_collection');
 
-var _modelsFromCollection2 = _interopRequireDefault(_modelsFromCollection);
+var _libModels_from_collection2 = _interopRequireDefault(_libModels_from_collection);
 
-var _related = require('./lib/related');
+var _libRelated = require('./lib/related');
 
-var _related2 = _interopRequireDefault(_related);
+var _libRelated2 = _interopRequireDefault(_libRelated);
 
-var _toOneRelations = require('./lib/to_one_relations');
+var _libTo_one_relations = require('./lib/to_one_relations');
 
-var _toOneRelations2 = _interopRequireDefault(_toOneRelations);
+var _libTo_one_relations2 = _interopRequireDefault(_libTo_one_relations);
 
-var _type = require('./lib/type');
+var _libType = require('./lib/type');
 
-var _type2 = _interopRequireDefault(_type);
+var _libType2 = _interopRequireDefault(_libType);
 
-var _read = require('./lib/read');
+var _libRead = require('./lib/read');
 
-var _read2 = _interopRequireDefault(_read);
+var _libRead2 = _interopRequireDefault(_libRead);
 
-var _readForRelated2 = require('./lib/_read_for_related');
+var _lib_read_for_related = require('./lib/_read_for_related');
 
-var _readForRelated3 = _interopRequireDefault(_readForRelated2);
+var _lib_read_for_related2 = _interopRequireDefault(_lib_read_for_related);
 
-var _serialize = require('./lib/serialize');
+var _libSerialize = require('./lib/serialize');
 
-var _serialize2 = _interopRequireDefault(_serialize);
+var _libSerialize2 = _interopRequireDefault(_libSerialize);
 
-var _filters = require('./lib/filters');
+var _libFilters = require('./lib/filters');
 
-var _filters2 = _interopRequireDefault(_filters);
+var _libFilters2 = _interopRequireDefault(_libFilters);
 
 // writing
 
-var _create = require('./lib/create');
+var _libCreate = require('./lib/create');
 
-var _create2 = _interopRequireDefault(_create);
+var _libCreate2 = _interopRequireDefault(_libCreate);
 
-var _update = require('./lib/update');
+var _libUpdate = require('./lib/update');
 
-var _update2 = _interopRequireDefault(_update);
+var _libUpdate2 = _interopRequireDefault(_libUpdate);
 
-var _destroy = require('./lib/destroy');
+var _libDestroy = require('./lib/destroy');
 
-var _destroy2 = _interopRequireDefault(_destroy);
+var _libDestroy2 = _interopRequireDefault(_libDestroy);
 
 exports['default'] = {
-  byId: _byId2['default'],
-  allRelations: _allRelations2['default'],
-  id: _id2['default'],
-  isMany: _isMany2['default'],
-  modelsFromCollection: _modelsFromCollection2['default'],
-  related: _related2['default'],
-  toOneRelations: _toOneRelations2['default'],
-  type: _type2['default'],
-  read: _read2['default'],
-  readRelated: _readForRelated3['default'].bind(null, 'related'),
-  readRelation: _readForRelated3['default'].bind(null, 'relation'),
-  serialize: _serialize2['default'],
-  filters: _filters2['default'],
-  create: _create2['default'],
-  update: _update2['default'],
-  destroy: _destroy2['default']
+  byId: _libBy_id2['default'],
+  allRelations: _libAll_relations2['default'],
+  id: _libId2['default'],
+  isMany: _libIs_many2['default'],
+  modelsFromCollection: _libModels_from_collection2['default'],
+  related: _libRelated2['default'],
+  toOneRelations: _libTo_one_relations2['default'],
+  type: _libType2['default'],
+  read: _libRead2['default'],
+  readRelated: _lib_read_for_related2['default'].bind(null, 'related'),
+  readRelation: _lib_read_for_related2['default'].bind(null, 'relation'),
+  serialize: _libSerialize2['default'],
+  filters: _libFilters2['default'],
+  create: _libCreate2['default'],
+  update: _libUpdate2['default'],
+  destroy: _libDestroy2['default']
 };
 module.exports = exports['default'];

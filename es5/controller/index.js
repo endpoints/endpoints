@@ -2,29 +2,29 @@
 
 exports.__esModule = true;
 
-var _interopRequireDefault = function (obj) { return obj && obj.__esModule ? obj : { 'default': obj }; };
-
-var _inherits = function (subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) subClass.__proto__ = superClass; };
-
-var _classCallCheck = function (instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } };
-
 var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
 
-var _import = require('lodash');
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
 
-var _import2 = _interopRequireDefault(_import);
+function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) subClass.__proto__ = superClass; }
 
-var _validate = require('./lib/validate');
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
 
-var _validate2 = _interopRequireDefault(_validate);
+var _lodash = require('lodash');
 
-var _handle = require('./lib/handle');
+var _lodash2 = _interopRequireDefault(_lodash);
 
-var _handle2 = _interopRequireDefault(_handle);
+var _libValidate = require('./lib/validate');
 
-var _singleSlashJoin = require('./lib/single_slash_join');
+var _libValidate2 = _interopRequireDefault(_libValidate);
 
-var _singleSlashJoin2 = _interopRequireDefault(_singleSlashJoin);
+var _libHandle = require('./lib/handle');
+
+var _libHandle2 = _interopRequireDefault(_libHandle);
+
+var _libSingle_slash_join = require('./lib/single_slash_join');
+
+var _libSingle_slash_join2 = _interopRequireDefault(_libSingle_slash_join);
 
 /**
   Provides methods for generating request handling functions that can
@@ -65,7 +65,7 @@ var Controller = (function () {
     if (!config.basePath) {
       throw new Error('No basePath specified for URL generation.');
     }
-    this.config = _import2['default'].extend({
+    this.config = _lodash2['default'].extend({
       validators: [],
       allowClientGeneratedIds: false,
       allowToManyFullReplacement: true }, config);
@@ -80,7 +80,7 @@ var Controller = (function () {
 
         _classCallCheck(this, Controller);
 
-        _ref.call(this, _import2['default'].extend({}, props, opts));
+        _ref.call(this, _lodash2['default'].extend({}, props, opts));
       }
 
       _inherits(Controller, _ref);
@@ -97,19 +97,19 @@ var Controller = (function () {
   */
 
   Controller.prototype.method = function method(method, opts) {
-    var config = _import2['default'].extend({
+    var config = _lodash2['default'].extend({
       method: method,
       include: [],
       filter: {},
       fields: {},
       sort: [],
       schema: {} }, this.config, opts);
-    var validationFailures = _validate2['default'](method, config);
+    var validationFailures = _libValidate2['default'](method, config);
     if (validationFailures.length) {
       throw new Error(validationFailures.join('\n'));
     }
     // TODO: fix this gross passing of the url
-    return _handle2['default'](config, this.url);
+    return _libHandle2['default'](config, this.url);
   };
 
   Controller.prototype.create = function create(opts) {
@@ -145,7 +145,7 @@ var Controller = (function () {
 
       // TODO: include this.config?
       return {
-        filters: store.filters(model),
+        filters: Object.keys(store.filters(model)),
         includes: store.allRelations(model) };
     }
   }, {
@@ -161,7 +161,7 @@ var Controller = (function () {
   }, {
     key: 'url',
     get: function () {
-      return _singleSlashJoin2['default']([this.baseUrl, this.basePath]);
+      return _libSingle_slash_join2['default']([this.baseUrl, this.basePath]);
     }
   }]);
 

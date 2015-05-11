@@ -2,27 +2,27 @@
 
 exports.__esModule = true;
 
-var _interopRequireDefault = function (obj) { return obj && obj.__esModule ? obj : { 'default': obj }; };
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
 
-var _import = require('lodash');
+var _lodash = require('lodash');
 
-var _import2 = _interopRequireDefault(_import);
+var _lodash2 = _interopRequireDefault(_lodash);
 
-var _Kapow = require('kapow');
+var _kapow = require('kapow');
 
-var _Kapow2 = _interopRequireDefault(_Kapow);
+var _kapow2 = _interopRequireDefault(_kapow);
 
 exports['default'] = function (request, endpoint) {
   var err, isValidType, id;
   var data = request.body.data;
 
-  if (!_import2['default'].isPlainObject(data) && !_import2['default'].isArray(data)) {
-    err = _Kapow2['default'](400, 'Primary data must be a single object or array.');
+  if (!_lodash2['default'].isPlainObject(data) && !_lodash2['default'].isArray(data)) {
+    err = _kapow2['default'](400, 'Primary data must be a single object or array.');
     return err;
   }
 
-  if (_import2['default'].isArray(data)) {
-    isValidType = _import2['default'].reduce(data, function (isValid, resource) {
+  if (_lodash2['default'].isArray(data)) {
+    isValidType = _lodash2['default'].reduce(data, function (isValid, resource) {
       if (!resource.type || typeof resource.type !== 'string') {
         isValid = false;
       }
@@ -35,7 +35,7 @@ exports['default'] = function (request, endpoint) {
   id = request.params && request.params.id;
 
   if (!isValidType) {
-    err = _Kapow2['default'](400, 'Primary data must include a type.');
+    err = _kapow2['default'](400, 'Primary data must include a type.');
     return err;
   }
 

@@ -2,37 +2,37 @@
 
 exports.__esModule = true;
 
-var _interopRequireDefault = function (obj) { return obj && obj.__esModule ? obj : { 'default': obj }; };
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
 
-var _Application = require('./application');
+var _application = require('./application');
 
-var _Application2 = _interopRequireDefault(_Application);
+var _application2 = _interopRequireDefault(_application);
 
-var _Controller = require('./controller');
+var _controller = require('./controller');
 
-var _Controller2 = _interopRequireDefault(_Controller);
+var _controller2 = _interopRequireDefault(_controller);
 
-var _BookshelfStore = require('./store-bookshelf');
+var _storeBookshelf = require('./store-bookshelf');
 
-var _BookshelfStore2 = _interopRequireDefault(_BookshelfStore);
+var _storeBookshelf2 = _interopRequireDefault(_storeBookshelf);
 
-var _JsonApiFormat = require('./format-jsonapi');
+var _formatJsonapi = require('./format-jsonapi');
 
-var _JsonApiFormat2 = _interopRequireDefault(_JsonApiFormat);
+var _formatJsonapi2 = _interopRequireDefault(_formatJsonapi);
 
-var _ValidateJsonSchema = require('./validate-json-schema');
+var _validateJsonSchema = require('./validate-json-schema');
 
-var _ValidateJsonSchema2 = _interopRequireDefault(_ValidateJsonSchema);
+var _validateJsonSchema2 = _interopRequireDefault(_validateJsonSchema);
 
 exports['default'] = {
-  Application: _Application2['default'],
-  Controller: _Controller2['default'],
+  Application: _application2['default'],
+  Controller: _controller2['default'],
   Store: {
-    bookshelf: _BookshelfStore2['default']
+    bookshelf: _storeBookshelf2['default']
   },
   Format: {
-    jsonapi: _JsonApiFormat2['default']
+    jsonapi: _formatJsonapi2['default']
   },
-  ValidateJsonSchema: _ValidateJsonSchema2['default']
+  ValidateJsonSchema: _validateJsonSchema2['default']
 };
 module.exports = exports['default'];

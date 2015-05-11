@@ -1,10 +1,10 @@
 'use strict';
 
-var _interopRequireDefault = function (obj) { return obj && obj.__esModule ? obj : { 'default': obj }; };
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
 
-var _import = require('lodash');
+var _lodash = require('lodash');
 
-var _import2 = _interopRequireDefault(_import);
+var _lodash2 = _interopRequireDefault(_lodash);
 
 function error(type, key) {
   return 'Model does not have ' + type + ': ' + key + '.';
@@ -15,8 +15,8 @@ module.exports = function (available, requested, type) {
   if (!requested) {
     return;
   }
-  if (_import2['default'].isArray(requested) && _import2['default'].isArray(available)) {
-    return _import2['default'].difference(requested, available).map(message);
+  if (_lodash2['default'].isArray(requested) && _lodash2['default'].isArray(available)) {
+    return _lodash2['default'].difference(requested, available).map(message);
   }
   return available[requested] ? null : message(requested);
 };

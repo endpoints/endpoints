@@ -2,11 +2,11 @@
 
 exports.__esModule = true;
 
-var _interopRequireDefault = function (obj) { return obj && obj.__esModule ? obj : { 'default': obj }; };
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
 
-var _Kapow = require('kapow');
+var _kapow = require('kapow');
 
-var _Kapow2 = _interopRequireDefault(_Kapow);
+var _kapow2 = _interopRequireDefault(_kapow);
 
 var EXPECTED_ACCEPT = 'application/vnd.api+json';
 
@@ -20,7 +20,7 @@ exports['default'] = function (request) {
   var isValidAccept = accept && accept.toLowerCase().indexOf(EXPECTED_ACCEPT) === 0;
 
   if (!isValidAccept && !isBrowser) {
-    err = _Kapow2['default'](406, '"Accept" header must include "' + EXPECTED_ACCEPT + '"');
+    err = _kapow2['default'](406, '"Accept" header must include "' + EXPECTED_ACCEPT + '"');
   }
 
   return err;

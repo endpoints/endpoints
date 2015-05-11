@@ -2,11 +2,11 @@
 
 exports.__esModule = true;
 
-var _interopRequireDefault = function (obj) { return obj && obj.__esModule ? obj : { 'default': obj }; };
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
 
-var _Kapow = require('kapow');
+var _kapow = require('kapow');
 
-var _Kapow2 = _interopRequireDefault(_Kapow);
+var _kapow2 = _interopRequireDefault(_kapow);
 
 var EXPECTED_TYPE = 'application/vnd.api+json';
 
@@ -18,7 +18,7 @@ exports['default'] = function (request) {
   var isValidContentType = contentType && contentType.toLowerCase().indexOf(EXPECTED_TYPE) === 0;
 
   if (!isValidContentType) {
-    err = _Kapow2['default'](415, 'Content-Type must be "' + EXPECTED_TYPE + '"');
+    err = _kapow2['default'](415, 'Content-Type must be "' + EXPECTED_TYPE + '"');
   }
 
   return err;

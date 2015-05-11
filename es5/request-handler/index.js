@@ -2,51 +2,51 @@
 
 exports.__esModule = true;
 
-var _interopRequireDefault = function (obj) { return obj && obj.__esModule ? obj : { 'default': obj }; };
-
-var _classCallCheck = function (instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } };
-
 var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
 
-var _import = require('lodash');
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
 
-var _import2 = _interopRequireDefault(_import);
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
 
-var _Kapow = require('kapow');
+var _lodash = require('lodash');
 
-var _Kapow2 = _interopRequireDefault(_Kapow);
+var _lodash2 = _interopRequireDefault(_lodash);
 
-var _throwIfModel = require('./lib/throw_if_model');
+var _kapow = require('kapow');
 
-var _throwIfModel2 = _interopRequireDefault(_throwIfModel);
+var _kapow2 = _interopRequireDefault(_kapow);
 
-var _throwIfNoModel = require('./lib/throw_if_no_model');
+var _libThrow_if_model = require('./lib/throw_if_model');
 
-var _throwIfNoModel2 = _interopRequireDefault(_throwIfNoModel);
+var _libThrow_if_model2 = _interopRequireDefault(_libThrow_if_model);
 
-var _verifyAccept = require('./lib/verify_accept');
+var _libThrow_if_no_model = require('./lib/throw_if_no_model');
 
-var _verifyAccept2 = _interopRequireDefault(_verifyAccept);
+var _libThrow_if_no_model2 = _interopRequireDefault(_libThrow_if_no_model);
 
-var _verifyContentType = require('./lib/verify_content_type');
+var _libVerify_accept = require('./lib/verify_accept');
 
-var _verifyContentType2 = _interopRequireDefault(_verifyContentType);
+var _libVerify_accept2 = _interopRequireDefault(_libVerify_accept);
 
-var _verifyDataObject = require('./lib/verify_data_object');
+var _libVerify_content_type = require('./lib/verify_content_type');
 
-var _verifyDataObject2 = _interopRequireDefault(_verifyDataObject);
+var _libVerify_content_type2 = _interopRequireDefault(_libVerify_content_type);
 
-var _splitStringProps = require('./lib/split_string_props');
+var _libVerify_data_object = require('./lib/verify_data_object');
 
-var _splitStringProps2 = _interopRequireDefault(_splitStringProps);
+var _libVerify_data_object2 = _interopRequireDefault(_libVerify_data_object);
 
-var _verifyClientGeneratedId = require('./lib/verify_client_generated_id');
+var _libSplit_string_props = require('./lib/split_string_props');
 
-var _verifyClientGeneratedId2 = _interopRequireDefault(_verifyClientGeneratedId);
+var _libSplit_string_props2 = _interopRequireDefault(_libSplit_string_props);
 
-var _verifyFullReplacement = require('./lib/verify_full_replacement');
+var _libVerify_client_generated_id = require('./lib/verify_client_generated_id');
 
-var _verifyFullReplacement2 = _interopRequireDefault(_verifyFullReplacement);
+var _libVerify_client_generated_id2 = _interopRequireDefault(_libVerify_client_generated_id);
+
+var _libVerify_full_replacement = require('./lib/verify_full_replacement');
+
+var _libVerify_full_replacement2 = _interopRequireDefault(_libVerify_full_replacement);
 
 var COLLECTION_MODE = 'collection';
 var SINGLE_MODE = 'single';
@@ -83,7 +83,7 @@ var RequestHandler = (function () {
   RequestHandler.prototype.validate = function validate(request) {
 
     var err;
-    var validators = [_verifyAccept2['default']];
+    var validators = [_libVerify_accept2['default']];
 
     if (request.body && request.body.data) {
       var clientIdCheck = request.method === 'POST' &&
@@ -96,12 +96,12 @@ var RequestHandler = (function () {
       var fullReplacementCheck = request.method === 'PATCH' && !this.config.allowToManyFullReplacement;
 
       if (clientIdCheck) {
-        validators.push(_verifyClientGeneratedId2['default']);
+        validators.push(_libVerify_client_generated_id2['default']);
       }
       if (fullReplacementCheck) {
-        validators.push(_verifyFullReplacement2['default']);
+        validators.push(_libVerify_full_replacement2['default']);
       }
-      validators = validators.concat([_verifyContentType2['default'], _verifyDataObject2['default']]);
+      validators = validators.concat([_libVerify_content_type2['default'], _libVerify_data_object2['default']]);
     }
 
     // does this.validators needs a better name? controllerValidator, userValidators?
@@ -124,7 +124,7 @@ var RequestHandler = (function () {
   RequestHandler.prototype.query = function query(request) {
     // bits down the chain can mutate this config
     // on a per-request basis, so we need to clone
-    var config = _import2['default'].cloneDeep(_import2['default'].omit(this.config, ['store', 'model']));
+    var config = _lodash2['default'].cloneDeep(_lodash2['default'].omit(this.config, ['store', 'model']));
     var _request$query = request.query;
     var include = _request$query.include;
     var filter = _request$query.filter;
@@ -133,8 +133,8 @@ var RequestHandler = (function () {
 
     return {
       include: include ? include.split(',') : config.include,
-      filter: filter ? _splitStringProps2['default'](filter) : config.filter,
-      fields: fields ? _splitStringProps2['default'](fields) : config.fields,
+      filter: filter ? _libSplit_string_props2['default'](filter) : config.filter,
+      fields: fields ? _libSplit_string_props2['default'](fields) : config.fields,
       sort: sort ? sort.split(',') : config.sort
     };
   };
@@ -165,7 +165,7 @@ var RequestHandler = (function () {
       return RELATED_MODE;
     }
 
-    throw _Kapow2['default'](400, 'Unable to determine mode based on `request.params` keys.');
+    throw _kapow2['default'](400, 'Unable to determine mode based on `request.params` keys.');
   };
 
   /**
@@ -180,7 +180,7 @@ var RequestHandler = (function () {
 
     var data = request.body.data;
     if (data && data.id) {
-      return store.byId(model, data.id).then(_throwIfModel2['default']).then(function () {
+      return store.byId(model, data.id).then(_libThrow_if_model2['default']).then(function () {
         return store.create(model, method, data);
       });
     } else {
@@ -253,7 +253,7 @@ var RequestHandler = (function () {
       data.links[relation] = { linkage: request.body.data };
     }
 
-    return store.byId(model, id, [relation]).then(_throwIfNoModel2['default']).then(function (model) {
+    return store.byId(model, id, [relation]).then(_libThrow_if_no_model2['default']).then(function (model) {
       if (request.method !== 'PATCH') {
         // FIXME: This will break heterogeneous relations
         var relationType = data.links[relation].linkage[0].type;
@@ -265,12 +265,12 @@ var RequestHandler = (function () {
         });
 
         if (request.method === 'POST') {
-          data.links[relation].linkage = _import2['default'].uniq(data.links[relation].linkage.concat(existingRels));
+          data.links[relation].linkage = _lodash2['default'].uniq(data.links[relation].linkage.concat(existingRels));
         }
 
         if (request.method === 'DELETE') {
-          data.links[relation].linkage = _import2['default'].reject(existingRels, function (rel) {
-            return _import2['default'].findWhere(data.links[relation].linkage, rel);
+          data.links[relation].linkage = _lodash2['default'].reject(existingRels, function (rel) {
+            return _lodash2['default'].findWhere(data.links[relation].linkage, rel);
           });
         }
       }
@@ -279,7 +279,7 @@ var RequestHandler = (function () {
     })['catch'](function (e) {
       // FIXME: This may only work for SQLITE3, but tries to be general
       if (e.message.toLowerCase().indexOf('null') !== -1) {
-        _Kapow2['default'].wrap(e, 409);
+        _kapow2['default'].wrap(e, 409);
       }
       throw e;
     });

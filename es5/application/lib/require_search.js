@@ -2,15 +2,15 @@
 
 exports.__esModule = true;
 
-var _interopRequireDefault = function (obj) { return obj && obj.__esModule ? obj : { 'default': obj }; };
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
 
 var _path = require('path');
 
 var _path2 = _interopRequireDefault(_path);
 
-var _requireSilent = require('./require_silent');
+var _require_silent = require('./require_silent');
 
-var _requireSilent2 = _interopRequireDefault(_requireSilent);
+var _require_silent2 = _interopRequireDefault(_require_silent);
 
 exports['default'] = function (file, searchPaths) {
   if (!searchPaths) {
@@ -21,7 +21,7 @@ exports['default'] = function (file, searchPaths) {
   for (var i = 0; i < len; i++) {
     var currentPath = _path2['default'].join(searchPaths[i], file);
     var notFoundInFoundFile = false;
-    result = _requireSilent2['default'](currentPath);
+    result = _require_silent2['default'](currentPath);
     if (result instanceof Error) {
       // handle situations where a file is found, but requiring it
       // still throws a MODULE_NOT_FOUND error because that file

@@ -2,15 +2,15 @@
 
 exports.__esModule = true;
 
-var _interopRequireDefault = function (obj) { return obj && obj.__esModule ? obj : { 'default': obj }; };
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
 
-var _Kapow = require('kapow');
+var _kapow = require('kapow');
 
-var _Kapow2 = _interopRequireDefault(_Kapow);
+var _kapow2 = _interopRequireDefault(_kapow);
 
 exports['default'] = function (model) {
   if (model) {
-    throw _Kapow2['default'](409, 'Model with this ID already exists');
+    throw _kapow2['default'](409, 'Model with this ID already exists');
   }
   return model;
 };

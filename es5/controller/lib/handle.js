@@ -1,20 +1,20 @@
 'use strict';
 
-var _interopRequireWildcard = function (obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj['default'] = obj; return newObj; } };
+function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj['default'] = obj; return newObj; } }
 
-var _interopRequireDefault = function (obj) { return obj && obj.__esModule ? obj : { 'default': obj }; };
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
 
-var _RequestHandler = require('../../request-handler');
+var _requestHandler = require('../../request-handler');
 
-var _RequestHandler2 = _interopRequireDefault(_RequestHandler);
+var _requestHandler2 = _interopRequireDefault(_requestHandler);
 
-var _PayloadHandler = require('../../payload-handler');
+var _payloadHandler = require('../../payload-handler');
 
-var _PayloadHandler2 = _interopRequireDefault(_PayloadHandler);
+var _payloadHandler2 = _interopRequireDefault(_payloadHandler);
 
-var _import = require('./send');
+var _send = require('./send');
 
-var send = _interopRequireWildcard(_import);
+var send = _interopRequireWildcard(_send);
 
 module.exports = function (config, baseUrl) {
   var method = config.method;
@@ -22,8 +22,8 @@ module.exports = function (config, baseUrl) {
   var format = config.format;
   var store = config.store;
 
-  var requestHandler = new _RequestHandler2['default'](config);
-  var payloadHandler = new _PayloadHandler2['default'](new format({
+  var requestHandler = new _requestHandler2['default'](config);
+  var payloadHandler = new _payloadHandler2['default'](new format({
     store: store,
     baseUrl: baseUrl
   }));

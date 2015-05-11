@@ -2,8 +2,6 @@
 
 exports.__esModule = true;
 
-var _interopRequireDefault = function (obj) { return obj && obj.__esModule ? obj : { 'default': obj }; };
-
 /**
  * Updates a model.
  *
@@ -14,13 +12,15 @@ var _interopRequireDefault = function (obj) { return obj && obj.__esModule ? obj
  */
 exports['default'] = update;
 
-var _import = require('lodash');
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
 
-var _import2 = _interopRequireDefault(_import);
+var _lodash = require('lodash');
 
-var _bPromise = require('bluebird');
+var _lodash2 = _interopRequireDefault(_lodash);
 
-var _bPromise2 = _interopRequireDefault(_bPromise);
+var _bluebird = require('bluebird');
+
+var _bluebird2 = _interopRequireDefault(_bluebird);
 
 var _destructure = require('./destructure');
 
@@ -48,9 +48,9 @@ function update(model, method, params) {
 // FIXME: the stuff below is gross. upstream to bookshelf... or something.
 
 function baseUpdate(params, toManyRels, previous) {
-  var clientState = _import2['default'].extend(previous, params);
+  var clientState = _lodash2['default'].extend(previous, params);
   return this.save(params, { patch: true, method: 'update' }).tap(function (model) {
-    return _bPromise2['default'].map(toManyRels, function (rel) {
+    return _bluebird2['default'].map(toManyRels, function (rel) {
       return model.related(rel.name).detach().then(function () {
         return model.related(rel.name).attach(rel.id);
       });
@@ -58,7 +58,7 @@ function baseUpdate(params, toManyRels, previous) {
   }).then(function (model) {
     // Bookshelf .previousAttributes() doesn't work
     // See: https://github.com/tgriesser/bookshelf/issues/326#issuecomment-76637186
-    if (_import2['default'].isEqual(model.toJSON({ shallow: true }), clientState)) {
+    if (_lodash2['default'].isEqual(model.toJSON({ shallow: true }), clientState)) {
       return null;
     }
     return model;

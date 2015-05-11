@@ -1,14 +1,13 @@
 'use strict';
 
 exports.__esModule = true;
-
-var _interopRequireDefault = function (obj) { return obj && obj.__esModule ? obj : { 'default': obj }; };
-
 exports['default'] = create;
 
-var _bPromise = require('bluebird');
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
 
-var _bPromise2 = _interopRequireDefault(_bPromise);
+var _bluebird = require('bluebird');
+
+var _bluebird2 = _interopRequireDefault(_bluebird);
 
 var _destructure = require('./destructure');
 
@@ -37,7 +36,7 @@ function create(model, method, params) {
 function baseCreate(params, toManyRels) {
   // this should be in a transaction but we don't have access to it yet
   return this.forge(params).save(null, { method: 'insert' }).tap(function (model) {
-    return _bPromise2['default'].map(toManyRels, function (rel) {
+    return _bluebird2['default'].map(toManyRels, function (rel) {
       return model.related(rel.name).attach(rel.id);
     });
   }).then((function (model) {

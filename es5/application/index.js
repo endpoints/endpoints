@@ -2,21 +2,21 @@
 
 exports.__esModule = true;
 
-var _interopRequireDefault = function (obj) { return obj && obj.__esModule ? obj : { 'default': obj }; };
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
 
-var _classCallCheck = function (instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } };
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
 
-var _import = require('lodash');
+var _lodash = require('lodash');
 
-var _import2 = _interopRequireDefault(_import);
+var _lodash2 = _interopRequireDefault(_lodash);
 
-var _parseOptions = require('./lib/parse_options');
+var _libParse_options = require('./lib/parse_options');
 
-var _parseOptions2 = _interopRequireDefault(_parseOptions);
+var _libParse_options2 = _interopRequireDefault(_libParse_options);
 
-var _parseResource = require('./lib/parse_resource');
+var _libParse_resource = require('./lib/parse_resource');
 
-var _parseResource2 = _interopRequireDefault(_parseResource);
+var _libParse_resource2 = _interopRequireDefault(_libParse_resource);
 
 var Application = (function () {
   function Application(opts) {
@@ -24,7 +24,7 @@ var Application = (function () {
 
     this._resources = {};
     this._endpoints = [];
-    _import2['default'].extend(this, _parseOptions2['default'](opts));
+    _lodash2['default'].extend(this, _libParse_options2['default'](opts));
   }
 
   Application.prototype.resource = function resource(name) {
@@ -40,7 +40,7 @@ var Application = (function () {
       input.forEach(this.register.bind(this));
       return this;
     }
-    var resource = _parseResource2['default'](input, this.searchPaths);
+    var resource = _libParse_resource2['default'](input, this.searchPaths);
     var resourceName = resource.name;
     if (this._resources[resourceName]) {
       throw new Error('Resource "' + resourceName + '" registered twice');
@@ -67,7 +67,7 @@ var Application = (function () {
     return this._endpoints.reduce(function (result, endpoint) {
       var resource = endpoint.resource;
       var capabilities = resource.controller.capabilities;
-      result.push(_import2['default'].extend({
+      result.push(_lodash2['default'].extend({
         name: resource.name,
         url: endpoint.url
       }, capabilities));

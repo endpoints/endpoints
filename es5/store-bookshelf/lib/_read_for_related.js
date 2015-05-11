@@ -2,8 +2,6 @@
 
 exports.__esModule = true;
 
-var _interopRequireDefault = function (obj) { return obj && obj.__esModule ? obj : { 'default': obj }; };
-
 /*
   Returns the model or collection of models related to a given model. This
   makes it possible to support requests like:
@@ -61,37 +59,39 @@ var _interopRequireDefault = function (obj) { return obj && obj.__esModule ? obj
 */
 exports['default'] = readForRelated;
 
-var _Kapow = require('kapow');
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
 
-var _Kapow2 = _interopRequireDefault(_Kapow);
+var _kapow = require('kapow');
 
-var _import = require('lodash');
+var _kapow2 = _interopRequireDefault(_kapow);
 
-var _import2 = _interopRequireDefault(_import);
+var _lodash = require('lodash');
 
-var _byId = require('./by_id');
+var _lodash2 = _interopRequireDefault(_lodash);
 
-var _byId2 = _interopRequireDefault(_byId);
+var _by_id = require('./by_id');
+
+var _by_id2 = _interopRequireDefault(_by_id);
 
 var _related = require('./related');
 
 var _related2 = _interopRequireDefault(_related);
 
-var _isMany = require('./is_many');
+var _is_many = require('./is_many');
 
-var _isMany2 = _interopRequireDefault(_isMany);
+var _is_many2 = _interopRequireDefault(_is_many);
 
 var _read = require('./read');
 
 var _read2 = _interopRequireDefault(_read);
 
 function readForRelated(mode, sourceModel, id, relation, query) {
-  return _byId2['default'](sourceModel, id, relation).then(function (result) {
+  return _by_id2['default'](sourceModel, id, relation).then(function (result) {
     if (!result) {
-      throw _Kapow2['default'](404);
+      throw _kapow2['default'](404);
     }
     var relatedData = _related2['default'](result, relation);
-    var hasMany = _isMany2['default'](relatedData);
+    var hasMany = _is_many2['default'](relatedData);
 
     var relatedModel = hasMany ? relatedData.model : relatedData.constructor;
     var relatedIds = hasMany ? relatedData.map(function (m) {
@@ -105,7 +105,7 @@ function readForRelated(mode, sourceModel, id, relation, query) {
     // the intent is to limit the stores related to the book to those
     // with the id one, but the actual impact is that it looks up
     // book id #2. see RequestHandler#read
-    query.filter.id = query.filter.id ? _import2['default'].intersection(relatedIds, query.filter.id) : relatedIds;
+    query.filter.id = query.filter.id ? _lodash2['default'].intersection(relatedIds, query.filter.id) : relatedIds;
 
     query.singleResult = !hasMany;
 

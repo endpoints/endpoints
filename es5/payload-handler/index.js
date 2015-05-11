@@ -2,17 +2,17 @@
 
 exports.__esModule = true;
 
-var _interopRequireDefault = function (obj) { return obj && obj.__esModule ? obj : { 'default': obj }; };
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
 
-var _classCallCheck = function (instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } };
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
 
-var _import = require('lodash');
+var _lodash = require('lodash');
 
-var _import2 = _interopRequireDefault(_import);
+var _lodash2 = _interopRequireDefault(_lodash);
 
-var _Kapow = require('kapow');
+var _kapow = require('kapow');
 
-var _Kapow2 = _interopRequireDefault(_Kapow);
+var _kapow2 = _interopRequireDefault(_kapow);
 
 var PayloadHandler = (function () {
   function PayloadHandler(formatter) {
@@ -35,7 +35,7 @@ var PayloadHandler = (function () {
 
   PayloadHandler.prototype.read = function read(config, data) {
     if ((!data || data.length === 0 && data.singleResult) && data.mode !== 'related') {
-      return this.error(_Kapow2['default'](404, 'Resource not found.'));
+      return this.error(_kapow2['default'](404, 'Resource not found.'));
     }
 
     return {
@@ -83,15 +83,15 @@ var PayloadHandler = (function () {
     var resp;
 
     defaultErr = defaultErr || 400;
-    errs = errs || [_Kapow2['default'](defaultErr)];
+    errs = errs || [_kapow2['default'](defaultErr)];
 
     if (!Array.isArray(errs)) {
       errs = [errs];
     }
 
-    resp = _import2['default'].transform(errs, function (result, err) {
+    resp = _lodash2['default'].transform(errs, function (result, err) {
       if (!err.httpStatus) {
-        err = _Kapow2['default'].wrap(err, defaultErr);
+        err = _kapow2['default'].wrap(err, defaultErr);
       }
 
       var httpStatus = err.httpStatus;
@@ -109,7 +109,7 @@ var PayloadHandler = (function () {
       }
     });
 
-    resp.code = _import2['default'].reduce(resp.code, function (result, n, key) {
+    resp.code = _lodash2['default'].reduce(resp.code, function (result, n, key) {
       if (!result || n > resp.code[result]) {
         return key;
       }

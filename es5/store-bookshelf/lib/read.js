@@ -2,8 +2,6 @@
 
 exports.__esModule = true;
 
-var _interopRequireDefault = function (obj) { return obj && obj.__esModule ? obj : { 'default': obj }; };
-
 /**
  * Retrieves a collection of models from the database.
  *
@@ -14,17 +12,19 @@ var _interopRequireDefault = function (obj) { return obj && obj.__esModule ? obj
 */
 exports['default'] = read;
 
-var _bPromise = require('bluebird');
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
 
-var _bPromise2 = _interopRequireDefault(_bPromise);
+var _bluebird = require('bluebird');
 
-var _import = require('lodash');
+var _bluebird2 = _interopRequireDefault(_bluebird);
 
-var _import2 = _interopRequireDefault(_import);
+var _lodash = require('lodash');
 
-var _allRelations = require('./all_relations');
+var _lodash2 = _interopRequireDefault(_lodash);
 
-var _allRelations2 = _interopRequireDefault(_allRelations);
+var _all_relations = require('./all_relations');
+
+var _all_relations2 = _interopRequireDefault(_all_relations);
 
 var _type = require('./type');
 
@@ -34,7 +34,7 @@ function read(model) {
   var query = arguments[1] === undefined ? {} : arguments[1];
   var mode = arguments[2] === undefined ? 'read' : arguments[2];
 
-  var ready = _bPromise2['default'].resolve();
+  var ready = _bluebird2['default'].resolve();
 
   // populate the field listing for a table so we know which columns
   // we can use for sparse fieldsets.
@@ -46,13 +46,13 @@ function read(model) {
 
   return ready.then(function () {
     var fields = query.fields && query.fields[_type2['default'](model)];
-    var relations = _import2['default'].intersection(_allRelations2['default'](model), query.include || []);
+    var relations = _lodash2['default'].intersection(_all_relations2['default'](model), query.include || []);
     // this has to be done here because we can't statically analyze
     // the columns on a table yet.
     if (fields) {
-      fields = _import2['default'].intersection(model.columns, fields);
+      fields = _lodash2['default'].intersection(model.columns, fields);
       // ensure we always select id as the spec requires this to be present
-      if (!_import2['default'].contains(fields, 'id')) {
+      if (!_lodash2['default'].contains(fields, 'id')) {
         fields.push('id');
       }
     }
@@ -89,7 +89,7 @@ function isAscending(key) {
 
 function processFilter(model, query, filterBy) {
   var filters = model.filters;
-  return _import2['default'].transform(filterBy, function (result, value, key) {
+  return _lodash2['default'].transform(filterBy, function (result, value, key) {
     var filter = filters[key];
     if (key === 'id' && !filter) {
       filter = idFilter;
@@ -99,9 +99,9 @@ function processFilter(model, query, filterBy) {
 }
 
 function processSort(validFields, query, sortBy) {
-  return _import2['default'].chain(sortBy).filter(function (key) {
+  return _lodash2['default'].chain(sortBy).filter(function (key) {
     var hasSortDir = key[0] === ' ' || key[0] === '+' || key[0] === '-';
-    var isValidField = _import2['default'].contains(validFields, key.substring(1));
+    var isValidField = _lodash2['default'].contains(validFields, key.substring(1));
     return hasSortDir && isValidField;
   }).reduce(function (result, key) {
     var column = key.substring(1);

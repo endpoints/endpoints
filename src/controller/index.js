@@ -56,7 +56,7 @@ class Controller {
     const {store, model} = this.config;
     // TODO: include this.config?
     return {
-      filters: store.filters(model),
+      filters: Object.keys(store.filters(model)),
       includes: store.allRelations(model),
     };
   }

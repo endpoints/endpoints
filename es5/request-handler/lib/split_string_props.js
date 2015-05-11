@@ -2,14 +2,14 @@
 
 exports.__esModule = true;
 
-var _interopRequireDefault = function (obj) { return obj && obj.__esModule ? obj : { 'default': obj }; };
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
 
-var _import = require('lodash');
+var _lodash = require('lodash');
 
-var _import2 = _interopRequireDefault(_import);
+var _lodash2 = _interopRequireDefault(_lodash);
 
 exports['default'] = function (obj) {
-  return _import2['default'].transform(obj, function (result, n, key) {
+  return _lodash2['default'].transform(obj, function (result, n, key) {
     var val = String(n);
     result[key] = val.indexOf(',') === -1 ? val : val.split(',');
   });

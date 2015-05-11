@@ -2,8 +2,6 @@
 
 exports.__esModule = true;
 
-var _interopRequireDefault = function (obj) { return obj && obj.__esModule ? obj : { 'default': obj }; };
-
 /**
  * Given a model or collection and a dot-notated relation string,
  * traverse the relations and return the related models from the
@@ -15,13 +13,15 @@ var _interopRequireDefault = function (obj) { return obj && obj.__esModule ? obj
  */
 exports['default'] = related;
 
-var _isMany = require('./is_many');
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
 
-var _isMany2 = _interopRequireDefault(_isMany);
+var _is_many = require('./is_many');
+
+var _is_many2 = _interopRequireDefault(_is_many);
 
 function related(input, relation) {
   return relation.split('.').reduce(function (input, relationSegment) {
-    if (_isMany2['default'](input)) {
+    if (_is_many2['default'](input)) {
       // iterate each model and add its related models to the collection
       return input.reduce(function (result, model) {
         var related = model.related(relationSegment);

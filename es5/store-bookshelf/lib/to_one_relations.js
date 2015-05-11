@@ -2,8 +2,6 @@
 
 exports.__esModule = true;
 
-var _interopRequireDefault = function (obj) { return obj && obj.__esModule ? obj : { 'default': obj }; };
-
 /**
  * Return an object keyed by to-one relation names whose values are the
  * attribute on the model that represents the relation. For exmaple, given
@@ -15,12 +13,14 @@ var _interopRequireDefault = function (obj) { return obj && obj.__esModule ? obj
  */
 exports['default'] = toOneRelations;
 
-var _allRelations = require('./all_relations');
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
 
-var _allRelations2 = _interopRequireDefault(_allRelations);
+var _all_relations = require('./all_relations');
+
+var _all_relations2 = _interopRequireDefault(_all_relations);
 
 function toOneRelations(model) {
-  return _allRelations2['default'](model).reduce(function (result, relation) {
+  return _all_relations2['default'](model).reduce(function (result, relation) {
     // nested relations are specified by dot notated strings
     // if a relation has a dot in it, it is nested, and therefor
     // cannot be a toOne relation. ignore it.
