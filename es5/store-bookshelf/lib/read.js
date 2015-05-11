@@ -14,10 +14,6 @@ exports['default'] = read;
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
 
-var _bluebird = require('bluebird');
-
-var _bluebird2 = _interopRequireDefault(_bluebird);
-
 var _lodash = require('lodash');
 
 var _lodash2 = _interopRequireDefault(_lodash);
@@ -30,33 +26,24 @@ var _type = require('./type');
 
 var _type2 = _interopRequireDefault(_type);
 
+var _get_columns = require('./_get_columns');
+
+var _get_columns2 = _interopRequireDefault(_get_columns);
+
 function read(model) {
   var query = arguments[1] === undefined ? {} : arguments[1];
   var mode = arguments[2] === undefined ? 'read' : arguments[2];
 
-  var ready = _bluebird2['default'].resolve();
-
-  // populate the field listing for a table so we know which columns
-  // we can use for sparse fieldsets.
-  if (!model.columns) {
-    ready = model.query().columnInfo().then(function (info) {
-      model.columns = Object.keys(info);
-    });
-  }
-
-  return ready.then(function () {
+  return _get_columns2['default'](model).then(function (columns) {
     var fields = query.fields && query.fields[_type2['default'](model)];
     var relations = _lodash2['default'].intersection(_all_relations2['default'](model), query.include || []);
-    // this has to be done here because we can't statically analyze
-    // the columns on a table yet.
     if (fields) {
-      fields = _lodash2['default'].intersection(model.columns, fields);
+      fields = _lodash2['default'].intersection(columns, fields);
       // ensure we always select id as the spec requires this to be present
       if (!_lodash2['default'].contains(fields, 'id')) {
         fields.push('id');
       }
     }
-
     return model.collection().query(function (qb) {
       qb = processFilter(model, qb, query.filter);
       qb = processSort(model.columns, qb, query.sort);

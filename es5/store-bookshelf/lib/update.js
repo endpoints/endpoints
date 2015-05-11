@@ -30,6 +30,10 @@ var _serialize = require('./serialize');
 
 var _serialize2 = _interopRequireDefault(_serialize);
 
+var _transact = require('./_transact');
+
+var _transact2 = _interopRequireDefault(_transact);
+
 function update(model, method, params) {
   if (!model) {
     throw new Error('No model provided.');
@@ -41,18 +45,28 @@ function update(model, method, params) {
     model.constructor.prototype.update = baseUpdate;
   }
   return _destructure2['default'](model, params).then(function (destructured) {
-    return model[method](destructured.data, destructured.toManyRels, _serialize2['default'](model));
+    return _transact2['default'](model, function (transaction) {
+      return model[method](transaction, destructured.attributes, destructured.relations, _serialize2['default'](model));
+    });
   });
 }
 
 // FIXME: the stuff below is gross. upstream to bookshelf... or something.
 
-function baseUpdate(params, toManyRels, previous) {
-  var clientState = _lodash2['default'].extend(previous, params);
-  return this.save(params, { patch: true, method: 'update' }).tap(function (model) {
-    return _bluebird2['default'].map(toManyRels, function (rel) {
-      return model.related(rel.name).detach().then(function () {
-        return model.related(rel.name).attach(rel.id);
+function baseUpdate(transaction, attributes, relations, previous) {
+  var clientState = _lodash2['default'].extend(previous, attributes);
+  return this.save(attributes, {
+    patch: true,
+    method: 'update',
+    transacting: transaction
+  }).tap(function (model) {
+    return _bluebird2['default'].map(relations, function (rel) {
+      return model.related(rel.name).detach(undefined, {
+        transacting: transaction
+      }).then(function () {
+        return model.related(rel.name).attach(rel.id, {
+          transacting: transaction
+        });
       });
     });
   }).then(function (model) {

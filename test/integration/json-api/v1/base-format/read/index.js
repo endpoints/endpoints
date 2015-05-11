@@ -61,8 +61,8 @@ describe('read', function() {
               var dataObj = res.body.data;
               expect(res.status).to.equal(200);
               expect(dataObj).to.be.an('object');
-              expect(dataObj).to.not.have.property('author_id');
-              expect(dataObj).to.not.have.property('series_id');
+              expect(dataObj.attributes).to.not.have.property('author_id');
+              expect(dataObj.attributes).to.not.have.property('series_id');
             });
         });
 
@@ -425,8 +425,7 @@ describe('read', function() {
             expect(res.body.data.length).to.equal(22);
             expect(res.body.data[0]).to.have.property('id');
             expect(res.body.data[0]).to.have.property('type');
-            expect(res.body.data[0]).to.not.have.property('title');
-            expect(res.body.data[0]).to.not.have.property('ordering');
+            expect(res.body.data[0]).to.not.have.property('attributes');
           });
       });
 
@@ -443,8 +442,8 @@ describe('read', function() {
             expect(res.body.data.length).to.equal(22);
             expect(res.body.data[0]).to.have.property('id');
             expect(res.body.data[0]).to.have.property('type');
-            expect(res.body.data[0]).to.have.property('title');
-            expect(res.body.data[0]).to.have.property('ordering');
+            expect(res.body.data[0].attributes).to.have.property('title');
+            expect(res.body.data[0].attributes).to.have.property('ordering');
           });
       });
 
@@ -520,8 +519,8 @@ describe('read', function() {
           .then(function(res) {
             var dataObj = res.body.data[0];
             expect(dataObj).to.have.property('id');
-            expect(dataObj).to.have.property('title');
-            expect(dataObj).to.not.have.property('date_published');
+            expect(dataObj.attributes).to.have.property('title');
+            expect(dataObj.attributes).to.not.have.property('date_published');
           });
       });
     });
@@ -531,7 +530,7 @@ describe('read', function() {
         return Agent.request('GET', '/v1/books/?sort=+title')
           .promise()
           .then(function(res) {
-            expect(res.body.data[0].title).to.equal('Harry Potter and the Chamber of Secrets');
+            expect(res.body.data[0].attributes.title).to.equal('Harry Potter and the Chamber of Secrets');
           });
       });
 
@@ -541,7 +540,7 @@ describe('read', function() {
         return Agent.request('GET', '/v1/books/?sort=+author.name')
           .promise()
           .then(function(res) {
-            expect(res.body.data[0].title).to.equal('Harry Potter and the Philosopher\'s Stone');
+            expect(res.body.data[0].attributes.title).to.equal('Harry Potter and the Philosopher\'s Stone');
           });
       });
 
@@ -549,7 +548,7 @@ describe('read', function() {
         return Agent.request('GET', '/v1/books/?sort=-date_published,+title')
           .promise()
           .then(function(res) {
-            expect(res.body.data[0].title).to.equal('Harry Potter and the Deathly Hallows');
+            expect(res.body.data[0].attributes.title).to.equal('Harry Potter and the Deathly Hallows');
           });
       });
 
@@ -557,7 +556,7 @@ describe('read', function() {
         return Agent.request('GET', '/v1/books/?sort=-title')
           .promise()
           .then(function(res) {
-            expect(res.body.data[0].title).to.equal('The Two Towers');
+            expect(res.body.data[0].attributes.title).to.equal('The Two Towers');
           });
       });
     });

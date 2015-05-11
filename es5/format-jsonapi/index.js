@@ -168,17 +168,18 @@ var JsonApiFormat = (function () {
     var included = _link.included;
 
     // start json-api serialization
-    var data = store.serialize(model);
+    var attributes = store.serialize(model);
     // remove to-one foreign key attributes, they will appear in links
+    // TODO: test performance here
     for (var rel in toOneRelations) {
-      delete data[toOneRelations[rel]];
+      delete attributes[toOneRelations[rel]];
     }
-    // ensure required fields are present
-    data.id = id;
-    data.type = type;
-    data.links = links;
+    // remove id/type, they cannot be members of attributes
+    delete attributes.id;
+    delete attributes.type;
+
     // return the serialized model and all included models
-    return { data: data, included: included };
+    return { data: { id: id, type: type, attributes: attributes, links: links }, included: included };
   };
 
   /**

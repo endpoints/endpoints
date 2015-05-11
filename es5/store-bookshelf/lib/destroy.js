@@ -27,7 +27,7 @@ function destroy(model, method, params) {
     throw new Error('No method provided to delete with.');
   }
   return _destructure2['default'](model, params).then(function (destructured) {
-    return model[method](destructured.data, destructured.toManyRels, _serialize2['default'](model));
+    return model[method](destructured.attributes, destructured.relations, _serialize2['default'](model));
   });
 }
 

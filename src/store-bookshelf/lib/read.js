@@ -1,8 +1,8 @@
-import bPromise from 'bluebird';
 import _ from 'lodash';
 
 import allRelations from './all_relations';
 import type from './type';
+import getColumns from './_get_columns';
 
 /**
  * Retrieves a collection of models from the database.
@@ -13,30 +13,16 @@ import type from './type';
  * @return {Promise.Bookshelf.Collection} Models that match the request.
 */
 export default function read (model, query={}, mode='read') {
-
-  var ready = bPromise.resolve();
-
-  // populate the field listing for a table so we know which columns
-  // we can use for sparse fieldsets.
-  if (!model.columns) {
-    ready = model.query().columnInfo().then(function (info) {
-      model.columns = Object.keys(info);
-    });
-  }
-
-  return ready.then(function () {
+  return getColumns(model).then(function (columns) {
     var fields = query.fields && query.fields[type(model)];
     var relations = _.intersection(allRelations(model), query.include || []);
-    // this has to be done here because we can't statically analyze
-    // the columns on a table yet.
     if (fields) {
-      fields = _.intersection(model.columns, fields);
+      fields = _.intersection(columns, fields);
       // ensure we always select id as the spec requires this to be present
       if (!_.contains(fields, 'id')) {
         fields.push('id');
       }
     }
-
     return model.collection().query(function (qb) {
       qb = processFilter(model, qb, query.filter);
       qb = processSort(model.columns, qb, query.sort);

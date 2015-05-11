@@ -1,83 +1,51 @@
-// FIXME: this needs to be destructured to support other api formats, or
-// be moved wholesale into the request handler.
+// FIXME: this needs to be refactored to support other api formats, or
+// moved wholesale into another model
 
 import _ from 'lodash';
-import bPromise from 'bluebird';
-import Kapow from 'kapow';
 
-function sanitize (data) {
-  delete data.type;
-  delete data.links;
-  return data;
-}
+import getColumns from './_get_columns';
+import toOneRelations from './to_one_relations';
+import allRelations from './all_relations';
 
-export default function (model, params) {
-  if (!params) {
-    return bPromise.resolve({});
-  }
+export default function destructure (model, params={}) {
 
-  var relations = params.links;
-  var toManyRels = [];
+  const links = params.links || {};
+  const linkRelations = _.keys(links);
+  const allRels = allRelations(model);
+  const toOneRelsMap = toOneRelations(model);
+  const toOneRels = Object.keys(toOneRelsMap);
+  const toManyRels = _.difference(allRels, toOneRels);
+  const linkedToOneRels = _.intersection(linkRelations, toOneRels);
+  const linkedToManyRels = _.intersection(linkRelations, toManyRels);
 
-  if (relations) {
-    return bPromise.reduce(Object.keys(relations), function(result, key) {
-      if (!model.related(key)) {
-        throw Kapow(404, 'Unable to find relation "' + key + '"');
-      }
+  // TODO blow up here with kapow, someone is trying to link something that
+  // doesn't exist.
+  //const badRelations = _.difference(linkRelations, allRels);
 
-      var fkey;
-      var relation = relations[key].linkage;
-      var relatedData = model.related(key).relatedData;
-      var relationType = relatedData.type;
+  // TODO we need a hook to check if the target related resources exist
+  // so we can blow up if they don't.
+  // This hook should have context about the request so we can enforce
+  // permissions based on who is trying to update/create something.
+  const attributes = linkedToOneRels.reduce(function (result, relationName) {
+    const relation = links[relationName];
+    const fkey = toOneRelsMap[relationName];
+    const value = relation.linkage && relation.linkage.id;
+    result[fkey] = value;
+    return result;
+  }, params.attributes || {});
 
-      // toOne relations
-      if (relationType === 'belongsTo' || relationType === 'hasOne') {
-        fkey = relatedData.foreignKey;
-
-        return relatedData.target.collection().query(function(qb) {
-          if (relation === null) {
-            return qb;
-          }
-          return qb.where({id:relation.id});
-        }).fetchOne().then(function(model) {
-          if (model === null) {
-            throw Kapow(404, 'Unable to find relation "' + key + '" with id ' + relation.id);
-          }
-          params[fkey] = relation === null ? relation : relation.id;
-          return params;
-        });
-      }
-
-      // toMany relations
-      if (relationType === 'belongsToMany' || relationType === 'hasMany') {
-        return bPromise.map(relation, function(rel) {
-          return relatedData.target.collection().query(function(qb) {
-            return qb.where({id:rel.id});
-          }).fetchOne().then(function(model) {
-            if (model === null) {
-              throw Kapow(404, 'Unable to find relation "' + key + '" with id ' + rel.id);
-            }
-            return params;
-          });
-        }).then(function() {
-          toManyRels.push({
-            name: key,
-            id: _.pluck(relation, 'id')
-          });
-          return params;
-        });
-      }
-    }, params).then(function(params) {
-      return {
-        data: sanitize(params),
-        toManyRels: toManyRels
-      };
-    });
-  }
-
-  return bPromise.resolve({
-    data: sanitize(params),
-    toManyRels: toManyRels
+  const relations = linkedToManyRels.map(function (relationName) {
+    const relation = links[relationName];
+    return {
+      name: relationName,
+      id: _.pluck(relation.linkage, 'id')
+    };
   });
 
+  return getColumns(model).then(function (columns) {
+    if (_.contains(columns, 'id') && params.id) {
+      attributes.id = params.id;
+    }
+    return { attributes, relations };
+  });
 }

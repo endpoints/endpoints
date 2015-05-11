@@ -1,98 +1,71 @@
 'use strict';
 
 exports.__esModule = true;
+exports['default'] = destructure;
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
 
-// FIXME: this needs to be destructured to support other api formats, or
-// be moved wholesale into the request handler.
+// FIXME: this needs to be refactored to support other api formats, or
+// moved wholesale into another model
 
 var _lodash = require('lodash');
 
 var _lodash2 = _interopRequireDefault(_lodash);
 
-var _bluebird = require('bluebird');
+var _get_columns = require('./_get_columns');
 
-var _bluebird2 = _interopRequireDefault(_bluebird);
+var _get_columns2 = _interopRequireDefault(_get_columns);
 
-var _kapow = require('kapow');
+var _to_one_relations = require('./to_one_relations');
 
-var _kapow2 = _interopRequireDefault(_kapow);
+var _to_one_relations2 = _interopRequireDefault(_to_one_relations);
 
-function sanitize(data) {
-  delete data.type;
-  delete data.links;
-  return data;
-}
+var _all_relations = require('./all_relations');
 
-exports['default'] = function (model, params) {
-  if (!params) {
-    return _bluebird2['default'].resolve({});
-  }
+var _all_relations2 = _interopRequireDefault(_all_relations);
 
-  var relations = params.links;
-  var toManyRels = [];
+function destructure(model) {
+  var params = arguments[1] === undefined ? {} : arguments[1];
 
-  if (relations) {
-    return _bluebird2['default'].reduce(Object.keys(relations), function (result, key) {
-      if (!model.related(key)) {
-        throw _kapow2['default'](404, 'Unable to find relation "' + key + '"');
-      }
+  var links = params.links || {};
+  var linkRelations = _lodash2['default'].keys(links);
+  var allRels = _all_relations2['default'](model);
+  var toOneRelsMap = _to_one_relations2['default'](model);
+  var toOneRels = Object.keys(toOneRelsMap);
+  var toManyRels = _lodash2['default'].difference(allRels, toOneRels);
+  var linkedToOneRels = _lodash2['default'].intersection(linkRelations, toOneRels);
+  var linkedToManyRels = _lodash2['default'].intersection(linkRelations, toManyRels);
 
-      var fkey;
-      var relation = relations[key].linkage;
-      var relatedData = model.related(key).relatedData;
-      var relationType = relatedData.type;
+  // TODO blow up here with kapow, someone is trying to link something that
+  // doesn't exist.
+  //const badRelations = _.difference(linkRelations, allRels);
 
-      // toOne relations
-      if (relationType === 'belongsTo' || relationType === 'hasOne') {
-        fkey = relatedData.foreignKey;
+  // TODO we need a hook to check if the target related resources exist
+  // so we can blow up if they don't.
+  // This hook should have context about the request so we can enforce
+  // permissions based on who is trying to update/create something.
+  var attributes = linkedToOneRels.reduce(function (result, relationName) {
+    var relation = links[relationName];
+    var fkey = toOneRelsMap[relationName];
+    var value = relation.linkage && relation.linkage.id;
+    result[fkey] = value;
+    return result;
+  }, params.attributes || {});
 
-        return relatedData.target.collection().query(function (qb) {
-          if (relation === null) {
-            return qb;
-          }
-          return qb.where({ id: relation.id });
-        }).fetchOne().then(function (model) {
-          if (model === null) {
-            throw _kapow2['default'](404, 'Unable to find relation "' + key + '" with id ' + relation.id);
-          }
-          params[fkey] = relation === null ? relation : relation.id;
-          return params;
-        });
-      }
-
-      // toMany relations
-      if (relationType === 'belongsToMany' || relationType === 'hasMany') {
-        return _bluebird2['default'].map(relation, function (rel) {
-          return relatedData.target.collection().query(function (qb) {
-            return qb.where({ id: rel.id });
-          }).fetchOne().then(function (model) {
-            if (model === null) {
-              throw _kapow2['default'](404, 'Unable to find relation "' + key + '" with id ' + rel.id);
-            }
-            return params;
-          });
-        }).then(function () {
-          toManyRels.push({
-            name: key,
-            id: _lodash2['default'].pluck(relation, 'id')
-          });
-          return params;
-        });
-      }
-    }, params).then(function (params) {
-      return {
-        data: sanitize(params),
-        toManyRels: toManyRels
-      };
-    });
-  }
-
-  return _bluebird2['default'].resolve({
-    data: sanitize(params),
-    toManyRels: toManyRels
+  var relations = linkedToManyRels.map(function (relationName) {
+    var relation = links[relationName];
+    return {
+      name: relationName,
+      id: _lodash2['default'].pluck(relation.linkage, 'id')
+    };
   });
-};
+
+  return _get_columns2['default'](model).then(function (columns) {
+    if (_lodash2['default'].contains(columns, 'id') && params.id) {
+      attributes.id = params.id;
+    }
+    return { attributes: attributes, relations: relations };
+  });
+}
 
 module.exports = exports['default'];

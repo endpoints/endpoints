@@ -41,16 +41,16 @@ describe('deletingResources', function() {
   it('should delete resources when a DELETE request is made to the resource URL', function() {
     var first, second, deleteId;
 
-    return Agent.request('GET', '/v1/books')
+    return Agent.request('GET', '/v1/chapters')
       .promise()
       .then(function(res) {
         first = res;
         expect(res.body.data).to.be.a('array');
         deleteId = res.body.data[0].id;
-        return Agent.request('DELETE', '/v1/books/' + deleteId).promise();
+        return Agent.request('DELETE', '/v1/chapters/' + deleteId).promise();
       })
       .then(function(res) {
-        return Agent.request('GET', '/v1/books').promise();
+        return Agent.request('GET', '/v1/chapters').promise();
       })
       .then(function(res) {
         second = res;
