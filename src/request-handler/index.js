@@ -26,7 +26,7 @@ class RequestHandler {
     The constructor.
 
     @constructs RequestHandler
-    @param {Endpoints.Store.*} store
+    @param {Endpoints.Store} store
   */
   constructor (config={}) {
     this.config = config;
