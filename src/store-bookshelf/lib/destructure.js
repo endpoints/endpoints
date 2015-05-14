@@ -3,12 +3,11 @@
 
 import _ from 'lodash';
 
-import getColumns from './_get_columns';
+import columns from './columns';
 import toOneRelations from './to_one_relations';
 import allRelations from './all_relations';
 
 export default function destructure (model, params={}) {
-
   const links = params.links || {};
   const linkRelations = _.keys(links);
   const allRels = allRelations(model);
@@ -38,12 +37,12 @@ export default function destructure (model, params={}) {
     const relation = links[relationName];
     return {
       name: relationName,
-      id: _.pluck(relation.linkage, 'id')
+      linkage: relation.linkage
     };
   });
 
-  return getColumns(model).then(function (columns) {
-    if (_.contains(columns, 'id') && params.id) {
+  return columns(model).then(function (modelColumns) {
+    if (_.contains(modelColumns, 'id') && params.id) {
       attributes.id = params.id;
     }
     return { attributes, relations };

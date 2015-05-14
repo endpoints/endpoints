@@ -116,6 +116,10 @@ var Controller = (function () {
     return this.method('create', opts);
   };
 
+  Controller.prototype.createRelation = function createRelation(opts) {
+    return this.method('createRelation', opts);
+  };
+
   Controller.prototype.read = function read(opts) {
     return this.method('read', opts);
   };
@@ -132,8 +136,16 @@ var Controller = (function () {
     return this.method('update', opts);
   };
 
+  Controller.prototype.updateRelation = function updateRelation(opts) {
+    return this.method('updateRelation', opts);
+  };
+
   Controller.prototype.destroy = function destroy(opts) {
     return this.method('destroy', opts);
+  };
+
+  Controller.prototype.destroyRelation = function destroyRelation(opts) {
+    return this.method('destroyRelation', opts);
   };
 
   _createClass(Controller, [{

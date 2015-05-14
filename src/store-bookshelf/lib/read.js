@@ -2,7 +2,7 @@ import _ from 'lodash';
 
 import allRelations from './all_relations';
 import type from './type';
-import getColumns from './_get_columns';
+import columns from './columns';
 
 /**
  * Retrieves a collection of models from the database.
@@ -13,11 +13,11 @@ import getColumns from './_get_columns';
  * @return {Promise.Bookshelf.Collection} Models that match the request.
 */
 export default function read (model, query={}, mode='read') {
-  return getColumns(model).then(function (columns) {
+  return columns(model).then(function (modelColumns) {
     var fields = query.fields && query.fields[type(model)];
     var relations = _.intersection(allRelations(model), query.include || []);
     if (fields) {
-      fields = _.intersection(columns, fields);
+      fields = _.intersection(modelColumns, fields);
       // ensure we always select id as the spec requires this to be present
       if (!_.contains(fields, 'id')) {
         fields.push('id');

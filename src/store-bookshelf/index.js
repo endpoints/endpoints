@@ -14,8 +14,10 @@ import filters from './lib/filters';
 
 // writing
 import create from './lib/create';
+import createRelation from './lib/create_relation';
 import update from './lib/update';
 import destroy from './lib/destroy';
+import destroyRelation from './lib/destroy_relation';
 
 export default {
   byId,
@@ -27,11 +29,13 @@ export default {
   toOneRelations,
   type,
   read,
-  readRelated: _readForRelated.bind(null, 'related'),
-  readRelation: _readForRelated.bind(null, 'relation'),
   serialize,
   filters,
   create,
   update,
-  destroy
+  destroy,
+  readRelation: _readForRelated.bind(null, 'relation'),
+  createRelation,
+  destroyRelation,
+  readRelated: _readForRelated.bind(null, 'related'),
 };

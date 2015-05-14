@@ -7,14 +7,5 @@ module.exports = function (method, config) {
   return _.compose(_.flatten, _.compact)([
     modelHas(store.allRelations(model), config.include, 'relations'),
     modelHas(Object.keys(store.filters(model)), Object.keys(config.filter), 'filters')
-/*
-    // this is crap
-    (method === 'read') ? null :
-      modelHas(
-        method === 'create' ? model : model.prototype,
-        config.method,
-        'method'
-      )
-*/
   ]);
 };

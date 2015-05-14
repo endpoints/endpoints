@@ -26,19 +26,19 @@ var _type = require('./type');
 
 var _type2 = _interopRequireDefault(_type);
 
-var _get_columns = require('./_get_columns');
+var _columns = require('./columns');
 
-var _get_columns2 = _interopRequireDefault(_get_columns);
+var _columns2 = _interopRequireDefault(_columns);
 
 function read(model) {
   var query = arguments[1] === undefined ? {} : arguments[1];
   var mode = arguments[2] === undefined ? 'read' : arguments[2];
 
-  return _get_columns2['default'](model).then(function (columns) {
+  return _columns2['default'](model).then(function (modelColumns) {
     var fields = query.fields && query.fields[_type2['default'](model)];
     var relations = _lodash2['default'].intersection(_all_relations2['default'](model), query.include || []);
     if (fields) {
-      fields = _lodash2['default'].intersection(columns, fields);
+      fields = _lodash2['default'].intersection(modelColumns, fields);
       // ensure we always select id as the spec requires this to be present
       if (!_lodash2['default'].contains(fields, 'id')) {
         fields.push('id');

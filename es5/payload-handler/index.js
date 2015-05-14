@@ -33,6 +33,13 @@ var PayloadHandler = (function () {
     };
   };
 
+  PayloadHandler.prototype.createRelation = function createRelation(config, data) {
+    return {
+      code: '204',
+      data: null
+    };
+  };
+
   PayloadHandler.prototype.read = function read(config, data) {
     if ((!data || data.length === 0 && data.singleResult) && data.mode !== 'related') {
       return this.error(_kapow2['default'](404, 'Resource not found.'));
@@ -60,7 +67,7 @@ var PayloadHandler = (function () {
   };
 
   PayloadHandler.prototype.update = function update(config, data) {
-    if (data && !config.relationOnly) {
+    if (data) {
       return {
         code: '200',
         data: this.formatter.process(data, config)
@@ -72,7 +79,21 @@ var PayloadHandler = (function () {
     };
   };
 
+  PayloadHandler.prototype.updateRelation = function updateRelation(config, data) {
+    return {
+      code: '204',
+      data: null
+    };
+  };
+
   PayloadHandler.prototype.destroy = function destroy() {
+    return {
+      code: '204',
+      data: null
+    };
+  };
+
+  PayloadHandler.prototype.destroyRelation = function destroyRelation() {
     return {
       code: '204',
       data: null

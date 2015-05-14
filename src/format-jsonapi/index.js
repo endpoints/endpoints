@@ -118,7 +118,7 @@ class JsonApiFormat {
   _format(model, includedRelations=[], mode='read') {
     const store = this.store;
 
-    const id = String(store.id(model));
+    const id = store.id(model);
     const type = store.type(model);
 
     // relation mode only cares about id/type, return early
@@ -217,7 +217,7 @@ class JsonApiFormat {
         const id = store.id(model);
         if (id) {
           result.push({
-            id: String(id),
+            id: id,
             type: store.type(model)
           });
         }
@@ -227,7 +227,7 @@ class JsonApiFormat {
       const id = store.id(included);
       if (id) {
         linkage = {
-          id: String(store.id(included)),
+          id: store.id(included),
           type: store.type(included)
         };
       }

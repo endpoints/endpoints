@@ -1,10 +1,4 @@
-const COLLECTION_MODE = 'collection';
-const SINGLE_MODE = 'single';
-const RELATION_MODE = 'relation';
-const RELATED_MODE = 'related';
-
 import _ from 'lodash';
-import Kapow from 'kapow';
 
 import throwIfModel from './lib/throw_if_model';
 import throwIfNoModel from './lib/throw_if_no_model';
@@ -32,10 +26,6 @@ class RequestHandler {
     this.config = config;
   }
 
-  get method() {
-    return this.config.method;
-  }
-
   get store() {
     return this.config.store;
   }
@@ -60,7 +50,7 @@ class RequestHandler {
         // posting to a relation endpoint is for appending
         // relationships and and such is allowed (must have, really)
         // ids
-        this.mode(request) !== RELATION_MODE &&
+        !request.params.relation &&
         !this.config.allowClientGeneratedIds;
 
       // this applies for both "base" and relation endpoints
@@ -93,7 +83,7 @@ class RequestHandler {
   }
 
   /**
-    Builds a query object to be passed to Endpoints.Adapter#read.
+    Given a request, build a query object.
 
     @returns {Object} The query object on a request.
    */
@@ -111,52 +101,33 @@ class RequestHandler {
   }
 
   /**
-    Determines mode based on what request.params are available.
+    Given a request, create a new record in the underlying store.
 
-    @returns {String} the read mode
-  */
-  mode (request) {
-    const hasIdParam = !!request.params.id;
-    const hasRelationParam = !!request.params.relation;
-    const hasRelatedParam = !!request.params.related;
-
-    if (!hasIdParam) {
-      return COLLECTION_MODE;
-    }
-
-    if (!hasRelationParam && !hasRelatedParam) {
-      return SINGLE_MODE;
-    }
-
-    if (hasRelationParam) {
-      return RELATION_MODE;
-    }
-
-    if (hasRelatedParam) {
-      return RELATED_MODE;
-    }
-
-    throw Kapow(400, 'Unable to determine mode based on `request.params` keys.');
-  }
-
-  /**
-    Creates a new instance of a model.
-
-    @returns {Promise(Bookshelf.Model)} Newly created instance of the Model.
+    @returns {Promise(Bookshelf.Model)} Newly created instance of the model.
   */
   create (request) {
-    const {store, method, model} = this;
+    const {store, model} = this;
     const data = request.body.data;
     if (data && data.id) {
       return store.byId(model, data.id)
         .then(throwIfModel)
         .then(function() {
-          return store.create(model, method, data);
+          return store.create(model, data);
         }
       );
     } else {
-      return store.create(model, method, data);
+      return store.create(model, data);
     }
+  }
+
+  createRelation (request) {
+    const store = this.store;
+    const relationName = request.params.relation;
+    return store.byId(this.model, request.params.id, [relationName])
+      .then(throwIfNoModel)
+      .then((model) => {
+        return store.createRelation(model, relationName, request.body.data);
+      });
   }
 
   /**
@@ -165,81 +136,52 @@ class RequestHandler {
     @returns {Promise(Bookshelf.Model)|Promise(Bookshelf.Collection)}
   */
   read (request) {
-    const {store, model} = this;
+    const id = request.params.id;
     const query = this.query(request);
-    const params = request.params;
-    const id = params.id;
     if (id) {
       // FIXME: this could collide with filter[id]=#
       query.filter.id = id;
       query.singleResult = true;
     }
-    return store.read(model, query);
+    return this.store.read(this.model, query);
   }
 
   readRelated (request) {
-    const {store, model} = this;
     const id = request.params.id;
-    const relation = request.params.related;
     const query = this.query(request);
-    return store.readRelated(model, id, relation, query);
+    const relatedName = request.params.related;
+    return this.store.readRelated(this.model, id, relatedName, query);
   }
 
   readRelation (request) {
-    const {store, model} = this;
     const id = request.params.id;
-    const relation = request.params.relation;
     const query = this.query(request);
-    return store.readRelation(model, id, relation, query);
+    const relationName = request.params.relation;
+    return this.store.readRelation(this.model, id, relationName, query);
   }
 
-  /**
-    Edits a model.
-
-    @returns {Promise(Bookshelf.Model)}
-  */
   update (request) {
-    const {store, method, model} = this;
-    const id = request.params.id;
-    const relation = request.params.relation;
-
-    var data = request.body.data;
-
-    if (relation) {
-      this.config.relationOnly = true;
-      data = {
-        id: id,
-        type: store.type(model),
-        links: {}
-      };
-      data.links[relation] = {linkage: request.body.data};
-    }
-
-    return store.byId(model, id, [relation]).
+    const store = this.store;
+    return store.byId(this.model, request.params.id).
       then(throwIfNoModel).
-      then(function (model) {
-        if (request.method !== 'PATCH') {
-          // FIXME: This will break heterogeneous relations
-          var relationType = data.links[relation].linkage[0].type;
-          var existingRels = model.toJSON()[relation].map(function(rel) {
-            return {
-              id: String(rel.id),
-              type: relationType
-            };
-          });
+      then((model) => {
+        return store.update(model, request.body.data);
+      });
+  }
 
-          if (request.method === 'POST') {
-            data.links[relation].linkage = _.uniq(data.links[relation].linkage.concat(existingRels));
+  updateRelation (request) {
+    const store = this.store;
+    const relationName = request.params.relation;
+    return store.byId(this.model, request.params.id, [relationName])
+      .then(throwIfNoModel)
+      .then((model) => {
+        return store.update(model, {
+          links: {
+            [relationName]: {
+              linkage: request.body.data
+            }
           }
-
-          if (request.method === 'DELETE') {
-            data.links[relation].linkage = _.reject(existingRels, function(rel) {
-              return _.findWhere(data.links[relation].linkage, rel);
-            });
-          }
-        }
-
-        return store.update(model, method, data);
+        });
       });
   }
 
@@ -249,14 +191,29 @@ class RequestHandler {
     @returns {Promise(Bookshelf.Model)}
   */
   destroy (request) {
-    const {method, store, model} = this;
+    const store = this.store;
     const id = request.params.id;
-
-    return store.byId(model, id).then(function (model) {
+    return store.byId(this.model, id).then((model) => {
       if (model) {
-        return store.destroy(model, method);
+        return store.destroy(model);
       }
     });
+  }
+
+  destroyRelation (request) {
+    const store = this.store;
+    const relationName = request.params.relation;
+    return store.byId(this.model, request.params.id, [relationName])
+      .then(throwIfNoModel)
+      .then((model) => {
+        return store.destroyRelation(model, {
+          links: {
+            [relationName]: {
+              linkage: request.body.data
+            }
+          }
+        });
+      });
   }
 
 }

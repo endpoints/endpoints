@@ -261,7 +261,15 @@ describe('updatingResources', function() {
     describe('204NoContent', function() {
       it('must return 204 No Content on a successful update when attributes remain up-to-date', function() {
         return Agent.request('PATCH', '/v1/stores/1')
-          .send({data: {type: 'stores', id: '1', name: 'Updated Store'}})
+          .send({
+            data: {
+              type: 'stores',
+              id: '1',
+              attributes: {
+                name: 'empty store'
+              }
+            }
+          })
           .promise()
           .then(function(res) {
             expect(res.status).to.equal(204);
@@ -568,7 +576,7 @@ describe('updatingRelationships', function() {
         { type: 'stores', id: '2' }
       ];
       return Agent.request('DELETE', '/v1/books/1/links/stores')
-        .send({ data: newIds})
+        .send({data: newIds})
         .promise()
         .then(function(res) {
           expect(res.status).to.equal(204);

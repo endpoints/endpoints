@@ -14,15 +14,5 @@ module.exports = function (method, config) {
   var model = config.model;
   var store = config.store;
 
-  return _lodash2['default'].compose(_lodash2['default'].flatten, _lodash2['default'].compact)([_model_has2['default'](store.allRelations(model), config.include, 'relations'), _model_has2['default'](Object.keys(store.filters(model)), Object.keys(config.filter), 'filters')
-  /*
-      // this is crap
-      (method === 'read') ? null :
-        modelHas(
-          method === 'create' ? model : model.prototype,
-          config.method,
-          'method'
-        )
-  */
-  ]);
+  return _lodash2['default'].compose(_lodash2['default'].flatten, _lodash2['default'].compact)([_model_has2['default'](store.allRelations(model), config.include, 'relations'), _model_has2['default'](Object.keys(store.filters(model)), Object.keys(config.filter), 'filters')]);
 };

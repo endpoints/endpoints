@@ -1,13 +1,17 @@
 'use strict';
 
 exports.__esModule = true;
+
+/**
+ * Creates a model.
+ *
+ * @param {Bookshelf.Model} model - A bookshelf model instance
+ * @param {Object} params - An object containing the params from the request.
+ * @returns {Promise.Bookshelf.Model} The created model.
+ */
 exports['default'] = create;
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
-
-var _bluebird = require('bluebird');
-
-var _bluebird2 = _interopRequireDefault(_bluebird);
 
 var _transact = require('./_transact');
 
@@ -17,47 +21,31 @@ var _destructure = require('./destructure');
 
 var _destructure2 = _interopRequireDefault(_destructure);
 
-function create(model, method, params) {
+var _relate = require('./relate');
+
+var _relate2 = _interopRequireDefault(_relate);
+
+function create(model) {
+  var params = arguments[1] === undefined ? {} : arguments[1];
+
   if (!model) {
     throw new Error('No model provided.');
   }
-  if (!method) {
-    throw new Error('No method provided to create with.');
-  }
-  if (!params) {
-    params = {};
-  }
-  if (!model.create) {
-    model.create = baseCreate;
-  }
   return _destructure2['default'](model.forge(), params).then(function (destructured) {
+    var attributes = destructured.attributes;
+    var relations = destructured.relations;
+
     return _transact2['default'](model, function (transaction) {
-      return model[method](transaction, destructured.attributes, destructured.relations);
+      return model.forge(attributes).save(null, {
+        method: 'insert',
+        transacting: transaction
+      }).tap(function (newModel) {
+        return _relate2['default'](newModel, relations, 'create', transaction);
+      }).then(function (newModel) {
+        return model.forge({ id: newModel.id }).fetch({ transacting: transaction });
+      });
     });
   });
 }
 
-// FIXME: the stuff below is gross. upstream to bookshelf... or something.
-
-function baseCreate(transaction, attributes, relations) {
-  // this should be in a transaction but we don't have access to it yet
-  return this.forge(attributes).save(null, {
-    method: 'insert',
-    transacting: transaction
-  }).tap(function (model) {
-    return _bluebird2['default'].map(relations, function (rel) {
-      return model.related(rel.name).detach(undefined, {
-        transacting: transaction
-      }).then(function () {
-        return model.related(rel.name).attach(rel.id, {
-          transacting: transaction
-        });
-      });
-    });
-  }).then((function (model) {
-    return this.forge({ id: model.id }).fetch({
-      transacting: transaction
-    });
-  }).bind(this));
-}
 module.exports = exports['default'];

@@ -12,10 +12,6 @@ var _lodash = require('lodash');
 
 var _lodash2 = _interopRequireDefault(_lodash);
 
-var _kapow = require('kapow');
-
-var _kapow2 = _interopRequireDefault(_kapow);
-
 var _libThrow_if_model = require('./lib/throw_if_model');
 
 var _libThrow_if_model2 = _interopRequireDefault(_libThrow_if_model);
@@ -48,11 +44,6 @@ var _libVerify_full_replacement = require('./lib/verify_full_replacement');
 
 var _libVerify_full_replacement2 = _interopRequireDefault(_libVerify_full_replacement);
 
-var COLLECTION_MODE = 'collection';
-var SINGLE_MODE = 'single';
-var RELATION_MODE = 'relation';
-var RELATED_MODE = 'related';
-
 /**
   Provides methods for pulling out json-api relevant data from
   express or hapi request instances. Also provides route level
@@ -64,7 +55,7 @@ var RequestHandler = (function () {
   /**
     The constructor.
      @constructs RequestHandler
-    @param {Endpoints.Store.*} store
+    @param {Endpoints.Store} store
   */
 
   function RequestHandler() {
@@ -90,7 +81,7 @@ var RequestHandler = (function () {
       // posting to a relation endpoint is for appending
       // relationships and and such is allowed (must have, really)
       // ids
-      this.mode(request) !== RELATION_MODE && !this.config.allowClientGeneratedIds;
+      !request.params.relation && !this.config.allowClientGeneratedIds;
 
       // this applies for both "base" and relation endpoints
       var fullReplacementCheck = request.method === 'PATCH' && !this.config.allowToManyFullReplacement;
@@ -117,7 +108,7 @@ var RequestHandler = (function () {
   };
 
   /**
-    Builds a query object to be passed to Endpoints.Adapter#read.
+    Given a request, build a query object.
      @returns {Object} The query object on a request.
    */
 
@@ -140,52 +131,30 @@ var RequestHandler = (function () {
   };
 
   /**
-    Determines mode based on what request.params are available.
-     @returns {String} the read mode
-  */
-
-  RequestHandler.prototype.mode = function mode(request) {
-    var hasIdParam = !!request.params.id;
-    var hasRelationParam = !!request.params.relation;
-    var hasRelatedParam = !!request.params.related;
-
-    if (!hasIdParam) {
-      return COLLECTION_MODE;
-    }
-
-    if (!hasRelationParam && !hasRelatedParam) {
-      return SINGLE_MODE;
-    }
-
-    if (hasRelationParam) {
-      return RELATION_MODE;
-    }
-
-    if (hasRelatedParam) {
-      return RELATED_MODE;
-    }
-
-    throw _kapow2['default'](400, 'Unable to determine mode based on `request.params` keys.');
-  };
-
-  /**
-    Creates a new instance of a model.
-     @returns {Promise(Bookshelf.Model)} Newly created instance of the Model.
+    Given a request, create a new record in the underlying store.
+     @returns {Promise(Bookshelf.Model)} Newly created instance of the model.
   */
 
   RequestHandler.prototype.create = function create(request) {
     var store = this.store;
-    var method = this.method;
     var model = this.model;
 
     var data = request.body.data;
     if (data && data.id) {
       return store.byId(model, data.id).then(_libThrow_if_model2['default']).then(function () {
-        return store.create(model, method, data);
+        return store.create(model, data);
       });
     } else {
-      return store.create(model, method, data);
+      return store.create(model, data);
     }
+  };
+
+  RequestHandler.prototype.createRelation = function createRelation(request) {
+    var store = this.store;
+    var relationName = request.params.relation;
+    return store.byId(this.model, request.params.id, [relationName]).then(_libThrow_if_no_model2['default']).then(function (model) {
+      return store.createRelation(model, relationName, request.body.data);
+    });
   };
 
   /**
@@ -194,88 +163,48 @@ var RequestHandler = (function () {
   */
 
   RequestHandler.prototype.read = function read(request) {
-    var store = this.store;
-    var model = this.model;
-
+    var id = request.params.id;
     var query = this.query(request);
-    var params = request.params;
-    var id = params.id;
     if (id) {
       // FIXME: this could collide with filter[id]=#
       query.filter.id = id;
       query.singleResult = true;
     }
-    return store.read(model, query);
+    return this.store.read(this.model, query);
   };
 
   RequestHandler.prototype.readRelated = function readRelated(request) {
-    var store = this.store;
-    var model = this.model;
-
     var id = request.params.id;
-    var relation = request.params.related;
     var query = this.query(request);
-    return store.readRelated(model, id, relation, query);
+    var relatedName = request.params.related;
+    return this.store.readRelated(this.model, id, relatedName, query);
   };
 
   RequestHandler.prototype.readRelation = function readRelation(request) {
-    var store = this.store;
-    var model = this.model;
-
     var id = request.params.id;
-    var relation = request.params.relation;
     var query = this.query(request);
-    return store.readRelation(model, id, relation, query);
+    var relationName = request.params.relation;
+    return this.store.readRelation(this.model, id, relationName, query);
   };
-
-  /**
-    Edits a model.
-     @returns {Promise(Bookshelf.Model)}
-  */
 
   RequestHandler.prototype.update = function update(request) {
     var store = this.store;
-    var method = this.method;
-    var model = this.model;
+    return store.byId(this.model, request.params.id).then(_libThrow_if_no_model2['default']).then(function (model) {
+      return store.update(model, request.body.data);
+    });
+  };
 
-    var id = request.params.id;
-    var relation = request.params.relation;
+  RequestHandler.prototype.updateRelation = function updateRelation(request) {
+    var store = this.store;
+    var relationName = request.params.relation;
+    return store.byId(this.model, request.params.id, [relationName]).then(_libThrow_if_no_model2['default']).then(function (model) {
+      var _links;
 
-    var data = request.body.data;
-
-    if (relation) {
-      this.config.relationOnly = true;
-      data = {
-        id: id,
-        type: store.type(model),
-        links: {}
-      };
-      data.links[relation] = { linkage: request.body.data };
-    }
-
-    return store.byId(model, id, [relation]).then(_libThrow_if_no_model2['default']).then(function (model) {
-      if (request.method !== 'PATCH') {
-        // FIXME: This will break heterogeneous relations
-        var relationType = data.links[relation].linkage[0].type;
-        var existingRels = model.toJSON()[relation].map(function (rel) {
-          return {
-            id: String(rel.id),
-            type: relationType
-          };
-        });
-
-        if (request.method === 'POST') {
-          data.links[relation].linkage = _lodash2['default'].uniq(data.links[relation].linkage.concat(existingRels));
-        }
-
-        if (request.method === 'DELETE') {
-          data.links[relation].linkage = _lodash2['default'].reject(existingRels, function (rel) {
-            return _lodash2['default'].findWhere(data.links[relation].linkage, rel);
-          });
-        }
-      }
-
-      return store.update(model, method, data);
+      return store.update(model, {
+        links: (_links = {}, _links[relationName] = {
+          linkage: request.body.data
+        }, _links)
+      });
     });
   };
 
@@ -285,25 +214,30 @@ var RequestHandler = (function () {
   */
 
   RequestHandler.prototype.destroy = function destroy(request) {
-    var method = this.method;
     var store = this.store;
-    var model = this.model;
-
     var id = request.params.id;
-
-    return store.byId(model, id).then(function (model) {
+    return store.byId(this.model, id).then(function (model) {
       if (model) {
-        return store.destroy(model, method);
+        return store.destroy(model);
       }
     });
   };
 
+  RequestHandler.prototype.destroyRelation = function destroyRelation(request) {
+    var store = this.store;
+    var relationName = request.params.relation;
+    return store.byId(this.model, request.params.id, [relationName]).then(_libThrow_if_no_model2['default']).then(function (model) {
+      var _links2;
+
+      return store.destroyRelation(model, {
+        links: (_links2 = {}, _links2[relationName] = {
+          linkage: request.body.data
+        }, _links2)
+      });
+    });
+  };
+
   _createClass(RequestHandler, [{
-    key: 'method',
-    get: function () {
-      return this.config.method;
-    }
-  }, {
     key: 'store',
     get: function () {
       return this.config.store;

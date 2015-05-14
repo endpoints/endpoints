@@ -1,9 +1,9 @@
 /**
- * Return the ID of a provided model.
+ * Return the ID of a provided model as a string, or null if non is present.
  *
  * @param {Bookshelf.Model} model
- * @return {*}
+ * @return {String|null}
  */
 export default function id (model) {
-  return model.id;
+  return model.id ? String(model.id) : null;
 }

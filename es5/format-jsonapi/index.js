@@ -144,7 +144,7 @@ var JsonApiFormat = (function () {
 
     var store = this.store;
 
-    var id = String(store.id(model));
+    var id = store.id(model);
     var type = store.type(model);
 
     // relation mode only cares about id/type, return early
@@ -251,7 +251,7 @@ var JsonApiFormat = (function () {
         var id = store.id(model);
         if (id) {
           result.push({
-            id: String(id),
+            id: id,
             type: store.type(model)
           });
         }
@@ -261,7 +261,7 @@ var JsonApiFormat = (function () {
       var id = store.id(included);
       if (id) {
         linkage = {
-          id: String(store.id(included)),
+          id: store.id(included),
           type: store.type(included)
         };
       }
