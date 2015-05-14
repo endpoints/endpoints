@@ -1,23 +1,18 @@
 const controller = require('./controller');
-const schema = require('./schema');
 
-exports.map = {
+module.exports = {
   post: {
-    '/': controller.create({
-      schema: schema
-    }),
+    '/': controller.create(),
     '/:id/links/:relation': controller.update()
   },
   get: {
     '/': controller.read(),
     '/:id': controller.read(),
-    '/:id/:related': controller.readRelated(),
-    '/:id/links/:relation': controller.readRelation()
+    '/:id/:related': controller.read(),
+    '/:id/links/:relation': controller.read()
   },
   patch: {
-    '/:id': controller.update({
-      schema: schema
-    }),
+    '/:id': controller.update(),
     '/:id/links/:relation': controller.update()
   },
   delete: {

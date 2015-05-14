@@ -19,6 +19,9 @@ const instanceProps = {
   },
   stores: function () {
     return this.belongsToMany(require('../stores/model'));
+  },
+  photos: function () {
+    return this.morphMany(require('../photos/model'), 'imageable');
   }
 };
 
@@ -51,7 +54,8 @@ const classProps = {
     'author',
     'author.books',
     'stores',
-    'stores.books'
+    'stores.books',
+    'photos'
   ]
 };
 

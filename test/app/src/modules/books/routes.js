@@ -1,12 +1,10 @@
-const validateJsonSchema = require('../../../../../src/validate-json-schema');
 const controller = require('./controller');
 const schema = require('./schema');
 
 exports.map = {
   post: {
     '/': controller.create({
-      schema: schema,
-      validators: validateJsonSchema
+      schema: schema
     }),
     '/:id/links/:relation': controller.update()
   },
@@ -18,8 +16,7 @@ exports.map = {
   },
   patch: {
     '/:id': controller.update({
-      schema: schema,
-      validators: validateJsonSchema
+      schema: schema
     }),
     '/:id/links/:relation': controller.update()
   },
