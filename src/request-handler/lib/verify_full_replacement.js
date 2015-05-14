@@ -16,7 +16,7 @@ export default function(request, endpoint) {
   }
 
   // relation mode, to-Many relations appear as an array
-  // TODO: this is a bad heuristic that needs to be changed 
+  // TODO: this is a bad heuristic that needs to be changed
   if (request.params.relation) {
     err = Array.isArray(data);
   } else if (Array.isArray(data)) {

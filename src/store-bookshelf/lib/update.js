@@ -19,7 +19,7 @@ export default function update (model, params={}) {
   currentState.id = String(currentState.id);
 
   return destructure(model, params).then(function (destructured) {
-    const {attributes, relations} = destructured
+    const {attributes, relations} = destructured;
     return transact(model, function (transaction) {
       return model.save(attributes, {
         patch: true,
