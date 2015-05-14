@@ -8,7 +8,7 @@ exports.map = {
       schema: schema,
       validators: validateJsonSchema
     }),
-    '/:id/links/:relation': controller.update()
+    '/:id/links/:relation': controller.createRelation()
   },
   get: {
     '/': controller.read(),
@@ -21,10 +21,10 @@ exports.map = {
       schema: schema,
       validators: validateJsonSchema
     }),
-    '/:id/links/:relation': controller.update()
+    '/:id/links/:relation': controller.updateRelation()
   },
   delete: {
     '/:id': controller.destroy(),
-    '/:id/links/:relation': controller.update()
+    '/:id/links/:relation': controller.destroyRelation()
   }
 };

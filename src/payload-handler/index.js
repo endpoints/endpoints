@@ -19,6 +19,13 @@ class PayloadHandler {
     };
   }
 
+  createRelation (config, data) {
+    return {
+      code: '204',
+      data: null
+    };
+  }
+
   read (config, data) {
     if ((!data || data.length === 0 && data.singleResult) && data.mode !== 'related') {
       return this.error(Kapow(404, 'Resource not found.'));
@@ -46,7 +53,7 @@ class PayloadHandler {
   }
 
   update (config, data) {
-    if (data && !config.relationOnly) {
+    if (data) {
       return {
         code: '200',
         data: this.formatter.process(data, config)
@@ -58,7 +65,21 @@ class PayloadHandler {
     };
   }
 
+  updateRelation (config, data) {
+    return {
+      code: '204',
+      data: null
+    };
+  }
+
   destroy () {
+    return {
+      code: '204',
+      data: null
+    };
+  }
+
+  destroyRelation () {
     return {
       code: '204',
       data: null

@@ -101,6 +101,10 @@ class Controller {
     return this.method('create', opts);
   }
 
+  createRelation (opts) {
+    return this.method('createRelation', opts);
+  }
+
   read (opts) {
     return this.method('read', opts);
   }
@@ -117,8 +121,16 @@ class Controller {
     return this.method('update', opts);
   }
 
+  updateRelation (opts) {
+    return this.method('updateRelation', opts);
+  }
+
   destroy (opts) {
     return this.method('destroy', opts);
+  }
+
+  destroyRelation (opts) {
+    return this.method('destroyRelation', opts);
   }
 
 }

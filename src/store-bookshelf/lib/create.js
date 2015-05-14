@@ -1,52 +1,31 @@
-import bPromise from 'bluebird';
-
 import transact from './_transact';
 import destructure from './destructure';
+import relate from './relate';
 
-export default function create (model, method, params) {
+/**
+ * Creates a model.
+ *
+ * @param {Bookshelf.Model} model - A bookshelf model instance
+ * @param {Object} params - An object containing the params from the request.
+ * @returns {Promise.Bookshelf.Model} The created model.
+ */
+export default function create (model, params={}) {
   if (!model) {
     throw new Error('No model provided.');
   }
-  if (!method) {
-    throw new Error('No method provided to create with.');
-  }
-  if (!params) {
-    params = {};
-  }
-  if (!model.create) {
-    model.create = baseCreate;
-  }
   return destructure(model.forge(), params).then(function(destructured) {
+    const {attributes, relations} = destructured;
     return transact(model, function (transaction) {
-      return model[method](
-        transaction,
-        destructured.attributes,
-        destructured.relations
-      );
-    });
-  });
-}
-
-// FIXME: the stuff below is gross. upstream to bookshelf... or something.
-
-function baseCreate (transaction, attributes, relations) {
-  // this should be in a transaction but we don't have access to it yet
-  return this.forge(attributes).save(null, {
-    method: 'insert',
-    transacting: transaction
-  }).tap(function (model) {
-    return bPromise.map(relations, function(rel) {
-      return model.related(rel.name).detach(undefined, {
+      return model.forge(attributes).save(null, {
+        method: 'insert',
         transacting: transaction
-      }).then(function() {
-        return model.related(rel.name).attach(rel.id, {
-          transacting: transaction
-        });
+      })
+      .tap((newModel) => {
+        return relate(newModel, relations, 'create', transaction);
+      })
+      .then((newModel) => {
+        return model.forge({id:newModel.id}).fetch({transacting: transaction});
       });
     });
-  }).then(function(model) {
-    return this.forge({id:model.id}).fetch({
-      transacting: transaction
-    });
-  }.bind(this));
+  });
 }

@@ -4,7 +4,6 @@ import Kapow from 'kapow';
 export default function(request, endpoint) {
   var err;
   var data = request.body.data;
-  var mode = endpoint.mode(request);
 
   function hasToManyLinkage(object) {
     var has = false;
@@ -17,7 +16,8 @@ export default function(request, endpoint) {
   }
 
   // relation mode, to-Many relations appear as an array
-  if (mode === 'relation') {
+  // TODO: this is a bad heuristic that needs to be changed 
+  if (request.params.relation) {
     err = Array.isArray(data);
   } else if (Array.isArray(data)) {
     err = _.reduce(data, function(result, resource) {
