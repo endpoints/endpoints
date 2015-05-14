@@ -12,9 +12,9 @@ var _lodash = require('lodash');
 
 var _lodash2 = _interopRequireDefault(_lodash);
 
-var _get_columns = require('./_get_columns');
+var _columns = require('./columns');
 
-var _get_columns2 = _interopRequireDefault(_get_columns);
+var _columns2 = _interopRequireDefault(_columns);
 
 var _to_one_relations = require('./to_one_relations');
 
@@ -56,12 +56,12 @@ function destructure(model) {
     var relation = links[relationName];
     return {
       name: relationName,
-      id: _lodash2['default'].pluck(relation.linkage, 'id')
+      linkage: relation.linkage
     };
   });
 
-  return _get_columns2['default'](model).then(function (columns) {
-    if (_lodash2['default'].contains(columns, 'id') && params.id) {
+  return _columns2['default'](model).then(function (modelColumns) {
+    if (_lodash2['default'].contains(modelColumns, 'id') && params.id) {
       attributes.id = params.id;
     }
     return { attributes: attributes, relations: relations };

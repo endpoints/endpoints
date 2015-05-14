@@ -60,6 +60,10 @@ var _libCreate = require('./lib/create');
 
 var _libCreate2 = _interopRequireDefault(_libCreate);
 
+var _libCreate_relation = require('./lib/create_relation');
+
+var _libCreate_relation2 = _interopRequireDefault(_libCreate_relation);
+
 var _libUpdate = require('./lib/update');
 
 var _libUpdate2 = _interopRequireDefault(_libUpdate);
@@ -67,6 +71,10 @@ var _libUpdate2 = _interopRequireDefault(_libUpdate);
 var _libDestroy = require('./lib/destroy');
 
 var _libDestroy2 = _interopRequireDefault(_libDestroy);
+
+var _libDestroy_relation = require('./lib/destroy_relation');
+
+var _libDestroy_relation2 = _interopRequireDefault(_libDestroy_relation);
 
 exports['default'] = {
   byId: _libBy_id2['default'],
@@ -78,12 +86,13 @@ exports['default'] = {
   toOneRelations: _libTo_one_relations2['default'],
   type: _libType2['default'],
   read: _libRead2['default'],
-  readRelated: _lib_read_for_related2['default'].bind(null, 'related'),
-  readRelation: _lib_read_for_related2['default'].bind(null, 'relation'),
   serialize: _libSerialize2['default'],
   filters: _libFilters2['default'],
   create: _libCreate2['default'],
   update: _libUpdate2['default'],
-  destroy: _libDestroy2['default']
-};
+  destroy: _libDestroy2['default'],
+  readRelation: _lib_read_for_related2['default'].bind(null, 'relation'),
+  createRelation: _libCreate_relation2['default'],
+  destroyRelation: _libDestroy_relation2['default'],
+  readRelated: _lib_read_for_related2['default'].bind(null, 'related') };
 module.exports = exports['default'];
