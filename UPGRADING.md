@@ -1,3 +1,57 @@
+# v0.7.0 -> v0.8.0
+Some new controller APIs were introduced. As a result, the "standard" route file for a resource has changed.
+
+**v0.7.0 (old)**
+```js
+const controller = require('./controller');
+
+exports.map = {
+  post: {
+    '/': controller.create(),
+    '/:id/links/:relation': controller.createRelation()
+  },
+  get: {
+    '/': controller.read(),
+    '/:id': controller.read(),
+    '/:id/:related': controller.readRelated(),
+    '/:id/links/:relation': controller.readRelation()
+  },
+  patch: {
+    '/:id': controller.update(),
+    '/:id/links/:relation': controller.updateRelation()
+  },
+  delete: {
+    '/:id': controller.destroy(),
+    '/:id/links/:relation': controller.destroyRelation()
+  }
+};
+```
+
+**v0.8.0 (new)**
+```js
+exports.map = {
+  post: {
+    '/': controller.create(),
+    '/:id/links/:relation': controller.update()
+  },
+  get: {
+    '/': controller.read(),
+    '/:id': controller.read(),
+    '/:id/:related': controller.readRelated(),
+    '/:id/links/:relation': controller.readRelation()
+  },
+  patch: {
+    '/:id': controller.update(),
+    '/:id/links/:relation': controller.update()
+  },
+  delete: {
+    '/:id': controller.destroy(),
+    '/:id/links/:relation': controller.update()
+  }
+};
+```
+
+
 # v0.6.0 -> v0.7.0
 
 In order to support generating correct links in API responses, controllers must now include a `basePath` and `baseUrl`.
