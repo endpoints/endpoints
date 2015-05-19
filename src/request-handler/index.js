@@ -2,7 +2,6 @@ import _ from 'lodash';
 
 import throwIfModel from './lib/throw_if_model';
 import throwIfNoModel from './lib/throw_if_no_model';
-import verifyAccept from './lib/verify_accept';
 import verifyContentType from './lib/verify_content_type';
 import verifyDataObject from './lib/verify_data_object';
 import splitStringProps from './lib/split_string_props';
@@ -42,7 +41,7 @@ class RequestHandler {
   validate (request) {
 
     var err;
-    var validators = [verifyAccept];
+    var validators = [];
 
     if (request.body && request.body.data) {
       var clientIdCheck =

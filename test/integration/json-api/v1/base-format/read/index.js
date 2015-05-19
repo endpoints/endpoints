@@ -402,15 +402,6 @@ describe('read', function() {
 
   describe('fetchingData', function() {
 
-    it('must require an ACCEPT header specifying the JSON API media type', function() {
-      return Agent.request('GET', '/v1/books/1')
-        .accept('')
-        .promise()
-        .then(function(res) {
-          expect(res.status).to.equal(406);
-        });
-    });
-
     describe('fetchingResources', function() {
       it('must support fetching resource for URLs provided as a `self` link in a links object', function() {
         return Agent.request('GET', '/v1/books/1')

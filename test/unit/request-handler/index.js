@@ -18,7 +18,6 @@ describe('RequestHandler', function () {
     require('../../../src/request-handler/lib/split_string_props');
     require('../../../src/request-handler/lib/throw_if_model');
     require('../../../src/request-handler/lib/throw_if_no_model');
-    require('../../../src/request-handler/lib/verify_accept');
     require('../../../src/request-handler/lib/verify_client_generated_id');
     require('../../../src/request-handler/lib/verify_content_type');
     require('../../../src/request-handler/lib/verify_data_object');

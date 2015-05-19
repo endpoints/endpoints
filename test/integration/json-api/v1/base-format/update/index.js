@@ -20,16 +20,6 @@ beforeEach(function() {
 
 describe('updatingResources', function() {
 
-  it('must require an ACCEPT header specifying the JSON API media type', function() {
-    return Agent.request('PATCH', '/v1/books/1')
-      .accept('')
-      .send(patchData)
-      .promise()
-      .then(function(res) {
-        expect(res.status).to.equal(406);
-      });
-  });
-
   it('must respond to a successful request with an object', function() {
     return Agent.request('PATCH', '/v1/books/1')
       .send(patchData)
