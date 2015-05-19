@@ -10,3 +10,7 @@ v0.8.0:
   date: 2015-05-15
   changes:
     - Add controller methods for handling relations.
+v0.8.1:
+  date: 2015-05-19
+  changes:
+    - Remove accept header requirement, which was in violation of HTTP.

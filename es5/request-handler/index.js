@@ -20,10 +20,6 @@ var _libThrow_if_no_model = require('./lib/throw_if_no_model');
 
 var _libThrow_if_no_model2 = _interopRequireDefault(_libThrow_if_no_model);
 
-var _libVerify_accept = require('./lib/verify_accept');
-
-var _libVerify_accept2 = _interopRequireDefault(_libVerify_accept);
-
 var _libVerify_content_type = require('./lib/verify_content_type');
 
 var _libVerify_content_type2 = _interopRequireDefault(_libVerify_content_type);
@@ -74,7 +70,7 @@ var RequestHandler = (function () {
   RequestHandler.prototype.validate = function validate(request) {
 
     var err;
-    var validators = [_libVerify_accept2['default']];
+    var validators = [];
 
     if (request.body && request.body.data) {
       var clientIdCheck = request.method === 'POST' &&
