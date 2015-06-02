@@ -1,3 +1,6 @@
+# v0.8.0 -> v0.9.0
+Per JSON-API 1.0, the recommended relationship url has changed from `/:id/links/:relation` to `/:id/relationships/:relation`.
+
 # v0.7.0 -> v0.8.0
 Controllers now have public APIs specifically for handling relations:
 * `Controller#createRelation`

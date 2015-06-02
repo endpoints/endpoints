@@ -1,16 +1,16 @@
-v0.6.0:
-  date: 2015-05-01
+v0.9.0:
+  date: 2015-06-02
   changes:
-    - Development release.
-v0.7.0:
-  date: 2015-05-05
-  changes:
-    - Support generating links properly.
+    - Initial support for the json-api 1.0 specification.
 v0.8.0:
   date: 2015-05-15
   changes:
     - Add controller methods for handling relations.
-v0.8.1:
-  date: 2015-05-19
+v0.7.0:
+  date: 2015-05-05
   changes:
-    - Remove accept header requirement, which was in violation of HTTP.
+    - Support generating links properly.
+v0.6.0:
+  date: 2015-05-01
+  changes:
+    - Development release.
