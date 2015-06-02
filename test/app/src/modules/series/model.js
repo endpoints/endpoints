@@ -15,7 +15,9 @@ const classProps = {
     }
   },
   relations: [
-    'books'
+    'books',
+    'books.chapters',
+    'books.firstChapter'
   ]
 };
 

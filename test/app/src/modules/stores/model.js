@@ -12,7 +12,8 @@ const classProps = {
   filters: {},
   relations: [
     'books',
-    'books.author'
+    'books.author',
+    'books.chapters'
   ]
 };
 

@@ -1,3 +1,5 @@
+/* jshint ignore:start */
+
 import path from 'path';
 import {expect} from 'chai';
 
@@ -220,3 +222,5 @@ describe('JsonApiBookshelf', function () {
   });
 
 });
+
+/* jshint ignore:end */

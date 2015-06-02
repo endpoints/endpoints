@@ -54,7 +54,7 @@ describe('read', function() {
     describe('resourceObjects', function() {
 
       describe('resourceAttributes', function() {
-        it('must not contain a foreign key as an attribute', function() {
+        it('should not contain a foreign key as an attribute', function() {
           return Agent.request('GET', '/v1/books/1')
             .promise()
             .then(function(res) {
@@ -73,8 +73,8 @@ describe('read', function() {
               var dataObj = res.body.data;
               expect(res.status).to.equal(200);
               expect(dataObj).to.be.an('object');
-              expect(dataObj.links).to.have.property('author');
-              expect(dataObj.links).to.have.property('series');
+              expect(dataObj.relationships).to.have.property('author');
+              expect(dataObj.relationships).to.have.property('series');
             });
         });
       });
@@ -114,15 +114,15 @@ describe('read', function() {
         });
       });
 
-      describe('links', function() {
-        it('must have an object as the value of any links key', function() {
+      describe('relationships', function() {
+        it('must have an object as the value of any relationships key', function() {
           return Agent.request('GET', '/v1/books/1')
             .promise()
             .then(function(res) {
               var dataObj = res.body.data;
               expect(res.status).to.equal(200);
               expect(dataObj)
-                .to.have.property('links')
+                .to.have.property('relationships')
                   // must have a string value for type
                   .that.is.a('object');
             });
@@ -169,12 +169,11 @@ describe('read', function() {
           return Agent.request('GET', '/v1/books/1')
             .promise()
             .then(function(res) {
-              var links = res.body.data.links;
+              var relationships = res.body.data.relationships;
               expect(res.status).to.equal(200);
-              expect(links).to.have.property('author');
-              expect(links).to.have.property('series');
-              expect(links).to.have.property('stores');
-              expect(links).to.have.property('author.books');
+              expect(relationships).to.have.property('author');
+              expect(relationships).to.have.property('series');
+              expect(relationships).to.have.property('stores');
             });
         });
 
@@ -185,17 +184,17 @@ describe('read', function() {
             .then(function(res) {
               var dataObj = res.body.data;
               expect(res.status).to.equal(200);
-              expect(dataObj.links.chapters).to.have.property('related');
+              expect(dataObj.relationships.chapters.links).to.have.property('related');
             });
         });
 
-        it('may include a "linkage" member whose value represents "resource linkage"', function() {
+        it('may include a "data" member whose value represents resource identifier objects', function() {
           return Agent.request('GET', '/v1/books/1?include=author')
             .promise()
             .then(function(res) {
               var dataObj = res.body.data;
               expect(res.status).to.equal(200);
-              expect(dataObj.links.author).to.have.property('linkage');
+              expect(dataObj.relationships.author).to.have.property('data');
             });
         });
 
@@ -209,25 +208,24 @@ describe('read', function() {
         // Endpoints takes the view that to-many relationships may
         // contain numerous records. By default, it returns link objects
         // for to-one references and string URLs for to-many references.
-        it('should make to-one references a link object', function() {
+        it('should make to-one references in a relationship object', function() {
           return Agent.request('GET', '/v1/books/1')
             .promise()
             .then(function(res) {
-              var links = res.body.data.links;
+              var relationships = res.body.data.relationships;
               expect(res.status).to.equal(200);
-              expect(links.author).to.be.an('Object');
-              expect(links.series).to.be.an('Object');
+              expect(relationships.author).to.be.an('Object');
+              expect(relationships.series).to.be.an('Object');
             });
         });
 
-        it('should make to-many references a link object', function() {
+        it('should make to-many references in a relationships object', function() {
           return Agent.request('GET', '/v1/books/1')
             .promise()
             .then(function(res) {
-              var links = res.body.data.links;
+              var relationships = res.body.data.relationships;
               expect(res.status).to.equal(200);
-              expect(links.stores).to.be.an('Object');
-              expect(links['author.books']).to.be.an('Object');
+              expect(relationships.stores).to.be.an('Object');
             });
         });
 
@@ -280,19 +278,18 @@ describe('read', function() {
           it('must not change related URL even when the resource changes');
         });
 
-        describe('linkObjectRelationship', function() {
-          it('must contain either a "self," "related," "linkage", or "meta" property', function() {
+        describe('relationshipObject', function() {
+          it('must contain either a "links,", "data", or "meta" property', function() {
             return Agent.request('GET', '/v1/books/1')
               .promise()
               .then(function(res) {
                 expect(res.status).to.equal(200);
                 var dataObj = res.body.data;
-                var includedAuthor = dataObj.links.author;
+                var includedAuthor = dataObj.relationships.author;
                 var minProp =
-                  includedAuthor.self ||
-                  includedAuthor.related ||
-                  includedAuthor.meta ||
-                  includedAuthor.linkage;
+                  includedAuthor.links ||
+                  includedAuthor.data ||
+                  includedAuthor.meta;
                 expect(minProp).to.exist;
               });
           });
@@ -303,9 +300,9 @@ describe('read', function() {
               .then(function(res) {
                 var dataObj = res.body.data;
                 expect(res.status).to.equal(200);
-                var includedAuthor = dataObj.links.author;
+                var includedAuthor = dataObj.relationships.author;
 
-                expect(includedAuthor.linkage).to.exist;
+                expect(includedAuthor.data).to.exist;
               });
           });
 
@@ -314,12 +311,12 @@ describe('read', function() {
               .promise()
               .then(function(res) {
                 var dataObj = res.body.data;
-                var links = dataObj.links;
+                var links = dataObj.relationships;
                 expect(res.status).to.equal(200);
-                expect(links.author.linkage).to.have.property('type');
-                expect(links.author.linkage).to.have.property('id');
-                expect(links.series.linkage).to.have.property('type');
-                expect(links.series.linkage).to.have.property('id');
+                expect(links.author.data).to.have.property('type');
+                expect(links.author.data).to.have.property('id');
+                expect(links.series.data).to.have.property('type');
+                expect(links.series.data).to.have.property('id');
               });
           });
 
@@ -345,7 +342,7 @@ describe('read', function() {
           .then(function(res) {
             var dataObj = res.body.data;
             expect(res.status).to.equal(200);
-            var includedAuthorLinkage = dataObj.links.author.linkage;
+            var includedAuthorLinkage = dataObj.relationships.author.data;
             expect(res.body.included).to.be.a('array');
             expect(res.body.included[0].type).to.equal(includedAuthorLinkage.type);
             expect(res.body.included[0].id).to.equal(includedAuthorLinkage.id);
@@ -373,16 +370,15 @@ describe('read', function() {
         });
     });
 
-    it('must have the identical relationship name as the key in the links section of the parent resource object', function() {
-      return Agent.request('GET', '/v1/books/1?include=author,series,stores,author.books')
+    it('must have the identical relationship name as the key in the relationships section of the parent resource object', function() {
+      return Agent.request('GET', '/v1/books/1?include=author,series,stores')
         .promise()
         .then(function(res) {
-          var linksTypes = Object.keys(res.body.data.links);
+          var relationships = Object.keys(res.body.data.relationships);
           expect(res.status).to.equal(200);
-          expect(linksTypes.indexOf('author')).to.be.at.least(0);
-          expect(linksTypes.indexOf('series')).to.be.at.least(0);
-          expect(linksTypes.indexOf('stores')).to.be.at.least(0);
-          expect(linksTypes.indexOf('author.books')).to.be.at.least(0);
+          expect(relationships.indexOf('author')).to.be.at.least(0);
+          expect(relationships.indexOf('series')).to.be.at.least(0);
+          expect(relationships.indexOf('stores')).to.be.at.least(0);
         });
     });
 
@@ -409,34 +405,16 @@ describe('read', function() {
           .then(function(res) {
             var links = res.body.data.links;
             expect(res.status).to.equal(200);
-            return Agent.request('GET', links.chapters.self).promise();
+            return Agent.request('GET', links.self).promise();
           })
           .then(function(res) {
             expect(res.status).to.equal(200);
-            expect(res.body.data.length).to.equal(22);
-            expect(res.body.data[0]).to.have.property('id');
-            expect(res.body.data[0]).to.have.property('type');
-            expect(res.body.data[0]).to.not.have.property('attributes');
+            expect(res.body.data).to.have.property('id');
+            expect(res.body.data).to.have.property('type');
+            expect(res.body.data).to.have.property('attributes');
           });
       });
 
-      it('must support fetching resource for URLs provided as a `related` link as part of a link object', function() {
-        return Agent.request('GET', '/v1/books/1')
-          .promise()
-          .then(function(res) {
-            var links = res.body.data.links;
-            expect(res.status).to.equal(200);
-            return Agent.request('GET', links.chapters.related).promise();
-          })
-          .then(function(res) {
-            expect(res.status).to.equal(200);
-            expect(res.body.data.length).to.equal(22);
-            expect(res.body.data[0]).to.have.property('id');
-            expect(res.body.data[0]).to.have.property('type');
-            expect(res.body.data[0].attributes).to.have.property('title');
-            expect(res.body.data[0].attributes).to.have.property('ordering');
-          });
-      });
 
       describe('responses', function() {
         describe('200Ok', function() {
@@ -468,19 +446,22 @@ describe('read', function() {
     });
 
     describe('fetchingRelationships', function() {
-      it('must support fetching relationship data for every relationship URL provided as a self link as part of a link object with 200 OK', function() {
-        return Agent.request('GET', '/v1/books/1/links/author')
+      it('must support fetching resource for URLs provided as a `self` link as part of a relationship object', function() {
+        return Agent.request('GET', '/v1/books/1')
           .promise()
           .then(function(res) {
-            var dataObj = res.body.data;
-            var linksObj = res.body.links;
+            var relationships = res.body.data.relationships;
             expect(res.status).to.equal(200);
-            expect(linksObj.self).to.equal('/v1/books/1/links/author');
-            expect(linksObj.related).to.equal('/v1/books/1/author');
-            expect(dataObj.type).to.equal('authors');
-            expect(dataObj.id).to.equal('1');
-          }
-        );
+            return Agent.request('GET', relationships.chapters.links.self).promise();
+          })
+          .then(function(res) {
+            expect(res.status).to.equal(200);
+            expect(res.body.data.length).to.equal(22);
+            expect(res.body.data[0]).to.have.property('id');
+            expect(res.body.data[0]).to.have.property('type');
+            expect(res.body.data[0].attributes).to.have.property('title');
+            expect(res.body.data[0].attributes).to.have.property('ordering');
+          });
       });
 
       describe('responses', function() {
@@ -492,7 +473,7 @@ describe('read', function() {
 
         describe('404NotFound', function() {
           it('must return 404 Not Found when processing a request to fetch a relationship URL that does not exist', function() {
-            return Agent.request('GET', '/v1/books/1/links/bees')
+            return Agent.request('GET', '/v1/books/1/relationships/bees')
               .promise()
               .then(function(res) {
                 expect(res.status).to.equal(404);
