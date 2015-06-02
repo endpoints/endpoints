@@ -7,6 +7,7 @@ import verifyDataObject from './lib/verify_data_object';
 import splitStringProps from './lib/split_string_props';
 import verifyClientGeneratedId from './lib/verify_client_generated_id';
 import verifyFullReplacement from './lib/verify_full_replacement';
+import collapseInclude from './lib/collapse_include';
 
 /**
   Provides methods for pulling out json-api relevant data from
@@ -92,7 +93,7 @@ class RequestHandler {
     const config = _.cloneDeep(_.omit(this.config, ['store', 'model']));
     const {include, filter, fields, sort} = request.query;
     return {
-      include: include ? include.split(',') : config.include,
+      include: include ? collapseInclude(include.split(',')) : config.include,
       filter: filter ? splitStringProps(filter) : config.filter,
       fields: fields ? splitStringProps(fields) : config.fields,
       sort: sort ? sort.split(',') : config.sort
