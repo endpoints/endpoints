@@ -1,6 +1,17 @@
 'use strict';
 
 exports.__esModule = true;
+exports['default'] = related;
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
+
+var _related_collection = require('./related_collection');
+
+var _related_collection2 = _interopRequireDefault(_related_collection);
+
+var _is_many = require('./is_many');
+
+var _is_many2 = _interopRequireDefault(_is_many);
 
 /**
  * Given a model or collection and a dot-notated relation string,
@@ -11,35 +22,18 @@ exports.__esModule = true;
  * @param {String} relation
  * @return {Bookshelf.Model|Bookshelf.Collection}
  */
-exports['default'] = related;
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
-
-var _is_many = require('./is_many');
-
-var _is_many2 = _interopRequireDefault(_is_many);
 
 function related(input, relation) {
   return relation.split('.').reduce(function (input, relationSegment) {
-    if (_is_many2['default'](input)) {
+    if ((0, _is_many2['default'])(input)) {
       // iterate each model and add its related models to the collection
       return input.reduce(function (result, model) {
         var related = model.related(relationSegment);
         return result.add(related.models ? related.models : related);
-      }, generateRelatedCollection(input.model, relationSegment));
+      }, (0, _related_collection2['default'])(input.model, relationSegment));
     }
     return input.related(relationSegment);
   }, input);
 }
 
-/**
- * Generate an empty collection for a Bookshelf model relation.
- *
- * @param {Bookshelf.Model} model
- * @param {String} relationName
- * @return {Bookshelf.Collection}
- */
-function generateRelatedCollection(model, relationName) {
-  return model.forge().related(relationName).relatedData.target.collection();
-}
 module.exports = exports['default'];

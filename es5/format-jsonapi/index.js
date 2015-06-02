@@ -1,12 +1,20 @@
+/**
+ * Generate JSON API compatible response objects from any data.
+ *
+ * TODO: Performance work is needed in this module. For example, the
+ * relationships object is populated separately from the includes
+ * array. This means that all relationship data is iterated through
+ * multiple times.
+ *
+ * TODO: Add a unit testing suite--updates for changes around how
+ * JSON-API manages `include` have introduced several edge cases.
+ *
+ */
 'use strict';
 
 exports.__esModule = true;
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
-
-/**
- * Generate JSON API compatible response objects from any data.
- */
 
 var JsonApiFormat = (function () {
 
@@ -61,7 +69,7 @@ var JsonApiFormat = (function () {
    */
 
   JsonApiFormat.prototype.relationUrl = function relationUrl(model, relation) {
-    return '' + this.baseUrl + '/' + this.store.id(model) + '/links/' + relation;
+    return '' + this.baseUrl + '/' + this.store.id(model) + '/relationships/' + relation;
   };
 
   /**
@@ -73,64 +81,41 @@ var JsonApiFormat = (function () {
    */
 
   JsonApiFormat.prototype.process = function process(input) {
+    var _this = this;
+
     var opts = arguments[1] === undefined ? {} : arguments[1];
     var singleResult = opts.singleResult;
     var relations = opts.relations;
     var mode = opts.mode;
 
-    var store = this.store;
-    var format = this._format.bind(this);
-
-    var data = [];
-    var rawIncludes = [];
-    var includedIndex = [];
-
-    if (store.isMany(input)) {
-      input.forEach(function (input) {
-        var result = format(input, relations, mode);
-        data.push(result.data);
-        rawIncludes = rawIncludes.concat(result.included);
+    var links = undefined;
+    if (mode === 'relation') {
+      links = this._relationshipLinks(input.sourceModel, input.relationName);
+    }
+    var data = undefined;
+    if (this.store.isMany(input)) {
+      data = input.map(function (input) {
+        return _this.format(input, relations, mode);
       });
     } else {
-      var result = format(input, relations, mode);
-      data = result.data;
-      rawIncludes = result.included;
+      data = this.format(input, relations, mode);
     }
-
     if (singleResult && Array.isArray(data)) {
       data = data.length ? data[0] : null;
     }
-
-    // bail early with simple representation for relation mode
-    if (mode === 'relation') {
-      return {
-        data: data,
-        links: this._relate(input.sourceModel, input.relationName)
-      };
+    var included = undefined;
+    if (relations && relations.length) {
+      included = this.include(input, relations);
     }
-
-    // format the records to be included and ignore duplicates
-    var included = rawIncludes.reduce(function (result, model) {
-      var indexKey = '' + store.id(model) + '' + store.type(model);
-      var skip = includedIndex.some(function (entry) {
-        return entry == indexKey;
-      });
-      if (!skip) {
-        // TODO: interlink these by logging which relation
-        // each included model came from and then passing in
-        // all included relations that are subrelations of it
-        result.push(format(model).data);
-        includedIndex.push(indexKey);
-      }
-      return result;
-    }, []);
-
-    return included.length ? { data: data, included: included } : { data: data };
+    return {
+      data: data,
+      links: links,
+      included: included
+    };
   };
 
   /**
-   * Format a model to JSON-API compliance and extract any related models
-   * that should be sideloaded (included).
+   * Format a model to JSON-API compliance.
    *
    * @param {*} model - a model
    * @param {Array} includedRelations - an array of relation names to sideload
@@ -138,116 +123,208 @@ var JsonApiFormat = (function () {
    * @return {Object}
    */
 
-  JsonApiFormat.prototype._format = function _format(model) {
+  JsonApiFormat.prototype.format = function format(model) {
     var includedRelations = arguments[1] === undefined ? [] : arguments[1];
     var mode = arguments[2] === undefined ? 'read' : arguments[2];
 
     var store = this.store;
-
     var id = store.id(model);
     var type = store.type(model);
-
     // relation mode only cares about id/type, return early
     if (mode === 'relation') {
-      return { data: { id: id, type: type } };
+      return { id: id, type: type };
     }
-
-    // get all relations on the model
-    var allRelations = store.allRelations(model);
-    // get all toOne relations on the model
-    var toOneRelations = store.toOneRelations(model);
-    // get all relations for this model that weren't sideloaded (included)
-    var linkedRelations = allRelations.filter(function (relation) {
-      return includedRelations.indexOf(relation) === -1;
-    });
+    var links = {
+      self: this.selfUrl(model)
+    };
     // build a links object for this model and get sideloaded (included) models
-
-    var _link = this._link(model, includedRelations, linkedRelations);
-
-    var links = _link.links;
-    var included = _link.included;
-
+    var relationships = this._relationships(model, includedRelations);
     // start json-api serialization
     var attributes = store.serialize(model);
-    // remove to-one foreign key attributes, they will appear in links
-    // TODO: test performance here
+    // FIXME: these delete calls are probably a performance killer
+    // remove to-one foreign key attributes, they should appear in links
+    var toOneRelations = store.toOneRelations(model);
     for (var rel in toOneRelations) {
       delete attributes[toOneRelations[rel]];
     }
     // remove id/type, they cannot be members of attributes
     delete attributes.id;
     delete attributes.type;
-
-    // return the serialized model and all included models
-    return { data: { id: id, type: type, attributes: attributes, links: links }, included: included };
-  };
-
-  /**
-   * Generate a links object entry, including linkage if any is available.
-   *
-   * @param {*} model - the model the links object is being created for
-   * @param {Array} includedRelations - an array of relations to sideload
-   * @param {*} linkedRelations - a array of relations to simply link
-   * @return {Object}
-   */
-
-  JsonApiFormat.prototype._link = function _link(model) {
-    var _this = this;
-
-    var includedRelations = arguments[1] === undefined ? [] : arguments[1];
-    var linkedRelations = arguments[2] === undefined ? [] : arguments[2];
-
-    var store = this.store;
-    var links = {
-      self: this.selfUrl(model)
+    // return the formatted model
+    return {
+      id: id,
+      type: type,
+      attributes: attributes,
+      relationships: relationships,
+      links: links
     };
-    var included = [];
-    // iterate relations that were sideloaded (included)
-    includedRelations.forEach(function (relation) {
-      // get all sideloaded models for this relation
-      var includes = store.related(model, relation);
-      // build up a links object with linkage to the sideloaded models
-      links[relation] = _this._relate(model, relation, includes);
-      // keep track of sideloaded (included) models
-      if (store.isMany(includes)) {
-        // if the included relation was a collection, push only the models
-        // if the collection is empty, don't do anything.
-        included = includes.length ? included.concat(store.modelsFromCollection(includes)) : included;
-      } else {
-        // otherwise, push the singularly related model (as long as it exists)
-        if (store.id(includes)) {
-          included.push(includes);
-        }
-      }
-    });
-    // iterate relations that were not sideloaded (included)
-    linkedRelations.forEach(function (relation) {
-      // populate a links relation to tell client where to find related data
-      links[relation] = _this._relate(model, relation);
-    });
-    // return links object for this model and all sideloaded (included) data
-    return { links: links, included: included };
   };
 
   /**
-   * Generate a links object entry, including linkage if any is available.
+   * Format and inter-link all models related to a provided input and
+   * ensure there are no duplicates.
    *
-   * @param {*} model - the model the links object is being created for
-   * @param {String} relation - the relation to create a link object entry for
-   * @param {*} included - a single model or a collection of models for linkage
+   * @param {*} input - the model(s) being related to
+   * @param {String} relations - the relations to include
+   * @return {Array}
+   */
+
+  JsonApiFormat.prototype.include = function include(input, relations) {
+    var _this2 = this;
+
+    var includedIndex = [];
+    return relations.reduce(function (result, relation) {
+      return result.concat(_this2._include(input, relation));
+    }, []).reduce(function (result, doc) {
+      // remove duplicates.
+      // FIXME: this can produce invalid documents when there is
+      // a nesting level higher than three.
+      var indexKey = '' + doc.id + '' + doc.type;
+      var skip = includedIndex.some(function (entry) {
+        return entry == indexKey;
+      });
+      if (!skip) {
+        result.push(doc);
+        includedIndex.push(indexKey);
+      }
+      return result;
+    }, []);
+  };
+
+  /**
+   * Generate an array of included models, inter-linking nested includes.
+   *
+   * @param {*} input - the model(s) being related to
+   * @param {String} relation - the relations to include
+   * @return {Array}
+   */
+
+  JsonApiFormat.prototype._include = function _include(input, relation) {
+    var store = this.store;
+    var format = this.format.bind(this);
+    var nodes = relation.split('.');
+    var nodeMap = {};
+    return nodes.reduce(function (result, node, idx) {
+      var prevNode = nodes[idx - 1];
+      var nextNode = nodes[idx + 1];
+      var relateTo = idx === 0 ? input : nodeMap[prevNode];
+      var related = nodeMap[node] = store.related(relateTo, node);
+      var current = store.isMany(related) ? store.modelsFromCollection(related) : [related];
+      var nestedInclude = nextNode ? [nextNode] : [];
+      return result.concat(current.map(function (model) {
+        return format(model, nestedInclude);
+      }));
+    }, []);
+  };
+
+  /**
+   * Generate a relationships object.
+   *
+   * @param {*} model - the model(s) being related to
+   * @param {Array} includedRelations - the relations to include
    * @return {Object}
    */
 
-  JsonApiFormat.prototype._relate = function _relate(model, relation, included) {
+  JsonApiFormat.prototype._relationships = function _relationships(model, includedRelations) {
+    var _this3 = this;
+
     var store = this.store;
-    var self = this.relationUrl(model, relation);
-    var related = this.relatedUrl(model, relation);
+    var allRelations = store.allRelations(model);
+    var toOneRelationMap = store.toOneRelations(model);
+    var toOneRelations = Object.keys(toOneRelationMap);
+    return allRelations.reduce(function (result, relation) {
+      var relationNodes = relation.split('.');
+      var isNested = relationNodes.length > 1;
+      if (isNested) {
+        relation = relationNodes[0];
+      }
+      var isToOne = toOneRelations.indexOf(relation) !== -1;
+      var isIncluded = includedRelations.some(function (includeRelation) {
+        return includeRelation.split('.')[0] === relation;
+      });
+      if (isToOne) {
+        result[relation] = _this3._relateToOne(model, relation, toOneRelationMap[relation]);
+      } else {
+        result[relation] = _this3._relateToMany(model, relation, isIncluded);
+      }
+      return result;
+    }, {});
+  };
+
+  /**
+   * Generate data for a to-one relationship object.
+   *
+   * @param {*} model - the model being related to
+   * @param {String} relation - the relation name to populate
+   * @param {String} property - the property the relationship value is under.
+   * @return {Object}
+   */
+
+  JsonApiFormat.prototype._relateToOne = function _relateToOne(model, relation, property) {
+    var store = this.store;
+    var links = this._relationshipLinks(model, relation);
+    var id = store.prop(model, property);
+    var type = store.type(store.relatedModel(model, relation));
+    var data = {
+      id: String(id),
+      type: type
+    };
+    return {
+      links: links,
+      data: id ? data : null
+    };
+  };
+
+  /**
+   * Generate data for a to-many relationship object.
+   *
+   * @param {*} model - the model being related to
+   * @param {String} relation - the relation name to populate
+   * @param {Boolean} included - indicates if this should include data
+   * @return {Object}
+   */
+
+  JsonApiFormat.prototype._relateToMany = function _relateToMany(model, relation, included) {
+    var relationNodes = relation.split('.');
+    var links = this._relationshipLinks(model, relationNodes[0]);
     if (!included) {
-      return { self: self, related: related };
+      return { links: links };
     }
-    var linkage = null;
+    return {
+      links: links,
+      data: this._relationshipData(model, relationNodes[0])
+    };
+  };
+
+  /**
+   * Generate a links object for a relationship.
+   *
+   * @param {*} model - the model the relationships object is being created for
+   * @param {String} relation - the name of the relation to link
+   * @return {Object}
+   */
+
+  JsonApiFormat.prototype._relationshipLinks = function _relationshipLinks(model, relation) {
+    return {
+      self: this.relatedUrl(model, relation),
+      related: this.relationUrl(model, relation)
+    };
+  };
+
+  /**
+   * Generate relationship data.
+   *
+   * @param {*} model - the model the relationship data is being created for
+   * @param {String} relation - the name of the relation to load data for
+   * @return {Object}
+   */
+
+  JsonApiFormat.prototype._relationshipData = function _relationshipData(model, relation) {
+    var store = this.store;
+    var included = store.related(model, relation);
+    var data = null;
     if (store.isMany(included)) {
-      linkage = included.reduce(function (result, model) {
+      data = included.reduce(function (result, model) {
         var id = store.id(model);
         if (id) {
           result.push({
@@ -260,13 +337,13 @@ var JsonApiFormat = (function () {
     } else {
       var id = store.id(included);
       if (id) {
-        linkage = {
+        data = {
           id: store.id(included),
           type: store.type(included)
         };
       }
     }
-    return { self: self, related: related, linkage: linkage };
+    return data;
   };
 
   return JsonApiFormat;

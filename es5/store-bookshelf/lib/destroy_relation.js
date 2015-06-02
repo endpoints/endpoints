@@ -1,14 +1,6 @@
 'use strict';
 
 exports.__esModule = true;
-
-/**
- * Destroys relations on a model.
- *
- * @param {Bookshelf.Model} model - A bookshelf model instance
- * @param {Object} relations - An object containing the relations.
- * @return {Promise.Bookshelf.Model} The updated model.
- */
 exports['default'] = destroyRelation;
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
@@ -25,14 +17,22 @@ var _relate = require('./relate');
 
 var _relate2 = _interopRequireDefault(_relate);
 
+/**
+ * Destroys relations on a model.
+ *
+ * @param {Bookshelf.Model} model - A bookshelf model instance
+ * @param {Object} relations - An object containing the relations.
+ * @return {Promise.Bookshelf.Model} The updated model.
+ */
+
 function destroyRelation(model, relations) {
   if (!model) {
     throw new Error('No model provided.');
   }
-  return _destructure2['default'](model, relations).then(function (destructured) {
+  return (0, _destructure2['default'])(model, relations).then(function (destructured) {
     var relations = destructured.relations;
-    return _transact2['default'](model, function (transaction) {
-      return _relate2['default'](model, relations, 'delete', transaction);
+    return (0, _transact2['default'])(model, function (transaction) {
+      return (0, _relate2['default'])(model, relations, 'delete', transaction);
     });
   });
 }

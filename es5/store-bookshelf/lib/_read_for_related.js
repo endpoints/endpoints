@@ -1,6 +1,33 @@
 'use strict';
 
 exports.__esModule = true;
+exports['default'] = readForRelated;
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
+
+var _kapow = require('kapow');
+
+var _kapow2 = _interopRequireDefault(_kapow);
+
+var _lodash = require('lodash');
+
+var _lodash2 = _interopRequireDefault(_lodash);
+
+var _by_id = require('./by_id');
+
+var _by_id2 = _interopRequireDefault(_by_id);
+
+var _related = require('./related');
+
+var _related2 = _interopRequireDefault(_related);
+
+var _is_many = require('./is_many');
+
+var _is_many2 = _interopRequireDefault(_is_many);
+
+var _read = require('./read');
+
+var _read2 = _interopRequireDefault(_read);
 
 /*
   Returns the model or collection of models related to a given model. This
@@ -57,41 +84,14 @@ exports.__esModule = true;
    @param {Object} mode - the result of RequestHandler#query
    @returns {Promise(Bookshelf.Model)|Promise(Bookshelf.Collection)}
 */
-exports['default'] = readForRelated;
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
-
-var _kapow = require('kapow');
-
-var _kapow2 = _interopRequireDefault(_kapow);
-
-var _lodash = require('lodash');
-
-var _lodash2 = _interopRequireDefault(_lodash);
-
-var _by_id = require('./by_id');
-
-var _by_id2 = _interopRequireDefault(_by_id);
-
-var _related = require('./related');
-
-var _related2 = _interopRequireDefault(_related);
-
-var _is_many = require('./is_many');
-
-var _is_many2 = _interopRequireDefault(_is_many);
-
-var _read = require('./read');
-
-var _read2 = _interopRequireDefault(_read);
 
 function readForRelated(mode, sourceModel, id, relation, query) {
-  return _by_id2['default'](sourceModel, id, relation).then(function (result) {
+  return (0, _by_id2['default'])(sourceModel, id, relation).then(function (result) {
     if (!result) {
-      throw _kapow2['default'](404);
+      throw (0, _kapow2['default'])(404);
     }
-    var relatedData = _related2['default'](result, relation);
-    var hasMany = _is_many2['default'](relatedData);
+    var relatedData = (0, _related2['default'])(result, relation);
+    var hasMany = (0, _is_many2['default'])(relatedData);
 
     var relatedModel = hasMany ? relatedData.model : relatedData.constructor;
     var relatedIds = hasMany ? relatedData.map(function (m) {
@@ -109,7 +109,7 @@ function readForRelated(mode, sourceModel, id, relation, query) {
 
     query.singleResult = !hasMany;
 
-    return _read2['default'](relatedModel, query, mode).then(function (relatedResult) {
+    return (0, _read2['default'])(relatedModel, query, mode).then(function (relatedResult) {
       relatedResult.sourceModel = result;
       relatedResult.relationName = relation;
       return relatedResult;

@@ -1,15 +1,6 @@
 'use strict';
 
 exports.__esModule = true;
-
-/**
- * Creates a new relations on a model.
- *
- * @param {Bookshelf.Model} model - A bookshelf model instance
- * @param {String} relationName - An object containing the relations.
- * @param {Array} linkage - Linkage objects.
- * @returns {Promise.Bookshelf.Model} The updated model.
- */
 exports['default'] = createRelation;
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
@@ -38,23 +29,32 @@ var _transact = require('./_transact');
 
 var _transact2 = _interopRequireDefault(_transact);
 
-function createRelation(model, relationName, linkage) {
+/**
+ * Creates a new relations on a model.
+ *
+ * @param {Bookshelf.Model} model - A bookshelf model instance
+ * @param {String} relationName - An object containing the relations.
+ * @param {Array} data - linkage data
+ * @returns {Promise.Bookshelf.Model} The updated model.
+ */
+
+function createRelation(model, relationName, data) {
   if (!model) {
     throw new Error('No model provided.');
   }
-  return _transact2['default'](model, function (transaction) {
-    var existingLinkage = _related2['default'](model, relationName).map(function (rel) {
+  return (0, _transact2['default'])(model, function (transaction) {
+    var existing = (0, _related2['default'])(model, relationName).map(function (rel) {
       return {
-        id: _id2['default'](rel),
-        type: _type2['default'](rel)
+        id: (0, _id2['default'])(rel),
+        type: (0, _type2['default'])(rel)
       };
     });
-    var allLinkage = linkage.concat(existingLinkage);
+    var all = data.concat(existing);
     // TODO: should i be doing a deep comparison instead?
-    var uniqueLinkage = _lodash2['default'].uniq(allLinkage, JSON.stringify.bind(null));
-    return _relate2['default'](model, {
+    var unique = _lodash2['default'].uniq(all, JSON.stringify.bind(null));
+    return (0, _relate2['default'])(model, {
       name: relationName,
-      linkage: uniqueLinkage
+      data: unique
     }, 'add', transaction);
   });
 }

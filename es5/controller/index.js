@@ -96,20 +96,20 @@ var Controller = (function () {
     @returns {Function} - function (req, res) { } (node http compatible request handler)
   */
 
-  Controller.prototype.method = function method(method, opts) {
+  Controller.prototype.method = function method(_method, opts) {
     var config = _lodash2['default'].extend({
-      method: method,
+      method: _method,
       include: [],
       filter: {},
       fields: {},
       sort: [],
       schema: {} }, this.config, opts);
-    var validationFailures = _libValidate2['default'](method, config);
+    var validationFailures = (0, _libValidate2['default'])(_method, config);
     if (validationFailures.length) {
       throw new Error(validationFailures.join('\n'));
     }
     // TODO: fix this gross passing of the url
-    return _libHandle2['default'](config, this.url);
+    return (0, _libHandle2['default'])(config, this.url);
   };
 
   Controller.prototype.create = function create(opts) {
@@ -173,7 +173,7 @@ var Controller = (function () {
   }, {
     key: 'url',
     get: function () {
-      return _libSingle_slash_join2['default']([this.baseUrl, this.basePath]);
+      return (0, _libSingle_slash_join2['default'])([this.baseUrl, this.basePath]);
     }
   }]);
 

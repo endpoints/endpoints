@@ -1,12 +1,12 @@
-"use strict";
-
-exports.__esModule = true;
 /**
  * Return true if the supplied input is a collection.
  *
  * @param {Bookshelf.Model|Bookshelf.Collection} input
  * @return {Boolean}
  */
+"use strict";
+
+exports.__esModule = true;
 exports["default"] = isMany;
 
 function isMany(input) {

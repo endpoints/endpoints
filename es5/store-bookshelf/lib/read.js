@@ -1,15 +1,6 @@
 'use strict';
 
 exports.__esModule = true;
-
-/**
- * Retrieves a collection of models from the database.
- *
- * @param {Bookshelf.Model} model - a bookshelf model class
- * @param {Object} query - the output of Request#query
- * @param {Object} mode - the mode of the request (single/related/relation)
- * @return {Promise.Bookshelf.Collection} Models that match the request.
-*/
 exports['default'] = read;
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
@@ -30,13 +21,22 @@ var _columns = require('./columns');
 
 var _columns2 = _interopRequireDefault(_columns);
 
+/**
+ * Retrieves a collection of models from the database.
+ *
+ * @param {Bookshelf.Model} model - a bookshelf model class
+ * @param {Object} query - the output of Request#query
+ * @param {Object} mode - the mode of the request (single/related/relation)
+ * @return {Promise.Bookshelf.Collection} Models that match the request.
+*/
+
 function read(model) {
   var query = arguments[1] === undefined ? {} : arguments[1];
   var mode = arguments[2] === undefined ? 'read' : arguments[2];
 
-  return _columns2['default'](model).then(function (modelColumns) {
-    var fields = query.fields && query.fields[_type2['default'](model)];
-    var relations = _lodash2['default'].intersection(_all_relations2['default'](model), query.include || []);
+  return (0, _columns2['default'])(model).then(function (modelColumns) {
+    var fields = query.fields && query.fields[(0, _type2['default'])(model)];
+    var relations = _lodash2['default'].intersection((0, _all_relations2['default'])(model), query.include || []);
     if (fields) {
       fields = _lodash2['default'].intersection(modelColumns, fields);
       // ensure we always select id as the spec requires this to be present
