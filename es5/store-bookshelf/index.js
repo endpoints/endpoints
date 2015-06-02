@@ -1,18 +1,17 @@
+// reading
 'use strict';
 
 exports.__esModule = true;
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
 
-// reading
+var _libAll_relations = require('./lib/all_relations');
+
+var _libAll_relations2 = _interopRequireDefault(_libAll_relations);
 
 var _libBy_id = require('./lib/by_id');
 
 var _libBy_id2 = _interopRequireDefault(_libBy_id);
-
-var _libAll_relations = require('./lib/all_relations');
-
-var _libAll_relations2 = _interopRequireDefault(_libAll_relations);
 
 var _libId = require('./lib/id');
 
@@ -29,6 +28,14 @@ var _libModels_from_collection2 = _interopRequireDefault(_libModels_from_collect
 var _libRelated = require('./lib/related');
 
 var _libRelated2 = _interopRequireDefault(_libRelated);
+
+var _libRelated_collection = require('./lib/related_collection');
+
+var _libRelated_collection2 = _interopRequireDefault(_libRelated_collection);
+
+var _libRelated_model = require('./lib/related_model');
+
+var _libRelated_model2 = _interopRequireDefault(_libRelated_model);
 
 var _libTo_one_relations = require('./lib/to_one_relations');
 
@@ -53,6 +60,10 @@ var _libSerialize2 = _interopRequireDefault(_libSerialize);
 var _libFilters = require('./lib/filters');
 
 var _libFilters2 = _interopRequireDefault(_libFilters);
+
+var _libProp = require('./lib/prop');
+
+var _libProp2 = _interopRequireDefault(_libProp);
 
 // writing
 
@@ -82,12 +93,15 @@ exports['default'] = {
   id: _libId2['default'],
   isMany: _libIs_many2['default'],
   modelsFromCollection: _libModels_from_collection2['default'],
+  relatedCollection: _libRelated_collection2['default'],
+  relatedModel: _libRelated_model2['default'],
   related: _libRelated2['default'],
   toOneRelations: _libTo_one_relations2['default'],
   type: _libType2['default'],
   read: _libRead2['default'],
   serialize: _libSerialize2['default'],
   filters: _libFilters2['default'],
+  prop: _libProp2['default'],
   create: _libCreate2['default'],
   update: _libUpdate2['default'],
   destroy: _libDestroy2['default'],

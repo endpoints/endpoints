@@ -1,6 +1,3 @@
-"use strict";
-
-exports.__esModule = true;
 /**
  * Return the provided model as JSON. We specify shallow here so
  * that relations are not automatically nested in the response.
@@ -8,6 +5,9 @@ exports.__esModule = true;
  * @param {Bookshelf.Model} model
  * @return {Object}
  */
+"use strict";
+
+exports.__esModule = true;
 exports["default"] = serialize;
 
 function serialize(model) {

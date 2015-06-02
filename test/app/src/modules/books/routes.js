@@ -8,23 +8,23 @@ exports.map = {
       schema: schema,
       validators: validateJsonSchema
     }),
-    '/:id/links/:relation': controller.createRelation()
+    '/:id/relationships/:relation': controller.createRelation()
   },
   get: {
     '/': controller.read(),
     '/:id': controller.read(),
     '/:id/:related': controller.readRelated(),
-    '/:id/links/:relation': controller.readRelation()
+    '/:id/relationships/:relation': controller.readRelation()
   },
   patch: {
     '/:id': controller.update({
       schema: schema,
       validators: validateJsonSchema
     }),
-    '/:id/links/:relation': controller.updateRelation()
+    '/:id/relationships/:relation': controller.updateRelation()
   },
   delete: {
     '/:id': controller.destroy(),
-    '/:id/links/:relation': controller.destroyRelation()
+    '/:id/relationships/:relation': controller.destroyRelation()
   }
 };

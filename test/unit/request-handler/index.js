@@ -15,6 +15,7 @@ var source = {
 describe('RequestHandler', function () {
 
   describe('lib', function () {
+    require('../../../src/request-handler/lib/collapse_include');
     require('../../../src/request-handler/lib/split_string_props');
     require('../../../src/request-handler/lib/throw_if_model');
     require('../../../src/request-handler/lib/throw_if_no_model');

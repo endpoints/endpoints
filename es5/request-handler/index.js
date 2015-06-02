@@ -40,6 +40,10 @@ var _libVerify_full_replacement = require('./lib/verify_full_replacement');
 
 var _libVerify_full_replacement2 = _interopRequireDefault(_libVerify_full_replacement);
 
+var _libCollapse_include = require('./lib/collapse_include');
+
+var _libCollapse_include2 = _interopRequireDefault(_libCollapse_include);
+
 /**
   Provides methods for pulling out json-api relevant data from
   express or hapi request instances. Also provides route level
@@ -119,9 +123,9 @@ var RequestHandler = (function () {
     var sort = _request$query.sort;
 
     return {
-      include: include ? include.split(',') : config.include,
-      filter: filter ? _libSplit_string_props2['default'](filter) : config.filter,
-      fields: fields ? _libSplit_string_props2['default'](fields) : config.fields,
+      include: include ? (0, _libCollapse_include2['default'])(include.split(',')) : config.include,
+      filter: filter ? (0, _libSplit_string_props2['default'])(filter) : config.filter,
+      fields: fields ? (0, _libSplit_string_props2['default'])(fields) : config.fields,
       sort: sort ? sort.split(',') : config.sort
     };
   };
@@ -194,12 +198,12 @@ var RequestHandler = (function () {
     var store = this.store;
     var relationName = request.params.relation;
     return store.byId(this.model, request.params.id, [relationName]).then(_libThrow_if_no_model2['default']).then(function (model) {
-      var _links;
+      var _relationships;
 
       return store.update(model, {
-        links: (_links = {}, _links[relationName] = {
-          linkage: request.body.data
-        }, _links)
+        relationships: (_relationships = {}, _relationships[relationName] = {
+          data: request.body.data
+        }, _relationships)
       });
     });
   };
@@ -223,12 +227,12 @@ var RequestHandler = (function () {
     var store = this.store;
     var relationName = request.params.relation;
     return store.byId(this.model, request.params.id, [relationName]).then(_libThrow_if_no_model2['default']).then(function (model) {
-      var _links2;
+      var _relationships2;
 
       return store.destroyRelation(model, {
-        links: (_links2 = {}, _links2[relationName] = {
-          linkage: request.body.data
-        }, _links2)
+        relationships: (_relationships2 = {}, _relationships2[relationName] = {
+          data: request.body.data
+        }, _relationships2)
       });
     });
   };

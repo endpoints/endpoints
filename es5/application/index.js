@@ -24,7 +24,7 @@ var Application = (function () {
 
     this._resources = {};
     this._endpoints = [];
-    _lodash2['default'].extend(this, _libParse_options2['default'](opts));
+    _lodash2['default'].extend(this, (0, _libParse_options2['default'])(opts));
   }
 
   Application.prototype.resource = function resource(name) {
@@ -40,7 +40,7 @@ var Application = (function () {
       input.forEach(this.register.bind(this));
       return this;
     }
-    var resource = _libParse_resource2['default'](input, this.searchPaths);
+    var resource = (0, _libParse_resource2['default'])(input, this.searchPaths);
     var resourceName = resource.name;
     if (this._resources[resourceName]) {
       throw new Error('Resource "' + resourceName + '" registered twice');

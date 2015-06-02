@@ -1,6 +1,3 @@
-"use strict";
-
-exports.__esModule = true;
 /**
  * Return all relations names for a supplied model. It is expected that valid
  * relations will be enumerated as an array on the static property `relations`
@@ -19,6 +16,9 @@ exports.__esModule = true;
  * @param {Bookshelf.Model} model
  * @return {Array}
  */
+"use strict";
+
+exports.__esModule = true;
 exports["default"] = allRelations;
 
 function allRelations(model) {

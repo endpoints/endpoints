@@ -21,7 +21,7 @@ exports['default'] = function (file, searchPaths) {
   for (var i = 0; i < len; i++) {
     var currentPath = _path2['default'].join(searchPaths[i], file);
     var notFoundInFoundFile = false;
-    result = _require_silent2['default'](currentPath);
+    result = (0, _require_silent2['default'])(currentPath);
     if (result instanceof Error) {
       // handle situations where a file is found, but requiring it
       // still throws a MODULE_NOT_FOUND error because that file

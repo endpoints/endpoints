@@ -1,5 +1,14 @@
 /**
  * Generate JSON API compatible response objects from any data.
+ *
+ * TODO: Performance work is needed in this module. For example, the
+ * relationships object is populated separately from the includes
+ * array. This means that all relationship data is iterated through
+ * multiple times.
+ *
+ * TODO: Add a unit testing suite--updates for changes around how
+ * JSON-API manages `include` have introduced several edge cases.
+ *
  */
 class JsonApiFormat {
 
@@ -46,7 +55,7 @@ class JsonApiFormat {
    * @return {String}
    */
   relationUrl (model, relation) {
-    return `${this.baseUrl}/${this.store.id(model)}/links/${relation}`;
+    return `${this.baseUrl}/${this.store.id(model)}/relationships/${relation}`;
   }
 
   /**
@@ -58,166 +67,231 @@ class JsonApiFormat {
    */
   process (input, opts={}) {
     const {singleResult, relations, mode} = opts;
-    const store = this.store;
-    const format = this._format.bind(this);
-
-    let data = [];
-    let rawIncludes = [];
-    let includedIndex = [];
-
-    if (store.isMany(input)) {
-      input.forEach((input) => {
-        const result = format(input, relations, mode);
-        data.push(result.data);
-        rawIncludes = rawIncludes.concat(result.included);
-      });
-    } else {
-      const result = format(input, relations, mode);
-      data = result.data;
-      rawIncludes = result.included;
+    let links;
+    if (mode === 'relation') {
+      links = this._relationshipLinks(input.sourceModel, input.relationName);
     }
-
+    let data;
+    if (this.store.isMany(input)) {
+      data = input.map((input) => this.format(input, relations, mode));
+    } else {
+      data = this.format(input, relations, mode);
+    }
     if (singleResult && Array.isArray(data)) {
       data = data.length ? data[0] : null;
     }
-
-    // bail early with simple representation for relation mode
-    if (mode === 'relation') {
-      return {
-        data,
-        links: this._relate(input.sourceModel, input.relationName)
-      };
+    let included;
+    if (relations && relations.length) {
+      included = this.include(input, relations);
     }
-
-    // format the records to be included and ignore duplicates
-    const included = rawIncludes.reduce((result, model) => {
-      const indexKey = `${store.id(model)}${store.type(model)}`;
-      const skip = includedIndex.some((entry) => entry == indexKey);
-      if (!skip) {
-        // TODO: interlink these by logging which relation
-        // each included model came from and then passing in
-        // all included relations that are subrelations of it
-        result.push(format(model).data);
-        includedIndex.push(indexKey);
-      }
-      return result;
-    }, []);
-
-    return included.length ? { data, included } : { data };
+    return {
+      data,
+      links,
+      included
+    };
   }
 
   /**
-   * Format a model to JSON-API compliance and extract any related models
-   * that should be sideloaded (included).
+   * Format a model to JSON-API compliance.
    *
    * @param {*} model - a model
    * @param {Array} includedRelations - an array of relation names to sideload
    * @param {String} mode - the mode to format for (null, related, relation)
    * @return {Object}
    */
-  _format(model, includedRelations=[], mode='read') {
+  format(model, includedRelations=[], mode='read') {
     const store = this.store;
-
     const id = store.id(model);
     const type = store.type(model);
-
     // relation mode only cares about id/type, return early
     if (mode === 'relation') {
-      return { data: { id, type } };
+      return { id, type };
     }
-
-    // get all relations on the model
-    const allRelations = store.allRelations(model);
-    // get all toOne relations on the model
-    const toOneRelations = store.toOneRelations(model);
-    // get all relations for this model that weren't sideloaded (included)
-    const linkedRelations = allRelations.filter((relation) => {
-      return includedRelations.indexOf(relation) === -1;
-    });
+    const links = {
+      self: this.selfUrl(model)
+    };
     // build a links object for this model and get sideloaded (included) models
-    const {links, included} =
-      this._link(model, includedRelations, linkedRelations);
+    const relationships = this._relationships(model, includedRelations);
     // start json-api serialization
     const attributes = store.serialize(model);
-    // remove to-one foreign key attributes, they will appear in links
-    // TODO: test performance here
+    // FIXME: these delete calls are probably a performance killer
+    // remove to-one foreign key attributes, they should appear in links
+    const toOneRelations = store.toOneRelations(model);
     for (let rel in toOneRelations) {
       delete attributes[toOneRelations[rel]];
     }
     // remove id/type, they cannot be members of attributes
     delete attributes.id;
     delete attributes.type;
-
-    // return the serialized model and all included models
-    return { data: { id, type, attributes, links }, included };
-  }
-
-  /**
-   * Generate a links object entry, including linkage if any is available.
-   *
-   * @param {*} model - the model the links object is being created for
-   * @param {Array} includedRelations - an array of relations to sideload
-   * @param {*} linkedRelations - a array of relations to simply link
-   * @return {Object}
-   */
-  _link(model, includedRelations=[], linkedRelations=[]) {
-    const store = this.store;
-    const links = {
-      self: this.selfUrl(model)
+    // return the formatted model
+    return {
+      id,
+      type,
+      attributes,
+      relationships,
+      links
     };
-    let included = [];
-    // iterate relations that were sideloaded (included)
-    includedRelations.forEach((relation) => {
-      // get all sideloaded models for this relation
-      const includes = store.related(model, relation);
-      // build up a links object with linkage to the sideloaded models
-      links[relation] =
-        this._relate(model, relation, includes);
-      // keep track of sideloaded (included) models
-      if (store.isMany(includes)) {
-        // if the included relation was a collection, push only the models
-        // if the collection is empty, don't do anything.
-        included = includes.length ?
-          included.concat(store.modelsFromCollection(includes)) :
-          included;
-      } else {
-        // otherwise, push the singularly related model (as long as it exists)
-        if (store.id(includes)) {
-          included.push(includes);
-        }
-      }
-    });
-    // iterate relations that were not sideloaded (included)
-    linkedRelations.forEach((relation) => {
-      // populate a links relation to tell client where to find related data
-      links[relation] = this._relate(model, relation);
-    });
-    // return links object for this model and all sideloaded (included) data
-    return { links, included };
   }
 
   /**
-   * Generate a links object entry, including linkage if any is available.
+   * Format and inter-link all models related to a provided input and
+   * ensure there are no duplicates.
    *
-   * @param {*} model - the model the links object is being created for
-   * @param {String} relation - the relation to create a link object entry for
-   * @param {*} included - a single model or a collection of models for linkage
+   * @param {*} input - the model(s) being related to
+   * @param {String} relations - the relations to include
+   * @return {Array}
+   */
+  include(input, relations) {
+    const includedIndex = [];
+    return relations.reduce((result, relation) => {
+      return result.concat(this._include(input, relation));
+    }, []).reduce((result, doc) => {
+      // remove duplicates.
+      // FIXME: this can produce invalid documents when there is
+      // a nesting level higher than three.
+      const indexKey = `${doc.id}${doc.type}`;
+      const skip = includedIndex.some((entry) => entry == indexKey);
+      if (!skip) {
+        result.push(doc);
+        includedIndex.push(indexKey);
+      }
+      return result;
+    }, []);
+  }
+
+  /**
+   * Generate an array of included models, inter-linking nested includes.
+   *
+   * @param {*} input - the model(s) being related to
+   * @param {String} relation - the relations to include
+   * @return {Array}
+   */
+  _include (input, relation) {
+    const store = this.store;
+    const format = this.format.bind(this);
+    const nodes = relation.split('.');
+    const nodeMap = {};
+    return nodes.reduce((result, node, idx) => {
+      const prevNode = nodes[idx - 1];
+      const nextNode = nodes[idx + 1];
+      const relateTo = idx === 0 ? input : nodeMap[prevNode];
+      const related = nodeMap[node] = store.related(relateTo, node);
+      const current = store.isMany(related) ?
+        store.modelsFromCollection(related) : [related];
+      const nestedInclude = nextNode ? [nextNode] : [];
+      return result.concat(
+        current.map((model) => format(model, nestedInclude))
+      );
+    }, []);
+  }
+
+  /**
+   * Generate a relationships object.
+   *
+   * @param {*} model - the model(s) being related to
+   * @param {Array} includedRelations - the relations to include
    * @return {Object}
    */
-  _relate(model, relation, included) {
+  _relationships(model, includedRelations) {
     const store = this.store;
-    const self = this.relationUrl(model, relation);
-    const related = this.relatedUrl(model, relation);
+    const allRelations = store.allRelations(model);
+    const toOneRelationMap = store.toOneRelations(model);
+    const toOneRelations = Object.keys(toOneRelationMap);
+    return allRelations.reduce((result, relation) => {
+      const relationNodes = relation.split('.');
+      const isNested = relationNodes.length > 1;
+      if (isNested) {
+        relation = relationNodes[0];
+      }
+      const isToOne = toOneRelations.indexOf(relation) !== -1;
+      const isIncluded = includedRelations.some((includeRelation) => {
+        return includeRelation.split('.')[0] === relation;
+      });
+      if (isToOne) {
+        result[relation] =
+          this._relateToOne(model, relation, toOneRelationMap[relation]);
+      } else {
+        result[relation] =
+          this._relateToMany(model, relation, isIncluded);
+      }
+      return result;
+    }, {});
+  }
+
+  /**
+   * Generate data for a to-one relationship object.
+   *
+   * @param {*} model - the model being related to
+   * @param {String} relation - the relation name to populate
+   * @param {String} property - the property the relationship value is under.
+   * @return {Object}
+   */
+  _relateToOne (model, relation, property) {
+    const store = this.store;
+    const links = this._relationshipLinks(model, relation);
+    const id = store.prop(model, property);
+    const type = store.type(store.relatedModel(model, relation));
+    const data = {
+      id: String(id),
+      type
+    };
+    return {
+      links,
+      data: id ? data : null
+    };
+  }
+
+  /**
+   * Generate data for a to-many relationship object.
+   *
+   * @param {*} model - the model being related to
+   * @param {String} relation - the relation name to populate
+   * @param {Boolean} included - indicates if this should include data
+   * @return {Object}
+   */
+  _relateToMany (model, relation, included) {
+    const relationNodes = relation.split('.');
+    const links = this._relationshipLinks(model, relationNodes[0]);
     if (!included) {
-      return { self, related };
+      return { links };
     }
-    let linkage = null;
+    return {
+      links,
+      data: this._relationshipData(model, relationNodes[0])
+    };
+  }
+
+  /**
+   * Generate a links object for a relationship.
+   *
+   * @param {*} model - the model the relationships object is being created for
+   * @param {String} relation - the name of the relation to link
+   * @return {Object}
+   */
+  _relationshipLinks(model, relation) {
+    return {
+      self: this.relatedUrl(model, relation),
+      related: this.relationUrl(model, relation)
+    };
+  }
+
+  /**
+   * Generate relationship data.
+   *
+   * @param {*} model - the model the relationship data is being created for
+   * @param {String} relation - the name of the relation to load data for
+   * @return {Object}
+   */
+  _relationshipData(model, relation) {
+    const store = this.store;
+    const included = store.related(model, relation);
+    let data = null;
     if (store.isMany(included)) {
-      linkage = included.reduce(function (result, model) {
+      data = included.reduce(function (result, model) {
         const id = store.id(model);
         if (id) {
           result.push({
-            id: id,
+            id,
             type: store.type(model)
           });
         }
@@ -226,13 +300,13 @@ class JsonApiFormat {
     } else {
       const id = store.id(included);
       if (id) {
-        linkage = {
+        data = {
           id: store.id(included),
           type: store.type(included)
         };
       }
     }
-    return { self, related, linkage };
+    return data;
   }
 
 }

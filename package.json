@@ -36,33 +36,31 @@
     "build-website": "jsdoc ./src/***/**.js -R ./README.md -P ./package.json -d ./website/app/public/api"
   },
   "devDependencies": {
-    "babel": "^5.0.7",
-    "body-parser": "^1.12.0",
-    "bookshelf": "^0.7.9",
-    "chai": "^1.10.0",
-    "chai-as-promised": "^4.2.0",
-    "esperanto": "^0.6.24",
-    "express": "^4.12.2",
+    "babel": "^5.4.7",
+    "body-parser": "^1.12.4",
+    "bookshelf": "^0.8.1",
+    "chai": "^2.3.0",
+    "express": "^4.12.4",
     "express-routebuilder": "^2.1.0",
-    "fantasy-database": "^1.1.0",
-    "istanbul": "^0.3.6",
-    "jade": "^1.9.2",
-    "jscs": "^1.10.0",
-    "jscs-jsdoc": "^0.4.5",
-    "jsdoc": "tkellen/jsdoc#handle-null-nodes",
+    "fantasy-database": "^1.1.1",
+    "istanbul": "^0.3.14",
+    "jade": "^1.10.0",
+    "jscs": "^1.13.1",
+    "jscs-jsdoc": "^1.0.1",
+    "jsdoc": "^3.3.0",
     "jsdoc-toolkit": "0.0.2",
-    "jshint": "^2.5.11",
-    "knex": "^0.8.0",
+    "jshint": "^2.8.0",
+    "knex": "^0.8.6",
     "markdown": "^0.5.0",
-    "mocha": "^2.1.0",
-    "sinon": "^1.12.2",
-    "sqlite3": "^3.0.5",
-    "superagent": "^0.21.0"
+    "mocha": "^2.2.5",
+    "sinon": "^1.14.1",
+    "sqlite3": "^3.0.8",
+    "superagent": "0.21.0"
   },
   "dependencies": {
-    "bluebird": "^2.9.14",
-    "is-my-json-valid": "^2.9.4",
+    "bluebird": "^2.9.27",
+    "is-my-json-valid": "^2.12.0",
     "kapow": "^1.0.0",
-    "lodash": "^3.5.0"
+    "lodash": "^3.9.3"
   }
 }

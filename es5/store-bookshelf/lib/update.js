@@ -1,15 +1,6 @@
 'use strict';
 
 exports.__esModule = true;
-
-/**
- * Updates a model.
- *
- * @param {Bookshelf.Model} model - A bookshelf model instance
- * @param {Object} params - An object containing the params from the request.
- * @returns {Promise.Bookshelf.Model|null} -
-     The updated model or null if nothing has changed.
- */
 exports['default'] = update;
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
@@ -30,6 +21,15 @@ var _relate = require('./relate');
 
 var _relate2 = _interopRequireDefault(_relate);
 
+/**
+ * Updates a model.
+ *
+ * @param {Bookshelf.Model} model - A bookshelf model instance
+ * @param {Object} params - An object containing the params from the request.
+ * @returns {Promise.Bookshelf.Model|null} -
+     The updated model or null if nothing has changed.
+ */
+
 function update(model) {
   var params = arguments[1] === undefined ? {} : arguments[1];
 
@@ -39,17 +39,17 @@ function update(model) {
   var currentState = model.toJSON({ shallow: true });
   currentState.id = String(currentState.id);
 
-  return _destructure2['default'](model, params).then(function (destructured) {
+  return (0, _destructure2['default'])(model, params).then(function (destructured) {
     var attributes = destructured.attributes;
     var relations = destructured.relations;
 
-    return _transact2['default'](model, function (transaction) {
+    return (0, _transact2['default'])(model, function (transaction) {
       return model.save(attributes, {
         patch: true,
         method: 'update',
         transacting: transaction
       }).tap(function (model) {
-        return _relate2['default'](model, relations, 'update', transaction);
+        return (0, _relate2['default'])(model, relations, 'update', transaction);
       }).then(function (model) {
         // if model didn't change, return null
         // model.previousAttributes() is broken.

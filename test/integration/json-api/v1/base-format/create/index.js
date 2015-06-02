@@ -13,10 +13,10 @@ describe('creatingResources', function() {
         title: 'The Lost Book of Tolkien',
         date_published: '2015-02-17'
       },
-      links: {
-        author: {linkage: {type: 'authors', id: '1'}},
-        series: {linkage: {type: 'series', id: '1'}},
-        stores: {linkage: [
+      relationships: {
+        author: {data: {type: 'authors', id: '1'}},
+        series: {data: {type: 'series', id: '1'}},
+        stores: {data: [
           {type: 'stores', id: '1'}
         ]}
       }
@@ -153,19 +153,18 @@ describe('creatingResources', function() {
             expect(res.status).to.equal(201);
             var createData = res.body.data;
             expect(createData.id).to.be.a('string');
-
             return Agent.request('GET', '/v1/books/' + createData.id + '?include=author,series,stores')
               .promise()
               .then(function(res) {
                 var readResult = res.body;
                 var payloadData = readResult.data;
-                var payloadLinks = payloadData.links;
+                var payloadRelationships = payloadData.relationships;
                 expect(readResult.included.length).to.equal(3);
                 expect(payloadData.attributes.title).to.equal(bookData.attributes.title);
                 expect(payloadData.attributes.date_published).to.equal(bookData.attributes.date_published);
-                expect(payloadLinks.author.linkage.id).to.equal(bookData.links.author.linkage.id);
-                expect(payloadLinks.series.linkage.id).to.equal(bookData.links.series.linkage.id);
-                expect(payloadLinks.stores.linkage[0].id).to.equal(bookData.links.stores.linkage[0].id);
+                expect(payloadRelationships.author.data.id).to.equal(bookData.relationships.author.data.id);
+                expect(payloadRelationships.series.data.id).to.equal(bookData.relationships.series.data.id);
+                expect(payloadRelationships.stores.data[0].id).to.equal(bookData.relationships.stores.data[0].id);
               });
           });
       });
