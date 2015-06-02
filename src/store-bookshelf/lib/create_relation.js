@@ -11,26 +11,26 @@ import transact from './_transact';
  *
  * @param {Bookshelf.Model} model - A bookshelf model instance
  * @param {String} relationName - An object containing the relations.
- * @param {Array} linkage - Linkage objects.
+ * @param {Array} data - linkage data
  * @returns {Promise.Bookshelf.Model} The updated model.
  */
-export default function createRelation (model, relationName, linkage) {
+export default function createRelation (model, relationName, data) {
   if (!model) {
     throw new Error('No model provided.');
   }
   return transact(model, function (transaction) {
-    const existingLinkage = related(model, relationName).map((rel) => {
+    const existing = related(model, relationName).map((rel) => {
       return {
         id: id(rel),
         type: type(rel)
       };
     });
-    const allLinkage = linkage.concat(existingLinkage);
+    const all = data.concat(existing);
     // TODO: should i be doing a deep comparison instead?
-    const uniqueLinkage = _.uniq(allLinkage, JSON.stringify.bind(null));
+    const unique = _.uniq(all, JSON.stringify.bind(null));
     return relate(model, {
       name: relationName,
-      linkage: uniqueLinkage
+      data: unique
     }, 'add', transaction);
   });
 }

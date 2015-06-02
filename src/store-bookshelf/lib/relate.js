@@ -1,9 +1,9 @@
 import bPromise from 'bluebird';
 import _ from 'lodash';
 
-function relate (model, relationName, linkage, mode, transaction) {
+function relate (model, relationName, data, mode, transaction) {
   // TODO: does bookshelf support polymorphic fields in attach/detach?
-  const ids = _.pluck(linkage, 'id');
+  const ids = _.pluck(data, 'id');
 
   // TODO: move this into its own method and use the exported
   // function to call different ones depending on the mode
@@ -38,9 +38,9 @@ function relate (model, relationName, linkage, mode, transaction) {
 export default function (model, relations, mode, transaction) {
   if (Array.isArray(relations)) {
     return bPromise.map(relations, (rel) => {
-      return relate(model, rel.name, rel.linkage, mode, transaction);
+      return relate(model, rel.name, rel.data, mode, transaction);
     });
   } else {
-    return relate(model, relations.name, relations.linkage, mode, transaction);
+    return relate(model, relations.name, relations.data, mode, transaction);
   }
 }

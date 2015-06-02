@@ -1,3 +1,4 @@
+import relatedCollection from './related_collection';
 import isMany from './is_many';
 
 /**
@@ -16,19 +17,8 @@ export default function related (input, relation) {
       return input.reduce(function (result, model) {
         var related = model.related(relationSegment);
         return result.add(related.models ? related.models : related);
-      }, generateRelatedCollection(input.model, relationSegment));
+      }, relatedCollection(input.model, relationSegment));
     }
     return input.related(relationSegment);
   }, input);
-}
-
-/**
- * Generate an empty collection for a Bookshelf model relation.
- *
- * @param {Bookshelf.Model} model
- * @param {String} relationName
- * @return {Bookshelf.Collection}
- */
-function generateRelatedCollection (model, relationName) {
-  return model.forge().related(relationName).relatedData.target.collection();
 }

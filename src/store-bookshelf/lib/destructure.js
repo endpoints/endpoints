@@ -8,14 +8,14 @@ import toOneRelations from './to_one_relations';
 import allRelations from './all_relations';
 
 export default function destructure (model, params={}) {
-  const links = params.links || {};
-  const linkRelations = _.keys(links);
+  const relationships = params.relationships || {};
+  const relationshipNames = _.keys(relationships);
   const allRels = allRelations(model);
   const toOneRelsMap = toOneRelations(model);
   const toOneRels = Object.keys(toOneRelsMap);
   const toManyRels = _.difference(allRels, toOneRels);
-  const linkedToOneRels = _.intersection(linkRelations, toOneRels);
-  const linkedToManyRels = _.intersection(linkRelations, toManyRels);
+  const linkedToOneRels = _.intersection(relationshipNames, toOneRels);
+  const linkedToManyRels = _.intersection(relationshipNames, toManyRels);
 
   // TODO blow up here with kapow, someone is trying to link something that
   // doesn't exist.
@@ -26,18 +26,18 @@ export default function destructure (model, params={}) {
   // This hook should have context about the request so we can enforce
   // permissions based on who is trying to update/create something.
   const attributes = linkedToOneRels.reduce(function (result, relationName) {
-    const relation = links[relationName];
+    const relation = relationships[relationName];
     const fkey = toOneRelsMap[relationName];
-    const value = relation.linkage && relation.linkage.id;
+    const value = relation.data && relation.data.id;
     result[fkey] = value;
     return result;
   }, params.attributes || {});
 
   const relations = linkedToManyRels.map(function (relationName) {
-    const relation = links[relationName];
+    const relation = relationships[relationName];
     return {
       name: relationName,
-      linkage: relation.linkage
+      data: relation.data
     };
   });
 
