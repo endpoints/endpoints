@@ -176,9 +176,9 @@ class RequestHandler {
       .then(throwIfNoModel)
       .then((model) => {
         return store.update(model, {
-          links: {
+          relationships: {
             [relationName]: {
-              linkage: request.body.data
+              data: request.body.data
             }
           }
         });
@@ -207,9 +207,9 @@ class RequestHandler {
       .then(throwIfNoModel)
       .then((model) => {
         return store.destroyRelation(model, {
-          links: {
+          relationships: {
             [relationName]: {
-              linkage: request.body.data
+              data: request.body.data
             }
           }
         });
