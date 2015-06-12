@@ -24,15 +24,110 @@ describe('creatingResources', function() {
     return Fixture.reset();
   });
 
-  it('must respond to a successful request with an object', function() {
+  // NOTE: JSON-API does not require an error here.
+  // See https://github.com/json-api/json-api/issues/766
+  it('must require a single resource object as primary data', function() {
     return Agent.request('POST', '/v1/books')
-      .send({ data: bookData })
+      .send({ data: [bookData] })
       .promise()
       .then(function(res) {
-        expect(res.status).to.be.within(200, 299);
+
+        // document structure tests
         expect(res.body).to.be.an('object');
+
+        expect(res.status).to.equal(400);
       });
   });
+
+  it('The resource object **MUST** contain at least a type member.');
+
+  it('If a relationship is provided in the `relationships` member of the resource object, its value **MUST** be a relationship object with a `data` member.');
+
+  describe('clientGeneratedIds', function() {
+
+    it('may accept a client-generated ID along with a request to create a resource.');
+
+    it('An ID **MUST** be specified with an `id` key, the value of which **MUST** be a universally unique identifier.');
+
+    it('The client **SHOULD** use a properly generated and formatted *UUID* as described in RFC 4122 [RFC4122].');
+
+    it('must return `403 Forbidden` in response to an unsupported request to create a resource with a client-generated ID.');
+  });
+
+  describe('responses', function() {
+
+    describe('201Created', function() {
+
+      it('If a `POST` request did not include a Client-Generated ID and the requested resource has been created successfully, the server **MUST** return a `201 Created` status code.');
+
+      it('The response **SHOULD** include a `Location` header identifying the location of the newly created resource.');
+
+      it('The response **MUST** also include a document that contains the primary resource created.');
+
+      it('If the resource object returned by the response contains a `self` key in its `links` member and a `Location` header is provided, the value of the `self` member **MUST** match the value of the `Location` header.');
+    });
+
+    describe('202Accepted', function() {
+
+      it('If a request to create a resource has been accepted for processing, but the processing has not been completed by the time the server responds, the server **MUST** return a `202 Accepted` status code.');
+    });
+
+    describe('204NoContent', function() {
+
+      it('If a `POST` request did include a Client-Generated ID and the requested resource has been created successfully, the server **MUST** return either a `201 Created` status code and response document (as described above) or a `204 No Content` status code with no response document.');
+    });
+
+    describe('403Forbidden', function() {
+
+      it('may return `403 Forbidden` in response to an unsupported request to create a resource.');
+    });
+
+    describe('409Conflict', function() {
+
+      it('must return `409 Conflict` when processing a `POST` request to create a resource with a client-generated ID that already exists.', function() {
+        bookData.id = 1;
+        return Agent.request('POST', '/v1/books')
+          .send({ data: bookData })
+          .promise()
+          .then(function(res) {
+
+            // document structure tests
+            expect(res.body).to.be.an('object');
+
+            expect(res.status).to.equal(409);
+          });
+      });
+
+      it('must return `409 Conflict` when processing a `POST` request in which the resource object\'s type is not among the type(s) that constitute the collection represented by the endpoint.', function() {
+        bookData.type = 'authors';
+        return Agent.request('POST', '/v1/books')
+          .send({ data: bookData })
+          .promise()
+          .then(function(res) {
+
+            // document structure tests
+            expect(res.body).to.be.an('object');
+
+            expect(res.status).to.equal(409);
+          });
+      });
+
+      it('should include error details and provide enough information to recognize the source of the conflict.');
+    });
+
+    describe('OtherResponses', function() {
+
+      it('may respond with other HTTP status codes.');
+
+      it('may include error details with error responses.');
+
+      it('must prepare responses, and a client **MUST** interpret responses, in accordance with HTTP semantics.');
+    });
+  });
+});
+
+/* OLD CREATE TESTS
+describe('creatingResources', function() {
 
   it('must respond to an unsuccessful request with a JSON object containing a collection keyed by "errors" in the top level', function() {
     return Agent.request('POST', '/v1/books')
@@ -40,7 +135,10 @@ describe('creatingResources', function() {
       .promise()
       .then(function(res) {
         expect(res.status).to.be.within(400, 499); // any error
+
+        // document structure tests
         expect(res.body).to.be.an('object');
+
         expect(res.body.errors).to.be.an('array');
       });
   });
@@ -52,18 +150,6 @@ describe('creatingResources', function() {
       .promise()
       .then(function(res) {
         expect(res.status).to.equal(415);
-      });
-  });
-
-  // TODO: Source/DB test: verify rollback on error
-  // it('must not allow partial updates');
-
-  it('must require a single resource object as primary data', function() {
-    return Agent.request('POST', '/v1/books')
-      .send({ data: [bookData] })
-      .promise()
-      .then(function(res) {
-        expect(res.status).to.equal(400);
       });
   });
 
@@ -169,46 +255,6 @@ describe('creatingResources', function() {
           });
       });
     });
-
-    // Endpoints will respond with a 201 on all create requests
-    // Tested above.
-    // describe('204NoContent', function() {
-    //   it('must respond with either 201 or 204 if the request included a client-generated ID');
-    // });
-
-    // API decision to not create the route - endpoints will always support creation
-    // describe('403Forbidden', function() {
-    //   it('should return 403 Forbidden in response to an unsupported creation request');
-    // });
-
-    describe.skip('409Conflict', function() {
-      it('must return 409 Conflict when processing a request to create a resource with an existing client-generated ID', function() {
-        bookData.id = 1;
-        return Agent.request('POST', '/v1/books')
-          .send({ data: bookData })
-          .promise()
-          .then(function(res) {
-            expect(res.status).to.equal(409);
-          });
-      });
-
-      it('must return 409 Conflict when processing a request where the type does not match the endpoint', function() {
-        bookData.type = 'authors';
-        return Agent.request('POST', '/v1/books')
-          .send({ data: bookData })
-          .promise()
-          .then(function(res) {
-            expect(res.status).to.equal(409);
-          });
-      });
-    });
-
-    // Not testable as written. Each error handling branch should be
-    // unit-tested for proper HTTP semantics.
-    // describe('otherResponses', function() {
-    //   it('should use other HTTP codes to represent errors');
-    //   it('must interpret errors in accordance with HTTP semantics');
-    //   it('should return error details');
-    // });
   });
 });
+*/

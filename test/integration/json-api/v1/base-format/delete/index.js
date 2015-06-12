@@ -1,5 +1,5 @@
 import {expect} from 'chai';
-import _ from 'lodash';
+// import _ from 'lodash';
 
 import Agent from '../../../../../app/agent';
 import Fixture from '../../../../../app/fixture';
@@ -10,20 +10,49 @@ describe('deletingResources', function() {
     return Fixture.reset();
   });
 
+  describe('responses', function() {
+
+    describe('202Accepted', function() {
+
+      it('If a deletion request has been accepted for processing, but the processing has not been completed by the time the server responds, the server **MUST** return a `202 Accepted` status code.');
+    });
+
+    describe('204NoContent', function() {
+
+      it('A server **MUST** return a `204 No Content` status code if a deletion request is successful and no content is returned.', function() {
+        return Agent.request('DELETE', '/v1/chapters/1')
+          .promise()
+          .then(function (res) {
+            expect(res.status).to.equal(204);
+            expect(res.body).to.deep.equal({});
+          });
+      });
+    });
+
+    describe('200OK', function() {
+
+      it('A server **MUST** return a `200 OK` status code if a deletion request is successful and the server responds with only top-level meta data.');
+    });
+
+    describe('otherResponses', function() {
+
+      it('A server **MAY** respond with other HTTP status codes.');
+
+      it('A server **MAY** include error details with error responses.');
+
+      it('A server **MUST** prepare responses, and a client **MUST** interpret responses, in accordance with HTTP semantics.');
+    });
+  });
+});
+
+/* OLD DELETE TESTS
+describe('deletingResources', function() {
+
   it('must not require a content-type header of application/vnd.api+json', function() {
     return Agent.request('DELETE', '/v1/chapters/1')
       .promise()
       .then(function(res) {
         expect(res.status).to.equal(204);
-      });
-  });
-
-  it('must respond to a successful request with an empty body', function() {
-    return Agent.request('DELETE', '/v1/chapters/1')
-      .promise()
-      .then(function (res) {
-        expect(res.status).to.be.within(200, 299);
-        expect(res.body).to.deep.equal({});
       });
   });
 
@@ -34,9 +63,6 @@ describe('deletingResources', function() {
         expect(res.body).to.be.an('object');
       });
   });
-
-  // TODO: Source/DB test: verify rollback on error
-  it('must not allow partial updates');
 
   it('should delete resources when a DELETE request is made to the resource URL', function() {
     var first, second, deleteId;
@@ -60,16 +86,6 @@ describe('deletingResources', function() {
   });
 
   describe('responses', function() {
-
-    describe('204NoContent', function() {
-      it('must return 204 No Content on a successful DELETE request', function() {
-        return Agent.request('DELETE', '/v1/chapters/1')
-          .promise()
-          .then(function(res) {
-            expect(res.status).to.equal(204);
-          });
-      });
-
       it('must return 204 No Content when processing a request to delete a resource that does not exist', function() {
         return Agent.request('DELETE', '/v1/chapters/9999')
           .promise()
@@ -78,13 +94,6 @@ describe('deletingResources', function() {
           });
       });
     });
-
-    // Not testable as written. Each error handling branch should be
-    // unit-tested for proper HTTP semantics.
-    // describe('otherResponses', function() {
-    //   it('should use other HTTP codes to represent errors');
-    //   it('must interpret errors in accordance with HTTP semantics');
-    //   it('should return error details');
-    // });
   });
 });
+*/
