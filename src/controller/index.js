@@ -5,7 +5,7 @@ import singleSlashJoin from './lib/single_slash_join';
 
 /**
   Provides methods for generating request handling functions that can
-  be used by any node http server.
+  be used by any supported Node responder.
 */
 class Controller {
 
@@ -21,6 +21,7 @@ class Controller {
     The constructor.
 
     @constructs Controller
+    @param {Object} config - config.responder: An endpoints responder adapter.
     @param {Object} config - config.format: An endpoints format adapter.
     @param {Object} config - config.store: An endpoints store adapter.
     @param {Object} config - config.baseUrl: A base url for link generation.
@@ -30,6 +31,9 @@ class Controller {
     @param {Object} config - opts.allowClientGeneratedIds: boolean indicating this
   */
   constructor (config={}) {
+    if (!config.responder) {
+      throw new Error('No responder specified.');
+    }
     if (!config.format) {
       throw new Error('No format specified.');
     }
@@ -78,7 +82,7 @@ class Controller {
 
     @param {String} method - The name of the function to be created.
     @param {String} opts - The name of the function to be created.
-    @returns {Function} - function (req, res) { } (node http compatible request handler)
+    @returns {Function} - Responder-specific request handler
   */
   method (method, opts) {
     var config = _.extend({
