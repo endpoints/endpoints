@@ -14,7 +14,7 @@ var _lodash2 = _interopRequireDefault(_lodash);
 
 function relate(model, relationName, data, mode, transaction) {
   // TODO: does bookshelf support polymorphic fields in attach/detach?
-  var ids = _lodash2['default'].pluck(data, 'id');
+  var ids = Array.isArray(data) ? _lodash2['default'].pluck(data, 'id') : data.id;
 
   // TODO: move this into its own method and use the exported
   // function to call different ones depending on the mode

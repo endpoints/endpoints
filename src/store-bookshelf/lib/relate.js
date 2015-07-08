@@ -3,7 +3,7 @@ import _ from 'lodash';
 
 function relate (model, relationName, data, mode, transaction) {
   // TODO: does bookshelf support polymorphic fields in attach/detach?
-  const ids = _.pluck(data, 'id');
+  const ids = Array.isArray(data) ? _.pluck(data, 'id') : data.id;
 
   // TODO: move this into its own method and use the exported
   // function to call different ones depending on the mode
