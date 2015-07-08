@@ -20,6 +20,162 @@ beforeEach(function() {
 
 describe('updatingResources', function() {
 
+  it('The `PATCH` request **MUST** include a single resource object as primary data.');
+
+  it('The resource object **MUST** contain `type` and `id` members.');
+
+  describe('updatingAResourcesAttributes', function() {
+
+    it('Any or all of a resource\'s attributes **MAY** be included in the resource object included in a `PATCH` request.');
+
+    it('If a request does not include all of the attributes for a resource, the server **MUST** interpret the missing attributes as if they were included with their current values. It **MUST NOT** interpret them as `null` values.');
+  });
+
+  describe('updatingAResourcesRelationships', function() {
+
+    it('Any or all of a resource\'s relationships **MAY** be included in the resource object included in a `PATCH` request.');
+
+    it('If a request does not include all of the relationships for a resource, the server **MUST** interpret the missing relationships as if they were included with their current values. It **MUST NOT** interpret them as `null` or empty values.');
+
+    it('If a relationship is provided in the relationships member of a resource object in a `PATCH` request, its value **MUST** be a relationship object with a data member.');
+
+    it('may reject an attempt to do a full replacement of a to-many relationship.');
+
+    it('In such a case, the server **MUST** reject the entire update, and return a `403 Forbidden` response.');
+
+    it('If an update request has been accepted for processing, but the processing has not been completed by the time the server responds, the server **MUST** return a `202 Accepted` status code.');
+  });
+
+  describe('responses', function() {
+
+    describe('202Accepted', function() {
+
+      it('If a server accepts an update but also changes the resource(s) in ways other than those specified by the request (for example, updating the `updated-at` attribute or a computed `sha`), it **MUST** return a `200 OK` response.');
+    });
+
+    describe('200OK', function() {
+
+      it('The response document **MUST** include a representation of the updated resource(s) as if a `GET` request was made to the request URL.');
+
+      it('must return a `200 OK` status code if an update is successful, the client\'s current attributes remain up to date, and the server responds only with top-level meta data.');
+
+      it('In this case the server **MUST NOT** include a representation of the updated resource(s).');
+    });
+
+    describe('204NoContent', function() {
+
+      it('If an update is successful and the server doesn\'t update any attributes besides those provided, the server **MUST** return either a `200 OK` status code and response document (as described above) or a `204 No Content` status code with no response document.');
+    });
+
+    describe('403Forbidden', function() {
+
+      it('must return `403 Forbidden` in response to an unsupported request to update a resource or relationship.');
+    });
+
+    describe('404NotFound', function() {
+
+      it('must return `404 Not Found` when processing a request to modify a resource that does not exist.');
+
+      it('must return `404 Not Found` when processing a request that references a related resource that does not exist.');
+    });
+
+    describe('409Conflict', function() {
+
+      it('may return `409 Conflict` when processing a `PATCH` request to update a resource if that update would violate other server-enforced constraints (such as a uniqueness constraint on a property other than `id`).');
+
+      it('must return `409 Conflict` when processing a `PATCH` request in which the resource object\'s `type` and `id` do not match the server\'s endpoint.');
+
+      it('A server **SHOULD** include error details and provide enough information to recognize the source of the conflict.');
+    });
+
+    describe('otherResponses', function() {
+
+      it('may respond with other `HTTP` status codes.');
+
+      it('may include error details with error responses.');
+
+      it('must prepare responses, and a client **MUST** interpret responses, in accordance with HTTP semantics.');
+    });
+  });
+});
+
+describe('updatingRelationships', function() {
+
+  describe('updatingToOnRelationships', function() {
+
+    it('must respond to `PATCH` requests to a URL from a to-one relationship link as described below.');
+
+    it('The PATCH request MUST include a top-level member named data containing one of:\\n\\n- a resource identifier object corresponding to the new related resource.\\n- `null`, to remove the relationship.');
+
+    it('If the relationship is updated successfully then the server **MUST** return a successful response.');
+  });
+
+  describe('updatingToManyRelationships', function() {
+
+    it('must respond to `PATCH`, `POST`, and `DELETE` requests to a URL from a to-many relationship link as described below.');
+
+    it('For all request types, the body **MUST** contain a `data` member whose value is an empty array or an array of resource identifier objects.');
+
+    it('If a client makes a `PATCH` request to a URL from a to-many relationship link, the server **MUST** either completely replace every member of the relationship, return an appropriate error response if some resources can not be found or accessed, or return a `403 Forbidden` response if complete replacement is not allowed by the server.');
+
+    it('If a client makes a `POST` request to a URL from a relationship link, the server **MUST** add the specified members to the relationship unless they are already present.');
+
+    it('If a given `type` and `id` is already in the relationship, the server **MUST NOT** add it again.');
+
+    it('If a given `type` and `id` is already in the relationship, the server **MUST NOT** add it again.');
+
+    it('If all of the specified resources can be added to, or are already present in, the relationship then the server **MUST** return a successful response.');
+
+    it('If the client makes a `DELETE` request to a URL from a relationship link the server **MUST** delete the specified members from the relationship or return a `403 Forbidden` response.');
+
+    it('If the client makes a `DELETE` request to a URL from a relationship link the server **MUST** delete the specified members from the relationship or return a `403 Forbidden` response.');
+
+    it('If all of the specified resources are able to be removed from, or are already missing from, the relationship then the server **MUST** return a successful response.');
+  });
+
+  describe('responses', function() {
+
+    describe('202Accepted', function() {
+
+      it('If a relationship update request has been accepted for processing, but the processing has not been completed by the time the server responds, the server **MUST** return a `202 Accepted` status code.');
+    });
+
+    describe('204NoContent', function() {
+
+      it('must return a `204 No Content` status code if an update is successful and the representation of the resource in the request matches the result.');
+    });
+
+    describe('200OK', function() {
+
+      it('If a server accepts an update but also changes the targeted relationship(s) in other ways than those specified by the request, it **MUST** return a `200 OK` response.');
+
+      it('The response document **MUST** include a representation of the updated relationship(s).');
+
+      it('must return a `200 OK` status code if an update is successful, the client\'s current data remain up to date, and the server responds only with top-level meta data.');
+
+      it('In this case the server **MUST NOT** include a representation of the updated relationship(s).');
+    });
+
+    describe('403Forbidden', function() {
+
+      it('must return `403 Forbidden` in response to an unsupported request to update a relationship.');
+    });
+
+    describe('otherResponses', function() {
+
+      it('may respond with other HTTP status codes.');
+
+      it('may include error details with error responses.');
+
+      it('must prepare responses, and a client **MUST** interpret responses, in accordance with HTTP semantics.');
+    });
+  });
+});
+
+
+/* OLD UPDATE TESTS
+describe('updatingResources', function() {
+
   it('must respond to a successful request with an object', function() {
     return Agent.request('PATCH', '/v1/books/1')
       .send(patchData)
@@ -620,3 +776,4 @@ describe('updatingRelationships', function() {
     // });
   });
 });
+*/
