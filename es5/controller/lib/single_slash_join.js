@@ -3,7 +3,7 @@
 exports.__esModule = true;
 
 exports['default'] = function () {
-  var input = arguments[0] === undefined ? [] : arguments[0];
+  var input = arguments.length <= 0 || arguments[0] === undefined ? [] : arguments[0];
 
   if (!Array.isArray(input)) {
     throw new Error('Input must be an array.');

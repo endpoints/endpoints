@@ -22,7 +22,7 @@ exports['default'] = function (request) {
     err = !!data.id;
   }
 
-  return err ? (0, _kapow2['default'])(403, 'Client generated IDs are not enabled.') : null;
+  return err ? _kapow2['default'](403, 'Client generated IDs are not enabled.') : null;
 };
 
 module.exports = exports['default'];

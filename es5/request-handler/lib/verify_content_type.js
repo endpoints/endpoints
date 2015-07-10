@@ -18,7 +18,7 @@ exports['default'] = function (request) {
   var isValidContentType = contentType && contentType.toLowerCase().indexOf(EXPECTED_TYPE) === 0;
 
   if (!isValidContentType) {
-    err = (0, _kapow2['default'])(415, 'Content-Type must be "' + EXPECTED_TYPE + '"');
+    err = _kapow2['default'](415, 'Content-Type must be "' + EXPECTED_TYPE + '"');
   }
 
   return err;

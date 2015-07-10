@@ -14,5 +14,5 @@ module.exports = function (method, config) {
   var model = config.model;
   var store = config.store;
 
-  return _lodash2['default'].compose(_lodash2['default'].flatten, _lodash2['default'].compact)([(0, _model_has2['default'])(store.allRelations(model), config.include, 'relations'), (0, _model_has2['default'])(Object.keys(store.filters(model)), Object.keys(config.filter), 'filters')]);
+  return _lodash2['default'].compose(_lodash2['default'].flatten, _lodash2['default'].compact)([_model_has2['default'](store.allRelations(model), config.include, 'relations'), _model_has2['default'](Object.keys(store.filters(model)), Object.keys(config.filter), 'filters')]);
 };

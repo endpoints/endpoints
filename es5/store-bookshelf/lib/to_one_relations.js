@@ -20,7 +20,7 @@ var _all_relations2 = _interopRequireDefault(_all_relations);
  */
 
 function toOneRelations(model) {
-  return (0, _all_relations2['default'])(model).reduce(function (result, relation) {
+  return _all_relations2['default'](model).reduce(function (result, relation) {
     // nested relations are specified by dot notated strings
     // if a relation has a dot in it, it is nested, and therefor
     // cannot be a toOne relation. ignore it.

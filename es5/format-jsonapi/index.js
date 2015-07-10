@@ -28,7 +28,7 @@ var JsonApiFormat = (function () {
    */
 
   function JsonApiFormat() {
-    var opts = arguments[0] === undefined ? {} : arguments[0];
+    var opts = arguments.length <= 0 || arguments[0] === undefined ? {} : arguments[0];
 
     _classCallCheck(this, JsonApiFormat);
 
@@ -47,7 +47,7 @@ var JsonApiFormat = (function () {
    */
 
   JsonApiFormat.prototype.selfUrl = function selfUrl(model) {
-    return '' + this.baseUrl + '/' + this.store.id(model);
+    return this.baseUrl + '/' + this.store.id(model);
   };
 
   /**
@@ -58,7 +58,7 @@ var JsonApiFormat = (function () {
    */
 
   JsonApiFormat.prototype.relatedUrl = function relatedUrl(model, relation) {
-    return '' + this.baseUrl + '/' + this.store.id(model) + '/' + relation;
+    return this.baseUrl + '/' + this.store.id(model) + '/' + relation;
   };
 
   /**
@@ -69,7 +69,7 @@ var JsonApiFormat = (function () {
    */
 
   JsonApiFormat.prototype.relationUrl = function relationUrl(model, relation) {
-    return '' + this.baseUrl + '/' + this.store.id(model) + '/relationships/' + relation;
+    return this.baseUrl + '/' + this.store.id(model) + '/relationships/' + relation;
   };
 
   /**
@@ -83,7 +83,7 @@ var JsonApiFormat = (function () {
   JsonApiFormat.prototype.process = function process(input) {
     var _this = this;
 
-    var opts = arguments[1] === undefined ? {} : arguments[1];
+    var opts = arguments.length <= 1 || arguments[1] === undefined ? {} : arguments[1];
     var singleResult = opts.singleResult;
     var relations = opts.relations;
     var mode = opts.mode;
@@ -124,8 +124,8 @@ var JsonApiFormat = (function () {
    */
 
   JsonApiFormat.prototype.format = function format(model) {
-    var includedRelations = arguments[1] === undefined ? [] : arguments[1];
-    var mode = arguments[2] === undefined ? 'read' : arguments[2];
+    var includedRelations = arguments.length <= 1 || arguments[1] === undefined ? [] : arguments[1];
+    var mode = arguments.length <= 2 || arguments[2] === undefined ? 'read' : arguments[2];
 
     var store = this.store;
     var id = store.id(model);
@@ -179,7 +179,7 @@ var JsonApiFormat = (function () {
       // remove duplicates.
       // FIXME: this can produce invalid documents when there is
       // a nesting level higher than three.
-      var indexKey = '' + doc.id + '' + doc.type;
+      var indexKey = '' + doc.id + doc.type;
       var skip = includedIndex.some(function (entry) {
         return entry == indexKey;
       });
@@ -306,8 +306,8 @@ var JsonApiFormat = (function () {
 
   JsonApiFormat.prototype._relationshipLinks = function _relationshipLinks(model, relation) {
     return {
-      self: this.relatedUrl(model, relation),
-      related: this.relationUrl(model, relation)
+      self: this.relationUrl(model, relation),
+      related: this.relatedUrl(model, relation)
     };
   };
 

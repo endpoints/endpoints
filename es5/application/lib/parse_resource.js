@@ -19,12 +19,12 @@ var _require_silent2 = _interopRequireDefault(_require_silent);
 exports['default'] = function (name, searchPaths) {
   var routeModulePath, moduleBasePath;
   if (typeof name === 'string') {
-    routeModulePath = (0, _require_search2['default'])(_path2['default'].join(name, 'routes'), searchPaths);
+    routeModulePath = _require_search2['default'](_path2['default'].join(name, 'routes'), searchPaths);
     moduleBasePath = _path2['default'].dirname(routeModulePath);
     return {
       name: name,
       routes: require(routeModulePath),
-      controller: (0, _require_silent2['default'])(_path2['default'].join(moduleBasePath, 'controller'))
+      controller: _require_silent2['default'](_path2['default'].join(moduleBasePath, 'controller'))
     };
   }
   if (!name) {

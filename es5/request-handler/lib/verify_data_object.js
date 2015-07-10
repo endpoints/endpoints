@@ -21,7 +21,7 @@ exports['default'] = function (request, endpoint) {
 
   if (method === 'create') {
     if (!_lodash2['default'].isPlainObject(data)) {
-      err = (0, _kapow2['default'])(400, 'Primary data must be a single object or array.');
+      err = _kapow2['default'](400, 'Primary data must be a single object or array.');
       return err;
     }
   }
@@ -40,7 +40,7 @@ exports['default'] = function (request, endpoint) {
   id = request.params && request.params.id;
 
   if (!isValidType) {
-    err = (0, _kapow2['default'])(400, 'Primary data must include a type.');
+    err = _kapow2['default'](400, 'Primary data must include a type.');
     return err;
   }
 

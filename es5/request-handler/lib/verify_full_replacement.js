@@ -38,7 +38,7 @@ exports['default'] = function (request, endpoint) {
     err = hasToManyLinkage(data);
   }
 
-  return err ? (0, _kapow2['default'])(403, 'Full replacement of to-Many relations is not allowed.') : null;
+  return err ? _kapow2['default'](403, 'Full replacement of to-Many relations is not allowed.') : null;
 };
 
 module.exports = exports['default'];

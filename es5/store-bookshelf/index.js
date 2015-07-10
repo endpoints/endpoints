@@ -108,5 +108,6 @@ exports['default'] = {
   readRelation: _lib_read_for_related2['default'].bind(null, 'relation'),
   createRelation: _libCreate_relation2['default'],
   destroyRelation: _libDestroy_relation2['default'],
-  readRelated: _lib_read_for_related2['default'].bind(null, 'related') };
+  readRelated: _lib_read_for_related2['default'].bind(null, 'related')
+};
 module.exports = exports['default'];

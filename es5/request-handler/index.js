@@ -59,7 +59,7 @@ var RequestHandler = (function () {
   */
 
   function RequestHandler() {
-    var config = arguments[0] === undefined ? {} : arguments[0];
+    var config = arguments.length <= 0 || arguments[0] === undefined ? {} : arguments[0];
 
     _classCallCheck(this, RequestHandler);
 
@@ -123,9 +123,9 @@ var RequestHandler = (function () {
     var sort = _request$query.sort;
 
     return {
-      include: include ? (0, _libCollapse_include2['default'])(include.split(',')) : config.include,
-      filter: filter ? (0, _libSplit_string_props2['default'])(filter) : config.filter,
-      fields: fields ? (0, _libSplit_string_props2['default'])(fields) : config.fields,
+      include: include ? _libCollapse_include2['default'](include.split(',')) : config.include,
+      filter: filter ? _libSplit_string_props2['default'](filter) : config.filter,
+      fields: fields ? _libSplit_string_props2['default'](fields) : config.fields,
       sort: sort ? sort.split(',') : config.sort
     };
   };
@@ -239,12 +239,12 @@ var RequestHandler = (function () {
 
   _createClass(RequestHandler, [{
     key: 'store',
-    get: function () {
+    get: function get() {
       return this.config.store;
     }
   }, {
     key: 'model',
-    get: function () {
+    get: function get() {
       return this.config.model;
     }
   }]);
