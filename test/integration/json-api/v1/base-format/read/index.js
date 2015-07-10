@@ -459,8 +459,6 @@ describe('read', function() {
             expect(res.body.data.length).to.equal(22);
             expect(res.body.data[0]).to.have.property('id');
             expect(res.body.data[0]).to.have.property('type');
-            expect(res.body.data[0].attributes).to.have.property('title');
-            expect(res.body.data[0].attributes).to.have.property('ordering');
           });
       });
 

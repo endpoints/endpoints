@@ -270,8 +270,8 @@ class JsonApiFormat {
    */
   _relationshipLinks(model, relation) {
     return {
-      self: this.relatedUrl(model, relation),
-      related: this.relationUrl(model, relation)
+      self: this.relationUrl(model, relation),
+      related: this.relatedUrl(model, relation)
     };
   }
 
