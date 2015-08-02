@@ -8,6 +8,10 @@ var _application = require('./application');
 
 var _application2 = _interopRequireDefault(_application);
 
+var _resource = require('./resource');
+
+var _resource2 = _interopRequireDefault(_resource);
+
 var _controller = require('./controller');
 
 var _controller2 = _interopRequireDefault(_controller);
@@ -27,6 +31,7 @@ var _validateJsonSchema2 = _interopRequireDefault(_validateJsonSchema);
 exports['default'] = {
   Application: _application2['default'],
   Controller: _controller2['default'],
+  Resource: _resource2['default'],
   Store: {
     bookshelf: _storeBookshelf2['default']
   },

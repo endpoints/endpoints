@@ -1,7 +1,7 @@
 import _ from 'lodash';
 
 import parseOptions from './lib/parse_options';
-import parseResource from './lib/parse_resource';
+import Resource from '../resource';
 
 class Application {
 
@@ -24,7 +24,8 @@ class Application {
       input.forEach(this.register.bind(this));
       return this;
     }
-    const resource = parseResource(input, this.searchPaths);
+
+    const resource = input instanceof Resource ? input : Resource.createFromFS(input, this.searchPaths);gst
     const resourceName = resource.name;
     if (this._resources[resourceName]) {
       throw new Error(`Resource "${resourceName}" registered twice`);
