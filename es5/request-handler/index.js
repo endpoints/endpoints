@@ -42,13 +42,13 @@ var _libVerify_full_replacement2 = _interopRequireDefault(_libVerify_full_replac
 
 var _libCollapse_include = require('./lib/collapse_include');
 
-var _libCollapse_include2 = _interopRequireDefault(_libCollapse_include);
-
 /**
   Provides methods for pulling out json-api relevant data from
   express or hapi request instances. Also provides route level
   validation.
 */
+
+var _libCollapse_include2 = _interopRequireDefault(_libCollapse_include);
 
 var RequestHandler = (function () {
 

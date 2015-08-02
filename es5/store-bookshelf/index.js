@@ -63,9 +63,9 @@ var _libFilters2 = _interopRequireDefault(_libFilters);
 
 var _libProp = require('./lib/prop');
 
-var _libProp2 = _interopRequireDefault(_libProp);
-
 // writing
+
+var _libProp2 = _interopRequireDefault(_libProp);
 
 var _libCreate = require('./lib/create');
 

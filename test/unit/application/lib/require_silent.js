@@ -1,6 +1,6 @@
 import path from 'path';
 import {expect} from 'chai';
-import requireSilent from '../../../../src/application/lib/require_silent';
+import requireSilent from '../../../../src/resource/lib/require_silent';
 
 describe('requireSilent', () => {
 

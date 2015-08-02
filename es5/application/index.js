@@ -14,9 +14,9 @@ var _libParse_options = require('./lib/parse_options');
 
 var _libParse_options2 = _interopRequireDefault(_libParse_options);
 
-var _libParse_resource = require('./lib/parse_resource');
+var _resource = require('../resource');
 
-var _libParse_resource2 = _interopRequireDefault(_libParse_resource);
+var _resource2 = _interopRequireDefault(_resource);
 
 var Application = (function () {
   function Application(opts) {
@@ -40,7 +40,8 @@ var Application = (function () {
       input.forEach(this.register.bind(this));
       return this;
     }
-    var resource = _libParse_resource2['default'](input, this.searchPaths);
+
+    var resource = input instanceof _resource2['default'] ? input : _resource2['default'].createFromFS(input, this.searchPaths);
     var resourceName = resource.name;
     if (this._resources[resourceName]) {
       throw new Error('Resource "' + resourceName + '" registered twice');
