@@ -25,7 +25,7 @@
     "node": ">= 0.10"
   },
   "scripts": {
-    "build": "babel src --loose all --out-dir es5",
+    "build": "babel src --blacklist regenerator --loose all --out-dir es5",
     "lint": "jshint src test",
     "style": "jscs src test",
     "test-coverage": "istanbul cover _mocha --compilers js:babel/register -b -R spec test/unit",

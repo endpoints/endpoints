@@ -9,6 +9,7 @@ module.exports = new Endpoints.Application({
   Controller: Endpoints.Controller.extend({
     baseUrl: '/v1',
     format: Endpoints.Format.jsonapi,
+    responder: Endpoints.Responder.express,
     store: Endpoints.Store.bookshelf,
     validators: [Endpoints.ValidateJsonSchema]
   }),

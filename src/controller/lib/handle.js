@@ -1,6 +1,6 @@
 import RequestHandler from '../../request-handler';
 import PayloadHandler from '../../payload-handler';
-import * as send from './send';
+import buildPayload from './build_payload';
 
 module.exports = function (config, baseUrl) {
   const {method, responder, format, store} = config;
@@ -12,23 +12,13 @@ module.exports = function (config, baseUrl) {
     })
   );
 
-  return function (request, response) {
-    const server = 'express'; // detect if hapi or express here
-    const process = requestHandler[method].bind(requestHandler);
-    const format = payloadHandler[method].bind(payloadHandler, config);
-    const respond = (responder ? responder : send[server]).bind(null, response);
-    const errors = requestHandler.validate(request);
+  const validate = requestHandler.validate.bind(requestHandler);
+  const process = requestHandler[method].bind(requestHandler);
+  const formatPayload = payloadHandler[method].bind(payloadHandler, config);
+  const error = payloadHandler.error.bind(payloadHandler);
 
-    if (errors) {
-      respond(payloadHandler.error(errors));
-    } else {
-      process(request)
-        .then(format)
-        .then(respond)
-        .catch(function (err) {
-          //throw err;
-          return respond(payloadHandler.error(err));
-        });
-    }
-  };
+  const buildPayloadCurried = buildPayload.bind(null, validate, process, formatPayload, error);
+
+
+  return responder(buildPayloadCurried);
 };
