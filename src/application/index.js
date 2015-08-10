@@ -1,14 +1,24 @@
 import _ from 'lodash';
 
-import parseOptions from './lib/parse_options';
 import Resource from '../resource';
 
 class Application {
 
-  constructor (opts) {
+  constructor (opts={}) {
+    if (!opts.routeBuilder) {
+      throw new Error('No route builder specified.');
+    }
+    if (!opts.Resource) {
+      opts.Resource = Resource;
+    }
+    if (!opts.searchPaths) {
+      opts.searchPaths = [];
+    } else if (!Array.isArray(opts.searchPaths)) {
+      opts.searchPaths = [opts.searchPaths];
+    }
     this._resources = {};
     this._endpoints = [];
-    _.extend(this, parseOptions(opts));
+    _.extend(this, opts);
   }
 
   resource (name) {
@@ -24,8 +34,7 @@ class Application {
       input.forEach(this.register.bind(this));
       return this;
     }
-
-    const resource = input instanceof Resource ? input : Resource.createFromFS(input, this.searchPaths);gst
+    const resource = new this.Resource(input, this.searchPaths);
     const resourceName = resource.name;
     if (this._resources[resourceName]) {
       throw new Error(`Resource "${resourceName}" registered twice`);

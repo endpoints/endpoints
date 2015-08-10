@@ -9,15 +9,6 @@ var TestApp;
 
 describe('Application', () => {
 
-  describe('lib', () => {
-
-    require('./lib/parse_options');
-    require('./lib/parse_resource');
-    require('./lib/require_search');
-    require('./lib/require_silent');
-
-  });
-
   beforeEach(() => {
     TestApp = new Application({
       searchPaths: [
@@ -25,6 +16,31 @@ describe('Application', () => {
         path.resolve(__dirname, 'fixtures/otherResources')
       ],
       routeBuilder: function (routes, prefix) {}
+    });
+  });
+
+  describe('constructor', () => {
+    it('should throw if a routeBuilder isn\'t provided', () => {
+      expect(function () {
+        new Application();
+      }).to.throw('No route builder specified.');
+    });
+
+    it('should ensure that searchPaths is an array', () => {
+      expect(new Application({
+        routeBuilder: () => {},
+      }).searchPaths).to.be.an('array');
+
+      expect(new Application({
+        routeBuilder: () => {},
+        searchPaths: 'foo'
+      }).searchPaths.length).to.equal(1);
+
+      var searchPaths = ['foo', 'bar'];
+      expect(new Application({
+        routeBuilder: () => {},
+        searchPaths: searchPaths
+      }).searchPaths).to.equal(searchPaths);
     });
   });
 
