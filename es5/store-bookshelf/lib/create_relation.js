@@ -27,6 +27,8 @@ var _related2 = _interopRequireDefault(_related);
 
 var _transact = require('./_transact');
 
+var _transact2 = _interopRequireDefault(_transact);
+
 /**
  * Creates a new relations on a model.
  *
@@ -35,8 +37,6 @@ var _transact = require('./_transact');
  * @param {Array} data - linkage data
  * @returns {Promise.Bookshelf.Model} The updated model.
  */
-
-var _transact2 = _interopRequireDefault(_transact);
 
 function createRelation(model, relationName, data) {
   if (!model) {

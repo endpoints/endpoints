@@ -28,6 +28,18 @@ var _validateJsonSchema = require('./validate-json-schema');
 
 var _validateJsonSchema2 = _interopRequireDefault(_validateJsonSchema);
 
+var _responderExpress = require('./responder-express');
+
+var _responderExpress2 = _interopRequireDefault(_responderExpress);
+
+var _responderKoa = require('./responder-koa');
+
+var _responderKoa2 = _interopRequireDefault(_responderKoa);
+
+var _responderHapi = require('./responder-hapi');
+
+var _responderHapi2 = _interopRequireDefault(_responderHapi);
+
 exports['default'] = {
   Application: _application2['default'],
   Controller: _controller2['default'],
@@ -37,6 +49,11 @@ exports['default'] = {
   },
   Format: {
     jsonapi: _formatJsonapi2['default']
+  },
+  Responder: {
+    hapi: _responderHapi2['default'],
+    express: _responderExpress2['default'],
+    koa: _responderKoa2['default']
   },
   ValidateJsonSchema: _validateJsonSchema2['default']
 };

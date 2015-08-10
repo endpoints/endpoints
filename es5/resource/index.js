@@ -6,50 +6,29 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'd
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
 
-var _path = require('path');
+var _libCreate_from_fs = require('./lib/create_from_fs');
 
-var _path2 = _interopRequireDefault(_path);
+var _libCreate_from_fs2 = _interopRequireDefault(_libCreate_from_fs);
 
-var _libRequire_search = require('./lib/require_search');
+var Resource = function Resource() {
+  var opts = arguments.length <= 0 || arguments[0] === undefined ? {} : arguments[0];
+  var searchPaths = arguments.length <= 1 || arguments[1] === undefined ? [] : arguments[1];
 
-var _libRequire_search2 = _interopRequireDefault(_libRequire_search);
+  _classCallCheck(this, Resource);
 
-var _libRequire_silent = require('./lib/require_silent');
-
-var _libRequire_silent2 = _interopRequireDefault(_libRequire_silent);
-
-var Resource = (function () {
-    function Resource(name, routes, controller) {
-        _classCallCheck(this, Resource);
-
-        this.name = name;
-        this.routes = routes;
-        this.controller = controller;
-    }
-
-    Resource.createFromFS = function createFromFS(name, searchPaths) {
-        var routeModulePath, moduleBasePath;
-        if (typeof name === 'string') {
-            routeModulePath = _libRequire_search2['default'](_path2['default'].join(name, 'routes'), searchPaths);
-            moduleBasePath = _path2['default'].dirname(routeModulePath);
-            return new this(name, require(routeModulePath), _libRequire_silent2['default'](_path2['default'].join(moduleBasePath, 'controller')));
-        }
-        if (!name) {
-            name = {};
-        }
-        if (!name.name) {
-            throw new Error('Unable to parse a module without a name.');
-        }
-        if (!name.routes) {
-            throw new Error('Unable to parse a module without a routes object.');
-        }
-        return name;
-    };
-
-    return Resource;
-})();
-
-;
+  if (typeof opts === 'string' && Array.isArray(searchPaths)) {
+    opts = _libCreate_from_fs2['default'](opts, searchPaths);
+  }
+  if (!opts.name) {
+    throw new Error('Resource must have a name.');
+  }
+  if (!opts.routes) {
+    throw new Error('Resource must have routes.');
+  }
+  this.name = opts.name;
+  this.routes = opts.routes;
+  this.controller = opts.controller;
+};
 
 exports['default'] = Resource;
 module.exports = exports['default'];

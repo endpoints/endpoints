@@ -1,7 +1,5 @@
 'use strict';
 
-function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj['default'] = obj; return newObj; } }
-
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
 
 var _requestHandler = require('../../request-handler');
@@ -12,9 +10,9 @@ var _payloadHandler = require('../../payload-handler');
 
 var _payloadHandler2 = _interopRequireDefault(_payloadHandler);
 
-var _send = require('./send');
+var _build_payload = require('./build_payload');
 
-var send = _interopRequireWildcard(_send);
+var _build_payload2 = _interopRequireDefault(_build_payload);
 
 module.exports = function (config, baseUrl) {
   var method = config.method;
@@ -28,20 +26,12 @@ module.exports = function (config, baseUrl) {
     baseUrl: baseUrl
   }));
 
-  return function (request, response) {
-    var server = 'express'; // detect if hapi or express here
-    var process = requestHandler[method].bind(requestHandler);
-    var format = payloadHandler[method].bind(payloadHandler, config);
-    var respond = (responder ? responder : send[server]).bind(null, response);
-    var errors = requestHandler.validate(request);
+  var validate = requestHandler.validate.bind(requestHandler);
+  var process = requestHandler[method].bind(requestHandler);
+  var formatPayload = payloadHandler[method].bind(payloadHandler, config);
+  var error = payloadHandler.error.bind(payloadHandler);
 
-    if (errors) {
-      respond(payloadHandler.error(errors));
-    } else {
-      process(request).then(format).then(respond)['catch'](function (err) {
-        //throw err;
-        return respond(payloadHandler.error(err));
-      });
-    }
-  };
+  var buildPayloadCurried = _build_payload2['default'].bind(null, validate, process, formatPayload, error);
+
+  return responder(buildPayloadCurried);
 };

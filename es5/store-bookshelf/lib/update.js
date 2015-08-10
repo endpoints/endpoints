@@ -19,6 +19,8 @@ var _transact2 = _interopRequireDefault(_transact);
 
 var _relate = require('./relate');
 
+var _relate2 = _interopRequireDefault(_relate);
+
 /**
  * Updates a model.
  *
@@ -27,8 +29,6 @@ var _relate = require('./relate');
  * @returns {Promise.Bookshelf.Model|null} -
      The updated model or null if nothing has changed.
  */
-
-var _relate2 = _interopRequireDefault(_relate);
 
 function update(model) {
   var params = arguments.length <= 1 || arguments[1] === undefined ? {} : arguments[1];
