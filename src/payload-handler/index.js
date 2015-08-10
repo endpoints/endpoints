@@ -36,10 +36,7 @@ class PayloadHandler {
       data: this.formatter.process(data, {
         singleResult: data.singleResult,
         relations: data.relations,
-        mode: data.mode,
-        baseType: data.baseType,
-        baseId: data.baseId,
-        baseRelation: data.baseRelation
+        mode: data.mode
       })
     };
   }
