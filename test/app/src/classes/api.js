@@ -8,8 +8,8 @@ const Endpoints = require('../../../../src');
 module.exports = new Endpoints.Application({
   Controller: Endpoints.Controller.extend({
     baseUrl: '/v1',
-    format: Endpoints.Format.jsonapi,
     responder: Endpoints.Responder.express,
+    format: Endpoints.Format.jsonapi,
     store: Endpoints.Store.bookshelf,
     validators: [Endpoints.ValidateJsonSchema]
   }),
