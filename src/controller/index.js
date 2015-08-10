@@ -27,6 +27,7 @@ class Controller {
     @param {Object} config - config.baseUrl: A base url for link generation.
     @param {Object} config - config.basePath: A base path for link generation.
     @param {Object} config - config.model: A model compatible with the store adapter.
+    @param {Object} config - config.model: A model compatible with the store adapter.
     @param {Object} config - config.validators: An array of validating methods.
     @param {Object} config - opts.allowClientGeneratedIds: boolean indicating this
   */
@@ -43,11 +44,18 @@ class Controller {
     if (!config.model) {
       throw new Error('No model specified.');
     }
+    const typeName = config.store.type(config.model);
+    if (!typeName) {
+      throw new Error('Model type could not be found using store.');
+    }
+    if (!config.type) {
+      config.type = typeName;
+    }
     if (!config.baseUrl) {
       throw new Error('No baseUrl specified for URL generation.');
     }
     if (!config.basePath) {
-      throw new Error('No basePath specified for URL generation.');
+      config.basePath = typeName;
     }
     this.config = _.extend({
       validators: [],
