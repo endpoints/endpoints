@@ -16,16 +16,16 @@ var _require_silent = require('./require_silent');
 
 var _require_silent2 = _interopRequireDefault(_require_silent);
 
+var _resource = require('./resource');
+
+var _resource2 = _interopRequireDefault(_resource);
+
 exports['default'] = function (name, searchPaths) {
   var routeModulePath, moduleBasePath;
   if (typeof name === 'string') {
     routeModulePath = _require_search2['default'](_path2['default'].join(name, 'routes'), searchPaths);
     moduleBasePath = _path2['default'].dirname(routeModulePath);
-    return {
-      name: name,
-      routes: require(routeModulePath),
-      controller: _require_silent2['default'](_path2['default'].join(moduleBasePath, 'controller'))
-    };
+    return new _resource2['default'](name, require(routeModulePath), _require_silent2['default'](_path2['default'].join(moduleBasePath, 'controller')));
   }
   if (!name) {
     name = {};

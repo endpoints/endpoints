@@ -1,6 +1,6 @@
 import path from 'path';
 import {expect} from 'chai';
-import requireSearch from '../../../../src/application/lib/require_search';
+import requireSearch from '../../../../src/resource/lib/require_search';
 
 describe('requireSearch', () => {
   var searchPaths = [path.join(__dirname, '..', 'fixtures'), path.resolve()];

@@ -27,8 +27,6 @@ var _is_many2 = _interopRequireDefault(_is_many);
 
 var _read = require('./read');
 
-var _read2 = _interopRequireDefault(_read);
-
 /*
   Returns the model or collection of models related to a given model. This
   makes it possible to support requests like:
@@ -84,6 +82,8 @@ var _read2 = _interopRequireDefault(_read);
    @param {Object} mode - the result of RequestHandler#query
    @returns {Promise(Bookshelf.Model)|Promise(Bookshelf.Collection)}
 */
+
+var _read2 = _interopRequireDefault(_read);
 
 function readForRelated(mode, sourceModel, id, relation, query) {
   return _by_id2['default'](sourceModel, id, relation).then(function (result) {
