@@ -1,7 +1,4 @@
 {
-  "plugins": [
-    "jscs-jsdoc"
-  ],
   "esnext": true,
   "disallowMixedSpacesAndTabs": true,
   "disallowSpaceAfterObjectKeys": true,
