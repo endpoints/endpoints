@@ -1,3 +1,52 @@
+# v0.9.0 -> v0.10.0
+Controllers must now specify a responder.
+
+Express, Hapi and Koa are supported out of the box.
+
+**v0.9.0 (old)**
+```js
+const API = new Endpoints.Application({
+  Controller: Endpoints.Controller.extend({
+    baseUrl: '/v1',
+    format: Endpoints.Format.jsonapi,
+    store: Endpoints.Store.bookshelf,
+    validators: [Endpoints.ValidateJsonSchema]
+  })
+});
+```
+
+**v0.10.0 (new)**
+```js
+const API = new Endpoints.Application({
+  Controller: Endpoints.Controller.extend({
+    baseUrl: '/v1',
+    responder: Endpoints.Responder.express // or .hapi or .koa
+    format: Endpoints.Format.jsonapi,
+    store: Endpoints.Store.bookshelf,
+    validators: [Endpoints.ValidateJsonSchema]
+  })
+});
+```
+
+Controllers can now infer their basePath by convention, reading their model's
+type using the store adapter.
+
+**v0.9.0 (old)**
+```js
+module.exports = new API.Controller({
+  model: model,
+  basePath: 'manually-specified-value'
+});
+```
+
+**v0.10.0 (new)**
+```js
+module.exports = new API.Controller({
+  model: model
+  // no basePath needed if it matches the model's type
+});
+```
+
 # v0.8.0 -> v0.9.0
 Per JSON-API 1.0, the recommended relationship url has changed from `/:id/links/:relation` to `/:id/relationships/:relation`.
 
