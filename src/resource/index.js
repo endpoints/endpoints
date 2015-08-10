@@ -1,39 +1,22 @@
-import path from 'path';
-import requireSearch from './lib/require_search';
-import requireSilent from './lib/require_silent';
-
+import createFromFS from './lib/create_from_fs';
 
 class Resource {
 
-    constructor(name, routes, controller) {
-        this.name = name;
-        this.routes = routes;
-        this.controller = controller;
+  constructor(opts={}, searchPaths=[]) {
+    if (typeof opts === 'string' && Array.isArray(searchPaths)) {
+      opts = createFromFS(opts, searchPaths);
     }
-
-    static createFromFS(name, searchPaths) {
-        var routeModulePath, moduleBasePath;
-        if (typeof name === 'string') {
-            routeModulePath = requireSearch(path.join(name, 'routes'), searchPaths);
-            moduleBasePath = path.dirname(routeModulePath);
-            return new this(
-                name,
-                require(routeModulePath),
-                requireSilent(path.join(moduleBasePath, 'controller'))
-            );
-        }
-        if (!name) {
-            name = {};
-        }
-        if (!name.name) {
-            throw new Error('Unable to parse a module without a name.');
-        }
-        if (!name.routes) {
-            throw new Error('Unable to parse a module without a routes object.');
-        }
-        return name;
+    if (!opts.name) {
+      throw new Error('Resource must have a name.');
     }
+    if (!opts.routes) {
+      throw new Error('Resource must have routes.');
+    }
+    this.name = opts.name;
+    this.routes = opts.routes;
+    this.controller = opts.controller;
+  }
 
-};
+}
 
 export default Resource;

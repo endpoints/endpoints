@@ -1,13 +1,13 @@
 import path from 'path';
 import {expect} from 'chai';
 
-import parseResource from '../../../../src/application/lib/parse_resource';
+import createFromFS from '../../../../src/resource/lib/create_from_fs';
 
-describe('parseResource', () => {
+describe('createFromFS', () => {
 
   it('should find a routes file in search paths and return a resource object', () => {
     var searchPaths = [path.join(__dirname, '..', 'fixtures', 'resources')];
-    expect(parseResource('foo', searchPaths)).to.deep.equal({
+    expect(createFromFS('foo', searchPaths)).to.deep.equal({
       name: 'foo',
       routes: require('../fixtures/resources/foo/routes'),
       controller: require('../fixtures/resources/foo/controller')
@@ -16,16 +16,16 @@ describe('parseResource', () => {
 
   it('should throw if a custom resource is defined without a name', () => {
     expect(() => {
-      parseResource();
+      createFromFS();
     }).to.throw('Unable to parse a module without a name.');
     expect(() => {
-      parseResource({});
+      createFromFS({});
     }).to.throw('Unable to parse a module without a name.');
   });
 
   it('should throw if a custom resource is defined without a routes object', () => {
     expect(() => {
-      parseResource({name:'test'});
+      createFromFS({name:'test'});
     }).to.throw('Unable to parse a module without a routes object.');
   });
 
@@ -40,7 +40,7 @@ describe('parseResource', () => {
         }
       }
     };
-    expect(parseResource(moduleDefinition)).to.deep.equal(moduleDefinition);
+    expect(createFromFS(moduleDefinition)).to.deep.equal(moduleDefinition);
   });
 
 });
