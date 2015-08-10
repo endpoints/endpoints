@@ -37,9 +37,6 @@ export default function read (model, query={}, mode='read') {
       result.mode = mode;
       result.relations = relations;
       result.singleResult = query.singleResult;
-      result.baseType = query.baseType;
-      result.baseId = query.baseId;
-      result.baseRelation = query.baseRelation;
       return result;
     });
   });
