@@ -11,6 +11,8 @@ var _related_collection2 = _interopRequireDefault(_related_collection);
 
 var _is_many = require('./is_many');
 
+var _is_many2 = _interopRequireDefault(_is_many);
+
 /**
  * Given a model or collection and a dot-notated relation string,
  * traverse the relations and return the related models from the
@@ -20,8 +22,6 @@ var _is_many = require('./is_many');
  * @param {String} relation
  * @return {Bookshelf.Model|Bookshelf.Collection}
  */
-
-var _is_many2 = _interopRequireDefault(_is_many);
 
 function related(input, relation) {
   return relation.split('.').reduce(function (input, relationSegment) {

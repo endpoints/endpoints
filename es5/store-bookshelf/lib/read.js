@@ -19,6 +19,8 @@ var _type2 = _interopRequireDefault(_type);
 
 var _columns = require('./columns');
 
+var _columns2 = _interopRequireDefault(_columns);
+
 /**
  * Retrieves a collection of models from the database.
  *
@@ -27,8 +29,6 @@ var _columns = require('./columns');
  * @param {Object} mode - the mode of the request (single/related/relation)
  * @return {Promise.Bookshelf.Collection} Models that match the request.
 */
-
-var _columns2 = _interopRequireDefault(_columns);
 
 function read(model) {
   var query = arguments.length <= 1 || arguments[1] === undefined ? {} : arguments[1];
@@ -58,9 +58,6 @@ function read(model) {
       result.mode = mode;
       result.relations = relations;
       result.singleResult = query.singleResult;
-      result.baseType = query.baseType;
-      result.baseId = query.baseId;
-      result.baseRelation = query.baseRelation;
       return result;
     });
   });

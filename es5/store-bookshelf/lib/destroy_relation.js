@@ -15,6 +15,8 @@ var _transact2 = _interopRequireDefault(_transact);
 
 var _relate = require('./relate');
 
+var _relate2 = _interopRequireDefault(_relate);
+
 /**
  * Destroys relations on a model.
  *
@@ -22,8 +24,6 @@ var _relate = require('./relate');
  * @param {Object} relations - An object containing the relations.
  * @return {Promise.Bookshelf.Model} The updated model.
  */
-
-var _relate2 = _interopRequireDefault(_relate);
 
 function destroyRelation(model, relations) {
   if (!model) {

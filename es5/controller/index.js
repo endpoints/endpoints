@@ -6,7 +6,7 @@ var _createClass = (function () { function defineProperties(target, props) { for
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
 
-function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) subClass.__proto__ = superClass; }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
 
@@ -24,20 +24,18 @@ var _libHandle2 = _interopRequireDefault(_libHandle);
 
 var _libSingle_slash_join = require('./lib/single_slash_join');
 
+var _libSingle_slash_join2 = _interopRequireDefault(_libSingle_slash_join);
+
 /**
   Provides methods for generating request handling functions that can
-  be used by any node http server.
+  be used by any supported Node responder.
 */
-
-var _libSingle_slash_join2 = _interopRequireDefault(_libSingle_slash_join);
 
 var Controller = (function () {
   Controller.extend = function extend() {
     var props = arguments.length <= 0 || arguments[0] === undefined ? {} : arguments[0];
 
     return (function (_ref) {
-      _inherits(Controller, _ref);
-
       function Controller() {
         var opts = arguments.length <= 0 || arguments[0] === undefined ? {} : arguments[0];
 
@@ -46,6 +44,8 @@ var Controller = (function () {
         _ref.call(this, _lodash2['default'].extend({}, props, opts));
       }
 
+      _inherits(Controller, _ref);
+
       return Controller;
     })(this);
   };
@@ -53,10 +53,12 @@ var Controller = (function () {
   /**
     The constructor.
      @constructs Controller
+    @param {Object} config - config.responder: An endpoints responder adapter.
     @param {Object} config - config.format: An endpoints format adapter.
     @param {Object} config - config.store: An endpoints store adapter.
     @param {Object} config - config.baseUrl: A base url for link generation.
     @param {Object} config - config.basePath: A base path for link generation.
+    @param {Object} config - config.model: A model compatible with the store adapter.
     @param {Object} config - config.model: A model compatible with the store adapter.
     @param {Object} config - config.validators: An array of validating methods.
     @param {Object} config - opts.allowClientGeneratedIds: boolean indicating this
@@ -67,6 +69,9 @@ var Controller = (function () {
 
     _classCallCheck(this, Controller);
 
+    if (!config.responder) {
+      throw new Error('No responder specified.');
+    }
     if (!config.format) {
       throw new Error('No format specified.');
     }
@@ -76,11 +81,18 @@ var Controller = (function () {
     if (!config.model) {
       throw new Error('No model specified.');
     }
+    var typeName = config.store.type(config.model);
+    if (!typeName) {
+      throw new Error('Model type could not be found using store.');
+    }
+    if (!config.type) {
+      config.type = typeName;
+    }
     if (!config.baseUrl) {
       throw new Error('No baseUrl specified for URL generation.');
     }
     if (!config.basePath) {
-      throw new Error('No basePath specified for URL generation.');
+      config.basePath = typeName;
     }
     this.config = _lodash2['default'].extend({
       validators: [],
@@ -93,7 +105,7 @@ var Controller = (function () {
     Used for generating CRUD methods.
      @param {String} method - The name of the function to be created.
     @param {String} opts - The name of the function to be created.
-    @returns {Function} - function (req, res) { } (node http compatible request handler)
+    @returns {Function} - Responder-specific request handler
   */
 
   Controller.prototype.method = function method(_method, opts) {
@@ -153,10 +165,10 @@ var Controller = (function () {
     key: 'capabilities',
     get: function get() {
       var _config = this.config;
-
-      // TODO: include this.config?
       var store = _config.store;
       var model = _config.model;
+
+      // TODO: include this.config?
       return {
         filters: Object.keys(store.filters(model)),
         includes: store.allRelations(model)

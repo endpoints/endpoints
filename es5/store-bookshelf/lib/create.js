@@ -15,6 +15,8 @@ var _destructure2 = _interopRequireDefault(_destructure);
 
 var _relate = require('./relate');
 
+var _relate2 = _interopRequireDefault(_relate);
+
 /**
  * Creates a model.
  *
@@ -22,8 +24,6 @@ var _relate = require('./relate');
  * @param {Object} params - An object containing the params from the request.
  * @returns {Promise.Bookshelf.Model} The created model.
  */
-
-var _relate2 = _interopRequireDefault(_relate);
 
 function create(model) {
   var params = arguments.length <= 1 || arguments[1] === undefined ? {} : arguments[1];
