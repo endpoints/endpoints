@@ -1,4 +1,3 @@
-export const basePath = 'bar';
 export const map = {
   get: {
     '/': function (request, response) {

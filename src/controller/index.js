@@ -64,15 +64,6 @@ class Controller {
     }, config);
   }
 
-  get capabilities() {
-    const {store, model} = this.config;
-    // TODO: include this.config?
-    return {
-      filters: Object.keys(store.filters(model)),
-      includes: store.allRelations(model),
-    };
-  }
-
   get baseUrl() {
     return this.config.baseUrl;
   }
@@ -83,6 +74,14 @@ class Controller {
 
   get url() {
     return singleSlashJoin([this.baseUrl, this.basePath]);
+  }
+
+  get store() {
+    return this.config.store;
+  }
+
+  get model() {
+    return this.config.model;
   }
 
   /**

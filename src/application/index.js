@@ -16,13 +16,20 @@ class Application {
     } else if (!Array.isArray(opts.searchPaths)) {
       opts.searchPaths = [opts.searchPaths];
     }
-    this._resources = {};
+    this._resources = new Map();
     this._endpoints = [];
     _.extend(this, opts);
   }
 
+  controllerForType (type) {
+    return this._resources.entries().find((name, resource) => {
+      if controller === type;
+      }
+    });
+  }
+
   resource (name) {
-    const resource = this._resources[name];
+    const resource = this._resources.get(name);
     if (!resource) {
       throw new Error(`Resource "${name}" has not been registered.`);
     }
@@ -36,10 +43,10 @@ class Application {
     }
     const resource = new this.Resource(input, this.searchPaths);
     const resourceName = resource.name;
-    if (this._resources[resourceName]) {
+    if (this._resources.get(resourceName)) {
       throw new Error(`Resource "${resourceName}" registered twice`);
     }
-    this._resources[resourceName] = resource;
+    this._resources.set(resourceName, resource);
     return this;
   }
 
@@ -60,7 +67,7 @@ class Application {
   manifest () {
     return this._endpoints.reduce(function (result, endpoint) {
       const resource = endpoint.resource;
-      const capabilities = resource.controller.capabilities;
+      const capabilities = resource.capabilities;
       result.push(_.extend({
         name: resource.name,
         url: endpoint.url
