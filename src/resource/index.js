@@ -17,6 +17,24 @@ class Resource {
     this.controller = opts.controller;
   }
 
+  get type () {
+    if (!this.controller) {
+      return this.name;
+    }
+    const {store, model} = this.controller;
+    return store.type(model);
+  }
+
+  
+
+  get capabilities() {
+    const {store, model} = this.config;
+    // TODO: include this.config?
+    return {
+      filters: Object.keys(store.filters(model)),
+      includes: store.allRelations(model),
+    };
+  }
 }
 
 export default Resource;

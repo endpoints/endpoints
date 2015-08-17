@@ -4,6 +4,7 @@ import sinon from 'sinon';
 import {expect} from 'chai';
 
 import Application from '../../../src/application';
+import fooModel from './fixtures/resources/foo/model';
 
 var TestApp;
 
@@ -84,6 +85,13 @@ describe('Application', () => {
       }).to.throw(throwMsg);
     });
 
+  });
+
+  describe('#controllerForModel', () => {
+    it('should find a controller that matches the requested model', () => {
+      TestApp.register('foo');
+      console.log(TestApp.controllerForModel(fooModel));
+    });
   });
 
   describe('#resource', () => {
