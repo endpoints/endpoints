@@ -31,7 +31,7 @@ var _relate2 = _interopRequireDefault(_relate);
  */
 
 function update(model) {
-  var params = arguments.length <= 1 || arguments[1] === undefined ? {} : arguments[1];
+  var params = arguments[1] === undefined ? {} : arguments[1];
 
   if (!model) {
     throw new Error('No model provided.');
@@ -39,17 +39,17 @@ function update(model) {
   var currentState = model.toJSON({ shallow: true });
   currentState.id = String(currentState.id);
 
-  return _destructure2['default'](model, params).then(function (destructured) {
+  return (0, _destructure2['default'])(model, params).then(function (destructured) {
     var attributes = destructured.attributes;
     var relations = destructured.relations;
 
-    return _transact2['default'](model, function (transaction) {
+    return (0, _transact2['default'])(model, function (transaction) {
       return model.save(attributes, {
         patch: true,
         method: 'update',
         transacting: transaction
       }).tap(function (model) {
-        return _relate2['default'](model, relations, 'update', transaction);
+        return (0, _relate2['default'])(model, relations, 'update', transaction);
       }).then(function (model) {
         // if model didn't change, return null
         // model.previousAttributes() is broken.

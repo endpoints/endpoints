@@ -25,12 +25,12 @@ var _all_relations = require('./all_relations');
 var _all_relations2 = _interopRequireDefault(_all_relations);
 
 function destructure(model) {
-  var params = arguments.length <= 1 || arguments[1] === undefined ? {} : arguments[1];
+  var params = arguments[1] === undefined ? {} : arguments[1];
 
   var relationships = params.relationships || {};
   var relationshipNames = _lodash2['default'].keys(relationships);
-  var allRels = _all_relations2['default'](model);
-  var toOneRelsMap = _to_one_relations2['default'](model);
+  var allRels = (0, _all_relations2['default'])(model);
+  var toOneRelsMap = (0, _to_one_relations2['default'])(model);
   var toOneRels = Object.keys(toOneRelsMap);
   var toManyRels = _lodash2['default'].difference(allRels, toOneRels);
   var linkedToOneRels = _lodash2['default'].intersection(relationshipNames, toOneRels);
@@ -60,7 +60,7 @@ function destructure(model) {
     };
   });
 
-  return _columns2['default'](model).then(function (modelColumns) {
+  return (0, _columns2['default'])(model).then(function (modelColumns) {
     if (_lodash2['default'].contains(modelColumns, 'id') && params.id) {
       attributes.id = params.id;
     }

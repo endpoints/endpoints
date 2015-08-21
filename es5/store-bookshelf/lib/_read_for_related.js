@@ -86,12 +86,12 @@ var _read2 = _interopRequireDefault(_read);
 */
 
 function readForRelated(mode, sourceModel, id, relation, query) {
-  return _by_id2['default'](sourceModel, id, relation).then(function (result) {
+  return (0, _by_id2['default'])(sourceModel, id, relation).then(function (result) {
     if (!result) {
-      throw _kapow2['default'](404);
+      throw (0, _kapow2['default'])(404);
     }
-    var relatedData = _related2['default'](result, relation);
-    var hasMany = _is_many2['default'](relatedData);
+    var relatedData = (0, _related2['default'])(result, relation);
+    var hasMany = (0, _is_many2['default'])(relatedData);
 
     var relatedModel = hasMany ? relatedData.model : relatedData.constructor;
     var relatedIds = hasMany ? relatedData.map(function (m) {
@@ -109,7 +109,7 @@ function readForRelated(mode, sourceModel, id, relation, query) {
 
     query.singleResult = !hasMany;
 
-    return _read2['default'](relatedModel, query, mode).then(function (relatedResult) {
+    return (0, _read2['default'])(relatedModel, query, mode).then(function (relatedResult) {
       relatedResult.sourceModel = result;
       relatedResult.relationName = relation;
       return relatedResult;

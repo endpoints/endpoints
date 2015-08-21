@@ -17,7 +17,7 @@ function byId(model, id, relations) {
   })['catch'](TypeError, function (e) {
     // A TypeError here most likely signifies bad
     // relations passed into withRelated
-    throw _kapow2['default'](404, 'Unable to find relations');
+    throw (0, _kapow2['default'])(404, 'Unable to find relations');
   });
 }
 

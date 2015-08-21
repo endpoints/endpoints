@@ -25,12 +25,12 @@ var _is_many2 = _interopRequireDefault(_is_many);
 
 function related(input, relation) {
   return relation.split('.').reduce(function (input, relationSegment) {
-    if (_is_many2['default'](input)) {
+    if ((0, _is_many2['default'])(input)) {
       // iterate each model and add its related models to the collection
       return input.reduce(function (result, model) {
         var related = model.related(relationSegment);
         return result.add(related.models ? related.models : related);
-      }, _related_collection2['default'](input.model, relationSegment));
+      }, (0, _related_collection2['default'])(input.model, relationSegment));
     }
     return input.related(relationSegment);
   }, input);

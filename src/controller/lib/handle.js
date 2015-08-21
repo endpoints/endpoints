@@ -14,8 +14,13 @@ module.exports = function (config, baseUrl) {
 
   return function (request, response) {
     const server = 'express'; // detect if hapi or express here
-    const process = requestHandler[method].bind(requestHandler);
-    const format = payloadHandler[method].bind(payloadHandler, config);
+    const modelHandlers = config.model.methodHandlers;
+    const process = modelHandlers && modelHandlers[method] ?
+      modelHandlers[method].request.bind(requestHandler) :
+      requestHandler[method].bind(requestHandler);
+    const format = modelHandlers && modelHandlers[method] ?
+      modelHandlers[method].payload.bind(payloadHandler, config) :
+      payloadHandler[method].bind(payloadHandler, config);
     const respond = (responder ? responder : send[server]).bind(null, response);
     const errors = requestHandler.validate(request);
 

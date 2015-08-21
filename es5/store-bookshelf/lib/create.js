@@ -26,21 +26,21 @@ var _relate2 = _interopRequireDefault(_relate);
  */
 
 function create(model) {
-  var params = arguments.length <= 1 || arguments[1] === undefined ? {} : arguments[1];
+  var params = arguments[1] === undefined ? {} : arguments[1];
 
   if (!model) {
     throw new Error('No model provided.');
   }
-  return _destructure2['default'](model.forge(), params).then(function (destructured) {
+  return (0, _destructure2['default'])(model.forge(), params).then(function (destructured) {
     var attributes = destructured.attributes;
     var relations = destructured.relations;
 
-    return _transact2['default'](model, function (transaction) {
+    return (0, _transact2['default'])(model, function (transaction) {
       return model.forge(attributes).save(null, {
         method: 'insert',
         transacting: transaction
       }).tap(function (newModel) {
-        return _relate2['default'](newModel, relations, 'create', transaction);
+        return (0, _relate2['default'])(newModel, relations, 'create', transaction);
       }).then(function (newModel) {
         return model.forge({ id: newModel.id }).fetch({ transacting: transaction });
       });

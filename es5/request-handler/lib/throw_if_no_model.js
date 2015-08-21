@@ -10,7 +10,7 @@ var _kapow2 = _interopRequireDefault(_kapow);
 
 exports['default'] = function (model) {
   if (!model) {
-    throw _kapow2['default'](404, 'Unable to locate model.');
+    throw (0, _kapow2['default'])(404, 'Unable to locate model.');
   }
 
   // Bookshelf throws an error for any number of unrelated reasons.

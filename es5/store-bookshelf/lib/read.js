@@ -31,12 +31,12 @@ var _columns2 = _interopRequireDefault(_columns);
 */
 
 function read(model) {
-  var query = arguments.length <= 1 || arguments[1] === undefined ? {} : arguments[1];
-  var mode = arguments.length <= 2 || arguments[2] === undefined ? 'read' : arguments[2];
+  var query = arguments[1] === undefined ? {} : arguments[1];
+  var mode = arguments[2] === undefined ? 'read' : arguments[2];
 
-  return _columns2['default'](model).then(function (modelColumns) {
-    var fields = query.fields && query.fields[_type2['default'](model)];
-    var relations = _lodash2['default'].intersection(_all_relations2['default'](model), query.include || []);
+  return (0, _columns2['default'])(model).then(function (modelColumns) {
+    var fields = query.fields && query.fields[(0, _type2['default'])(model)];
+    var relations = _lodash2['default'].intersection((0, _all_relations2['default'])(model), query.include || []);
     if (fields) {
       fields = _lodash2['default'].intersection(modelColumns, fields);
       // ensure we always select id as the spec requires this to be present

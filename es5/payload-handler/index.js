@@ -42,7 +42,7 @@ var PayloadHandler = (function () {
 
   PayloadHandler.prototype.read = function read(config, data) {
     if ((!data || data.length === 0 && data.singleResult) && data.mode !== 'related') {
-      return this.error(_kapow2['default'](404, 'Resource not found.'));
+      return this.error((0, _kapow2['default'])(404, 'Resource not found.'));
     }
 
     return {
@@ -104,7 +104,7 @@ var PayloadHandler = (function () {
     var resp;
 
     defaultErr = defaultErr || 400;
-    errs = errs || [_kapow2['default'](defaultErr)];
+    errs = errs || [(0, _kapow2['default'])(defaultErr)];
 
     if (!Array.isArray(errs)) {
       errs = [errs];

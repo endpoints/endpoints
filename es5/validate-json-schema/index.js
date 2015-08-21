@@ -15,7 +15,7 @@ var _isMyJsonValid2 = _interopRequireDefault(_isMyJsonValid);
 function transformErrorFields(input, errors) {
   return errors.map(function (error) {
     var field = error.field.replace(/^data/, input);
-    return _kapow2['default'](400, field + ' ' + error.message, error);
+    return (0, _kapow2['default'])(400, field + ' ' + error.message, error);
   });
 }
 
@@ -24,7 +24,7 @@ exports['default'] = function (request, endpoint) {
   var schema = endpoint.schema || {};
 
   for (var prop in schema) {
-    var validate = _isMyJsonValid2['default'](schema[prop] || {});
+    var validate = (0, _isMyJsonValid2['default'])(schema[prop] || {});
     if (!validate(request[prop])) {
       err = transformErrorFields(prop, validate.errors);
       break;

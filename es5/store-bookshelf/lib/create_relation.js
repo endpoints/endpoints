@@ -42,17 +42,17 @@ function createRelation(model, relationName, data) {
   if (!model) {
     throw new Error('No model provided.');
   }
-  return _transact2['default'](model, function (transaction) {
-    var existing = _related2['default'](model, relationName).map(function (rel) {
+  return (0, _transact2['default'])(model, function (transaction) {
+    var existing = (0, _related2['default'])(model, relationName).map(function (rel) {
       return {
-        id: _id2['default'](rel),
-        type: _type2['default'](rel)
+        id: (0, _id2['default'])(rel),
+        type: (0, _type2['default'])(rel)
       };
     });
     var all = data.concat(existing);
     // TODO: should i be doing a deep comparison instead?
     var unique = _lodash2['default'].uniq(all, JSON.stringify.bind(null));
-    return _relate2['default'](model, {
+    return (0, _relate2['default'])(model, {
       name: relationName,
       data: unique
     }, 'add', transaction);
