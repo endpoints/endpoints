@@ -11,7 +11,8 @@ class PayloadHandler {
     return {
       code: '201',
       data: this.formatter.process(data, {
-        singleResult: true
+        singleResult: true,
+        relations: config.include
       }),
       headers: {
         location: this.formatter.selfUrl(data)
