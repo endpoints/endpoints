@@ -8,12 +8,10 @@ class PayloadHandler {
   }
 
   create (config, data) {
+    config.singleResult = true;
     return {
       code: '201',
-      data: this.formatter.process(data, {
-        singleResult: true,
-        relations: config.include
-      }),
+      data: this.formatter.process(data, config),
       headers: {
         location: this.formatter.selfUrl(data)
       }
@@ -36,7 +34,7 @@ class PayloadHandler {
       code: '200',
       data: this.formatter.process(data, {
         singleResult: data.singleResult,
-        relations: data.relations,
+        include: data.relations,
         mode: data.mode,
         baseType: data.baseType,
         baseId: data.baseId,

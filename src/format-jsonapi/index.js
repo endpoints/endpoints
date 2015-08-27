@@ -66,23 +66,23 @@ class JsonApiFormat {
    * @param {opts} opts - configurable options (@todo: cleanup)
    */
   process (input, opts={}) {
-    const {singleResult, relations, mode} = opts;
+    const {singleResult, include, mode} = opts;
     let links;
     if (mode === 'relation') {
       links = this._relationshipLinks(input.sourceModel, input.relationName);
     }
     let data;
     if (this.store.isMany(input)) {
-      data = input.map((input) => this.format(input, relations, mode));
+      data = input.map((input) => this.format(input, include, mode));
     } else {
-      data = this.format(input, relations, mode);
+      data = this.format(input, include, mode);
     }
     if (singleResult && Array.isArray(data)) {
       data = data.length ? data[0] : null;
     }
     let included;
-    if (relations && relations.length) {
-      included = this.include(input, relations);
+    if (include && include.length) {
+      included = this.include(input, include);
     }
     return {
       data,
