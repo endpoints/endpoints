@@ -1,4 +1,4 @@
-const thisFolderName = __dirname.split(require("path").sep).pop();
+const thisFolderName = __dirname.split(require('path').sep).pop();
 
 const API = require('../../classes/api');
 const model = require('./model');
