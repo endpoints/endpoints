@@ -25,7 +25,7 @@ class Resource {
     return store.type(model);
   }
 
-  
+
 
   get capabilities() {
     const {store, model} = this.config;

@@ -23,8 +23,9 @@ class Application {
 
   controllerForType (type) {
     return this._resources.entries().find((name, resource) => {
-      if controller === type;
-      }
+      // FIXME: Incomplete code
+      //if controller === type;
+      //}
     });
   }
 
