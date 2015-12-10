@@ -1,10 +1,10 @@
 describe('Unit', function () {
-  require('./application');
+  //require('./application');
   require('./controller');
   //require('./payload-handler/test');
   require('./request-handler');
   require('./resource');
-  //require('./store-bookshelf/test');
-  //require('./format-jsonapi/test');
+  require('./store-bookshelf');
+  // require('./format-jsonapi'); // TODO PENDING TESTS
   require('./validate-json-schema');
 });

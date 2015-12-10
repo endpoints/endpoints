@@ -7,7 +7,7 @@ import knex from 'knex';
 import bookshelf from 'bookshelf';
 import fantasyDatabase from 'fantasy-database';
 
-import BookshelfStore from '../../src/store-bookshelf';
+import BookshelfStore from '../../../src/store-bookshelf';
 
 const Bookshelf = bookshelf(knex({
   client: 'sqlite3',
@@ -95,7 +95,7 @@ describe('JsonApiBookshelf', function () {
 
     it('should return the id attribute of a model', function () {
       const id = 1100;
-      expect(BookshelfStore.id(new Book({id:id}))).to.equal(id);
+      expect(BookshelfStore.id(new Book({id:id}))).to.equal(id.toString());
     });
 
   });
