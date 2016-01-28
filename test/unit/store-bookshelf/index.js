@@ -27,6 +27,7 @@ const Author = Bookshelf.Model.extend({
     return this.hasMany(Book);
   }
 }, {
+  filters: {},
   relations: [
     'books',
     'books.chapters',
@@ -46,6 +47,7 @@ const Book = Bookshelf.Model.extend({
     return this.belongsToMany(Store);
   }
 }, {
+  filters: {},
   relations: [
     'author',
     'chapters',
@@ -59,6 +61,7 @@ const Chapter = Bookshelf.Model.extend({
     return this.belongsTo(Book);
   },
 }, {
+  filters: {},
   relations: [
     'book'
   ]
@@ -70,6 +73,7 @@ const Store = Bookshelf.Model.extend({
     return this.belongsToMany(Book);
   }
 }, {
+  filters: {},
   typeName: 'STORES',
   relations: [
     'books',
@@ -214,7 +218,7 @@ describe('JsonApiBookshelf', function () {
 
     it('should resolve with invalid relations removed', function () {
       return BookshelfStore.read(Book, {
-        id: 1,
+        filter: { id: 1 },
         include: ['author', 'notarelation']
       }).then(function (book) {
         expect(book.relations).to.deep.equal(['author']);
