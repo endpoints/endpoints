@@ -43,7 +43,7 @@
     "express": "^4.12.4",
     "express-routebuilder": "^2.1.0",
     "fantasy-database": "^1.1.1",
-    "istanbul": "^0.3.14",
+    "istanbul": "^0.4.2",
     "jade": "^1.10.0",
     "jscs": "^1.13.1",
     "jscs-jsdoc": "^1.0.1",
