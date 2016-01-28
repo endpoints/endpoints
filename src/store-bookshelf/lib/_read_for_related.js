@@ -90,5 +90,11 @@ export default function readForRelated (mode, sourceModel, id, relation, query) 
       relatedResult.relationName = relation;
       return relatedResult;
     });
+  })
+  .catch((err) => {
+    if (/is not defined on the model\./.test(err.message)) {
+      throw Kapow(404);
+    }
+    throw err;
   });
 }
