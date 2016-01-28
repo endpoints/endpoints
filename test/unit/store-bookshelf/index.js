@@ -216,6 +216,14 @@ describe('JsonApiBookshelf', function () {
 
   describe('::read', function () {
 
+    it('should only return one', function () {
+      return BookshelfStore.read(Book, {
+        filter: { id: 1 }
+      }).then(function (book) {
+        expect(book.length).to.equal(1);
+      });
+    });
+
     it('should resolve with invalid relations removed', function () {
       return BookshelfStore.read(Book, {
         filter: { id: 1 },
