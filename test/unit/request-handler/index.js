@@ -1,20 +1,17 @@
-/*import {expect} from 'chai';
+import {expect} from 'chai';
 import sinon from 'sinon';
 import RequestHandler from '../../../src/request-handler';
 
-var req = {
+const req = {
   headers: {
     accept: 'application/vnd.api+json'
   },
   body: {}
 };
-var source = {
-  typeName: function() {}
-};
-*/
-describe('RequestHandler', function () {
 
-  describe('lib', function () {
+describe('RequestHandler', () => {
+
+  describe('lib', () => {
     require('../../../src/request-handler/lib/collapse_include');
     require('../../../src/request-handler/lib/split_string_props');
     require('../../../src/request-handler/lib/throw_if_model');
@@ -25,37 +22,452 @@ describe('RequestHandler', function () {
     require('../../../src/request-handler/lib/verify_full_replacement');
   });
 
-  describe('#include', function () {
+  describe('#create', () => {
+    const post = {
+      headers: {
+        accept: 'application/vnd.api+json'
+      },
+      method: 'POST',
+      params: {},
+      body: {
+        data: {
+          id: 'something',
+        }
+      }
+    };
+
+    it('it should run store#byId to check uniqueness', (done) => {
+
+      const store = {
+        byId: sinon.stub().returns(Promise.resolve(true)),
+      };
+
+      const config = {
+        store,
+        model: {},
+      };
+      const requestHandler = new RequestHandler(config);
+
+      requestHandler.create(post)
+      .catch((err) => {
+        expect(err.httpStatus).to.equal('409');
+        expect(err.message).to.equal('Model with this ID already exists');
+        done();
+      });
+
+    });
+
+    it('it should return the newly created model instance when passed an id that doesn\'t exist', (done) => {
+
+      const createdModel = {};
+
+      const store = {
+        byId: sinon.stub().returns(Promise.resolve(false)),
+        create: sinon.stub().returns(Promise.resolve(createdModel)),
+      };
+
+      const config = {
+        store,
+        model: {},
+      };
+      const requestHandler = new RequestHandler(config);
+
+      requestHandler.create(post)
+      .then((model) => {
+        expect(model).to.equal(createdModel);
+        done();
+      });
+
+    });
+
+    it('it should return the newly created model instance when no id is passed', (done) => {
+
+      const createdModel = {};
+
+      const store = {
+        create: sinon.stub().returns(Promise.resolve(createdModel)),
+      };
+
+      const config = {
+        store,
+        model: {},
+      };
+      const requestHandler = new RequestHandler(config);
+
+      var postRequest = Object.assign({}, post);
+      postRequest.body.data = {};
+
+      requestHandler.create(postRequest)
+      .then((model) => {
+        expect(model).to.equal(createdModel);
+        done();
+      });
+
+    });
 
   });
 
-  describe('#filter', function () {
+  describe('#createRelation', () => {
+    const post = {
+      headers: {
+        accept: 'application/vnd.api+json'
+      },
+      method: 'POST',
+      params: { relation: true, },
+      body: {
+        data: {
+          id: 'something',
+        }
+      }
+    };
+
+    it('it should check if the related model exists', (done) => {
+
+      const store = {
+        byId: sinon.stub().returns(Promise.resolve(false)),
+        createRelation: sinon.stub().returns(Promise.resolve({})),
+      };
+
+      const config = {
+        store,
+        model: {},
+      };
+      const requestHandler = new RequestHandler(config);
+
+      requestHandler.createRelation(post)
+      .catch((err) => {
+        expect(err.httpStatus).to.equal('404');
+        expect(err.message).to.equal('Unable to locate model.');
+        done();
+      });
+
+    });
+
+    it('it should return the newly created model instance when passed an id that doesn\'t exist', (done) => {
+
+      const createdModel = {};
+
+      const store = {
+        byId: sinon.stub().returns(Promise.resolve(true)),
+        createRelation: sinon.stub().returns(Promise.resolve(createdModel)),
+      };
+
+      const config = {
+        store,
+        model: {},
+      };
+      const requestHandler = new RequestHandler(config);
+
+      requestHandler.createRelation(post)
+      .then((model) => {
+        expect(model).to.equal(createdModel);
+        done();
+      });
+
+    });
+
+    it('it should return the newly created model instance when no id is passed', (done) => {
+
+      const createdModel = {};
+
+      const store = {
+        byId: sinon.stub().returns(Promise.resolve(true)),
+        createRelation: sinon.stub().returns(Promise.resolve(createdModel)),
+      };
+
+      const config = {
+        store,
+        model: {},
+      };
+      const requestHandler = new RequestHandler(config);
+
+      var postRequest = Object.assign({}, post);
+      postRequest.body.data = {};
+
+      requestHandler.createRelation(postRequest)
+      .then((model) => {
+        expect(model).to.equal(createdModel);
+        done();
+      });
+
+    });
 
   });
 
-  describe('#fields', function () {
+  describe('#read', () => {
+
+    it('it should call store#read', () => {
+      const store = {
+        read: sinon.spy()
+      };
+      const request = new RequestHandler({
+        store,
+      });
+
+      request.read({
+        params: {
+          id: true,
+        },
+        query: {
+          filter: {},
+        }
+      })
+
+      expect(store.read.calledOnce).to.be.true;
+    });
 
   });
 
-  describe('#sort', function () {
+  describe('#readRelated', () => {
+
+    it('it should call store#readRelated', () => {
+      const store = {
+        readRelated: sinon.spy()
+      };
+      const request = new RequestHandler({
+        store,
+      });
+
+      request.readRelated({
+        params: {
+          id: true,
+        },
+        query: {
+          filter: {},
+        }
+      })
+
+      expect(store.readRelated.calledOnce).to.be.true;
+    });
 
   });
 
-  describe('#params', function () {
+  describe('#readRelation', () => {
+
+    it('it should call store#readRelation', () => {
+      const store = {
+        readRelation: sinon.spy()
+      };
+      const request = new RequestHandler({
+        store,
+      });
+
+      request.readRelation({
+        params: {
+          id: true,
+        },
+        query: {
+          filter: {},
+        }
+      })
+
+      expect(store.readRelation.calledOnce).to.be.true;
+    });
 
   });
 
-});
-/**import {expect} from 'chai';
-/*
-  describe('#validate', function () {
+  describe('#update', () => {
+    const post = {
+      headers: {
+        accept: 'application/vnd.api+json'
+      },
+      method: 'PATCH',
+      params: {},
+      body: {
+        data: {
+          id: 'something',
+        }
+      }
+    };
+
+    it('it should run store#byId to check uniqueness', (done) => {
+
+      const store = {
+        byId: sinon.stub().returns(Promise.resolve(false)),
+      };
+
+      const config = {
+        store,
+        model: {},
+      };
+      const requestHandler = new RequestHandler(config);
+
+      requestHandler.update(post)
+      .catch((err) => {
+        expect(err.httpStatus).to.equal('404');
+        expect(err.message).to.equal('Unable to locate model.');
+        done();
+      });
+
+    });
+
+    it('it should return the newly updated model instance when passed an id that doesn\'t exist', (done) => {
+
+      const createdModel = {};
+
+      const store = {
+        byId: sinon.stub().returns(Promise.resolve(true)),
+        update: sinon.stub().returns(Promise.resolve(createdModel)),
+      };
+
+      const config = {
+        store,
+        model: {},
+      };
+      const requestHandler = new RequestHandler(config);
+
+      requestHandler.update(post)
+      .then((model) => {
+        expect(model).to.equal(createdModel);
+        done();
+      });
+
+    });
+
+  });
+
+  describe('#updateRelation', () => {
+    const post = {
+      headers: {
+        accept: 'application/vnd.api+json'
+      },
+      method: 'PATCH',
+      params: {},
+      body: {
+        data: {
+          id: 'something',
+        }
+      }
+    };
+
+    it('it should run store#byId to check it exists', (done) => {
+
+      const store = {
+        byId: sinon.stub().returns(Promise.resolve(false)),
+      };
+
+      const config = {
+        store,
+        model: {},
+      };
+      const requestHandler = new RequestHandler(config);
+
+      requestHandler.updateRelation(post)
+      .catch((err) => {
+        expect(err.httpStatus).to.equal('404');
+        expect(err.message).to.equal('Unable to locate model.');
+        done();
+      });
+
+    });
+
+    it('it should return the newly updated relation model instance when passed an id that doesn\'t exist', (done) => {
+
+      const createdModel = {};
+
+      const store = {
+        byId: sinon.stub().returns(Promise.resolve(true)),
+        update: sinon.stub().returns(Promise.resolve(createdModel)),
+      };
+
+      const config = {
+        store,
+        model: {},
+      };
+      const requestHandler = new RequestHandler(config);
+
+      requestHandler.updateRelation(post)
+      .then((model) => {
+        expect(model).to.equal(createdModel);
+        done();
+      });
+
+    });
+
+  });
+
+  describe('#destroy', () => {
+    const post = {
+      headers: {
+        accept: 'application/vnd.api+json'
+      },
+      method: 'PATCH',
+      params: {},
+      body: {
+        data: {
+          id: 'something',
+        }
+      }
+    };
+
+    it('it should run without error', (done) => {
+
+      const store = {
+        byId: sinon.stub().returns(Promise.resolve(true)),
+        destroy: sinon.stub().returns(Promise.resolve(true)),
+      };
+
+      const config = {
+        store,
+        model: {},
+      };
+      const requestHandler = new RequestHandler(config);
+
+      requestHandler.destroy(post)
+      .then((value) => {
+        expect(value).to.be.true;
+        done();
+      });
+
+    });
+
+  });
+
+  describe('#destroyRelation', () => {
+    const post = {
+      headers: {
+        accept: 'application/vnd.api+json'
+      },
+      method: 'PATCH',
+      params: {},
+      body: {
+        data: {
+          id: 'something',
+        }
+      }
+    };
+
+    it('it should run without error', (done) => {
+
+      const store = {
+        byId: sinon.stub().returns(Promise.resolve(true)),
+        destroyRelation: sinon.stub().returns(Promise.resolve(true)),
+      };
+
+      const config = {
+        store,
+        model: {},
+      };
+      const requestHandler = new RequestHandler(config);
+
+      requestHandler.destroyRelation(post)
+      .then((value) => {
+        expect(value).to.be.true;
+        done();
+      });
+
+    });
+
+  });
+
+  describe('#validate', () => {
 
     it('it should run user supplied validators', () => {
-      var validator = sinon.spy();
-      var config = {
+      const validator = sinon.spy();
+      const config = {
         validators: [validator]
       };
-      var request = new RequestHandler(source, config);
+      const request = new RequestHandler(config);
 
       expect(request.validate(req)).to.be.undefined;
       expect(validator.calledOnce).to.be.true;
@@ -63,78 +475,136 @@ describe('RequestHandler', function () {
 
 
     it('it should return an error if the custom validator errors', () => {
-      var config = {
-        validators: [function() {
+      const config = {
+        validators: [() => {
           return {
             message: 'I am an error'
           };
         }]
       };
-      var request = new RequestHandler(source, config);
+      const request = new RequestHandler(config);
 
-      var error = request.validate(req);
+      const error = request.validate(req);
       expect(error).to.deep.equal({
         message: 'I am an error'
       });
     });
 
+    it('it should validate ids passed by the client', () => {
+      const config = {
+        allowClientGeneratedIds: false,
+        validators: []
+      };
+
+      const post = {
+        headers: {
+          accept: 'application/vnd.api+json'
+        },
+        method: 'POST',
+        params: {},
+        body: {
+          data: {
+            id: 'something',
+          }
+        }
+      };
+
+      const request = new RequestHandler(config);
+
+      const error = request.validate(post);
+      expect(error.httpStatus).to.equal('403');
+      expect(error.message).to.equal('Client generated IDs are not enabled.');
+    });
+
+    it('it should validate replacing relations', () => {
+      const config = {
+        allowToManyFullReplacement: false,
+        validators: []
+      };
+
+      const post = {
+        headers: {
+          accept: 'application/vnd.api+json',
+          'content-type': 'application/vnd.api+json'
+        },
+        method: 'PATCH',
+        params: {
+          relation: true,
+        },
+        body: {
+          data: [],
+          links: {
+
+          }
+        }
+      };
+
+      const request = new RequestHandler(config);
+
+      const error = request.validate(post);
+      expect(error.httpStatus).to.equal('403');
+      expect(error.message).to.equal('Full replacement of to-Many relations is not allowed.');
+    });
+
   });
-import getParams from '../../lib/get_params';
 
-describe('getParams', function () {
+  describe('#query', () => {
 
-  var request = {
-    query: {
-      include: 'cat,dog',
+    const defaultConfig = {
+      include: ['cat', 'dog'],
       filter: {
-        id: '1,2'
+        id: ['1', '2']
       },
-      sort: '+last,+first,-birthday',
+      sort: ['+last', '+first', '-birthday'],
       fields: {
-        type: 'id,name'
+        type: ['id', 'name']
       }
-    }
-  };
+    };
 
-  var defaultConfig = {
-    include: ['cat', 'dog'],
-    filter: {
-      id: ['1', '2']
-    },
-    sort: ['+last', '+first', '-birthday'],
-    fields: {
-      type: ['id', 'name']
-    }
-  };
+    const request = {
+      query: {
+        include: 'cat,dog',
+        filter: {
+          id: '1,2'
+        },
+        sort: '+last,+first,-birthday',
+        fields: {
+          type: 'id,name'
+        }
+      }
+    };
 
-  var paramsWithRequest = getParams(request, defaultConfig);
-  var paramsWithDefault = getParams({}, defaultConfig);
+    const requestHandler = new RequestHandler(defaultConfig);
 
-  it('should extract and normalize `include` params from a request, or use defaults', function () {
-    expect(paramsWithRequest.include).to.deep.equal(defaultConfig.include);
-    expect(paramsWithDefault.include).to.deep.equal(defaultConfig.include);
+    const paramsWithRequest = requestHandler.query(request);
+    const paramsWithDefault = requestHandler.query({ query: {} });
+
+    it('should extract and normalize `include` params from a request, or use defaults', () => {
+      expect(paramsWithRequest.include).to.deep.equal(defaultConfig.include);
+      expect(paramsWithDefault.include).to.deep.equal(defaultConfig.include);
+    });
+
+    it('should extract `filter` params from a request, or use defaults', () => {
+      expect(paramsWithRequest.filter).to.deep.equal(defaultConfig.filter);
+      expect(paramsWithDefault.filter).to.deep.equal(defaultConfig.filter);
+    });
+
+    it('should extract `fields` params from a request, or use defaults', () => {
+      expect(paramsWithRequest.fields).to.deep.equal(defaultConfig.fields);
+      expect(paramsWithDefault.fields).to.deep.equal(defaultConfig.fields);
+    });
+
+    it('should extract `sort` params from a request, or use defaults', () => {
+      expect(paramsWithRequest.sort).to.deep.equal(defaultConfig.sort);
+      expect(paramsWithDefault.sort).to.deep.equal(defaultConfig.sort);
+    });
+
+    it('should clone the opts object on each run', () => {
+      const handler = new RequestHandler(defaultConfig);
+      const params = requestHandler.query({ query: {} });
+      params.filter.id = 1;
+      expect(defaultConfig.filter).to.not.equal(params.filter);
+    });
   });
 
-  it('should extract `filter` params from a request, or use defaults', function () {
-    expect(paramsWithRequest.filter).to.deep.equal(defaultConfig.filter);
-    expect(paramsWithDefault.filter).to.deep.equal(defaultConfig.filter);
-  });
-
-  it('should extract `fields` params from a request, or use defaults', function () {
-    expect(paramsWithRequest.fields).to.deep.equal(defaultConfig.fields);
-    expect(paramsWithDefault.fields).to.deep.equal(defaultConfig.fields);
-  });
-
-  it('should extract `sort` params from a request, or use defaults', function () {
-    expect(paramsWithRequest.sort).to.deep.equal(defaultConfig.sort);
-    expect(paramsWithDefault.sort).to.deep.equal(defaultConfig.sort);
-  });
-
-  it('should clone the opts object on each run', function () {
-    var params = getParams({}, defaultConfig);
-    params.filter.id = 1;
-    expect(defaultConfig.filter).to.not.equal(params.filter);
-  });
-*?
 });
-*/
