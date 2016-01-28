@@ -28,7 +28,7 @@
     "build": "babel src --loose all --out-dir es5",
     "lint": "jshint src test",
     "style": "jscs src test",
-    "test-coverage": "istanbul cover _mocha --compilers js:babel/register -b -R spec test/unit",
+    "test-coverage": "istanbul cover _mocha -- --compilers js:babel/register -b -R spec test/unit",
     "test-unit": "mocha --compilers js:babel/register -b -R spec test/unit",
     "test-integration": "mocha --compilers js:babel/register -b -R spec test/integration",
     "test": "npm run lint && npm run style && npm run test-unit && npm run test-integration",
