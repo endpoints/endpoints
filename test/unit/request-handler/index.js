@@ -12,14 +12,14 @@ const req = {
 describe('RequestHandler', () => {
 
   describe('lib', () => {
-    require('../../../src/request-handler/lib/collapse_include');
-    require('../../../src/request-handler/lib/split_string_props');
-    require('../../../src/request-handler/lib/throw_if_model');
-    require('../../../src/request-handler/lib/throw_if_no_model');
-    require('../../../src/request-handler/lib/verify_client_generated_id');
-    require('../../../src/request-handler/lib/verify_content_type');
-    require('../../../src/request-handler/lib/verify_data_object');
-    require('../../../src/request-handler/lib/verify_full_replacement');
+    require('./lib/collapse_include');
+    require('./lib/split_string_props');
+    require('./lib/throw_if_model');
+    require('./lib/throw_if_no_model');
+    require('./lib/verify_client_generated_id');
+    require('./lib/verify_content_type');
+    require('./lib/verify_data_object');
+    require('./lib/verify_full_replacement');
   });
 
   describe('#create', () => {
@@ -211,7 +211,7 @@ describe('RequestHandler', () => {
         query: {
           filter: {},
         }
-      })
+      });
 
       expect(store.read.calledOnce).to.be.true;
     });
@@ -235,7 +235,7 @@ describe('RequestHandler', () => {
         query: {
           filter: {},
         }
-      })
+      });
 
       expect(store.readRelated.calledOnce).to.be.true;
     });
@@ -259,7 +259,7 @@ describe('RequestHandler', () => {
         query: {
           filter: {},
         }
-      })
+      });
 
       expect(store.readRelation.calledOnce).to.be.true;
     });
@@ -601,7 +601,7 @@ describe('RequestHandler', () => {
 
     it('should clone the opts object on each run', () => {
       const handler = new RequestHandler(defaultConfig);
-      const params = requestHandler.query({ query: {} });
+      const params = handler.query({ query: {} });
       params.filter.id = 1;
       expect(defaultConfig.filter).to.not.equal(params.filter);
     });
