@@ -7,7 +7,7 @@ import knex from 'knex';
 import bookshelf from 'bookshelf';
 import fantasyDatabase from 'fantasy-database';
 
-import BookshelfStore from '../../src/store-bookshelf';
+import BookshelfStore from '../../../src/store-bookshelf';
 
 const Bookshelf = bookshelf(knex({
   client: 'sqlite3',
