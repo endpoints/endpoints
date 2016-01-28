@@ -2,6 +2,7 @@
 
 import path from 'path';
 import {expect} from 'chai';
+import _ from 'lodash';
 
 import knex from 'knex';
 import bookshelf from 'bookshelf';
@@ -94,7 +95,7 @@ describe('JsonApiBookshelf', function () {
   describe('::id', function () {
 
     it('should return the id attribute of a model', function () {
-      const id = 1100;
+      const id = '1100';
       expect(BookshelfStore.id(new Book({id:id}))).to.equal(id);
     });
 
@@ -202,7 +203,8 @@ describe('JsonApiBookshelf', function () {
 
     it('should serialize the model to a JSON object excluding relations', function () {
       return Author.forge({id:1}).fetch({withRelated:['books']}).then(function (author) {
-        expect(BookshelfStore.serialize(author)).to.deep.equal(fantasyDatabase.authors[0]);
+        var json = _.omit(BookshelfStore.serialize(author), ['created_at', 'updated_at']);
+        expect(json).to.deep.equal(fantasyDatabase.authors[0]);
       });
     });
 
