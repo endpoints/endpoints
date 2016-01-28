@@ -24,14 +24,15 @@ const Models = {
     tableName: 'authors',
     books() {
       return this.hasMany(Models.Book);
-    }
+    },
   }, {
     filters: {},
     relations: [
       'books',
       'books.chapters',
       'books.stores'
-    ]
+    ],
+    transaction: Bookshelf.transaction.bind(Bookshelf),
   }),
   Book: Bookshelf.Model.extend({
     tableName: 'books',
@@ -50,7 +51,8 @@ const Models = {
       'author',
       'chapters',
       'stores'
-    ]
+    ],
+    transaction: Bookshelf.transaction.bind(Bookshelf),
   }),
   Chapter: Bookshelf.Model.extend({
     tableName: 'chapters',
@@ -61,7 +63,8 @@ const Models = {
     filters: {},
     relations: [
       'book'
-    ]
+    ],
+    transaction: Bookshelf.transaction.bind(Bookshelf),
   }),
   Store: Bookshelf.Model.extend({
     tableName: 'stores',
@@ -74,11 +77,39 @@ const Models = {
     relations: [
       'books',
       'books.author'
-    ]
+    ],
+    transaction: Bookshelf.transaction.bind(Bookshelf),
   }),
 };
 
 describe('JsonApiBookshelf', () => {
+
+  describe('lib', () => {
+    require('./lib/_read_for_related')(Models);
+    require('./lib/_transact');
+    require('./lib/all_relations');
+    require('./lib/by_id');
+    require('./lib/columns');
+    require('./lib/create')(Models);
+    require('./lib/create_relation')(Models);
+    require('./lib/destroy');
+    require('./lib/destroy_relation');
+    require('./lib/destructure');
+    require('./lib/filters');
+    require('./lib/id');
+    require('./lib/is_many');
+    require('./lib/models_from_collection');
+    require('./lib/prop');
+    require('./lib/read');
+    require('./lib/relate');
+    require('./lib/related');
+    require('./lib/related_collection');
+    require('./lib/related_model');
+    require('./lib/serialize');
+    require('./lib/to_one_relations');
+    require('./lib/type');
+    require('./lib/update');
+  });
 
   describe('::allRelations', () => {
 
