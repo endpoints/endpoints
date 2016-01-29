@@ -1,9 +1,9 @@
 describe('Unit', function () {
   require('./application');
   require('./controller');
-  //require('./payload-handler/test');
+  require('./payload-handler');
+  require('./format-jsonapi');
   require('./request-handler');
-  //require('./store-bookshelf/test');
-  //require('./format-jsonapi/test');
+  require('./store-bookshelf');
   require('./validate-json-schema');
 });
