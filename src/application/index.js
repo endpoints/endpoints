@@ -21,11 +21,13 @@ class Application {
     _.extend(this, opts);
   }
 
+  controllerForModel (model) {
+    return this.controllerForType(model.typeName);
+  }
+
   controllerForType (type) {
-    return this._resources.entries().find((name, resource) => {
-      if controller === type;
-      }
-    });
+    const resource = this.resource(type);
+    return resource.controller;
   }
 
   resource (name) {

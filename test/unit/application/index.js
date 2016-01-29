@@ -88,10 +88,19 @@ describe('Application', () => {
   });
 
   describe('#controllerForModel', () => {
+
+    it('should throw an error when it can\'t find the resource', () => {
+      expect(() => TestApp.controllerForModel(fooModel)).to.throw(/Resource "foo" has not been registered/);
+    });
+
     it('should find a controller that matches the requested model', () => {
       TestApp.register('foo');
-      console.log(TestApp.controllerForModel(fooModel));
+      const controller = TestApp.controllerForModel(fooModel);
+      expect(controller).to.have.property('model');
+      expect(controller).to.have.property('url');
+      expect(controller).to.have.property('capabilities');
     });
+
   });
 
   describe('#resource', () => {
