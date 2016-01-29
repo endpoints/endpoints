@@ -1,3 +1,7 @@
+import {expect} from 'chai';
+
+import Controller from '../../../src/controller';
+
 describe('Controller', () => {
 
   describe('lib', () => {
@@ -10,27 +14,62 @@ describe('Controller', () => {
 
   });
 
-});
-
-/*
-  it('should be an object', () => {
-    expect(controller).to.be.an('object');
-  });
-
   describe('constructor', () => {
 
-    it('should throw if no adapter is specified', () => {
+    it('should throw if no format is specified', () => {
       expect(() => {
         new Controller();
-      }).to.throw('No adapter specified.');
+      }).to.throw('No format specified.');
+    });
+
+    it('should throw if no store is specified', () => {
+      expect(() => {
+        new Controller({
+          format: true,
+        });
+      }).to.throw('No store specified.');
     });
 
     it('should throw if no model is specified', () => {
       expect(() => {
         new Controller({
-          adapter: adapter
+          format: true,
+          store: true,
         });
       }).to.throw('No model specified.');
+    });
+
+    it('should throw if no baseUrl is specified', () => {
+      expect(() => {
+        new Controller({
+          format: true,
+          store: true,
+          model: true,
+        });
+      }).to.throw('No baseUrl specified for URL generation.');
+    });
+
+    it('should throw if no basePath is specified', () => {
+      expect(() => {
+        new Controller({
+          format: true,
+          store: true,
+          model: true,
+          baseUrl: true
+        });
+      }).to.throw('No basePath specified for URL generation.');
+    });
+
+    it('should not throw if all config is specified', () => {
+      expect(() => {
+        new Controller({
+          format: true,
+          store: true,
+          model: true,
+          baseUrl: true,
+          basePath: true
+        });
+      }).to.not.throw;
     });
 
   });
@@ -38,28 +77,40 @@ describe('Controller', () => {
   describe('extending', () => {
 
     it('should be extendable in es5', () => {
-      var adapter = require('./mocks/adapter');
-      var validators = ['validators'];
+      const store = require('./mocks/store');
+      const validators = ['validators'];
 
-      var MyController = Controller.extend({
-        adapter: adapter,
+      const MyController = Controller.extend({
+        store: store,
         validators: validators,
         allowClientGeneratedIds: true
       });
-      var myController = new MyController({
-        model: require('./mocks/model')
+      const myController = new MyController({
+        format: true,
+        model: true,
+        baseUrl: true,
+        basePath: true
       });
-      expect(myController.config.adapter).to.equal(adapter);
+      expect(myController.config.store).to.equal(store);
       expect(myController.config.allowClientGeneratedIds).to.be.true;
       expect(myController.config.validators).to.equal(validators);
     });
 
   });
 
-  describe('lib', () => {
+  let Store;
+  let controller;
 
-    require('./lib/adapter_has');
-    require('./lib/validate');
+  beforeEach(() => {
+    Store = require('./mocks/store');
+    const Model = require('./mocks/model');
+    controller = new Controller({
+      format() {},
+      store: new Store(Model),
+      model: true,
+      baseUrl: true,
+      basePath: true
+    });
 
   });
 
@@ -67,6 +118,14 @@ describe('Controller', () => {
 
     it('should return a request handling function', () => {
       expect(controller.create()).to.be.a('function');
+    });
+
+  });
+
+  describe('#createRelation', () => {
+
+    it('should return a request handling function', () => {
+      expect(controller.createRelation()).to.be.a('function');
     });
 
   });
@@ -79,10 +138,34 @@ describe('Controller', () => {
 
   });
 
+  describe('#readRelated', () => {
+
+    it('should return a request handling function', () => {
+      expect(controller.readRelated()).to.be.a('function');
+    });
+
+  });
+
+  describe('#readRelation', () => {
+
+    it('should return a request handling function', () => {
+      expect(controller.readRelation()).to.be.a('function');
+    });
+
+  });
+
   describe('#update', () => {
 
     it('should return a request handling function', () => {
       expect(controller.update()).to.be.a('function');
+    });
+
+  });
+
+  describe('#updateRelation', () => {
+
+    it('should return a request handling function', () => {
+      expect(controller.updateRelation()).to.be.a('function');
     });
 
   });
@@ -95,16 +178,20 @@ describe('Controller', () => {
 
   });
 
+  describe('#destroyRelation', () => {
+
+    it('should return a request handling function', () => {
+      expect(controller.destroyRelation()).to.be.a('function');
+    });
+
+  });
+
+  describe('#capabilities', () => {
+
+    it('should return an object', () => {
+      expect(controller.capabilities).to.be.a('object');
+    });
+
+  });
+
 });
-import {expect} from 'chai';
-
-import Controller from '../';
-
-import adapter from './mocks/adapter';
-import model from './mocks/model';
-
-const controller = new Controller({
-  adapter: adapter,
-  model: model
-});
-*/
