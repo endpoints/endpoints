@@ -2,7 +2,11 @@ describe('Controller', () => {
 
   describe('lib', () => {
 
+    require('./lib/handle');
+    require('./lib/model_has');
+    require('./lib/send');
     require('./lib/single_slash_join');
+    require('./lib/validate');
 
   });
 
