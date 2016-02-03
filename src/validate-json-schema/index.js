@@ -10,7 +10,7 @@ function transformErrorFields(input, errors) {
 
 export default function (request, endpoint) {
   var err;
-  var schema = endpoint.schema || {};
+  var schema = endpoint.config.schema || {};
 
   for (var prop in schema) {
     var validate = validator(schema[prop] || {});
