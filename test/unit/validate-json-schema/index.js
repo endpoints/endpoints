@@ -17,7 +17,9 @@ describe('ValidateJSONSchema', () => {
   it('should return null when there is no schema on the endpoint', () => {
 
     var endpoint = {
-      schema: null
+      config: {
+        schema: null
+      }
     };
 
     var error = validateJSONSchema(request, endpoint);
@@ -39,8 +41,10 @@ describe('ValidateJSONSchema', () => {
     };
 
     var endpoint = {
-      schema: {
-        query: sortFilterRequiredSchema
+      config: {
+        schema: {
+          query: sortFilterRequiredSchema
+        }
       }
     };
 
@@ -62,8 +66,10 @@ describe('ValidateJSONSchema', () => {
     };
 
     var endpoint = {
-      schema: {
-        query: sortRequiredSchema
+      config: {
+        schema: {
+          query: sortRequiredSchema
+        }
       }
     };
 
