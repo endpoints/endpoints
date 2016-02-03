@@ -45,6 +45,22 @@ describe('creatingResources', function() {
       });
   });
 
+  it('must respond to an invalid schema request with a JSON object containing a collection keyed by "errors" in the top level', function() {
+    bookData.attributes.title = {
+      invalid: 'attribute'
+    };
+    return Agent.request('POST', '/v1/books')
+      .send({
+        data: bookData
+      })
+      .promise()
+      .then(function(res) {
+        expect(res.status).to.be.within(400, 499); // any error
+        expect(res.body).to.be.an('object');
+        expect(res.body.errors).to.be.an('array');
+      });
+  });
+
   it('must require a content-type header of application/vnd.api+json', function() {
     return Agent.request('POST', '/v1/books')
       .type('application/json')
