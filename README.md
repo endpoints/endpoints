@@ -10,7 +10,8 @@ Endpoints comes with a built in formatter for the [JSON API](http://jsonapi.org)
 *Check out the [example implementation](https://github.com/endpoints/example).*
 
 ## Roadmap
-This project is currently under heavy development. If you wish to use this in a production environment, you'll want to track the commit history closely.
+**This project is not currently under active development.** If you wish to continue development on Endpoints within
+this repository, reach out to [@tkellen](https://github.com/tkellen).
 
 At the time of this writing, performance is **not** a concern of this project.
 
