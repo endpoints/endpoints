@@ -1,4 +1,5 @@
-export default function (includes) {
+export default function (input) {
+  const includes = Array.isArray(input) ? input : input.split(',');
   let memo = {};
   return includes.map(function(include) {
     return include.split('.');

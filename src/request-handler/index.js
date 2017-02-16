@@ -93,7 +93,7 @@ class RequestHandler {
     const config = _.cloneDeep(_.omit(this.config, ['store', 'model']));
     const {include, filter, fields, sort} = request.query;
     return {
-      include: include ? collapseInclude(include.split(',')) : config.include,
+      include: include ? collapseInclude(include) : config.include,
       filter: filter ? splitStringProps(filter) : config.filter,
       fields: fields ? splitStringProps(fields) : config.fields,
       sort: sort ? sort.split(',') : config.sort
