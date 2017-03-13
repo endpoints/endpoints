@@ -108,15 +108,16 @@ class RequestHandler {
   create (request) {
     const {store, model} = this;
     const data = request.body.data;
+    const query = this.query(request);
     if (data && data.id) {
       return store.byId(model, data.id)
         .then(throwIfModel)
         .then(function() {
-          return store.create(model, data);
+          return store.create(model, data, query);
         }
       );
     } else {
-      return store.create(model, data);
+      return store.create(model, data, query);
     }
   }
 
@@ -162,10 +163,11 @@ class RequestHandler {
 
   update (request) {
     const store = this.store;
+    const query = this.query(request);
     return store.byId(this.model, request.params.id).
       then(throwIfNoModel).
       then((model) => {
-        return store.update(model, request.body.data);
+        return store.update(model, request.body.data, query);
       });
   }
 

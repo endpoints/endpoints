@@ -8,10 +8,11 @@ import relate from './relate';
  *
  * @param {Bookshelf.Model} model - A bookshelf model instance
  * @param {Object} params - An object containing the params from the request.
+ * @param {Object} config - The config for the controller calling this.
  * @returns {Promise.Bookshelf.Model|null} -
      The updated model or null if nothing has changed.
  */
-export default function update (model, params={}) {
+export default function update (model, params={}, config={}) {
   if (!model) {
     throw new Error('No model provided.');
   }
