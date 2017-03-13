@@ -30,8 +30,9 @@ module.exports = function (config, baseUrl) {
 
   return function (request, response) {
     var server = 'express'; // detect if hapi or express here
-    var process = requestHandler[method].bind(requestHandler);
-    var format = payloadHandler[method].bind(payloadHandler, config);
+    var modelHandlers = config.model.methodHandlers;
+    var process = modelHandlers && modelHandlers[method] ? modelHandlers[method].request.bind(requestHandler) : requestHandler[method].bind(requestHandler);
+    var format = modelHandlers && modelHandlers[method] ? modelHandlers[method].payload.bind(payloadHandler, config) : payloadHandler[method].bind(payloadHandler, config);
     var respond = (responder ? responder : send[server]).bind(null, response);
     var errors = requestHandler.validate(request);
 

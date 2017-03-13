@@ -10,7 +10,7 @@ var _kapow2 = _interopRequireDefault(_kapow);
 
 exports['default'] = function (model) {
   if (model) {
-    throw _kapow2['default'](409, 'Model with this ID already exists');
+    throw (0, _kapow2['default'])(409, 'Model with this ID already exists');
   }
   return model;
 };

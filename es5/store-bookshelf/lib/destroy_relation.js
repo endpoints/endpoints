@@ -29,10 +29,10 @@ function destroyRelation(model, relations) {
   if (!model) {
     throw new Error('No model provided.');
   }
-  return _destructure2['default'](model, relations).then(function (destructured) {
+  return (0, _destructure2['default'])(model, relations).then(function (destructured) {
     var relations = destructured.relations;
-    return _transact2['default'](model, function (transaction) {
-      return _relate2['default'](model, relations, 'delete', transaction);
+    return (0, _transact2['default'])(model, function (transaction) {
+      return (0, _relate2['default'])(model, relations, 'delete', transaction);
     });
   });
 }

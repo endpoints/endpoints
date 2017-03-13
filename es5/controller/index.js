@@ -32,23 +32,6 @@ var _libSingle_slash_join2 = _interopRequireDefault(_libSingle_slash_join);
 */
 
 var Controller = (function () {
-  Controller.extend = function extend() {
-    var props = arguments.length <= 0 || arguments[0] === undefined ? {} : arguments[0];
-
-    return (function (_ref) {
-      function Controller() {
-        var opts = arguments.length <= 0 || arguments[0] === undefined ? {} : arguments[0];
-
-        _classCallCheck(this, Controller);
-
-        _ref.call(this, _lodash2['default'].extend({}, props, opts));
-      }
-
-      _inherits(Controller, _ref);
-
-      return Controller;
-    })(this);
-  };
 
   /**
     The constructor.
@@ -63,7 +46,7 @@ var Controller = (function () {
   */
 
   function Controller() {
-    var config = arguments.length <= 0 || arguments[0] === undefined ? {} : arguments[0];
+    var config = arguments[0] === undefined ? {} : arguments[0];
 
     _classCallCheck(this, Controller);
 
@@ -89,6 +72,24 @@ var Controller = (function () {
     }, config);
   }
 
+  Controller.extend = function extend() {
+    var props = arguments[0] === undefined ? {} : arguments[0];
+
+    return (function (_ref) {
+      function Controller() {
+        var opts = arguments[0] === undefined ? {} : arguments[0];
+
+        _classCallCheck(this, Controller);
+
+        _ref.call(this, _lodash2['default'].extend({}, props, opts));
+      }
+
+      _inherits(Controller, _ref);
+
+      return Controller;
+    })(this);
+  };
+
   /**
     Used for generating CRUD methods.
      @param {String} method - The name of the function to be created.
@@ -105,12 +106,12 @@ var Controller = (function () {
       sort: [],
       schema: {}
     }, this.config, opts);
-    var validationFailures = _libValidate2['default'](_method, config);
+    var validationFailures = (0, _libValidate2['default'])(_method, config);
     if (validationFailures.length) {
       throw new Error(validationFailures.join('\n'));
     }
     // TODO: fix this gross passing of the url
-    return _libHandle2['default'](config, this.url);
+    return (0, _libHandle2['default'])(config, this.url);
   };
 
   Controller.prototype.create = function create(opts) {
@@ -151,7 +152,7 @@ var Controller = (function () {
 
   _createClass(Controller, [{
     key: 'capabilities',
-    get: function get() {
+    get: function () {
       var _config = this.config;
       var store = _config.store;
       var model = _config.model;
@@ -164,18 +165,18 @@ var Controller = (function () {
     }
   }, {
     key: 'baseUrl',
-    get: function get() {
+    get: function () {
       return this.config.baseUrl;
     }
   }, {
     key: 'basePath',
-    get: function get() {
+    get: function () {
       return this.config.basePath;
     }
   }, {
     key: 'url',
-    get: function get() {
-      return _libSingle_slash_join2['default']([this.baseUrl, this.basePath]);
+    get: function () {
+      return (0, _libSingle_slash_join2['default'])([this.baseUrl, this.basePath]);
     }
   }]);
 

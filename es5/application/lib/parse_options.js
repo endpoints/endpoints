@@ -3,7 +3,7 @@
 exports.__esModule = true;
 
 exports['default'] = function () {
-  var opts = arguments.length <= 0 || arguments[0] === undefined ? {} : arguments[0];
+  var opts = arguments[0] === undefined ? {} : arguments[0];
 
   if (!opts.routeBuilder) {
     throw new Error('No route builder specified.');
