@@ -13,7 +13,7 @@ export function express (response, payload) {
   if (headers) {
     applyHeaders(response, payload.headers);
   }
-  return response.set('content-type', TYPE).status(code).send(data);
+  return response.set('content-type', TYPE).status(parseInt(code)).send(data);
 }
 
 export function hapi (response, payload) {

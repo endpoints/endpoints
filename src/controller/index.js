@@ -88,6 +88,7 @@ class Controller {
       fields: {},
       sort: [],
       schema: {},
+      page:{}
     }, this.config, opts);
     var validationFailures = validate(method, config);
     if (validationFailures.length) {
