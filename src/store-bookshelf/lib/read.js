@@ -77,15 +77,15 @@ function processSort (validFields, query, sortBy) {
   }, query).value();
 }
 
-function processPaging(qb, query){
-  var pageOptions= {
-    pageSize: (query.page && query.page.size > 0) ?  parseInt(query.page.size): 10,
-    page: (query.page && query.page.number > 0) ?  parseInt(query.page.number): 1,
+function processPaging (qb, query) {
+  var pageOptions = {
+    pageSize: (query.page && query.page.size > 0) ? parseInt(query.page.size) : 10,
+    page: (query.page && query.page.number > 0) ? parseInt(query.page.number) : 1,
   };
-  var offset = ((pageOptions.page-1)*pageOptions.pageSize);
+  var offset = ((pageOptions.page - 1) * pageOptions.pageSize);
 
-  if(pageOptions.pageSize)qb.limit(pageOptions.pageSize);
-  if(offset>0)qb.offset(offset);
+  if (pageOptions.pageSize) qb.limit(pageOptions.pageSize);
+  if (offset > 0) qb.offset(offset);
 
   return qb;
 }
