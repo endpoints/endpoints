@@ -26,6 +26,7 @@ export default function read (model, query={}, mode='read') {
     return model.collection().query(function (qb) {
       qb = processFilter(model, qb, query.filter);
       qb = processSort(model.columns, qb, query.sort);
+      qb = processPaging(qb, query);
     }).fetch({
       // adding this in the queryBuilder changes the qb, but fetch still
       // returns all columns
@@ -74,4 +75,17 @@ function processSort (validFields, query, sortBy) {
     var dir =  isAscending(key) ? 'ASC' : 'DESC';
     return column ? result.orderBy(column, dir) : result;
   }, query).value();
+}
+
+function processPaging (qb, query) {
+  var pageOptions = {
+    pageSize: (query.page && query.page.size > 0) ? parseInt(query.page.size) : 10,
+    page: (query.page && query.page.number > 0) ? parseInt(query.page.number) : 1,
+  };
+  var offset = ((pageOptions.page - 1) * pageOptions.pageSize);
+
+  if (pageOptions.pageSize) qb.limit(pageOptions.pageSize);
+  if (offset > 0) qb.offset(offset);
+
+  return qb;
 }

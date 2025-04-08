@@ -91,12 +91,13 @@ class RequestHandler {
     // bits down the chain can mutate this config
     // on a per-request basis, so we need to clone
     const config = _.cloneDeep(_.omit(this.config, ['store', 'model']));
-    const {include, filter, fields, sort} = request.query;
+    const {include, filter, fields, sort, page } = request.query;
     return {
       include: include ? collapseInclude(include.split(',')) : config.include,
       filter: filter ? splitStringProps(filter) : config.filter,
       fields: fields ? splitStringProps(fields) : config.fields,
-      sort: sort ? sort.split(',') : config.sort
+      sort: sort ? sort.split(',') : config.sort,
+      page: page ? page : (config.page || null),
     };
   }
 

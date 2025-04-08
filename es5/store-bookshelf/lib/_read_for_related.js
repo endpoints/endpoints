@@ -114,6 +114,11 @@ function readForRelated(mode, sourceModel, id, relation, query) {
       relatedResult.relationName = relation;
       return relatedResult;
     });
+  })['catch'](function (err) {
+    if (/is not defined on the model\./.test(err.message)) {
+      throw _kapow2['default'](404);
+    }
+    throw err;
   });
 }
 

@@ -6,7 +6,7 @@ var _createClass = (function () { function defineProperties(target, props) { for
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
 
-function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) subClass.__proto__ = superClass; }
+function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
 
@@ -36,6 +36,8 @@ var Controller = (function () {
     var props = arguments.length <= 0 || arguments[0] === undefined ? {} : arguments[0];
 
     return (function (_ref) {
+      _inherits(Controller, _ref);
+
       function Controller() {
         var opts = arguments.length <= 0 || arguments[0] === undefined ? {} : arguments[0];
 
@@ -43,8 +45,6 @@ var Controller = (function () {
 
         _ref.call(this, _lodash2['default'].extend({}, props, opts));
       }
-
-      _inherits(Controller, _ref);
 
       return Controller;
     })(this);
@@ -103,7 +103,8 @@ var Controller = (function () {
       filter: {},
       fields: {},
       sort: [],
-      schema: {}
+      schema: {},
+      page: {}
     }, this.config, opts);
     var validationFailures = _libValidate2['default'](_method, config);
     if (validationFailures.length) {

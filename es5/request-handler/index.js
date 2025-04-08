@@ -121,12 +121,14 @@ var RequestHandler = (function () {
     var filter = _request$query.filter;
     var fields = _request$query.fields;
     var sort = _request$query.sort;
+    var page = _request$query.page;
 
     return {
       include: include ? _libCollapse_include2['default'](include.split(',')) : config.include,
       filter: filter ? _libSplit_string_props2['default'](filter) : config.filter,
       fields: fields ? _libSplit_string_props2['default'](fields) : config.fields,
-      sort: sort ? sort.split(',') : config.sort
+      sort: sort ? sort.split(',') : config.sort,
+      page: page ? page : config.page || null
     };
   };
 
